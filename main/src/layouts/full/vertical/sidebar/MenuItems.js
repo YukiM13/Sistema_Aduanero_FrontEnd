@@ -80,9 +80,51 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Concepto de Pago',
+    icon: IconAperture,
+    href: '/concepto-de-pago/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Proveedores',
+    icon: IconAperture,
+    href: '/proveedores/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Niveles Comerciales',
+    icon: IconAperture,
+    href: '/niveles-comerciales/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Estados Civiles',
+    icon: IconAperture,
+    href: '/estadosciviles/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Tipo Embalaje',
     icon: IconAperture,
     href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipo Intermediario',
+    icon: IconAperture,
+    href: '/tipointermediario/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Unidades de Medida',
+    icon: IconAperture,
+    href: '/unidadesmedidas/list',
     chipColor: 'secondary',
   },
   {
@@ -94,6 +136,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+
     title: 'Paises',
     icon: IconAperture,
     href: '/paises/list',
@@ -104,10 +147,49 @@ const Menuitems = [
     title: 'Provincias',
     icon: IconAperture,
     href: '/provincias/list',
+
+
+    title: 'Tallas',
+    icon: IconAperture,
+    href: '/tallas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas',
+    icon: IconAperture,
+    href: '/marcas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas Maquinas',
+    icon: IconAperture,
+    href: '/marcasmaquinas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Modos de Transporte',
+    icon: IconAperture,
+    href: '/modotransporte/list',
+
     chipColor: 'secondary',
   },
   {
     id: uniqueId(),
+
+    title: 'Tipos de Identificacion',
+    icon: IconAperture,
+    href: '/tiposidentificacion/list',
+    chipColor: 'secondary',
+  },
+
+  {
+
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
@@ -118,6 +200,35 @@ const Menuitems = [
     icon: IconAperture,
     href: '/cargos/list',
     chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Sub Categorias',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/subCategorias/list',
+  },
+  {
+    id: uniqueId(),
+    title: 'Oficinas',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/oficinas/list',
+  },
+  {
+    id: uniqueId(),
+    title: 'Categorias',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/categorias/list',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Empleados',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/empleado/list',
   },
   {
     navlabel: true,
@@ -131,7 +242,7 @@ const Menuitems = [
     chipColor: 'secondary',
     href: '/apps/contacts',
   },
-
+  
   {
     id: uniqueId(),
     title: 'Blog',
