@@ -7,7 +7,7 @@ import { store } from './store/Store';
 import Spinner from './views/spinner/Spinner';
 import './_mockApis';
 import './utils/i18n';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>

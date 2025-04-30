@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Typography
+} from '@mui/material';
 
 const PersonasComponent = () => {
-  const [personas, setPersonas] = useState([]); // Estado para guardar la respuesta
+  const [personas, setPersonas] = useState([]);
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
-    console.log(apiUrl);
+
     axios.get(`${apiUrl}/api/Personas/Listar`, {
       headers: {
         'XApiKey': apiKey
@@ -25,28 +29,32 @@ const PersonasComponent = () => {
 
   return (
     <div>
-    <h2>Lista de Personas</h2>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>RTN</th>
-          <th>Nombre</th>
-          <th>Oficina</th>
-        </tr>
-      </thead>
-      <tbody>
-        {personas.map((persona) => (
-          <tr key={persona.pers_Id}>
-            <td>{persona.pers_Id}</td>
-            <td>{persona.pers_RTN}</td>
-            <td>{persona.pers_Nombre}</td>
-            <td>{persona.ofic_Nombre}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
+      <Typography variant="h5" gutterBottom>
+        Lista de Personas
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>RTN</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Oficina</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {personas.map((persona) => (
+              <TableRow key={persona.pers_Id}>
+                <TableCell>{persona.pers_Id}</TableCell>
+                <TableCell>{persona.pers_RTN}</TableCell>
+                <TableCell>{persona.pers_Nombre}</TableCell>
+                <TableCell>{persona.ofic_Nombre}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

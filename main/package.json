@@ -19,6 +19,7 @@
     "apexcharts": "^3.23.1",
     "axios": "^0.27.2",
     "axios-mock-adapter": "^1.21.1",
+    "bootstrap": "^5.3.5",
     "chance": "^1.1.9",
     "date-fns": "^2.29.2",
     "emoji-picker-react": "^3.6.1",
