@@ -8,45 +8,45 @@ import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 
 
-const CategoriasComponent = () => {
-  const [categorias, setCategorias] = useState([]);
+const OficinasComponent = () => {
+  const [Oficinas, setOficinas] = useState([]);
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
 
-    axios.get(`${apiUrl}/api/Categoria/Listar`, {
+    axios.get(`${apiUrl}/api/Oficinas/Listar`, {
       headers: {
         'XApiKey': apiKey
       }
     })
     .then(response => {
       if (response.data && Array.isArray(response.data.data)) {
-        setCategorias(response.data.data);
+        setOficinas(response.data.data);
       }
     })
     .catch(error => {
-      console.error('Error al obtener las categorias:', error);
+      console.error('Error al obtener las Oficinas:', error);
     });
   }, []);
 
   return (
     <div>
-       <Breadcrumb title="Categorias" subtitle="Listar" />
+       <Breadcrumb title="Oficinas" subtitle="Listar" />
       <ParentCard>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Descripcion</TableCell>
+                <TableCell>Nombre</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {categorias.map((categoria) => (
-                <TableRow key={categoria.cate_Id}>
-                  <TableCell>{categoria.cate_Id}</TableCell>
-                  <TableCell>{categoria.cate_Descripcion}</TableCell>
+              {Oficinas.map((Oficinas) => (
+                <TableRow key={Oficinas.ofic_Id}>
+                  <TableCell>{Oficinas.ofic_Id}</TableCell>
+                  <TableCell>{Oficinas.ofic_Nombre}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -58,4 +58,4 @@ const CategoriasComponent = () => {
   );
 };
 
-export default CategoriasComponent;
+export default OficinasComponent;

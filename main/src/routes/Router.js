@@ -108,6 +108,7 @@ const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/ti
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
+const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
@@ -120,6 +121,8 @@ const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoe
 const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
+const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
+
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -228,6 +231,8 @@ const Router = [
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/categorias/list', element: <Categorias /> },
+      { path: '/subCategorias/list', element: <SubCategorias /> },
+      { path: '/oficinas/list', element: <Oficinas /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
