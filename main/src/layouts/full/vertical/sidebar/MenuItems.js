@@ -138,6 +138,20 @@ const Menuitems = [
     chipColor: 'primary',
   },
 
+  {
+    id: uniqueId(),
+    title: 'Modos de Transporte',
+    icon: IconAperture,
+    href: '/modotransporte/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipos de Identificacion',
+    icon: IconAperture,
+    href: '/tiposidentificacion/list',
+    chipColor: 'secondary',
+  },
 
   {
     title: 'Ciudades',

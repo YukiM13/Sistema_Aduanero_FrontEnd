@@ -91,7 +91,12 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
+
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+
 
 // General
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
@@ -218,6 +223,8 @@ const Router = [
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
+      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
+      { path: '/modotransporte/list', element: <ModoTransporte  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       { path: '/cargos/list', element: <Cargo  /> },
