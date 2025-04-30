@@ -40,13 +40,14 @@ const Menuitems = [
     href: '/apps/blog/',
     children: [
       {
-
+        id: uniqueId(),
         title: 'Cargos',
         icon: IconPoint,
         href: '/cargos/list',
         chipColor: 'secondary',
       },
       {
+        id: uniqueId(),
         title: 'Ciudades',
         icon: IconPoint,
         href: '/ciudades/list',
