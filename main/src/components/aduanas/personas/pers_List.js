@@ -21,9 +21,9 @@ const PersonasComponent = () => {
       }
     })
     .then(response => {
-      if (response.data && Array.isArray(response.data.data)) {
-        setPersonas(response.data.data);
-      }
+     
+      setPersonas(response.data.data);
+     
     })
     .catch(error => {
       console.error('Error al obtener las personas:', error);
