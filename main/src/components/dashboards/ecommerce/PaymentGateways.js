@@ -22,7 +22,7 @@ const PaymentGateways = () => {
 
   const stats = [
     {
-      title: 'Paypal',
+      title: 'Pruebita',
       subtitle: 'Big Brands',
       price: 6235,
       color: primary,

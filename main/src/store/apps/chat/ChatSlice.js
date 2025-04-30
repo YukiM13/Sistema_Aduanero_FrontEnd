@@ -40,9 +40,9 @@ export const ChatSlice = createSlice({
       state.chats = state.chats.map((chat) =>
         chat.id === action.payload.id
           ? {
-              ...chat,
-              ...chat.messages.push(newMessage),
-            }
+            ...chat,
+            ...chat.messages.push(newMessage),
+          }
           : chat,
       );
     },
