@@ -93,6 +93,13 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
+    id: uniqueId(),
+    title: 'Cargos',
+    icon: IconAperture,
+    href: '/cargos/list',
+    chipColor: 'secondary',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },
