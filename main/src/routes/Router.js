@@ -2,7 +2,6 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
-import NivelesComercialesList from 'src/components/aduanas/niveles-comerciales/NivelesComercialesList';
 
 
 /* ***Layouts**** */
@@ -113,7 +112,6 @@ const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/ti
 // General
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
-const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
