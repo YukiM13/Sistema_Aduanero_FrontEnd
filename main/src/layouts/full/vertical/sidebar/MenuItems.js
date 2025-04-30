@@ -7,7 +7,7 @@ import {
   IconPackgeExport,
 
 } from '@tabler/icons';
-import { id } from 'date-fns/locale';
+//import { id } from 'date-fns/locale';
 
 import { uniqueId } from 'lodash';
 
@@ -23,49 +23,10 @@ const Menuitems = [
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
-  {
-    id: uniqueId(),
-    title: 'Personas',
-    icon: IconAperture,
-    href: '/personas/list',
-    chipColor: 'secondary',
-  },
-  {
-    id: uniqueId(),
-    title: 'Estados Civiles',
-    icon: IconAperture,
-    href: '/estadosciviles/list',
-    chipColor: 'secondary',
-  },
-  {
-    id: uniqueId(),
-    title: 'Tipo Embalaje',
-    icon: IconAperture,
-    href: '/tipoembalaje/list',
-    chipColor: 'secondary',
-    
-  },
+ 
 
-  {
-    id: uniqueId(),
-    title: 'Formas de Envío',
-    icon: IconAperture,
-    href: '/formasenvio/list',
-  },
-
-  {
-    id: uniqueId(),
-    title: 'Formas de Pago',
-    icon: IconAperture,
-    href: '/formasdepago/list',
-  },
-{
-  id: uniqueId(),
-  title: 'Tipo Embalaje',
-  icon: IconAperture,
-  href: '/tipoembalaje/list',
-  chipColor: 'secondary',
-},
+ 
+  
 
   
   {
@@ -84,13 +45,14 @@ const Menuitems = [
     href: '/apps/blog/',
     children: [
       {
-
+        id: uniqueId(),
         title: 'Cargos',
         icon: IconPoint,
         href: '/cargos/list',
         chipColor: 'secondary',
       },
       {
+        id: uniqueId(),
         title: 'Ciudades',
         icon: IconPoint,
         href: '/ciudades/list',
@@ -125,6 +87,13 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/oficioProfesiones/list',
       },
+      {
+        id: uniqueId(),
+        title: 'Formas de Envío',
+        icon: IconPoint,
+        href: '/formasenvio/list',
+      },
+    
       {
         id: uniqueId(),
         title: 'Monedas',
@@ -190,6 +159,13 @@ const Menuitems = [
         href: '/concepto-de-pago/list',
         chipColor: 'secondary',
       },
+      {
+        id: uniqueId(),
+        title: 'Formas de Pago',
+        icon: IconPoint,
+        href: '/formasdepago/list',
+      },
+    
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
