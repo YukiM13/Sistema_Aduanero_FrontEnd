@@ -137,6 +137,18 @@ const Menuitems = [
   {
     id: uniqueId(),
 
+    title: 'Paises',
+    icon: IconAperture,
+    href: '/paises/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Provincias',
+    icon: IconAperture,
+    href: '/provincias/list',
+
+
     title: 'Tallas',
     icon: IconAperture,
     href: '/tallas/list',
@@ -164,10 +176,12 @@ const Menuitems = [
     title: 'Modos de Transporte',
     icon: IconAperture,
     href: '/modotransporte/list',
+
     chipColor: 'secondary',
   },
   {
     id: uniqueId(),
+
     title: 'Tipos de Identificacion',
     icon: IconAperture,
     href: '/tiposidentificacion/list',
@@ -175,13 +189,13 @@ const Menuitems = [
   },
 
   {
+
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
      chipColor: 'secondary',
   },
   {
-
     title: 'Cargos',
     icon: IconAperture,
     href: '/cargos/list',
