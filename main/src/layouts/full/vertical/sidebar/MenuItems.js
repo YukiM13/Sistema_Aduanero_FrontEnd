@@ -107,20 +107,26 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
+    id: uniqueId(),
     title: 'Tipo Embalaje',
     icon: IconAperture,
     href: '/tipoembalaje/list',
     chipColor: 'secondary',
-    
   },
-{
-  id: uniqueId(),
-  title: 'Tipo Embalaje',
-  icon: IconAperture,
-  href: '/tipoembalaje/list',
-  chipColor: 'secondary',
-},
-
+  {
+    id: uniqueId(),
+    title: 'Tipo Intermediario',
+    icon: IconAperture,
+    href: '/tipointermediario/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Unidades de Medida',
+    icon: IconAperture,
+    href: '/unidadesmedidas/list',
+    chipColor: 'secondary',
+  },
   {
     id: uniqueId(),
     title: 'Aduanas',
@@ -131,6 +137,44 @@ const Menuitems = [
   {
     id: uniqueId(),
 
+    title: 'Tallas',
+    icon: IconAperture,
+    href: '/tallas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas',
+    icon: IconAperture,
+    href: '/marcas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas Maquinas',
+    icon: IconAperture,
+    href: '/marcasmaquinas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Modos de Transporte',
+    icon: IconAperture,
+    href: '/modotransporte/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipos de Identificacion',
+    icon: IconAperture,
+    href: '/tiposidentificacion/list',
+    chipColor: 'secondary',
+  },
+
+  {
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
@@ -142,6 +186,14 @@ const Menuitems = [
     icon: IconAperture,
     href: '/cargos/list',
     chipColor: 'secondary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Categorias',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/categorias/list',
   },
   {
     navlabel: true,
@@ -155,7 +207,7 @@ const Menuitems = [
     chipColor: 'secondary',
     href: '/apps/contacts',
   },
-
+  
   {
     id: uniqueId(),
     title: 'Blog',

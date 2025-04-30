@@ -91,13 +91,23 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
 const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
+
+const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+
+const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
+
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+
+
+
 // General
+const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
-
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
-
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 
@@ -106,6 +116,9 @@ const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
+const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
+const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
+const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -211,7 +224,14 @@ const Router = [
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
+      { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/categorias/list', element: <Categorias /> },
+      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
+      { path: '/marcas/list', element: <Marcas  /> },
+      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
+      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
+      { path: '/modotransporte/list', element: <ModoTransporte  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
       { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
@@ -219,6 +239,12 @@ const Router = [
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
        { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
        { path: '/proveedores/list', element: <Proveedor  /> },
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      { path: '/cargos/list', element: <Cargo  /> },
+      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
+
+
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
