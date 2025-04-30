@@ -95,6 +95,7 @@ const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/Aduana
 // Acceso
 
 // Produccion
+const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -201,6 +202,7 @@ const Router = [
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
