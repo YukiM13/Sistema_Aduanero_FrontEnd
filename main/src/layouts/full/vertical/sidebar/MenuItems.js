@@ -156,6 +156,13 @@ const Menuitems = [
     href: '/categorias/list',
   },
   {
+    id: uniqueId(),
+    title: 'Empleados',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/empleado/list',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },

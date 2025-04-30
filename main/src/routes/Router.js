@@ -95,10 +95,9 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 // General
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
-
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
-
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
+const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
 
 
 // Acceso
@@ -217,16 +216,14 @@ const Router = [
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/categorias/list', element: <Categorias /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
-
-
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
-
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/empleado/list', element: <Empleado  /> },
+
 
 
       { path: '*', element: <Navigate to="/auth/404" /> },
