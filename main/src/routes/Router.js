@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
+import NivelesComercialesList from 'src/components/aduanas/niveles-comerciales/NivelesComercialesList';
 
 
 /* ***Layouts**** */
@@ -90,15 +91,27 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+
+const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
+const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
+
 const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+
+const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
+
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+
+
 
 // General
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
-
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
+const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
+const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 
 
 // Acceso
@@ -221,16 +234,23 @@ const Router = [
       { path: '/subCategorias/list', element: <SubCategorias /> },
       { path: '/oficinas/list', element: <Oficinas /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
-
-
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
-
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-
+      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
+      { path: '/modotransporte/list', element: <ModoTransporte  /> },
+      { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
+       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+       { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
+       { path: '/proveedores/list', element: <Proveedor  /> },
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      { path: '/cargos/list', element: <Cargo  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/empleado/list', element: <Empleado  /> },
+      { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
+
 
 
       { path: '*', element: <Navigate to="/auth/404" /> },
