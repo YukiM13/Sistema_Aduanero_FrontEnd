@@ -106,15 +106,20 @@ const Menuitems = [
     href: '/estadosciviles/list',
     chipColor: 'secondary',
   },
-
-{
-  id: uniqueId(),
-  title: 'Tipo Embalaje',
-  icon: IconAperture,
-  href: '/tipoembalaje/list',
-  chipColor: 'secondary',
-},
-
+  {
+    id: uniqueId(),
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipo Intermediario',
+    icon: IconAperture,
+    href: '/tipointermediario/list',
+    chipColor: 'secondary',
+  },
   {
     id: uniqueId(),
     title: 'Unidades de Medida',
@@ -154,6 +159,20 @@ const Menuitems = [
     chipColor: 'primary',
   },
 
+  {
+    id: uniqueId(),
+    title: 'Modos de Transporte',
+    icon: IconAperture,
+    href: '/modotransporte/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipos de Identificacion',
+    icon: IconAperture,
+    href: '/tiposidentificacion/list',
+    chipColor: 'secondary',
+  },
 
   {
     title: 'Ciudades',
