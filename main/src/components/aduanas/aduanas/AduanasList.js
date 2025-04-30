@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper
+  Box,Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Pagination
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
@@ -51,6 +51,9 @@ const AduanasList = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Box my={3} display="flex" justifyContent={'center'}>
+            <Pagination count={10} color="primary" />
+        </Box>
       </ParentCard>
       </div>
     );
