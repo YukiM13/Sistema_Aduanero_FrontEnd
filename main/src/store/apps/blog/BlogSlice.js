@@ -6,7 +6,7 @@ const initialState = {
   recentPosts: [],
   blogSearch: '',
   sortBy: 'newest',
-  selectedPost: null, 
+  selectedPost: null,
 };
 
 export const BlogSlice = createSlice({

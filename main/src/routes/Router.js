@@ -81,6 +81,7 @@ const AreaChart = Loadable(lazy(() => import('../views/charts/AreaChart')));
 const ColumnChart = Loadable(lazy(() => import('../views/charts/ColumnChart')));
 const CandlestickChart = Loadable(lazy(() => import('../views/charts/CandlestickChart')));
 const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChart')));
+const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -118,7 +119,7 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/', element: <Navigate to="/landingpage" /> },
+      { path: '/', element: <Navigate to="/dashboards/modern" /> },
       { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
       { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
       { path: '/apps/chats', element: <Chats /> },
@@ -185,6 +186,7 @@ const Router = [
       { path: '/widgets/cards', element: <WidgetCards /> },
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
+      { path: '/personas/list', element: <Persona  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
