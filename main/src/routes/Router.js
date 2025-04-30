@@ -92,6 +92,8 @@ const Persona  = Loadable(lazy(() => import('../components/personas/pers_List'))
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 
 // General
+const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
+const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 
@@ -205,6 +207,8 @@ const Router = [
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/paises/list', element: <Pais  /> },
+      { path: '/provincias/list', element: <Provincia  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },

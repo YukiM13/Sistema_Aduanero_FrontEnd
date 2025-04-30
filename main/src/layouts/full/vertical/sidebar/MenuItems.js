@@ -94,9 +94,26 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Paises',
+    icon: IconAperture,
+    href: '/paises/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Provincias',
+    icon: IconAperture,
+    href: '/provincias/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
+     chipColor: 'secondary',
+  },
+  {
     title: 'Cargos',
     icon: IconAperture,
     href: '/cargos/list',
