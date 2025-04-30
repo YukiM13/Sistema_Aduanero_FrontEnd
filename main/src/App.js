@@ -5,7 +5,6 @@ import { ThemeSettings } from './theme/Theme';
 import RTL from './layouts/full/shared/customizer/RTL';
 import ScrollToTop from './components/shared/ScrollToTop';
 import Router from './routes/Router';
-import CiudadList from './components/general/CiudadList';    
 
 function App() {
   const routing = useRoutes(Router);

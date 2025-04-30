@@ -86,6 +86,13 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
+    id: uniqueId(),
+    title: 'Ciudades',
+    icon: IconAperture,
+    href: '/ciudades/list',
+    chipColor: 'secondary',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },
