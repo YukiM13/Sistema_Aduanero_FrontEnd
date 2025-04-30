@@ -102,7 +102,7 @@ const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosLis
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
-
+const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -208,6 +208,7 @@ const Router = [
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/categorias/list', element: <Categorias /> },
 
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
