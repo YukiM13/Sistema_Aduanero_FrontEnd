@@ -85,6 +85,20 @@ const Menuitems = [
     href: '/estadosciviles/list',
     
   },
+
+  {
+    id: uniqueId(),
+    title: 'Formas de Envío',
+    icon: IconAperture,
+    href: '/formasenvio/list',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Formas de Pago',
+    icon: IconAperture,
+    href: '/formasdepago/list',
+  },
 {
   id: uniqueId(),
   title: 'Tipo Embalaje',

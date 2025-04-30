@@ -90,6 +90,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 
 // General
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
@@ -97,6 +98,8 @@ const EstadosCivilesList = Loadable(lazy(() => import('../components/general/est
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
+
+const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
 
 // Acceso
@@ -210,10 +213,12 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
+      { path: '/formasdepago/list', element: <FormasPago  /> },
 
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+       {path: '/formasenvio/list', element: <FormasEnvio  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
