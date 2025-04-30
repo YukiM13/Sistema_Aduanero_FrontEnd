@@ -187,13 +187,34 @@ const Menuitems = [
     href: '/cargos/list',
     chipColor: 'secondary',
   },
-
+  {
+    id: uniqueId(),
+    title: 'Sub Categorias',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/subCategorias/list',
+  },
+  {
+    id: uniqueId(),
+    title: 'Oficinas',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/oficinas/list',
+  },
   {
     id: uniqueId(),
     title: 'Categorias',
     icon: IconAperture,
     chipColor: 'secondary',
     href: '/categorias/list',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Empleados',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/empleado/list',
   },
   {
     navlabel: true,
