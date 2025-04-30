@@ -79,14 +79,14 @@ const Menuitems = [
         id: uniqueId(),
     
         title: 'Paises',
-        icon: IconAperture,
+        icon: IconPoint,
         href: '/paises/list',
         chipColor: 'secondary',
       },
       {
         id: uniqueId(),
         title: 'Provincias',
-        icon: IconAperture,
+        icon: IconPoint,
         href: '/provincias/list',
       },
       {
