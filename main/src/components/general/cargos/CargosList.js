@@ -4,8 +4,8 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper
 } from '@mui/material';
-import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../components/shared/ParentCard';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../../components/shared/ParentCard';
 
 
 const CargosComponent = () => {
@@ -15,7 +15,7 @@ const CargosComponent = () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
 
-    axios.get(`${apiUrl}/api/Personas/Listar`, {
+    axios.get(`${apiUrl}/api/Cargos/Listar`, {
       headers: {
         'XApiKey': apiKey
       }
@@ -45,6 +45,7 @@ const CargosComponent = () => {
             <TableBody>
               {cargos.map((cargos) => (
                 <TableRow key={cargos.carg_Id}>
+                  <TableCell>{cargos.carg_Id}</TableCell>
                   <TableCell>{cargos.carg_Nombre}</TableCell>
                 </TableRow>
               ))}
