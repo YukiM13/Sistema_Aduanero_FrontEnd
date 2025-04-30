@@ -89,6 +89,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
 
 // General
 
@@ -101,7 +102,7 @@ const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/Aduana
 
 
 
-
+const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 
 // ui
@@ -210,6 +211,8 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/marcas/list', element: <Marcas  /> },
+      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],

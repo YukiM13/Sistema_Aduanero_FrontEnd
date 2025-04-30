@@ -7,13 +7,13 @@ import {
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 
-const Talla = () => {
+const Marca = () => {
 
-    const [tallas, setTalla] = useState([]);
+    const [marcas, setMarca] = useState([]);
 
     useEffect(() => {
 
-        axios.get('https:localhost:44380/api/Tallas/Listar', {
+        axios.get('https:localhost:44380/api/Marcas/Listar', {
 
             headers: {
                 'XApiKey': '4b567cb1c6b24b51ab55248f8e66e5cc'
@@ -21,7 +21,7 @@ const Talla = () => {
 
         })
         .then(response => {
-            setTalla(response.data.data);
+            setMarca(response.data.data);
             console.log('React E10', response.data.data);
 
         })
@@ -51,24 +51,24 @@ const Talla = () => {
         // </div>
 
         <div>
-               <Breadcrumb title="Tallas" subtitle="Listar" />
+               <Breadcrumb title="Marcas" subtitle="Listar" />
               <ParentCard>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>
                       <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell>Codigo</TableCell>
-                        <TableCell>Nombre</TableCell>
+                        <TableCell>Descripcion</TableCell>
+                        
                         
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {tallas.map((talla) => (
-                        <TableRow key={talla.tall_Id}>
-                          <TableCell>{talla.tall_Id}</TableCell>
-                          <TableCell>{talla.tall_Codigo}</TableCell>
-                          <TableCell>{talla.tall_Nombre}</TableCell>
+                      {marcas.map((item) => (
+                        <TableRow key={item.marc_Id}>
+                          <TableCell>{item.marc_Id}</TableCell>
+                          <TableCell>{item.marc_Descripcion}</TableCell>
+                          
                           
                         </TableRow>
                       ))}
@@ -88,4 +88,4 @@ const Talla = () => {
 
 };
 
-export default Talla;
+export default Marca;

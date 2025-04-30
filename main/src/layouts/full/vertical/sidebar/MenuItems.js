@@ -86,6 +86,30 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
+    id: uniqueId(),
+    title: 'Tallas',
+    icon: IconAperture,
+    href: '/tallas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas',
+    icon: IconAperture,
+    href: '/marcas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas Maquinas',
+    icon: IconAperture,
+    href: '/marcasmaquinas/list',
+    chipColor: 'primary',
+  },
+
+  {
     navlabel: true,
     subheader: 'Apps',
   },
