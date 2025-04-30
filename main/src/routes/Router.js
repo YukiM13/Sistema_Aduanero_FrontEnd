@@ -91,6 +91,8 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 
 // General
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
@@ -222,6 +224,8 @@ const Router = [
 
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
+      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
+      { path: '/modotransporte/list', element: <ModoTransporte  /> },
 
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
 
