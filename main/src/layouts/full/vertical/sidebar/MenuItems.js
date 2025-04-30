@@ -80,6 +80,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Estados Civiles',
+    icon: IconAperture,
+    href: '/estadosciviles/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
