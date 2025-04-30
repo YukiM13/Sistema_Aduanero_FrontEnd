@@ -90,32 +90,26 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
-
+const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
+const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
+const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
-
-const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
-const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
-
-const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
-
-const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
-
-const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
-const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-
-
-
-// General
+const Moneda = Loadable(lazy(() => import('../components/general/monedas/MonedasList')));
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
 const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
+const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
+
 
 // Acceso
 
@@ -255,6 +249,8 @@ const Router = [
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
       { path: '/empleado/list', element: <Empleado  /> },
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
+      { path: '/moneda/list', element: <Moneda  /> },
+      { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
 
 
 

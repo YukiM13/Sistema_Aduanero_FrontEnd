@@ -1,6 +1,5 @@
 import {
   IconPoint,
-  IconChartDonut3,
   IconUser,
   IconShoppingCart,
   IconWorld,
@@ -74,6 +73,20 @@ const Menuitems = [
         icon: IconPoint,
         chipColor: 'secondary',
         href: '/oficinas/list',
+      },
+      {
+        id: uniqueId(),
+        title: 'Oficio Profesiones',
+        icon: IconPoint,
+        chipColor: 'secondary',
+        href: '/oficioProfesiones/list',
+      },
+      {
+        id: uniqueId(),
+        title: 'Monedas',
+        icon: IconPoint,
+        chipColor: 'secondary',
+        href: '/moneda/list',
       },
       {
         id: uniqueId(),
