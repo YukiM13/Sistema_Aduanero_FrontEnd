@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Typography
+  TableHead, TableRow, Paper
 } from '@mui/material';
+import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../components/shared/ParentCard';
+
 
 const PersonasComponent = () => {
   const [personas, setPersonas] = useState([]);
@@ -29,31 +32,32 @@ const PersonasComponent = () => {
 
   return (
     <div>
-      <Typography variant="h5" gutterBottom>
-        Lista de Personas
-      </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>RTN</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Oficina</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {personas.map((persona) => (
-              <TableRow key={persona.pers_Id}>
-                <TableCell>{persona.pers_Id}</TableCell>
-                <TableCell>{persona.pers_RTN}</TableCell>
-                <TableCell>{persona.pers_Nombre}</TableCell>
-                <TableCell>{persona.ofic_Nombre}</TableCell>
+       <Breadcrumb title="Personas" subtitle="Listar" />
+      <ParentCard>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>RTN</TableCell>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Oficina</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {personas.map((persona) => (
+                <TableRow key={persona.pers_Id}>
+                  <TableCell>{persona.pers_Id}</TableCell>
+                  <TableCell>{persona.pers_RTN}</TableCell>
+                  <TableCell>{persona.pers_Nombre}</TableCell>
+                  <TableCell>{persona.ofic_Nombre}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </ParentCard>
+     
     </div>
   );
 };
