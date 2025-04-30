@@ -108,6 +108,8 @@ const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoe
 const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
+const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
+
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -216,6 +218,7 @@ const Router = [
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/categorias/list', element: <Categorias /> },
+      { path: '/subCategorias/list', element: <SubCategorias /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
 
 
