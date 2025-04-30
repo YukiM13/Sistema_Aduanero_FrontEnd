@@ -32,7 +32,7 @@ const OficioProfesionComponent = () => {
 
   return (
     <div>
-       <Breadcrumb title="oficioProfesiones" subtitle="Listar" />
+       <Breadcrumb title="Oficio Profesiones" subtitle="Listar" />
       <ParentCard>
         <TableContainer component={Paper}>
           <Table>
