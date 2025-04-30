@@ -80,6 +80,27 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Concepto de Pago',
+    icon: IconAperture,
+    href: '/concepto-de-pago/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Proveedores',
+    icon: IconAperture,
+    href: '/proveedores/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Niveles Comerciales',
+    icon: IconAperture,
+    href: '/niveles-comerciales/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Estados Civiles',
     icon: IconAperture,
     href: '/estadosciviles/list',
