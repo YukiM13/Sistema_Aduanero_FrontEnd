@@ -94,6 +94,14 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+
+    title: 'Ciudades',
+    icon: IconAperture,
+    href: '/ciudades/list',
+     chipColor: 'secondary',
+  },
+  {
+
     title: 'Cargos',
     icon: IconAperture,
     href: '/cargos/list',
