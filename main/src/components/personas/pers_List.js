@@ -10,11 +10,13 @@ const PersonasComponent = () => {
     console.log(apiUrl);
     axios.get(`${apiUrl}/api/Personas/Listar`, {
       headers: {
-        'x-api-key': apiKey
+        'XApiKey': apiKey
       }
     })
     .then(response => {
-      setPersonas(response.data); // Guardás la data en el estado
+      if (response.data && Array.isArray(response.data.data)) {
+        setPersonas(response.data.data);
+      }
     })
     .catch(error => {
       console.error('Error al obtener las personas:', error);
@@ -23,13 +25,28 @@ const PersonasComponent = () => {
 
   return (
     <div>
-      <h2>Lista de Personas</h2>
-      <ul>
-        {personas.map(persona => (
-          <li key={persona.pers_RTN}>{persona.pers_Nombre}</li>
+    <h2>Lista de Personas</h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>RTN</th>
+          <th>Nombre</th>
+          <th>Oficina</th>
+        </tr>
+      </thead>
+      <tbody>
+        {personas.map((persona) => (
+          <tr key={persona.pers_Id}>
+            <td>{persona.pers_Id}</td>
+            <td>{persona.pers_RTN}</td>
+            <td>{persona.pers_Nombre}</td>
+            <td>{persona.ofic_Nombre}</td>
+          </tr>
         ))}
-      </ul>
-    </div>
+      </tbody>
+    </table>
+  </div>
   );
 };
 
