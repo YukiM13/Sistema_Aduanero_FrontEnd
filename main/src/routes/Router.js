@@ -99,6 +99,8 @@ const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosLis
 
 const Aldea = Loadable(lazy(() => import('../components/general/aldeas/AldeasList')));
 
+const Colonias = Loadable(lazy(() => import('../components/general/colonias/ColoniasList')));
+
 
 // Acceso
 
@@ -213,6 +215,7 @@ const Router = [
       { path: '/aldeas/list', element: <Aldea  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
+      { path: '/colonias/list', element: <Colonias  /> },
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },

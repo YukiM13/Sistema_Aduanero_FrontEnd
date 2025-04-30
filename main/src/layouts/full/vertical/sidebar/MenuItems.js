@@ -108,10 +108,17 @@ const Menuitems = [
      chipColor: 'secondary',
   },
   {
-
+    id: uniqueId(),
     title: 'Cargos',
     icon: IconAperture,
     href: '/cargos/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Colonias',
+    icon: IconAperture,
+    href: '/colonias/list',
     chipColor: 'secondary',
   },
   {
