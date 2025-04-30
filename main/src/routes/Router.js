@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
+
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -93,9 +94,15 @@ const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/Aduana
 // General
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
 
+const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
+
+const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
+
+
 // Acceso
 
 // Produccion
+const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -203,6 +210,11 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
+
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      {path: '/cargos/list', element: <Cargo  /> },
+       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
