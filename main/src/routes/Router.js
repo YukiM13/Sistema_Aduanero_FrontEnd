@@ -90,6 +90,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
 
 // General
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
@@ -103,6 +104,14 @@ const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosLis
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
+
+
+
+
+
+
+const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
+const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -208,12 +217,18 @@ const Router = [
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
+      { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+
+      { path: '/marcas/list', element: <Marcas  /> },
+      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
+
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
 
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],

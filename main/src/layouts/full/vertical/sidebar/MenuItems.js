@@ -110,6 +110,30 @@ const Menuitems = [
   {
     id: uniqueId(),
 
+    title: 'Tallas',
+    icon: IconAperture,
+    href: '/tallas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas',
+    icon: IconAperture,
+    href: '/marcas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas Maquinas',
+    icon: IconAperture,
+    href: '/marcasmaquinas/list',
+    chipColor: 'primary',
+  },
+
+
+  {
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
@@ -122,6 +146,7 @@ const Menuitems = [
     href: '/cargos/list',
     chipColor: 'secondary',
   },
+
   {
     navlabel: true,
     subheader: 'Apps',
