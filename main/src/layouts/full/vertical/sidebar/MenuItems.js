@@ -57,7 +57,6 @@ const Menuitems = [
     navlabel: true,
     subheader: 'Home',
   },
-
   {
     id: uniqueId(),
     title: 'Modern',
@@ -71,6 +70,13 @@ const Menuitems = [
     title: 'eCommerce',
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
+  },
+  {
+    id: uniqueId(),
+    title: 'Personas',
+    icon: IconAperture,
+    href: '/personas/list',
+    chipColor: 'secondary',
   },
   {
     navlabel: true,
