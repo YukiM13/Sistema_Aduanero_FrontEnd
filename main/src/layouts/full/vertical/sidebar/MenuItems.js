@@ -96,6 +96,13 @@ const Menuitems = [
 
   {
     id: uniqueId(),
+    title: 'Unidades de Medida',
+    icon: IconAperture,
+    href: '/unidadesmedidas/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
