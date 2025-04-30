@@ -91,6 +91,7 @@ const Persona  = Loadable(lazy(() => import('../components/personas/pers_List'))
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 
 // General
+const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 
 // Acceso
 
@@ -203,6 +204,7 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
