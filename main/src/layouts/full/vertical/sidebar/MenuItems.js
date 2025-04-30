@@ -86,10 +86,17 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
-    id: uniqueId(),
+    id: uniqueId(), 
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Aldea',
+    icon: IconAperture,
+    href: '/aldeas/list',
     chipColor: 'secondary',
   },
   {
