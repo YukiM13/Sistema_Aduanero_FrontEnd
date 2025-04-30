@@ -77,6 +77,20 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+    
+        title: 'Paises',
+        icon: IconAperture,
+        href: '/paises/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
+        title: 'Provincias',
+        icon: IconAperture,
+        href: '/provincias/list',
+      },
+      {
+        id: uniqueId(),
         title: 'Proveedores',
         icon: IconPoint,
         href: '/proveedores/list',
