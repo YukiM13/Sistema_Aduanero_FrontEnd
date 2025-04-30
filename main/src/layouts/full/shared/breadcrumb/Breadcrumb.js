@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Typography, Box, Breadcrumbs, Link } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-
 import breadcrumbImg from 'src/assets/images/breadcrumb/ChatBc.png';
 import { IconCircle } from '@tabler/icons';
 
@@ -20,7 +19,20 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
     <Grid item xs={12} sm={6} lg={8} mb={1}>
       <Typography variant="h4">{title}</Typography>
       <Typography color="textSecondary" variant="h6" fontWeight={400} mt={0.8} mb={0}>
-        {subtitle}
+      <Typography
+      component="a"
+      href="/"
+      variant="h6" fontWeight={400} mt={0.8} mb={0}   
+      sx={{
+        color: 'inherit',        // Usa el mismo color que el texto normal
+        textDecoration: 'none',  // Elimina el subrayado
+        '&:hover': {
+          textDecoration: 'none', // También sin subrayado al pasar el mouse
+        },
+      }}
+    >
+     Inicio
+    </Typography> <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle" width="5" height="5" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="textSecondary" stroke-linecap="round" stroke-linejoin="round" fill-opacity="0.6" ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="9"></circle></svg>{title}
       </Typography>
       <Breadcrumbs
         separator={
