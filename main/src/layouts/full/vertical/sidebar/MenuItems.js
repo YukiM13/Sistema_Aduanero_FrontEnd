@@ -79,6 +79,13 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
+    id: uniqueId(),
+    title: 'Aduanas',
+    icon: IconAperture,
+    href: '/aduanas/list',
+    chipColor: 'secondary',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },
