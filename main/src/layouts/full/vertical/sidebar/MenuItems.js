@@ -80,20 +80,46 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Concepto de Pago',
+    icon: IconAperture,
+    href: '/concepto-de-pago/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Proveedores',
+    icon: IconAperture,
+    href: '/proveedores/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Niveles Comerciales',
+    icon: IconAperture,
+    href: '/niveles-comerciales/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Estados Civiles',
     icon: IconAperture,
     href: '/estadosciviles/list',
     chipColor: 'secondary',
   },
-
-{
-  id: uniqueId(),
-  title: 'Tipo Embalaje',
-  icon: IconAperture,
-  href: '/tipoembalaje/list',
-  chipColor: 'secondary',
-},
-
+  {
+    id: uniqueId(),
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipo Intermediario',
+    icon: IconAperture,
+    href: '/tipointermediario/list',
+    chipColor: 'secondary',
+  },
   {
     id: uniqueId(),
     title: 'Unidades de Medida',
@@ -133,6 +159,20 @@ const Menuitems = [
     chipColor: 'primary',
   },
 
+  {
+    id: uniqueId(),
+    title: 'Modos de Transporte',
+    icon: IconAperture,
+    href: '/modotransporte/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
+    title: 'Tipos de Identificacion',
+    icon: IconAperture,
+    href: '/tiposidentificacion/list',
+    chipColor: 'secondary',
+  },
 
   {
     title: 'Ciudades',
