@@ -156,6 +156,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Oficinas',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/oficinas/list',
+  },
+  {
+    id: uniqueId(),
     title: 'Categorias',
     icon: IconAperture,
     chipColor: 'secondary',

@@ -97,7 +97,7 @@ const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unida
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
 
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
-
+const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
 
 
@@ -219,6 +219,7 @@ const Router = [
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/categorias/list', element: <Categorias /> },
       { path: '/subCategorias/list', element: <SubCategorias /> },
+      { path: '/oficinas/list', element: <Oficinas /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
 
 
