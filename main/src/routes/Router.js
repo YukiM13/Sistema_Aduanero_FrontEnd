@@ -82,7 +82,20 @@ const AreaChart = Loadable(lazy(() => import('../views/charts/AreaChart')));
 const ColumnChart = Loadable(lazy(() => import('../views/charts/ColumnChart')));
 const CandlestickChart = Loadable(lazy(() => import('../views/charts/CandlestickChart')));
 const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChart')));
+
+
+
+
+
+// Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
+const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+
+// General
+
+// Acceso
+
+// Produccion
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -188,6 +201,7 @@ const Router = [
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
+      { path: '/aduanas/list', element: <Aduana  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
