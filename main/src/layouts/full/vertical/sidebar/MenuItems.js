@@ -80,6 +80,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
