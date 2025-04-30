@@ -83,6 +83,13 @@ const Menuitems = [
     title: 'Estados Civiles',
     icon: IconAperture,
     href: '/estadosciviles/list',
+    chipColor: 'secondary',
+  },
+  {
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
     
   },
 
