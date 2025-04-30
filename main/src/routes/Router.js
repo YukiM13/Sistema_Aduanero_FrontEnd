@@ -93,6 +93,7 @@ const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/Aduana
 const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
 
 // General
+const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
 const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
 
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
@@ -215,6 +216,8 @@ const Router = [
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/categorias/list', element: <Categorias /> },
+      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
+
 
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
@@ -223,7 +226,7 @@ const Router = [
 
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
-       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
 
 
       { path: '*', element: <Navigate to="/auth/404" /> },
