@@ -90,6 +90,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
+const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
 const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
 const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
@@ -109,6 +110,8 @@ const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosLis
 const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
+
+const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
 
 // Acceso
@@ -227,6 +230,9 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
+      { path: '/formasdepago/list', element: <FormasPago  /> },
+
       { path: '/paises/list', element: <Pais  /> },
       { path: '/provincias/list', element: <Provincia  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
@@ -242,6 +248,7 @@ const Router = [
       { path: '/modotransporte/list', element: <ModoTransporte  /> },
       { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+       {path: '/formasenvio/list', element: <FormasEnvio  /> },
        { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
        { path: '/proveedores/list', element: <Proveedor  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },

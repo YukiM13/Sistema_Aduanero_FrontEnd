@@ -7,6 +7,7 @@ import {
   IconPackgeExport,
 
 } from '@tabler/icons';
+//import { id } from 'date-fns/locale';
 
 import { uniqueId } from 'lodash';
 
@@ -22,6 +23,10 @@ const Menuitems = [
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
+ 
+
+ 
+  
 
   
   {
@@ -40,13 +45,14 @@ const Menuitems = [
     href: '/apps/blog/',
     children: [
       {
-
+        id: uniqueId(),
         title: 'Cargos',
         icon: IconPoint,
         href: '/cargos/list',
         chipColor: 'secondary',
       },
       {
+        id: uniqueId(),
         title: 'Ciudades',
         icon: IconPoint,
         href: '/ciudades/list',
@@ -81,6 +87,13 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/oficioProfesiones/list',
       },
+      {
+        id: uniqueId(),
+        title: 'Formas de Envío',
+        icon: IconPoint,
+        href: '/formasenvio/list',
+      },
+    
       {
         id: uniqueId(),
         title: 'Monedas',
@@ -146,6 +159,13 @@ const Menuitems = [
         href: '/concepto-de-pago/list',
         chipColor: 'secondary',
       },
+      {
+        id: uniqueId(),
+        title: 'Formas de Pago',
+        icon: IconPoint,
+        href: '/formasdepago/list',
+      },
+    
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
