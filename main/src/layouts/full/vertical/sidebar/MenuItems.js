@@ -80,6 +80,13 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+  },
+  {
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
@@ -87,9 +94,17 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
+     chipColor: 'secondary',
+  },
+  {
+
+    title: 'Cargos',
+    icon: IconAperture,
+    href: '/cargos/list',
     chipColor: 'secondary',
   },
   {
