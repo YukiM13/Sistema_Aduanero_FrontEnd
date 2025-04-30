@@ -83,6 +83,14 @@ const CandlestickChart = Loadable(lazy(() => import('../views/charts/Candlestick
 const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChart')));
 const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
 
+
+
+
+
+
+
+const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
+
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -187,6 +195,7 @@ const Router = [
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
+      { path: '/tallas/list', element: <Tallas  /> },
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
