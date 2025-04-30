@@ -43,8 +43,9 @@ const AduanasList = () => {
             <TableBody>
               {aduanas.map((aduana) => (
                 <TableRow key={aduana.adua_Codigo}>
+                  <TableCell>{aduana.adua_Codigo}</TableCell>
                   <TableCell>{aduana.adua_Nombre}</TableCell>
-                  <TableCell>{aduana.adua_DireccionExacta}</TableCell>
+                  <TableCell>{aduana.adua_Direccion_Exacta}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

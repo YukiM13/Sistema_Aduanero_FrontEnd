@@ -80,6 +80,28 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Estados Civiles',
+    icon: IconAperture,
+    href: '/estadosciviles/list',
+    chipColor: 'secondary',
+  },
+  {
+    title: 'Tipo Embalaje',
+    icon: IconAperture,
+    href: '/tipoembalaje/list',
+    chipColor: 'secondary',
+    
+  },
+{
+  id: uniqueId(),
+  title: 'Tipo Embalaje',
+  icon: IconAperture,
+  href: '/tipoembalaje/list',
+  chipColor: 'secondary',
+},
+
+  {
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
@@ -87,6 +109,7 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+
     title: 'Tallas',
     icon: IconAperture,
     href: '/tallas/list',
@@ -107,6 +130,21 @@ const Menuitems = [
     icon: IconAperture,
     href: '/marcasmaquinas/list',
     chipColor: 'primary',
+  },
+
+
+  {
+    title: 'Ciudades',
+    icon: IconAperture,
+    href: '/ciudades/list',
+     chipColor: 'secondary',
+  },
+  {
+
+    title: 'Cargos',
+    icon: IconAperture,
+    href: '/cargos/list',
+    chipColor: 'secondary',
   },
 
   {
