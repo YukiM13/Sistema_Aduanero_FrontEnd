@@ -80,11 +80,20 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Tipo Embalaje',
+    title: 'Estados Civiles',
     icon: IconAperture,
-    href: '/tipoembalaje/list',
+    href: '/estadosciviles/list',
     chipColor: 'secondary',
   },
+
+{
+  id: uniqueId(),
+  title: 'Tipo Embalaje',
+  icon: IconAperture,
+  href: '/tipoembalaje/list',
+  chipColor: 'secondary',
+},
+
   {
     id: uniqueId(),
     title: 'Unidades de Medida',
@@ -99,6 +108,46 @@ const Menuitems = [
     href: '/aduanas/list',
     chipColor: 'secondary',
   },
+  {
+    id: uniqueId(),
+
+    title: 'Tallas',
+    icon: IconAperture,
+    href: '/tallas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas',
+    icon: IconAperture,
+    href: '/marcas/list',
+    chipColor: 'primary',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Marcas Maquinas',
+    icon: IconAperture,
+    href: '/marcasmaquinas/list',
+    chipColor: 'primary',
+  },
+
+
+  {
+    title: 'Ciudades',
+    icon: IconAperture,
+    href: '/ciudades/list',
+     chipColor: 'secondary',
+  },
+  {
+
+    title: 'Cargos',
+    icon: IconAperture,
+    href: '/cargos/list',
+    chipColor: 'secondary',
+  },
+
   {
     navlabel: true,
     subheader: 'Apps',
