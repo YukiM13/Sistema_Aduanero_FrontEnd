@@ -104,12 +104,7 @@ const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosLis
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
-
-
-
-
-
-
+const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 
@@ -219,12 +214,13 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/categorias/list', element: <Categorias /> },
       { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
       { path: '/marcas/list', element: <Marcas  /> },
       { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
-      {path: '/cargos/list', element: <Cargo  /> },
+      { path: '/cargos/list', element: <Cargo  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
 

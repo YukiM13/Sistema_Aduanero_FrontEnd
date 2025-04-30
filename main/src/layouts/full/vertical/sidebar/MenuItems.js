@@ -154,6 +154,13 @@ const Menuitems = [
   },
 
   {
+    id: uniqueId(),
+    title: 'Categorias',
+    icon: IconAperture,
+    chipColor: 'secondary',
+    href: '/categorias/list',
+  },
+  {
     navlabel: true,
     subheader: 'Apps',
   },
@@ -165,7 +172,7 @@ const Menuitems = [
     chipColor: 'secondary',
     href: '/apps/contacts',
   },
-
+  
   {
     id: uniqueId(),
     title: 'Blog',
