@@ -121,6 +121,13 @@ const Menuitems = [
     href: '/colonias/list',
     chipColor: 'secondary',
   },
+  { 
+    id: uniqueId(),
+    title: 'Colonias',
+    icon: IconAperture,
+    href: '/Estilos/list',
+    chipColor: 'secondary',
+  },
   {
     navlabel: true,
     subheader: 'Apps',
