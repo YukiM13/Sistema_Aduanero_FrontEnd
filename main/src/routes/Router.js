@@ -88,7 +88,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
-const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
+const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
@@ -97,7 +97,7 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-
+const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -258,6 +258,8 @@ const Router = [
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
       { path: '/moneda/list', element: <Moneda  /> },
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
+      { path: '/personas/create', element: <PersonaCrear  /> },
+
 
 
 
