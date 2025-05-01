@@ -8,9 +8,11 @@ import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 import PersonasCreateComponent from './PersonaCreate';
 import AddIcon from '@mui/icons-material/Add';
+import { Snackbar, Alert } from '@mui/material';
 const PersonasComponent = () => {
   const [personas, setPersonas] = useState([]);
   const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const cargarPersonas = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -72,6 +74,7 @@ const PersonasComponent = () => {
       onCancelar={() => setModo('listar')} 
       onGuardadoExitoso={() => {
         setModo('listar');
+        setOpenSnackbar(true);
         // Recarga los datos después de guardar
         cargarPersonas();
       }}
@@ -79,7 +82,16 @@ const PersonasComponent = () => {
 
 )}
         </ParentCard>
-     
+        <Snackbar
+  open={openSnackbar}
+  autoHideDuration={3000}
+  onClose={() => setOpenSnackbar(false)}
+  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+>
+  <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+    ¡Registro guardado con éxito!
+  </Alert>
+</Snackbar>
     </div>
   );
 };
