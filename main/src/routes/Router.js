@@ -264,7 +264,7 @@ const Router = [
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
       { path: '/duca', element: <Duca  /> },
-      { path: '/ducaslist', element: <DucasList  /> },
+      { path: '/ducas/list', element: <DucasList  /> },
 
 
 

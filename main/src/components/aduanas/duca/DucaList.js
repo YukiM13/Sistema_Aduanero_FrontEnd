@@ -96,7 +96,7 @@ const DucasList = () => {
 
       const cargarDucas = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
    
-        axios.get(`${apiUrl}/api/Ducas/Listar`, {
+        axios.get(`${apiUrl}/api/Duca/Listar`, {
           headers: { 'XApiKey': apiKey }
         })
         .then(response => setDucas(response.data.data))
@@ -104,7 +104,7 @@ const DucasList = () => {
       };
 
       const eliminar = (Duca) =>{
-          axios.post(`${apiUrl}/api/Ducas/Eliminar`,Duca, {
+          axios.post(`${apiUrl}/api/Duca/Eliminar`,Duca, {
             headers: { 'XApiKey': apiKey }
           })
           .then(
@@ -151,7 +151,7 @@ const DucasList = () => {
   //si tu tamaño siguiera siendo de 10 registros
 
   const filteredData = Ducas.filter((Duca) =>
-    Duca.duca_Descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    Duca.duca_No_Duca.toLowerCase().includes(searchQuery.toLowerCase()) ||
   Duca.duca_Id.toString().includes(searchQuery.trim())
   );
   //FilteredData trae el arreglo que se asigno antes para el list en este caso unidadesmedidas y pasara agarrar su campos
@@ -212,8 +212,15 @@ const DucasList = () => {
                           <Typography variant="h6">Id</Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="h6">Descripcion</Typography>
+                          <Typography variant="h6">No. De Duca</Typography>
                         </TableCell>
+
+                        <TableCell>
+                          <Typography variant="h6">No. Correlativo de Referencia</Typography>
+                        </TableCell>
+
+
+                        
                         
                       </TableRow>
                     </TableHead>
@@ -233,7 +240,8 @@ const DucasList = () => {
                           </IconButton>
                           </TableCell>
                           <TableCell>{Duca.duca_Id}</TableCell>
-                          <TableCell>{Duca.duca_Descripcion}</TableCell>
+                          <TableCell>{Duca.duca_No_Duca}</TableCell>
+                          <TableCell>{Duca.duca_No_Correlativo_Referencia}</TableCell>
                           
                         </TableRow>
                       ))}
@@ -316,6 +324,7 @@ const DucasList = () => {
                 </ListItemIcon>
                 <ListItemText>Editar</ListItemText>
               </MenuItem>
+              
               <MenuItem onClick={() => DetalleDuca(DucaSeleccionada)}>
                 <ListItemIcon>
                   <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
@@ -341,7 +350,7 @@ const DucasList = () => {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  ¿Estás seguro que deseas eliminar a <strong>{DucaSeleccionada?.duca_Descripcion}</strong>?
+                  ¿Estás seguro que deseas eliminar a <strong>{DucaSeleccionada?.duca_No_Duca}</strong>?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>

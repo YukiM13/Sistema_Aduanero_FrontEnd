@@ -170,7 +170,7 @@ const Menuitems = [
         id: uniqueId(),
         title: 'Ducas',
         icon: IconPoint,
-        href: '/ducaslist',
+        href: '/ducas/list',
         chipColor: 'secondary',
       },
 
