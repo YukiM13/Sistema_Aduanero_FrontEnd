@@ -5,8 +5,7 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Stack,
   IconButton, Menu, MenuItem,
-  ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText
+  ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, 
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
@@ -19,10 +18,9 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 import { alertMessages } from 'src/layouts/config/alertConfig';
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
@@ -37,7 +35,6 @@ const NivelesComercialesList = () => {
     const [page, setPage] = useState(0);//Define como la pagina actual
     const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
     const [searchQuery, setSearchQuery] = useState('');
-    const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
       severity: '',
       message: '',
