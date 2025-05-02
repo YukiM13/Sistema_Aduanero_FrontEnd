@@ -5,9 +5,8 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
-
+  IconAperture,
 } from '@tabler/icons';
-//import { id } from 'date-fns/locale';
 
 import { uniqueId } from 'lodash';
 
@@ -16,7 +15,6 @@ const Menuitems = [
     navlabel: true,
     subheader: 'Home',
   },
-
   {
     id: uniqueId(),
     title: 'eCommerce',
@@ -38,7 +36,7 @@ const Menuitems = [
     chipColor: 'secondary',
   },
   {
-    id: uniqueId(), 
+    id: uniqueId(),
     title: 'Aduanas',
     icon: IconAperture,
     href: '/aduanas/list',
@@ -53,11 +51,10 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-
     title: 'Ciudades',
     icon: IconAperture,
     href: '/ciudades/list',
-     chipColor: 'secondary',
+    chipColor: 'secondary',
   },
   {
     id: uniqueId(),
@@ -73,7 +70,7 @@ const Menuitems = [
     href: '/colonias/list',
     chipColor: 'secondary',
   },
-  { 
+  {
     id: uniqueId(),
     title: 'Colonias',
     icon: IconAperture,
@@ -83,20 +80,13 @@ const Menuitems = [
   {
     navlabel: true,
     subheader: 'Apps',
- 
-
- 
-  
-
   },
   {
     id: uniqueId(),
     title: 'Acceso',
     icon: IconUser,
     href: '/apps/blog/',
-    children: [
-     
-    ],
+    children: [],
   },
   {
     id: uniqueId(),
@@ -116,7 +106,7 @@ const Menuitems = [
         title: 'Ciudades',
         icon: IconPoint,
         href: '/ciudades/list',
-         chipColor: 'secondary',
+        chipColor: 'secondary',
       },
       {
         id: uniqueId(),
@@ -132,7 +122,6 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/empleado/list',
       },
-
       {
         id: uniqueId(),
         title: 'Oficinas',
@@ -153,7 +142,6 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasenvio/list',
       },
-    
       {
         id: uniqueId(),
         title: 'Monedas',
@@ -163,7 +151,6 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-    
         title: 'Paises',
         icon: IconPoint,
         href: '/paises/list',
@@ -189,7 +176,6 @@ const Menuitems = [
         href: '/unidadesmedidas/list',
         chipColor: 'secondary',
       },
-
     ],
   },
   {
@@ -225,7 +211,6 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasdepago/list',
       },
-    
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
@@ -292,7 +277,6 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-    
         title: 'Tallas',
         icon: IconPoint,
         href: '/tallas/list',
@@ -305,11 +289,8 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/subCategorias/list',
       },
-      
-     
     ],
   },
-  
 ];
 
 export default Menuitems;
