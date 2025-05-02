@@ -1,29 +1,31 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { Snackbar, Alert, Button, Grid } from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
+import InputMask from 'react-input-mask';
+import PersonaNatural from 'src/models/PersonaNaturalModel';
+import { Snackbar, Alert } from '@mui/material';
+import {
+    Button,
+    Grid,
+    MenuItem
+
+  } from '@mui/material';
+  import SaveIcon from '@mui/icons-material/Save';
+  import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-import Cargos from 'src/models/cargosmodel';
 const validationSchema = yup.object({
   carg_Nombre: yup.string().required('El nombre del cargo es requerido'),
 });
-
 const CargosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  const formik = Cargos({
+  const formik = PersonaNatural({
     initialValues: {
-      carg_Nombre: '',
-      carg_Aduana: false,
-      usua_UsuarioCreacion: 1,
-      carg_FechaCreacion: new Date().toISOString(),
+
     },
     validationSchema,
     onSubmit: (values) => {

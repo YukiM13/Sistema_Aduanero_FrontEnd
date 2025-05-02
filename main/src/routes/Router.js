@@ -98,6 +98,7 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -262,6 +263,7 @@ const Router = [
        { path: '/proveedores/list', element: <Proveedor  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       { path: '/cargos/list', element: <Cargo  /> },
+      { path: '/PersonaNatural/list', element: <PersonaNatural  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
       { path: '/empleado/list', element: <Empleado  /> },
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
