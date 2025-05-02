@@ -7,33 +7,32 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
+import Cargos from '../../../models/cargosmodel'; // Import the Cargos model
 
 const validationSchema = yup.object({
   carg_Nombre: yup.string().required('El nombre del cargo es requerido'),
 });
 
-const CargosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
+const CargosEditComponent = ({ cargo = Cargos, onCancelar, onGuardadoExitoso }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
   const formik = useFormik({
-    initialValues: {
-      carg_Nombre: '',
-      carg_Aduana: false,
-      usua_UsuarioCreacion: 1,
-      carg_FechaCreacion: new Date().toISOString(),
-    },
+    initialValues: cargo,
     validationSchema,
+    enableReinitialize: true, // Ensure formik updates when `cargo` changes
     onSubmit: (values) => {
-      axios.post(`${apiUrl}/api/Cargos/Insertar`, values, {
+      values.carg_FechaModificacion = new Date();
+      values.usua_UsuarioModificacion = 1;
+      axios.post(`${apiUrl}/api/Cargos/Editar`, values, {
         headers: { 'XApiKey': apiKey },
       })
         .then(() => {
           if (onGuardadoExitoso) onGuardadoExitoso();
         })
         .catch((error) => {
-          console.error('Error al crear el cargo:', error);
+          console.error('Error al editar el cargo:', error);
         });
     },
   });
@@ -103,4 +102,4 @@ const CargosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   );
 };
 
-export default CargosCreateComponent;
+export default CargosEditComponent;

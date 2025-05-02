@@ -96,9 +96,23 @@ const Menuitems = [
     children: [
       {
         id: uniqueId(),
+        title: 'Aldea',
+        icon: IconPoint,
+        href: '/Aldeas/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Cargos',
         icon: IconPoint,
         href: '/cargos/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
+        title: 'Colonias',
+        icon: IconPoint,
+        href: '/Colonias/list',
         chipColor: 'secondary',
       },
       {

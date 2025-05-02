@@ -2,62 +2,233 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper
+  TableHead, TableRow, Paper, Button, Stack,
+  IconButton, Menu, MenuItem,
+  ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../shared/ParentCard';
+import ParentCard from '../../../components/shared/ParentCard';
+import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import ColoniasCreateComponent from './ColoniasCreate';
+import ColoniasEditComponent from './ColoniasEdit';
+import ColoniasDetailsComponent from './ColoniasDetails';
+import Colonias from '../../../models/coloniasmodel';
 
+const ColoniasComponent = () => {
+  const [colonias, setColonias] = useState([]);
+  const [modo, setModo] = useState('listar'); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const [posicionMenu, setPosicionMenu] = useState(null);
+  const [coloniaSeleccionada, setColoniaSeleccionada] = useState(Colonias);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
 
-const AldeasComponent = () => {
-  const [Colonias, setColonias] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiKey = process.env.REACT_APP_API_KEY;
+
+  const cargarColonias = () => {
+    axios.get(`${apiUrl}/api/Colonias/Listar`, {
+      headers: { 'XApiKey': apiKey }
+    })
+      .then(response => setColonias(response.data.data))
+      .catch(error => console.error('Error al obtener las colonias:', error));
+  };
 
   useEffect(() => {
-    const apiUrl = process.env.REACT_APP_API_URL;
-    const apiKey = process.env.REACT_APP_API_KEY;
-
-    axios.get(`${apiUrl}/api/Colonias/Listar`, {
-      headers: {
-        'XApiKey': apiKey
-      }
-    })
-    .then(response => {
-      if (response.data && Array.isArray(response.data.data)) {
-        setColonias(response.data.data);
-      }
-    })
-    .catch(error => {
-      console.error('Error al obtener las personas:', error);
-    });
+    cargarColonias();
   }, []);
+
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const filteredData = colonias.filter((colonia) =>
+    colonia.colo_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    colonia.colo_Id.toString().includes(searchQuery.trim())
+  );
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
+
+  const abrirMenu = (evento, colonia) => {
+    setPosicionMenu(evento.currentTarget);
+    setColoniaSeleccionada(colonia);
+    setMenuAbierto(true);
+  };
+
+  const cerrarMenu = () => setMenuAbierto(false);
+
+  const eliminarColonia = (coloniaId) => {
+    axios.post(`${apiUrl}/api/Colonias/Eliminar`, { colo_Id: coloniaId }, {
+      headers: { 'XApiKey': apiKey },
+    })
+      .then(() => {
+        cargarColonias();
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'success', message: 'Colonia eliminada exitosamente.' });
+      })
+      .catch((error) => {
+        console.error('Error al eliminar la colonia:', error);
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'error', message: 'Error al eliminar la colonia.' });
+      });
+  };
 
   return (
     <div>
-       <Breadcrumb title="Colonias" subtitle="Listar" />
+      <Breadcrumb title="Colonias" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
       <ParentCard>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Ciudad</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Colonias.map((colonia) => (
-                <TableRow key={colonia.colo_Id}>
-                  <TableCell>{colonia.colo_Id}</TableCell>
-                  <TableCell>{colonia.colo_Nombre}</TableCell>
-                  <TableCell>{colonia.ciud_Nombre}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {modo === 'listar' && (
+          <>
+            <Stack direction="row" justifyContent="flex-start" mb={2}>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
+                {'Nuevo'}
+              </Button>
+            </Stack>
+            <Paper variant="outlined">
+              <TextField
+                placeholder="Buscar"
+                variant="outlined"
+                size="small"
+                sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">
+                        <Typography variant="h6">Acciones</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">ID</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">Nombre</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">Ciudad</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((colonia) => (
+                      <TableRow key={colonia.colo_Id}>
+                        <TableCell align="center">
+                          <IconButton size="small" onClick={(e) => abrirMenu(e, colonia)}>
+                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>{colonia.colo_Id}</TableCell>
+                        <TableCell>{colonia.colo_Nombre}</TableCell>
+                        <TableCell>{colonia.ciud_Nombre}</TableCell>
+                      </TableRow>
+                    ))}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={4} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                component="div"
+                count={filteredData.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+                labelRowsPerPage="Filas por página"
+              />
+            </Paper>
+          </>
+        )}
+        {modo === 'crear' && (
+          <ColoniasCreateComponent
+            onCancelar={() => setModo('listar')}
+            onGuardadoExitoso={() => {
+              setModo('listar');
+              cargarColonias();
+              setOpenSnackbar(true);
+              setAlertConfig({ severity: 'success', message: 'Colonia creada exitosamente.' });
+            }}
+          />
+        )}
+        {modo === 'editar' && (
+          <ColoniasEditComponent
+            colonia={coloniaSeleccionada}
+            onCancelar={() => setModo('listar')}
+            onGuardadoExitoso={() => {
+              setModo('listar');
+              cargarColonias();
+              setOpenSnackbar(true);
+              setAlertConfig({ severity: 'success', message: 'Colonia editada exitosamente.' });
+            }}
+          />
+        )}
+        {modo === 'detalle' && (
+          <ColoniasDetailsComponent
+            colonia={coloniaSeleccionada}
+            onCancelar={() => setModo('listar')}
+          />
+        )}
       </ParentCard>
-     
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={alertConfig.severity} sx={{ width: '100%' }}>
+          {alertConfig.message}
+        </Alert>
+      </Snackbar>
+      <Menu
+        anchorEl={posicionMenu}
+        open={menuAbierto}
+        onClose={cerrarMenu}
+      >
+        <MenuItem onClick={() => { setModo('editar'); cerrarMenu(); }}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
+          </ListItemIcon>
+          <ListItemText>Editar</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => { setModo('detalle'); cerrarMenu(); }}>
+          <ListItemIcon>
+            <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
+          </ListItemIcon>
+          <ListItemText>Detalles</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => { eliminarColonia(coloniaSeleccionada.colo_Id); cerrarMenu(); }}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
+          </ListItemIcon>
+          <ListItemText>Eliminar</ListItemText>
+        </MenuItem>
+      </Menu>
     </div>
   );
 };
 
-export default AldeasComponent;
+export default ColoniasComponent;

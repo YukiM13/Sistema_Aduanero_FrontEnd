@@ -3,29 +3,33 @@ import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Stack,
-  TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert, IconButton, Menu, MenuItem, ListItemIcon, ListItemText
+  IconButton, Menu, MenuItem,
+  ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
+import CargosCreateComponent from './CargosCreate';
+import CargosEditComponent from './CargosEdit';
+import CargosDetailsComponent from './CargosDetails';
+import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import { alertMessages } from 'src/layouts/config/alertConfig';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
-import SettingsIcon from '@mui/icons-material/Settings';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import AddIcon from '@mui/icons-material/Add';
 
 const CargosComponent = () => {
   const [cargos, setCargos] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [cargoSeleccionado, setCargoSeleccionado] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -44,15 +48,8 @@ const CargosComponent = () => {
     axios.get(`${apiUrl}/api/Cargos/Listar`, {
       headers: { 'XApiKey': apiKey }
     })
-    .then(response => {
-      if (response.data && Array.isArray(response.data.data)) {
-        setCargos(response.data.data);
-      }
-    })
-    .catch(error => {
-      console.error('Error al obtener los cargos:', error);
-      mostrarAlerta('errorCargar');
-    });
+      .then(response => setCargos(response.data.data))
+      .catch(error => console.error('Error al obtener los cargos:', error));
   };
 
   useEffect(() => {
@@ -82,75 +79,106 @@ const CargosComponent = () => {
 
   return (
     <div>
-      <Breadcrumb title="Cargos" subtitle="Listar" />
+      <Breadcrumb title="Cargos" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
       <ParentCard>
-        <Stack direction="row" justifyContent="flex-start" mb={2}>
-          <Button variant="contained" startIcon={<AddIcon />}>
-            {'Nuevo'}
-          </Button>
-        </Stack>
-        <Paper variant="outlined">
-          <TextField
-            placeholder="Buscar"
-            variant="outlined"
-            size="small"
-            sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
+        {modo === 'listar' && (
+          <>
+            <Stack direction="row" justifyContent="flex-start" mb={2}>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
+                {'Nuevo'}
+              </Button>
+            </Stack>
+            <Paper variant="outlined">
+              <TextField
+                placeholder="Buscar"
+                variant="outlined"
+                size="small"
+                sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">
+                        <Typography variant="h6">Acciones</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">ID</Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">Nombre</Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => (
+                      <TableRow key={cargo.carg_Id}>
+                        <TableCell align="center">
+                          <IconButton size="small" onClick={(e) => abrirMenu(e, cargo)}>
+                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>{cargo.carg_Id}</TableCell>
+                        <TableCell>{cargo.carg_Nombre}</TableCell>
+                      </TableRow>
+                    ))}
+                    {emptyRows > 0 && (
+                      <TableRow style={{ height: 53 * emptyRows }}>
+                        <TableCell colSpan={3} />
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                component="div"
+                count={filteredData.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+                labelRowsPerPage="Filas por página"
+              />
+            </Paper>
+          </>
+        )}
+        {modo === 'crear' && (
+          <CargosCreateComponent
+            onCancelar={() => setModo('listar')}
+            onGuardadoExitoso={() => {
+              setModo('listar');
+              cargarCargos();
+              mostrarAlerta('guardado');
             }}
           />
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align='center'>
-                    <Typography variant="h6">Acciones</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">ID</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Nombre</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => (
-                  <TableRow key={cargo.carg_Id}>
-                    <TableCell align="center">
-                      <IconButton size="small" onClick={(e) => abrirMenu(e, cargo)}>
-                        <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>{cargo.carg_Id}</TableCell>
-                    <TableCell>{cargo.carg_Nombre}</TableCell>
-                  </TableRow>
-                ))}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={3} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            component="div"
-            count={filteredData.length}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            ActionsComponent={TablePaginationActions}
-            labelRowsPerPage="Filas por página"
+        )}
+        {modo === 'editar' && (
+          <CargosEditComponent
+            cargo={cargoSeleccionado}
+            onCancelar={() => setModo('listar')}
+            onGuardadoExitoso={() => {
+              setModo('listar');
+              cargarCargos();
+              mostrarAlerta('actualizado');
+            }}
           />
-        </Paper>
+        )}
+        {modo === 'detalle' && (
+          <CargosDetailsComponent
+            cargo={cargoSeleccionado}
+            onCancelar={() => setModo('listar')}
+          />
+        )}
       </ParentCard>
       <Snackbar
         open={openSnackbar}
@@ -167,23 +195,17 @@ const CargosComponent = () => {
         open={menuAbierto}
         onClose={cerrarMenu}
       >
-        <MenuItem>
+        <MenuItem onClick={() => { setModo('editar'); cerrarMenu(); }}>
           <ListItemIcon>
             <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
           </ListItemIcon>
           <ListItemText>Editar</ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => { setModo('detalle'); cerrarMenu(); }}>
           <ListItemIcon>
             <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
           </ListItemIcon>
           <ListItemText>Detalles</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
-          </ListItemIcon>
-          <ListItemText>Eliminar</ListItemText>
         </MenuItem>
       </Menu>
     </div>
