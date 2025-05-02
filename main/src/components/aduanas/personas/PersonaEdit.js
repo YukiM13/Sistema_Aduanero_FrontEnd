@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import InputMask from 'react-input-mask';
-import Persona from 'src/models/persona';
 import { Snackbar, Alert } from '@mui/material';
 import {
     Button,
@@ -31,7 +30,7 @@ const validationSchema = yup.object({
 
 
    
-const PersonasCreateComponent = ({ onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
+const PersonasEditComponent = ({persona, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
   const [estadosCiviles, setEstadosCiviles] = useState([]);
 const [oficinas, setOficinas] = useState([]);
 const [oficioProfesion, setOficioProfesion] = useState([]);
@@ -89,16 +88,15 @@ const listarOficioProfesion = () => {
 
   const formik = useFormik({
         
-        initialValues: Persona,
+        initialValues: persona,
         validationSchema,
         onSubmit: (values) => {
-          values.pers_FechaCreacion = new Date();
           values.pers_FechaModificacion = new Date();
-          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioModificacion = 1;
           values.pers_RTN.replace(/\?/g, '');
           values.pers_FormaRepresentacion = Boolean(values.pers_FormaRepresentacion);
           console.log("Valores antes de enviar:", values);
-          axios.post(`${apiUrl}/api/Personas/Insertar`, values, {
+          axios.post(`${apiUrl}/api/Personas/Editar`, values, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
@@ -323,4 +321,4 @@ const listarOficioProfesion = () => {
   );
 };
 
-export default PersonasCreateComponent;
+export default PersonasEditComponent;
