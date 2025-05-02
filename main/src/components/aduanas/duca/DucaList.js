@@ -10,9 +10,9 @@ import {
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 
-import MarcaMaquinaCreateComponent from './MarcaMaquinaCreate';
-import MarcaMaquinaEditComponent from './MarcaMaquinaEdit';
-import MarcaMaquinaDetailsComponent from './MarcaMaquinaDetails';
+// import DucaCreateComponent from './DucaCreate';
+// import DucaEditComponent from './DucaEdit';
+// import DucaDetailsComponent from './DucaDetails';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -27,15 +27,15 @@ import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions
 
 
 
-const MarcaMaquina = () => {
+const DucasList = () => {
 
-    const [MarcasMaquinas, setMarcaMaquina] = useState([]);
+    const [Ducas, setDucas] = useState([]);
     
       const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
       const [openSnackbar, setOpenSnackbar] = useState(false);
       const [menuAbierto, setMenuAbierto] = useState(false);
       const [posicionMenu, setPosicionMenu] = useState(null);
-      const [MarcasMaquinaSeleccionada, setMarcasMaquinaSeleccionada] = useState(null);
+      const [DucaSeleccionada, setDucaSeleccionada] = useState(null);
       const [page, setPage] = useState(0);//Define como la pagina actual
       const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
       const [searchQuery, setSearchQuery] = useState('');
@@ -59,30 +59,30 @@ const MarcaMaquina = () => {
       };
 
       
-    function DetalleMarcaMaquina(MarcaMaquina) {
-      // console.log('Detaie:', MarcaMaquina.marq_Id);
+    function DetalleDuca(Duca) {
+      // console.log('Detaie:', Duca.duca_Id);
       setModo('detalle');
       cerrarMenu();
     }
     
-    function editarMarcaMaquina(MarcaMaquina) {
+    function editarDuca(Duca) {
       // console.log('Editar Oficina:', persona.pers_Id);
       setModo('editar');
       cerrarMenu();
     }
     
-    function eliminarMarcaMaquina(MarcaMaquina) {
+    function eliminarDuca(Duca) {
       // console.log('Eliminar Oficina:', persona.pers_Id);
-      setMarcasMaquinaSeleccionada(MarcaMaquina);
+      setDucaSeleccionada(Duca);
       setConfirmarEliminacion(true);
       cerrarMenu();
     }
 
-    function abrirMenu(evento, MarcaMaquina) {
+    function abrirMenu(evento, Duca) {
       //obtenemos la posicion donde deberia mostrarse el menu 
       setPosicionMenu(evento.currentTarget);
       //obtenemos la fila de info correspondiente 
-      setMarcasMaquinaSeleccionada(MarcaMaquina);
+      setDucaSeleccionada(Duca);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
     }
@@ -94,21 +94,21 @@ const MarcaMaquina = () => {
 
 
 
-      const cargarMarcasMaquinas = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
+      const cargarDucas = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
    
-        axios.get(`${apiUrl}/api/MarcasMaquinas/Listar`, {
+        axios.get(`${apiUrl}/api/Ducas/Listar`, {
           headers: { 'XApiKey': apiKey }
         })
-        .then(response => setMarcaMaquina(response.data.data))
-        .catch(error => console.error('Error al obtener las MarcasMaquinas:', error));
+        .then(response => setDucas(response.data.data))
+        .catch(error => console.error('Error al obtener las Ducas:', error));
       };
 
-      const eliminar = (MarcaMaquina) =>{
-          axios.post(`${apiUrl}/api/MarcasMaquinas/Eliminar`,MarcaMaquina, {
+      const eliminar = (Duca) =>{
+          axios.post(`${apiUrl}/api/Ducas/Eliminar`,Duca, {
             headers: { 'XApiKey': apiKey }
           })
           .then(
-            cargarMarcasMaquinas(),
+            cargarDucas(),
             mostrarAlerta('eliminado')
           )
           .catch( mostrarAlerta('errorEliminar'));
@@ -116,7 +116,7 @@ const MarcaMaquina = () => {
 
     useEffect(() => {
 
-        // axios.get('https:localhost:44380/api/MarcasMaquinas/Listar', {
+        // axios.get('https:localhost:44380/api/Ducas/Listar', {
 
         //     headers: {
         //         'XApiKey': '4b567cb1c6b24b51ab55248f8e66e5cc'
@@ -124,7 +124,7 @@ const MarcaMaquina = () => {
 
         // })
         // .then(response => {
-        //     setMarcaMaquina(response.data.data);
+        //     setDuca(response.data.data);
         //     console.log('React E10', response.data.data);
 
         // })
@@ -132,7 +132,7 @@ const MarcaMaquina = () => {
         //     console.log('Error', error);
         // });
 
-      cargarMarcasMaquinas();
+      cargarDucas();
       
       
 
@@ -146,13 +146,13 @@ const MarcaMaquina = () => {
       setPage(0);
   };//Cambia el numero de filas de la siguiente pagina
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, MarcasMaquinas.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, Ducas.length - page * rowsPerPage);
   //Esto evita la deformacion de la tabla. Ejemplo si en la ultima pagina hay un solo registro, la tabla mantendra su tamaño como
   //si tu tamaño siguiera siendo de 10 registros
 
-  const filteredData = MarcasMaquinas.filter((MarcaMaquina) =>
-    MarcaMaquina.marq_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  MarcaMaquina.marq_Id.toString().includes(searchQuery.trim())
+  const filteredData = Ducas.filter((Duca) =>
+    Duca.duca_Descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  Duca.duca_Id.toString().includes(searchQuery.trim())
   );
   //FilteredData trae el arreglo que se asigno antes para el list en este caso unidadesmedidas y pasara agarrar su campos
   //y utilizarlo para filtrar, y en el caso de que el input de filtrar detecta algo, pues el filteredData cambiara y la tabla 
@@ -163,11 +163,11 @@ const MarcaMaquina = () => {
     return (
 
         // <div>
-        //     <h2>Listado de MarcasMaquinas</h2>
+        //     <h2>Listado de Tallas</h2>
         //     <ul>
-        //         {MarcasMaquinas.map(MarcaMaquina => (
+        //         {tallas.map(talla => (
         //             <li>
-        //                 {MarcaMaquina.marq_Id} - {MarcaMaquina.marq_Nombre}
+        //                 {talla.tall_Id} - {talla.tall_Nombre}
         //             </li>
         //         ))}
         //     </ul>
@@ -177,7 +177,7 @@ const MarcaMaquina = () => {
       
         
           <div>
-            <Breadcrumb title="MarcasMaquinas" subtitle={ "Listar"} />
+            <Breadcrumb title="Ducas" subtitle={ "Listar"} />
             
             
       
@@ -212,29 +212,28 @@ const MarcaMaquina = () => {
                           <Typography variant="h6">Id</Typography>
                         </TableCell>
                         <TableCell>
-                          <Typography variant="h6">Nombre</Typography>
+                          <Typography variant="h6">Descripcion</Typography>
                         </TableCell>
-                        
                         
                       </TableRow>
                     </TableHead>
                     <TableBody>
                     {filteredData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((MarcaMaquina) => (
-                        <TableRow key={MarcaMaquina.marq_Id}>
+                      .map((Duca) => (
+                        <TableRow key={Duca.duca_Id}>
                           <TableCell align="center">
       
                           <IconButton
                             size="small" 
                             // se abre el menu y se Selecciona la data de la fila 
-                            onClick={(e) => abrirMenu(e, MarcaMaquina)}
+                            onClick={(e) => abrirMenu(e, Duca)}
                           >
                           <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
                           </IconButton>
                           </TableCell>
-                          <TableCell>{MarcaMaquina.marq_Id}</TableCell>
-                          <TableCell>{MarcaMaquina.marq_Nombre}</TableCell>
+                          <TableCell>{Duca.duca_Id}</TableCell>
+                          <TableCell>{Duca.duca_Descripcion}</TableCell>
                           
                         </TableRow>
                       ))}
@@ -246,46 +245,46 @@ const MarcaMaquina = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-                  <TablePagination component="div" count={MarcasMaquinas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
+                  <TablePagination component="div" count={Ducas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
                   </Paper>
                 </container>
                 )}
-                {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+                {/* {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
-          <MarcaMaquinaCreateComponent
+          <DucaCreateComponent
             onCancelar={() => setModo('listar')} 
             onGuardadoExitoso={() => {
               setModo('listar');
               mostrarAlerta('guardado')
               // Recarga los datos después de guardar
-              cargarMarcasMaquinas();
+              cargarDucas();
             }}
           />
       
       )}
        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
-      <MarcaMaquinaEditComponent
-         MarcaMaquina={MarcasMaquinaSeleccionada}
+      <DucaEditComponent
+         Duca={DucaSeleccionada}
         onCancelar={() => setModo('listar')} 
         onGuardadoExitoso={() => {
           setModo('listar');
           mostrarAlerta('actualizado')
           // Recarga los datos después de guardar
-          cargarMarcasMaquinas();
+          cargarDucas();
         }}
       />
       
       )}
       {modo === 'detalle' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
-      <MarcaMaquinaDetailsComponent
-         MarcaMaquina={MarcasMaquinaSeleccionada}
+      <DucaDetailsComponent
+         Duca={DucaSeleccionada}
         onCancelar={() => setModo('listar')} 
        
       />
       
-      )}
+      )} */}
       
       
               </ParentCard>
@@ -311,20 +310,20 @@ const MarcaMaquina = () => {
               open={menuAbierto}
               onClose={cerrarMenu}
             >
-              <MenuItem onClick={() => editarMarcaMaquina(MarcasMaquinaSeleccionada)}>
+              <MenuItem onClick={() => editarDuca(DucaSeleccionada)}>
                 <ListItemIcon>
                   <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
                 </ListItemIcon>
                 <ListItemText>Editar</ListItemText>
               </MenuItem>
-              <MenuItem onClick={() => DetalleMarcaMaquina(MarcasMaquinaSeleccionada)}>
+              <MenuItem onClick={() => DetalleDuca(DucaSeleccionada)}>
                 <ListItemIcon>
                   <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
                 </ListItemIcon>
                 <ListItemText>Detalles</ListItemText>
               </MenuItem>
               
-              <MenuItem onClick={() => eliminarMarcaMaquina(MarcasMaquinaSeleccionada)}>
+              <MenuItem onClick={() => eliminarDuca(DucaSeleccionada)}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
                 </ListItemIcon>
@@ -342,7 +341,7 @@ const MarcaMaquina = () => {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  ¿Estás seguro que deseas eliminar a <strong>{MarcasMaquinaSeleccionada?.marq_Nombre}</strong>?
+                  ¿Estás seguro que deseas eliminar a <strong>{DucaSeleccionada?.duca_Descripcion}</strong>?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -355,9 +354,9 @@ const MarcaMaquina = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    eliminar(MarcasMaquinaSeleccionada)
+                    eliminar(DucaSeleccionada)
                     setConfirmarEliminacion(false);
-                    MarcasMaquinaSeleccionada(null);
+                    DucaSeleccionada(null);
                     
                   }}
                   variant="contained"
@@ -379,23 +378,23 @@ const MarcaMaquina = () => {
 
 
         // <div>
-        //        <Breadcrumb title="MarcasMaquinas" subtitle="Listar" />
+        //        <Breadcrumb title="Ducas" subtitle="Listar" />
         //       <ParentCard>
         //         <TableContainer component={Paper}>
         //           <Table>
         //             <TableHead>
         //               <TableRow>
         //                 <TableCell>ID</TableCell>
-        //                 <TableCell>Nombre</TableCell>
+        //                 <TableCell>Descripcion</TableCell>
                         
                         
         //               </TableRow>
         //             </TableHead>
         //             <TableBody>
-        //               {MarcasMaquinas.map((item) => (
-        //                 <TableRow key={item.marq_Id}>
-        //                   <TableCell>{item.marq_Id}</TableCell>
-        //                   <TableCell>{item.marq_Nombre}</TableCell>
+        //               {Ducas.map((item) => (
+        //                 <TableRow key={item.duca_Id}>
+        //                   <TableCell>{item.duca_Id}</TableCell>
+        //                   <TableCell>{item.duca_Descripcion}</TableCell>
                           
                           
         //                 </TableRow>
@@ -416,4 +415,4 @@ const MarcaMaquina = () => {
 
 };
 
-export default MarcaMaquina;
+export default DucasList;

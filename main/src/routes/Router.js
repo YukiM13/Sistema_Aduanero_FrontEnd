@@ -98,6 +98,7 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -263,6 +264,7 @@ const Router = [
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
       { path: '/duca', element: <Duca  /> },
+      { path: '/ducaslist', element: <DucasList  /> },
 
 
 
