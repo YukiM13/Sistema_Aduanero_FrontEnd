@@ -178,7 +178,7 @@ const ColoniasComponent = () => {
           <ColoniasEditComponent
             colonia={coloniaSeleccionada}
             onCancelar={() => setModo('listar')}
-            onGuardadoExitoso={() => {
+            onGuardadoExitoso={() => {    
               setModo('listar');
               cargarColonias();
               setOpenSnackbar(true);

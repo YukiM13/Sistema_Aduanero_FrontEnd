@@ -41,7 +41,7 @@ const AldeasEditComponent = ({ aldea = Aldea, onCancelar, onGuardadoExitoso }) =
   const formik = useFormik({
     initialValues: aldea,
     validationSchema,
-    enableReinitialize: true, // Ensure formik updates when `aldea` changes
+    enableReinitialize: true,
     onSubmit: (values) => {
       values.alde_FechaModificacion = new Date();
       values.usua_UsuarioModificacion = 1;

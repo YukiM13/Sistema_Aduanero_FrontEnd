@@ -7,7 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-import Cargos from '../../../models/cargosmodel'; // Import the Cargos model
+import Cargos from '../../../models/cargosmodel';
 
 const validationSchema = yup.object({
   carg_Nombre: yup.string().required('El nombre del cargo es requerido'),
@@ -21,7 +21,7 @@ const CargosEditComponent = ({ cargo = Cargos, onCancelar, onGuardadoExitoso }) 
   const formik = useFormik({
     initialValues: cargo,
     validationSchema,
-    enableReinitialize: true, // Ensure formik updates when `cargo` changes
+    enableReinitialize: true,
     onSubmit: (values) => {
       values.carg_FechaModificacion = new Date();
       values.usua_UsuarioModificacion = 1;

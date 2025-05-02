@@ -7,7 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-import Colonias from '../../../models/coloniasmodel'; // Import the Colonias model
+import Colonias from '../../../models/coloniasmodel';
 
 const validationSchema = yup.object({
   colo_Nombre: yup.string().required('El nombre de la colonia es requerido'),

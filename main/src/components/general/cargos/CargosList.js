@@ -21,7 +21,7 @@ import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions
 
 const CargosComponent = () => {
   const [cargos, setCargos] = useState([]);
-  const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
+  const [modo, setModo] = useState('listar');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
