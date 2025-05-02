@@ -16,7 +16,6 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
@@ -60,13 +59,7 @@ const PersonasComponent = () => {
       setModo('editar');
       cerrarMenu();
     }
-    
-    function eliminarOficina(persona) {
-      console.log('Eliminar Oficina:', persona.pers_Id);
-      setPersonaSeleccionada(persona);
-      setConfirmarEliminacion(true);
-      cerrarMenu();
-    }
+ 
 
     function abrirMenu(evento, persona) {
       //obtenemos la posicion donde deberia mostrarse el menu 
@@ -274,12 +267,7 @@ const PersonasComponent = () => {
           <ListItemText>Detalles</ListItemText>
         </MenuItem>
         
-        <MenuItem onClick={() => eliminarOficina(personaSeleccionada)}>
-          <ListItemIcon>
-            <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
-          </ListItemIcon>
-          <ListItemText>Eliminar</ListItemText>
-        </MenuItem>
+       
       </Menu>
 
       <Dialog
