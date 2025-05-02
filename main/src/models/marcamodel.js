@@ -17,9 +17,12 @@ class MarcaModel {
     usuarioEliminacionNombre = "";
 
 
-    constructor() {
+     MarcaModel(){
+
+     }
+    // constructor() {
         
-    }
+    // }
   }
   
   export default MarcaModel;

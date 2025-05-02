@@ -49,6 +49,7 @@ const PersonasComponent = () => {
       console.error('Tipo de alerta no encontrado:', tipo);
     }
   };
+  
     function DetalleOficina(persona) {
       console.log('Detaie:', persona.pers_Id);
       setModo('detalle');

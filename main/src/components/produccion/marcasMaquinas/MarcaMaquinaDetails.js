@@ -7,7 +7,7 @@ import {
   import ArrowBackIcon   from '@mui/icons-material/ArrowBack'; 
 
 
-const MarcaDetailsComponent = ({marca, onCancelar }) => { //esto es lo que manda para saber cuando cerrar el crear
+const MarcaMaquinaDetailsComponent = ({MarcaMaquina, onCancelar }) => { //esto es lo que manda para saber cuando cerrar el crear
  
   
 
@@ -20,11 +20,13 @@ const MarcaDetailsComponent = ({marca, onCancelar }) => { //esto es lo que manda
 
             <Grid item lg={4} md={12} sm={12}>
                 <label>ID:</label> <br/>
-                <label>{marca.marc_Id}</label>
+                <label>{MarcaMaquina.marq_Id}</label>
             </Grid>
+
+
             <Grid item lg={4} md={12} sm={12}>
-                    <label>Descripcion:</label> <br/>
-                    <label>{marca.marc_Descripcion}</label>
+                    <label>Nombre:</label> <br/>
+                    <label>{MarcaMaquina.marq_Nombre}</label>
             </Grid>
             
             
@@ -32,6 +34,8 @@ const MarcaDetailsComponent = ({marca, onCancelar }) => { //esto es lo que manda
         </Grid>
 
         </div>
+
+        <hr/>
         
         <TableContainer component={Paper}>
                     <Table>
@@ -47,13 +51,13 @@ const MarcaDetailsComponent = ({marca, onCancelar }) => { //esto es lo que manda
                        
                           <TableRow >
                             <TableCell align="center">Crear</TableCell>
-                            <TableCell align="center">{marca.usuarioCreacionNombre}</TableCell>
-                            <TableCell align="center">{marca.marc_FechaCreacion}</TableCell>
+                            <TableCell align="center">{MarcaMaquina.usuarioCreacion}</TableCell>
+                            <TableCell align="center">{MarcaMaquina.marq_FechaCreacion}</TableCell>
                           </TableRow>
                           <TableRow >
                             <TableCell align="center">Editar</TableCell>
-                            <TableCell align="center">{marca.usuarioModificacionNombre}</TableCell>
-                            <TableCell align="center">{marca.marc_FechaModificacion}</TableCell>
+                            <TableCell align="center">{MarcaMaquina.usuarioModificador}</TableCell>
+                            <TableCell align="center">{MarcaMaquina.marq_FechaModificacion}</TableCell>
                           </TableRow>
                        
                       </TableBody>
@@ -74,4 +78,4 @@ const MarcaDetailsComponent = ({marca, onCancelar }) => { //esto es lo que manda
   );
 };
 
-export default MarcaDetailsComponent;
+export default MarcaMaquinaDetailsComponent;

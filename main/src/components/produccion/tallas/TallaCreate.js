@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 // import InputMask from 'react-input-mask';
+import TallaModel from 'src/models/tallamodel'; 
 import { Snackbar, Alert } from '@mui/material';
 import {
     Button,
@@ -17,51 +18,58 @@ import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 
 const validationSchema = yup.object({
-  
-  marc_Descripcion: yup.string().required('La Descripcion de la Marca es requerida'),
+    tall_Codigo: yup.string().required('El Codigo de la Talla es requerida'),
+    tall_Nombre: yup.string().required('El Nombre de la Talla es requerida'),
   
 
 });
 
 
    
-const MarcaEditComponent = ({marca, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
-
+const TallaCreateComponent = ({ onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
+//   const [estadosCiviles, setEstadosCiviles] = useState([]);
+// const [oficinas, setOficinas] = useState([]);
+// const [oficioProfesion, setOficioProfesion] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
+  
  
     
 
   const formik = useFormik({
         
-        initialValues: marca,
+        initialValues: TallaModel,
         validationSchema,
+
         onSubmit: (values) => {
-          values.marc_FechaModificacion = new Date();
-          values.usua_UsuarioModificacion = 1;
+          values.tall_FechaCreacion = new Date();
+          values.tall_FechaModificacion = new Date();
+          values.usua_UsuarioCreacion = 1;
           
-          
-          console.log("Valores antes de enviar:", values);
-          axios.post(`${apiUrl}/api/Marcas/Editar`, values, {
+
+          axios.post(`${apiUrl}/api/Tallas/Insertar`, values, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
             if (onGuardadoExitoso) onGuardadoExitoso(); // Solo se ejecuta al completarse correctamente
           })
           .catch(error => {
-            console.error('Error al insertar la marca:', error);
+            console.error('Error al insertar la persona:', error);
           });
           
         },
       });
+
       useEffect(() => {
     
         if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
           setOpenSnackbar(true);
         }
       }, [formik.errors, formik.submitCount]);
+
+
     return (
     <div>
       
@@ -71,37 +79,45 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                 
                 <Grid item lg={6} md={12} sm={12}>
                    
-                        <CustomFormLabel>Descripcion</CustomFormLabel>
+                        <CustomFormLabel>Codigo</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="tall_Codigo"
+                            name="tall_Codigo"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.tall_Codigo}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
+                            error={formik.touched.tall_Codigo && Boolean(formik.errors.tall_Codigo)}
+                            helperText={formik.touched.tall_Codigo && formik.errors.tall_Codigo}
                         />
+                  
+                </Grid>
 
-                        {/* <CustomFormLabel>Descripcion</CustomFormLabel>
+                <Grid item lg={6} md={12} sm={12}>
+                   
+                        <CustomFormLabel>Nombre</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="tall_Nombre"
+                            name="tall_Nombre"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.tall_Nombre}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
-                        /> */}
+                            error={formik.touched.tall_Nombre && Boolean(formik.errors.tall_Nombre)}
+                            helperText={formik.touched.tall_Nombre && formik.errors.tall_Nombre}
+                        />
                   
-
                 </Grid>
+
+                
+                
+
 
 
             </Grid>
+
             <Grid container justifyContent="flex-end" spacing={2} mt={2}>
                 <Grid item>
                     <Button variant="contained" color="error" onClick={onCancelar}
@@ -118,8 +134,10 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                     </Button>
                 </Grid>
             </Grid>
+
            
         </form >
+        
         <Snackbar
         open={openSnackbar}
         autoHideDuration={3000} // Duración de la alerta
@@ -140,4 +158,4 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
   );
 };
 
-export default MarcaEditComponent;
+export default TallaCreateComponent;

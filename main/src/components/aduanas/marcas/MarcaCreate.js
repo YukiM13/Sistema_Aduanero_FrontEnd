@@ -3,24 +3,23 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import InputMask from 'react-input-mask';
+// import InputMask from 'react-input-mask';
 import MarcaModel from 'src/models/marcamodel'; 
 import { Snackbar, Alert } from '@mui/material';
 import {
     Button,
     Grid,
-    MenuItem
+    // MenuItem
 
   } from '@mui/material';
   import SaveIcon from '@mui/icons-material/Save';
   import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-import MarcaModel from 'src/models/marcamodel';
 
 const validationSchema = yup.object({
     
-    marc_Descripcion: yup.string().required('La Descripcion es requerida'),
+    marc_Descripcion: yup.string().required('La Descripcion de la Marca es requerida'),
   
 
 });

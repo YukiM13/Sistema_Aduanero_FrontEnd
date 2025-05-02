@@ -18,14 +18,15 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 
 const validationSchema = yup.object({
   
-  marc_Descripcion: yup.string().required('La Descripcion de la Marca es requerida'),
+    
+    marq_Nombre: yup.string().required('La Nombre de la MarcaMaquina es requerida'),
   
 
 });
 
 
    
-const MarcaEditComponent = ({marca, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
+const MarcaMaquinaEditComponent = ({MarcaMaquina, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
 
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -36,22 +37,22 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
         
-        initialValues: marca,
+        initialValues: MarcaMaquina,
         validationSchema,
         onSubmit: (values) => {
-          values.marc_FechaModificacion = new Date();
+          values.marq_FechaModificacion = new Date();
           values.usua_UsuarioModificacion = 1;
           
           
           console.log("Valores antes de enviar:", values);
-          axios.post(`${apiUrl}/api/Marcas/Editar`, values, {
+          axios.post(`${apiUrl}/api/MarcasMaquinas/Editar`, values, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
             if (onGuardadoExitoso) onGuardadoExitoso(); // Solo se ejecuta al completarse correctamente
           })
           .catch(error => {
-            console.error('Error al insertar la marca:', error);
+            console.error('Error al insertar la MarcaMaquina:', error);
           });
           
         },
@@ -69,37 +70,41 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
         <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={3} mb={3}>  {/* Esto es como el div con class row */}
                 
+
                 <Grid item lg={6} md={12} sm={12}>
                    
-                        <CustomFormLabel>Descripcion</CustomFormLabel>
+                        <CustomFormLabel>Nombre</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="marq_Nombre"
+                            name="marq_Nombre"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.marq_Nombre}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
+                            error={formik.touched.marq_Nombre && Boolean(formik.errors.marq_Nombre)}
+                            helperText={formik.touched.marq_Nombre && formik.errors.marq_Nombre}
                         />
 
-                        {/* <CustomFormLabel>Descripcion</CustomFormLabel>
+                        {/* <CustomFormLabel>Nombre</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="marq_Nombre"
+                            name="marq_Nombre"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.marq_Nombre}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
+                            error={formik.touched.marq_Nombre && Boolean(formik.errors.marq_Nombre)}
+                            helperText={formik.touched.marq_Nombre && formik.errors.marq_Nombre}
                         /> */}
                   
 
                 </Grid>
 
+
+                
+                
 
             </Grid>
             <Grid container justifyContent="flex-end" spacing={2} mt={2}>
@@ -140,4 +145,4 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
   );
 };
 
-export default MarcaEditComponent;
+export default MarcaMaquinaEditComponent;

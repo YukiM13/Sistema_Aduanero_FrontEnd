@@ -18,14 +18,15 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 
 const validationSchema = yup.object({
   
-  marc_Descripcion: yup.string().required('La Descripcion de la Marca es requerida'),
+    tall_Codigo: yup.string().required('El Codigo de la Talla es requerida'),
+    tall_Nombre: yup.string().required('La Nombre de la Talla es requerida'),
   
 
 });
 
 
    
-const MarcaEditComponent = ({marca, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
+const TallaEditComponent = ({Talla, onCancelar, onGuardadoExitoso }) => { //esto es lo que manda para saber cuando cerrar el crear
 
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -36,22 +37,22 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
         
-        initialValues: marca,
+        initialValues: Talla,
         validationSchema,
         onSubmit: (values) => {
-          values.marc_FechaModificacion = new Date();
+          values.tall_FechaModificacion = new Date();
           values.usua_UsuarioModificacion = 1;
           
           
           console.log("Valores antes de enviar:", values);
-          axios.post(`${apiUrl}/api/Marcas/Editar`, values, {
+          axios.post(`${apiUrl}/api/Tallas/Editar`, values, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
             if (onGuardadoExitoso) onGuardadoExitoso(); // Solo se ejecuta al completarse correctamente
           })
           .catch(error => {
-            console.error('Error al insertar la marca:', error);
+            console.error('Error al insertar la Talla:', error);
           });
           
         },
@@ -71,35 +72,55 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                 
                 <Grid item lg={6} md={12} sm={12}>
                    
-                        <CustomFormLabel>Descripcion</CustomFormLabel>
+                        <CustomFormLabel>Codigo</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="tall_Codigo"
+                            name="tall_Codigo"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.tall_Codigo}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
+                            error={formik.touched.tall_Codigo && Boolean(formik.errors.tall_Codigo)}
+                            helperText={formik.touched.tall_Codigo && formik.errors.tall_Codigo}
                         />
 
-                        {/* <CustomFormLabel>Descripcion</CustomFormLabel>
+                </Grid>
+
+                <Grid item lg={6} md={12} sm={12}>
+                   
+                        <CustomFormLabel>Nombre</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="marc_Descripcion"
-                            name="marc_Descripcion"
+                            id="tall_Nombre"
+                            name="tall_Nombre"
                             type="text"
-                            value={formik.values.marc_Descripcion}
+                            value={formik.values.tall_Nombre}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.marc_Descripcion && Boolean(formik.errors.marc_Descripcion)}
-                            helperText={formik.touched.marc_Descripcion && formik.errors.marc_Descripcion}
+                            error={formik.touched.tall_Nombre && Boolean(formik.errors.tall_Nombre)}
+                            helperText={formik.touched.tall_Nombre && formik.errors.tall_Nombre}
+                        />
+
+                        {/* <CustomFormLabel>Nombre</CustomFormLabel>
+                        <CustomTextField
+                            fullWidth
+                            id="tall_Nombre"
+                            name="tall_Nombre"
+                            type="text"
+                            value={formik.values.tall_Nombre}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.tall_Nombre && Boolean(formik.errors.tall_Nombre)}
+                            helperText={formik.touched.tall_Nombre && formik.errors.tall_Nombre}
                         /> */}
                   
 
                 </Grid>
 
+
+                
+                
 
             </Grid>
             <Grid container justifyContent="flex-end" spacing={2} mt={2}>
@@ -140,4 +161,4 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
   );
 };
 
-export default MarcaEditComponent;
+export default TallaEditComponent;
