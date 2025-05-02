@@ -111,6 +111,7 @@ const Empleado = Loadable(lazy(() => import('../components/general/empleados/Emp
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
+const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
@@ -261,6 +262,7 @@ const Router = [
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
       { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
+      { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
 
 
 
