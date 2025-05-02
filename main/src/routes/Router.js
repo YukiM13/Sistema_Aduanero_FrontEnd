@@ -98,9 +98,11 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
+const ProvinciaCrear =  Loadable(lazy(() => import('../components/general/provincias/ProvinciasCreate')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Moneda = Loadable(lazy(() => import('../components/general/monedas/MonedasList')));
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
@@ -111,8 +113,11 @@ const Empleado = Loadable(lazy(() => import('../components/general/empleados/Emp
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
+const CiudadCrear =  Loadable(lazy(() => import('../components/general/ciudades/CiudadCreate')));
+const CiudadEditar =  Loadable(lazy(() => import('../components/general/ciudades/CiudadEdit')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
+
 
 
 // Acceso
@@ -262,6 +267,10 @@ const Router = [
       { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
 
+      { path: '/ciudades/create', element: <CiudadCrear  /> },
+      { path: '/ciudades/edit', element: <CiudadEditar  /> },
+
+      { path: '/provincias/create', element: <ProvinciaCrear  /> },
 
 
 
