@@ -28,17 +28,17 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
     marginBottom: '2px',
     padding: '8px 10px',
     borderRadius: `${customizer.borderRadius}px`,
-    backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
+    backgroundColor: level > 1 ? 'transparent' : '#0074BA',
     color:
-      level > 1 && pathDirect === item.href ? `${theme.palette.primary.main}!important` : theme.palette.text.secondary,
+      level > 1 && pathDirect === item.href ? `white !important` : 'white',
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
     '&:hover': {
-      backgroundColor: theme.palette.primary.light,
+      backgroundColor: '#003859',
       color: theme.palette.primary.main,
     },
     '&.Mui-selected': {
       color: 'white',
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: '#003859',
       '&:hover': {
         backgroundColor: theme.palette.primary.main,
         color: 'white',

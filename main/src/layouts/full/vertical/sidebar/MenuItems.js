@@ -23,12 +23,6 @@ const Menuitems = [
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
- 
-
- 
-  
-
-  
   {
     id: uniqueId(),
     title: 'Acceso',
