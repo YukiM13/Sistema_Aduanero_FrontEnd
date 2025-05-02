@@ -4,53 +4,51 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper
 } from '@mui/material';
-import Breadcrumb from '../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../components/shared/ParentCard';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../../components/shared/ParentCard';
 
 
-const PersonasComponent = () => {
-  const [personas, setPersonas] = useState([]);
+const SubCategoriasComponent = () => {
+  const [SubCategorias, setSubCategorias] = useState([]);
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
 
-    axios.get(`${apiUrl}/api/Personas/Listar`, {
+    axios.get(`${apiUrl}/api/SubCategoria/Listar`, {
       headers: {
         'XApiKey': apiKey
       }
     })
     .then(response => {
       if (response.data && Array.isArray(response.data.data)) {
-        setPersonas(response.data.data);
+        setSubCategorias(response.data.data);
       }
     })
     .catch(error => {
-      console.error('Error al obtener las personas:', error);
+      console.error('Error al obtener las SubCategorias:', error);
     });
   }, []);
 
   return (
     <div>
-       <Breadcrumb title="Personas" subtitle="Listar" />
+       <Breadcrumb title="SubCategorias" subtitle="Listar" />
       <ParentCard>
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>RTN</TableCell>
-                <TableCell>Nombre</TableCell>
-                <TableCell>Oficina</TableCell>
+                <TableCell>Descripcion</TableCell>
+                <TableCell>Categoria</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {personas.map((persona) => (
-                <TableRow key={persona.pers_Id}>
-                  <TableCell>{persona.pers_Id}</TableCell>
-                  <TableCell>{persona.pers_RTN}</TableCell>
-                  <TableCell>{persona.pers_Nombre}</TableCell>
-                  <TableCell>{persona.ofic_Nombre}</TableCell>
+              {SubCategorias.map((subcategorias) => (
+                <TableRow key={subcategorias.subc_Id}>
+                  <TableCell>{subcategorias.subc_Id}</TableCell>
+                  <TableCell>{subcategorias.subc_Descripcion}</TableCell>
+                  <TableCell>{subcategorias.cate_Descripcion}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -62,4 +60,4 @@ const PersonasComponent = () => {
   );
 };
 
-export default PersonasComponent;
+export default SubCategoriasComponent;

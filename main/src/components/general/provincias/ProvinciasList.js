@@ -4,47 +4,49 @@ import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from '@mui/material';
 
-const CiudadList = () => {
-    const [ciudades, setCiudades] = useState([]);
+const ProvinciasList = () => {
+    const [provincias, setProvincias] = useState([]);
 
  useEffect(( ) => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
-    axios.get(`${apiUrl}/api/Ciudades/Listar`, {
+    axios.get(`${apiUrl}/api/Provincias/Listar?pvin_EsAduana=true`, {
         headers: {
             'XApiKey': apiKey
         }
 
     })
     .then(response => {
-        setCiudades(response.data.data);
+        setProvincias(response.data.data);
         console.log("React E10", response.data.data)
     })
     .catch(error => {
-        console.error('Error al obtener los datos de Ciudad:', error);
+        console.error('Error al obtener los datos de la provincia:', error);
     });
 
 }, []); // El
 //  array vacío asegura que el efecto se ejecute solo una vez al montar el componente
 return (
     <div>
-    <Breadcrumb title="Ciudades" subtitle="Listar" />
+    <Breadcrumb title="Provincias" subtitle="Listar" />
     <ParentCard>
         <TableContainer component={Paper}>
         <Table>
             <TableHead>
             <TableRow>
                 <TableCell>ID</TableCell>
+                <TableCell>Código</TableCell>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Provincia</TableCell>
+                <TableCell>País</TableCell>
             </TableRow>
             </TableHead>
             <TableBody>
-            {ciudades.map((ciudad) => (
-                <TableRow key={ciudad.ciud_Id}>
-                    <TableCell>{ciudad.ciud_Id}</TableCell>
-                    <TableCell>{ciudad.ciud_Nombre}</TableCell>
-                    <TableCell>{ciudad.pvin_Id}</TableCell>
+            {provincias.map((provincia) => (
+                <TableRow key={provincia.pvin_Id}>
+                    <TableCell>{provincia.pvin_Id}</TableCell>
+                    <TableCell>{provincia.pvin_Codigo}</TableCell>
+                    <TableCell>{provincia.pvin_Nombre}</TableCell>
+                    <TableCell>{provincia.pais_Id}</TableCell>
                 </TableRow>
             ))}
             </TableBody>
@@ -55,4 +57,4 @@ return (
     );
 }
 
-export default CiudadList;
+export default ProvinciasList;

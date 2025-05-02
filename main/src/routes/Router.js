@@ -88,14 +88,30 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
-const Persona  = Loadable(lazy(() => import('../components/personas/pers_List')));
+const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
-
+const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
+const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
+const NivelComercial  = Loadable(lazy(() => import('../components/aduanas/niveles-comerciales/NivelesComercialesList')));
+const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasList')));
+const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
+const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
+const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
 // General
-
+const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
+const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
-
+const Moneda = Loadable(lazy(() => import('../components/general/monedas/MonedasList')));
+const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
+const EstadosCivilesList = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesList')));
+const Oficinas = Loadable(lazy(() => import('../components/general/oficinas/oficinasList')));
 const Cargo = Loadable(lazy(() => import('../components/general/cargos/CargosList')));
+const Empleado = Loadable(lazy(() => import('../components/general/empleados/EmpleadosList')));
+const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
+const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
+
+const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
 const Aldea = Loadable(lazy(() => import('../components/general/aldeas/AldeasList')));
 
@@ -106,6 +122,11 @@ const Colonias = Loadable(lazy(() => import('../components/general/colonias/Colo
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
+const Categorias  = Loadable(lazy(() => import('../components/produccion/categorias/CategoriasList')));
+const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
+const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
+const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
+
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -211,12 +232,45 @@ const Router = [
       { path: '/widgets/banners', element: <WidgetBanners /> },
       { path: '/widgets/charts', element: <WidgetCharts /> },
       { path: '/personas/list', element: <Persona  /> },
+      { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/aldeas/list', element: <Aldea  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       {path: '/cargos/list', element: <Cargo  /> },
       { path: '/colonias/list', element: <Colonias  /> },
+      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
+      { path: '/formasdepago/list', element: <FormasPago  /> },
+
+      { path: '/paises/list', element: <Pais  /> },
+      { path: '/provincias/list', element: <Provincia  /> },
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      {path: '/cargos/list', element: <Cargo  /> },
+      { path: '/categorias/list', element: <Categorias /> },
+      { path: '/subCategorias/list', element: <SubCategorias /> },
+      { path: '/oficinas/list', element: <Oficinas /> },
+      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
+      { path: '/marcas/list', element: <Marcas  /> },
+      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
+      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
+      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
+      { path: '/modotransporte/list', element: <ModoTransporte  /> },
+      { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
        { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+       {path: '/formasenvio/list', element: <FormasEnvio  /> },
+       { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
+       { path: '/proveedores/list', element: <Proveedor  /> },
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      { path: '/cargos/list', element: <Cargo  /> },
+      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
+      { path: '/empleado/list', element: <Empleado  /> },
+      { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
+      { path: '/moneda/list', element: <Moneda  /> },
+      { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
+      { path: '/personas/create', element: <PersonaCrear  /> },
+
+
+
+
 
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
