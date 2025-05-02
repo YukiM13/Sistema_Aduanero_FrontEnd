@@ -88,6 +88,7 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
+const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/declaracion-valor/declaracion-valor-impresion')));
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
@@ -233,6 +234,7 @@ const Router = [
       { path: '/aduanas/list', element: <Aduana  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
       { path: '/formasdepago/list', element: <FormasPago  /> },
+      { path: '/declaracionValor/list', element: <DeclaracionValor  /> },
 
       { path: '/paises/list', element: <Pais  /> },
       { path: '/provincias/list', element: <Provincia  /> },

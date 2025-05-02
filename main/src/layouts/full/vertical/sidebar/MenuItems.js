@@ -175,6 +175,13 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+        title: 'Declaracion de Valor',
+        icon: IconPoint,
+        href: '/declaracionValor/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Marcas',
         icon: IconPoint,
         href: '/marcas/list',
