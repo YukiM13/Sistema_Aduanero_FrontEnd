@@ -28,20 +28,20 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
     marginBottom: '2px',
     padding: '8px 10px',
     borderRadius: `${customizer.borderRadius}px`,
-    backgroundColor: level > 1 ? 'transparent' : '#0074BA',
+    backgroundColor: level > 1 ? 'transparent' : '#003859',
     color:
-      level > 1 && pathDirect === item.href ? `white !important` : 'white',
+      level > 1 && pathDirect === item.href ? `white !important` : '#bacbe6',
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
     '&:hover': {
-      backgroundColor: '#003859',
-      color: theme.palette.primary.main,
+      backgroundColor: 'white',
+      color: '#0669a4',
     },
     '&.Mui-selected': {
       color: 'white',
-      backgroundColor: '#003859',
+      backgroundColor: '#034165',
       '&:hover': {
-        backgroundColor: theme.palette.primary.main,
-        color: 'white',
+        backgroundColor: 'white',
+        color: '#0669a4',
       },
     },
   }));
@@ -64,7 +64,7 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
             p: '3px 0',
             color:
               level > 1 && pathDirect === item.href
-                ? `${theme.palette.primary.main}!important`
+                ? `white !important`
                 : 'inherit',
           }}
         >
