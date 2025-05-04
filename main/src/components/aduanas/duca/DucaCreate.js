@@ -11,23 +11,35 @@ import {
 } from '@mui/material';
 import PageContainer from '../../../components/container/PageContainer';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-
-import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomCheckbox from '../../forms/theme-elements/CustomCheckbox';
-import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import ParentCard from '../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
+import DucaTab2Component from './DucaTab2';
+import DucaTab1Component from './DucaTab1';
 
-const steps = ['Account', 'Profile', 'Finish'];
+const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', 'Declarante, Transportista y Conductor', 'Mercancia y Documentos de soporte'];
 const DucaCreateComponent = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
-  
-    const isStepOptional = (step) => step === 1;
-  
+    const ducaTab1Ref = React.useRef();
+    const ducaTab2Ref = React.useRef();
     const isStepSkipped = (step) => skipped.has(step);
   
-    const handleNext = () => {
+    const handleNext = async() => {
+      // if (activeStep === 0 && ducaTab1Ref.current) {
+      //   const exito = await ducaTab1Ref.current.submit();
+      //   if (!exito) {
+      //     // Detenemos el avance
+      //     return;
+      //   }
+      // }
+      if (activeStep === 1 && ducaTab2Ref.current) {
+        const exito = await ducaTab2Ref.current.submit();
+        if (!exito) {
+          // Detenemos el avance
+          return;
+        }
+      }
       let newSkipped = skipped;
       if (isStepSkipped(activeStep)) {
         newSkipped = new Set(newSkipped.values());
@@ -42,74 +54,19 @@ const DucaCreateComponent = () => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
   
-    const handleSkip = () => {
-      if (!isStepOptional(activeStep)) {
-        // You probably want to guard against something like this,
-        // it should never occur unless someone's actively trying to break something.
-        throw new Error("You can't skip a step that isn't optional.");
-      }
-  
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      setSkipped((prevSkipped) => {
-        const newSkipped = new Set(prevSkipped.values());
-        newSkipped.add(activeStep);
-        return newSkipped;
-      });
-    };
+    
   
     // eslint-disable-next-line consistent-return
     const handleSteps = (step) => {
       switch (step) {
         case 0:
           return (
-            <Box>
-              <CustomFormLabel htmlFor="Name">Name</CustomFormLabel>
-              <CustomTextField
-                id="Name"
-                variant="outlined"
-                fullWidth
-              />
-              <CustomFormLabel htmlFor="Email">Email</CustomFormLabel>
-              <CustomTextField
-                id="Email"
-                type="email"
-                variant="outlined"
-                fullWidth
-              />
-              <CustomFormLabel htmlFor="Password">Password</CustomFormLabel>
-              <CustomTextField
-                id="Password"
-                type="password"
-                variant="outlined"
-                fullWidth
-              />
-            </Box>
+            <DucaTab1Component ref={ducaTab1Ref}/>
           );
         case 1:
           return (
-            <Box>
-              <CustomFormLabel htmlFor="Fname">First Name</CustomFormLabel>
-              <CustomTextField
-                id="Fname"
-                variant="outlined"
-                fullWidth
-              />
-              <CustomFormLabel htmlFor="Lname">Last Name</CustomFormLabel>
-              <CustomTextField
-                id="Lname"
-                type="text"
-                variant="outlined"
-                fullWidth
-              />
-              <CustomFormLabel htmlFor="Address">Address</CustomFormLabel>
-              <CustomTextField
-                id="Address"
-                multiline
-                rows={4}
-                variant="outlined"
-                fullWidth
-              />
-            </Box>
+            <DucaTab2Component ref={ducaTab2Ref}/>
+           
           );
         case 2:
           return (
@@ -136,16 +93,14 @@ const DucaCreateComponent = () => {
     };
     return (
       <PageContainer>
-        <Breadcrumb title="Form Wizard" description="this is Form Wizard page" />
-        <ParentCard title='Form Wizard'>
+        <Breadcrumb title="DUCA" description="this is Form Wizard page" />
+        <ParentCard >
           <Box width="100%">
             <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
                 const stepProps = {};
                 const labelProps = {};
-                if (isStepOptional(index)) {
-                  labelProps.optional = <Typography variant="caption">Optional</Typography>;
-                }
+               
                 if (isStepSkipped(index)) {
                   stepProps.completed = false;
                 }
@@ -182,19 +137,14 @@ const DucaCreateComponent = () => {
                   >
                     Back
                   </Button>
-                  <Box flex="1 1 auto" />
-                  {isStepOptional(activeStep) && (
-                    <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                      Skip
-                    </Button>
-                  )}
+                  
   
                   <Button
                     onClick={handleNext}
                     variant="contained"
-                    color={activeStep === steps.length - 1 ? 'success' : 'secondary'}
+                    color={activeStep === steps.length - 1 ? 'success' : 'primary'}
                   >
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Finalizar' : 'siguiente'}
                   </Button>
                 </Box>
               </>
