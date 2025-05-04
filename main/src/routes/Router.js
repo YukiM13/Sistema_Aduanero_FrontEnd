@@ -115,6 +115,7 @@ const OficioProfesiones = Loadable(lazy(() => import('../components/general/ofic
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
 const CiudadCrear =  Loadable(lazy(() => import('../components/general/ciudades/CiudadCreate')));
 const CiudadEditar =  Loadable(lazy(() => import('../components/general/ciudades/CiudadEdit')));
+const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
@@ -266,6 +267,7 @@ const Router = [
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
       { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
+      { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
 
       { path: '/ciudades/create', element: <CiudadCrear  /> },
       { path: '/ciudades/edit', element: <CiudadEditar  /> },
