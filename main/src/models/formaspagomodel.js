@@ -1,4 +1,4 @@
-import { t } from "i18next";
+
 
 class FormaPagoModel {
     constructor(fopa_Descripcion) {

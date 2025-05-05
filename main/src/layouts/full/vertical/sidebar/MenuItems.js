@@ -161,6 +161,13 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+        title: 'Duca',
+        icon: IconPoint,
+        href: '/duca',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Formas de Pago',
         icon: IconPoint,
         href: '/formasdepago/list',
