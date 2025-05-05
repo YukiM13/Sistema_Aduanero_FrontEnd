@@ -6,11 +6,11 @@ const Proveedor = {
     prov_CodigoPostal: '',
     prov_Ciudad: 0,
     ciud_Nombre: '',
-    pvin_Id: 0,
+    pvin_Id: '',
     pvin_Nombre: '',
     pais_Nombre: '',
     pais_Codigo: '',
-    pais_Id: 0,
+    pais_Id: '',
     prov_DireccionExacta: '',
     prov_CorreoElectronico: '',
     prov_Fax: '',
@@ -20,9 +20,9 @@ const Proveedor = {
     usuarioModificadorNombre: '',
     usua_UsuarioModificacion: 0,
     prov_FechaModificacion: new Date().toISOString(),
-    usuarioEliminacionNombre: null,
-    usua_UsuarioEliminacion: null,
-    prov_FechaEliminacion: null,
+    usuarioEliminacionNombre: '',
+    usua_UsuarioEliminacion: 0,
+    prov_FechaEliminacion: new Date().toISOString(),
     prov_Estado: true
 }
 
