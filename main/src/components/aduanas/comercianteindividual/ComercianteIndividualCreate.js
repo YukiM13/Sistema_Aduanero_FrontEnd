@@ -18,6 +18,7 @@ const validationSchema = yup.object({
   ofic_Id: yup.number().required('La oficina es requerida').moreThan(0, 'Requerido'),
   ofpr_Id: yup.number().required('El oficio es requerido').moreThan(0, 'Requerido'),
   pers_OfprRepresentante: yup.number().required('El oficio del representante es requerido').moreThan(0, 'Requerido'),
+  ciud_Id: yup.number().required('La ciudad es requerida').moreThan(0, 'Requerido'),
 });
 
 const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
@@ -29,6 +30,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [ciudades, setCiudades] = useState([]);
   const [aldeas, setAldea] = useState([]);
+  const [colonias, setColonias] = useState([]);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -76,24 +78,14 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
       .then(res => setOficinas(res.data.data || []));
     axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setOficioProfesion(res.data.data || []));
+    axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(res => setCiudades(res.data.data || []));
     axios.get(`${apiUrl}/api/Aldea/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setAldea(res.data.data || []));
+    axios.get(`${apiUrl}/api/Colonias/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(res => setColonias(res.data.data || []));
   }, []);
 
-// Llamada a la API para obtener las ciudades
-useEffect(() => {
-  axios.get(`${apiUrl}/api/Ciudades/Listar`, {
-    headers: {
-      'XApiKey': apiKey
-    }
-  })
-  .then(response => {
-    setCiudades(response.data.data); // Guardar las ciudades en el estado
-  })
-  .catch(error => {
-    console.error('Error al obtener las Ciudades:', error);
-  });
-}, []); 
 
 
 
@@ -106,12 +98,14 @@ useEffect(() => {
     <div>
       <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)} textColor="primary" indicatorColor="primary">
         <Tab label="Datos Personales" />
-        <Tab label="Oficina y Profesión" />
+        <Tab label="Localización" />
         <Tab label="Representante" />
+        <Tab label="Contacto" />
       </Tabs>
 
       <form onSubmit={formik.handleSubmit}>
         <Box mt={2}>
+          {/* Datos Personales */}
           {tabIndex === 0 && (
             <Grid container spacing={3}>
               <Grid item lg={6}>
@@ -169,13 +163,8 @@ useEffect(() => {
                   ))}
                 </CustomTextField>
               </Grid>
-            </Grid>
-          )}
 
-{tabIndex === 1 && (
-  <Grid container spacing={3}>
-    {/* Select de Oficina */}
-    <Grid item lg={6}>
+              <Grid item lg={6}>
       <CustomFormLabel>Oficina</CustomFormLabel>
       <CustomTextField
         select
@@ -196,8 +185,9 @@ useEffect(() => {
       </CustomTextField>
     </Grid>
 
-    {/* Select de Oficio o Profesión */}
-    <Grid item lg={6}>
+
+        {/* Select de Oficio o Profesión */}
+        <Grid item lg={6}>
       <CustomFormLabel>Oficio o Profesión</CustomFormLabel>
       <CustomTextField
         select
@@ -218,33 +208,7 @@ useEffect(() => {
       </CustomTextField>
     </Grid>
 
-    {/* Agregar el Select de Ciudades */}
     <Grid item lg={6}>
-      <CustomFormLabel>Ciudad</CustomFormLabel>
-      <CustomTextField
-        select
-        fullWidth
-        id="ciud_Id" // Esto es lo que se va a enviar
-        name="ciud_Id"
-        value={formik.values.ciud_Id}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
-        helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
-      >
-        {ciudades.map((ciudad) => (
-          <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
-            {ciudad.ciud_Nombre} {/* Mostrar el nombre, pero enviar el ID */}
-          </MenuItem>
-        ))}
-      </CustomTextField>
-    </Grid>
-  </Grid>
-)}
-
-          {tabIndex === 2 && (
-            <Grid container spacing={3}>
-              <Grid item lg={6}>
                 <CustomFormLabel>Estado Civil Representante</CustomFormLabel>
                 <CustomTextField
                   select
@@ -285,8 +249,110 @@ useEffect(() => {
                   ))}
                 </CustomTextField>
               </Grid>
+         </Grid>
+          )}
+{/* Fin Datos Personales */}
+
+
+
+
+{/* Inicio Localización */}
+{tabIndex === 1 && (
+  <Grid container spacing={3}>
+
+    <Grid item lg={6}>
+      <CustomFormLabel>Ciudad</CustomFormLabel>
+      <CustomTextField
+        select
+        fullWidth
+        id="ciud_Id" // Esto es lo que se va a enviar
+        name="ciud_Id"
+        value={formik.values.ciud_Id}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
+        helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
+      >
+        {ciudades.map((ciudad) => (
+          <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
+            {ciudad.ciud_Nombre} {/* Mostrar el nombre, pero enviar el ID */}
+          </MenuItem>
+        ))}
+      </CustomTextField>
+    </Grid>
+
+<Grid item lg={6}>
+  <CustomFormLabel>Aldea</CustomFormLabel>
+  <CustomTextField
+select
+fullWidth
+id="alde_Id"
+name="alde_Id"
+value={formik.values.alde_Id}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+error={formik.touched.alde_Id && Boolean(formik.errors.alde_Id)}
+helperText={formik.touched.alde_Id && formik.errors.alde_Id}
+  >
+ {aldeas.map((aldea) => (
+          <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
+            {aldea.alde_Nombre}
+          </MenuItem>
+        ))}
+
+  </CustomTextField>
+</Grid>
+
+        <Grid item lg={6}>
+        <CustomFormLabel>Colonia</CustomFormLabel>
+  <CustomTextField
+select
+fullWidth
+id="colo_Id"
+name="colo_Id"
+value={formik.values.colo_Id}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+error={formik.touched.colo_Id && Boolean(formik.errors.colo_Id)}
+helperText={formik.touched.colo_Id && formik.errors.colo_Id}
+  >
+    {colonias.map((colonia) => (
+          <MenuItem key={colonia.colo_Id} value={colonia.colo_Id}>
+            {colonia.colo_Nombre}
+          </MenuItem>
+        ))}
+  </CustomTextField>
+          </Grid>
+
+          <Grid item lg={6}>
+                <CustomFormLabel>Numero de Local o Apartamento</CustomFormLabel>
+                <CustomTextField
+                  fullWidth
+                  id="coin_NumeroLocalApart"
+                  name="coin_NumeroLocalApart"
+                  value={formik.values.coin_NumeroLocalApart}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_NumeroLocalApart && Boolean(formik.errors.coin_NumeroLocalApart)}
+                  helperText={formik.touched.coin_NumeroLocalApart && formik.errors.coin_NumeroLocalApart}
+                />
+              </Grid>
+
+  </Grid>
+)}
+{/* Fin Localización */}
+
+          {tabIndex === 2 && (
+            <Grid container spacing={3}>
+            
             </Grid>
           )}
+
+          {tabIndex === 3 && (
+            <Grid container spacing={3}>
+              </Grid>
+          )}
+
         </Box>
 
         <Box mt={3}>
