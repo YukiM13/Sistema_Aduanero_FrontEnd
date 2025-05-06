@@ -221,6 +221,13 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+        title: 'Persona Jurídica',
+        icon: IconPoint,
+        href: '/PersonaJuridica/PersonaJuridicaForm',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Concepto de Pago',
         icon: IconPoint,
         href: '/concepto-de-pago/list',

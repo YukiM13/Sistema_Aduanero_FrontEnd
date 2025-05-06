@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
+import PersonaJuridica from 'src/models/PersonaJuridicaModel';
 
 
 /* ***Layouts**** */
@@ -89,6 +90,8 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
+const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
+const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
@@ -98,7 +101,6 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
-const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -270,6 +272,8 @@ const Router = [
       { path: '/moneda/list', element: <Moneda  /> },
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
       { path: '/personas/create', element: <PersonaCrear  /> },
+      { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural  /> },
+      { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
 
 
