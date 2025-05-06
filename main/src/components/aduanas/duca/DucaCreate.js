@@ -5,24 +5,25 @@ import {
   Step,
   StepLabel,
   Button,
-  Typography,
-  FormControlLabel,
   Alert,
 } from '@mui/material';
 import PageContainer from '../../../components/container/PageContainer';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import CustomCheckbox from '../../forms/theme-elements/CustomCheckbox';
 import ParentCard from '../../../components/shared/ParentCard';
 import { Stack } from '@mui/system';
 import DucaTab2Component from './DucaTab2';
 import DucaTab1Component from './DucaTab1';
-
+import DucaTab3Component from './DucaTab3';
+import DucaTab4Component from './DucaTab4';
 const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', 'Declarante, Transportista y Conductor', 'Mercancia y Documentos de soporte'];
 const DucaCreateComponent = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
     const ducaTab1Ref = React.useRef();
     const ducaTab2Ref = React.useRef();
+    const ducaTab3Ref = React.useRef();
+    const ducaTab4Ref = React.useRef();
+
     const isStepSkipped = (step) => skipped.has(step);
   
     const handleNext = async() => {
@@ -40,6 +41,7 @@ const DucaCreateComponent = () => {
           return;
         }
       }
+     
       let newSkipped = skipped;
       if (isStepSkipped(activeStep)) {
         newSkipped = new Set(newSkipped.values());
@@ -70,19 +72,12 @@ const DucaCreateComponent = () => {
           );
         case 2:
           return (
-            <Box pt={3}>
-              <Typography variant="h5">Terms and condition</Typography>
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                Sard about this site or you have been to it, but you cannot figure out what it is or
-                what it can do. MTA web directory isSard about this site or you have been to it, but
-                you cannot figure out what it is or what it can do. MTA web directory is
-              </Typography>
-              <FormControlLabel
-                control={<CustomCheckbox defaultChecked />}
-                label="Agree with terms?"
-              />
-            </Box>
+            <DucaTab3Component ref={ducaTab3Ref}/>
           );
+          case 3:
+            return (
+              <DucaTab4Component ref={ducaTab4Ref}/>
+            );
         default:
           break;
       }
@@ -113,12 +108,12 @@ const DucaCreateComponent = () => {
             </Stepper>
             {activeStep === steps.length ? (
               <>
-                <Stack spacing={2} mt={3}>
+                <Stack spacing={2} >
                   <Alert severity='success' mt={2}>All steps completed - you&apos;re finished</Alert>
   
                   <Box textAlign="right">
                     <Button onClick={handleReset} variant="contained" color="error">
-                      Reset
+                      Regresar
                     </Button>
                   </Box>
                 </Stack>
@@ -127,26 +122,24 @@ const DucaCreateComponent = () => {
               <>
                 <Box>{handleSteps(activeStep)}</Box>
   
-                <Box display="flex" flexDirection="row" mt={3}>
-                  <Button
-                    color="inherit"
-                    variant="contained"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{ mr: 1 }}
-                  >
-                    Back
-                  </Button>
-                  
-  
-                  <Button
-                    onClick={handleNext}
-                    variant="contained"
-                    color={activeStep === steps.length - 1 ? 'success' : 'primary'}
-                  >
-                    {activeStep === steps.length - 1 ? 'Finalizar' : 'siguiente'}
-                  </Button>
-                </Box>
+                <Box display="flex" justifyContent="space-between" mt={2}>
+                <Button
+                  color="inherit"
+                  variant="contained"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                >
+                  Atrás
+                </Button>
+
+                <Button
+                  onClick={handleNext}
+                  variant="contained"
+                  color={activeStep === steps.length - 1 ? 'success' : 'primary'}
+                >
+                  {activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
+                </Button>
+              </Box>
               </>
             )}
           </Box>
