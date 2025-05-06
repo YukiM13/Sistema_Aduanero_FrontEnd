@@ -17,6 +17,7 @@ import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import ParentCard from 'src/components/shared/ParentCard';
 import { Stack } from '@mui/system';
+import Tab1 from './DeclaracionTab1';
 
 const steps = ['Account', 'Profile', 'Finish'];
 
@@ -63,28 +64,7 @@ const DeclaracionValor = () => {
     switch (step) {
       case 0:
         return (
-          <Box>
-            <CustomFormLabel htmlFor="Name">Name</CustomFormLabel>
-            <CustomTextField
-              id="Name"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Email">Email</CustomFormLabel>
-            <CustomTextField
-              id="Email"
-              type="email"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Password">Password</CustomFormLabel>
-            <CustomTextField
-              id="Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-            />
-          </Box>
+          <Tab1 />
         );
       case 1:
         return (

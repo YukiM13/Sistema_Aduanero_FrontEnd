@@ -5,7 +5,7 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
-  IconPaperBag,
+  IconFileText,
 
 } from '@tabler/icons';
 //import { id } from 'date-fns/locale';
@@ -245,7 +245,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Declaración de valor',
-    icon: IconPaperBag,
+    icon: IconFileText,
     chipColor: 'secondary',
     href: '/declaracion-de-valor',
   }
