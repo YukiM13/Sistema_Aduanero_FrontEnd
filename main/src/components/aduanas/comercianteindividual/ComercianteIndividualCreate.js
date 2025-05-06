@@ -56,10 +56,11 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [ciudades, setCiudades] = useState([]);
   const [aldeas, setAldea] = useState([]);
   const [colonias, setColonias] = useState([]);
+  
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+///api/Aldea/FiltrarPorCiudades
   const formik = useFormik({
     initialValues: Persona,
     validationSchema,
@@ -105,19 +106,48 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
       .then(res => setOficioProfesion(res.data.data || []));
     axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setCiudades(res.data.data || []));
-    axios.get(`${apiUrl}/api/Aldea/Listar`, { headers: { 'XApiKey': apiKey } })
-      .then(res => setAldea(res.data.data || []));
+    //axios.get(`${apiUrl}/api/Aldea/Listar`, { headers: { 'XApiKey': apiKey } })
+      //.then(res => setAldea(res.data.data || []));
     axios.get(`${apiUrl}/api/Colonias/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setColonias(res.data.data || []));
   }, []);
 
-
-
+ 
+  const handleCiudadChange = async (e) => {
+    const selectedCiudadId = e.target.value;
+  
+    formik.setFieldValue('ciud_Id', selectedCiudadId);
+    formik.setFieldValue('alde_Id', '');
+  
+    try {
+      const response = await axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades`, {
+        headers: { 'XApiKey': apiKey },
+        params: { ciud_Id: selectedCiudadId }
+      });
+  
+      const aldeasFiltradas = response.data?.data ?? [];
+  
+      if (!Array.isArray(aldeasFiltradas)) {
+        console.error("La respuesta no es un array:", aldeasFiltradas);
+        setAldea([]);
+      } else {
+        setAldea(aldeasFiltradas);
+      }
+  
+      console.log("Aldeas filtradas:", aldeasFiltradas);
+    } catch (error) {
+      console.error('Error al cargar aldeas:', error);
+    }
+  };
+  
+  
 
   const handleNombreChange = (e) => {
     const upper = e.target.value.toUpperCase();
     formik.setFieldValue('pers_Nombre', upper);
   };
+
+  
 
   return (
     <div>
@@ -288,44 +318,58 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
     <Grid item lg={6}>
       <CustomFormLabel>Ciudad</CustomFormLabel>
       <CustomTextField
-        select
-        fullWidth
-        id="ciud_Id" // Esto es lo que se va a enviar
-        name="ciud_Id"
-        value={formik.values.ciud_Id}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
-        helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
-      >
-        {ciudades.map((ciudad) => (
-          <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
-            {ciudad.ciud_Nombre} {/* Mostrar el nombre, pero enviar el ID */}
-          </MenuItem>
-        ))}
-      </CustomTextField>
+  select
+  fullWidth
+  id="ciud_Id"
+  name="ciud_Id"
+  value={formik.values.ciud_Id}
+  onChange={handleCiudadChange} // 👈 aquí
+  onBlur={formik.handleBlur}
+  error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
+  helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
+>
+  {ciudades.map((ciudad) => (
+    <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
+      {ciudad.ciud_Nombre}
+    </MenuItem>
+  ))}
+</CustomTextField>
+
     </Grid>
 
 <Grid item lg={6}>
   <CustomFormLabel>Aldea</CustomFormLabel>
   <CustomTextField
-select
-fullWidth
-id="alde_Id"
-name="alde_Id"
-value={formik.values.alde_Id}
-onChange={formik.handleChange}
-onBlur={formik.handleBlur}
-error={formik.touched.alde_Id && Boolean(formik.errors.alde_Id)}
-helperText={formik.touched.alde_Id && formik.errors.alde_Id}
-  >
- {aldeas.map((aldea) => (
-          <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
-            {aldea.alde_Nombre}
-          </MenuItem>
-        ))}
+  select
+  fullWidth
+  id="alde_Id"
+  name="alde_Id"
+  value={formik.values.alde_Id}
+  onChange={formik.handleChange}
+  onBlur={formik.handleBlur}
+  error={formik.touched.alde_Id && Boolean(formik.errors.alde_Id)}
+  helperText={formik.touched.alde_Id && formik.errors.alde_Id}
+>
+  {!formik.values.ciud_Id && (
+    <MenuItem disabled value="">
+      No se ha seleccionado una ciudad
+    </MenuItem>
+  )}
 
-  </CustomTextField>
+  {formik.values.ciud_Id && aldeas.length === 0 && (
+    <MenuItem disabled value="">
+      No hay aldeas disponibles para esta ciudad
+    </MenuItem>
+  )}
+
+  {aldeas.length > 0 &&
+    aldeas.map((aldea) => (
+      <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
+        {aldea.alde_Nombre}
+      </MenuItem>
+    ))}
+</CustomTextField>
+
 </Grid>
 
         <Grid item lg={6}>
@@ -464,7 +508,12 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
               </Grid>
 
               <Grid item lg={6}>
+              <Box display="flex" alignItems="center">
                 <CustomFormLabel>Punto de Referencia Representante</CustomFormLabel>
+                <Box component="span" color="red" ml={0.5}>
+                *
+                </Box>
+                </Box>
                 <CustomTextField
                   fullWidth
                   id="coin_PuntoReferenciaReprentante"
@@ -481,10 +530,17 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
             </Grid>
           )}
 
+
+{/* Contacto */}
           {tabIndex === 3 && (
             <Grid container spacing={3}>
              <Grid item lg={6}>
-  <CustomFormLabel>Teléfono Celular</CustomFormLabel>
+             <Box display="flex" alignItems="center">
+                <CustomFormLabel>Teléfono Celular</CustomFormLabel>
+                <Box component="span" color="red" ml={0.5}>
+                *
+                </Box>
+                </Box>
   <InputMask
     mask="+504 9999-9999"
     value={formik.values.coin_TelefonoCelular}
@@ -506,6 +562,73 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     )}
   </InputMask>
 </Grid>
+
+
+<Grid item lg={6}>
+        <Box display="flex" alignItems="center">
+                <CustomFormLabel>Teléfono Fijo</CustomFormLabel>
+                <Box component="span" color="red" ml={0.5}>
+                *
+                </Box>
+                </Box>
+  <InputMask
+    mask="+504 9999-9999"
+    value={formik.values.coin_TelefonoFijo}
+    onChange={(e) => {
+      const formatted = formatHondurasPhone(e.target.value);
+      formik.setFieldValue('coin_TelefonoFijo', formatted);
+    }}
+    onBlur={formik.handleBlur}
+  >
+    {(inputProps) => (
+      <CustomTextField
+        {...inputProps}
+        fullWidth
+        id="coin_TelefonoFijo"
+        name="coin_TelefonoFijo"
+        error={formik.touched.coin_TelefonoFijo && Boolean(formik.errors.coin_TelefonoFijo)}
+        helperText={formik.touched.coin_TelefonoFijo && formik.errors.coin_TelefonoFijo}
+      />
+    )}
+  </InputMask>
+</Grid>
+
+
+                <Grid item lg={6}>
+                <Box display="flex" alignItems="center">
+                <CustomFormLabel>Correo Electrónico</CustomFormLabel>
+                <Box component="span" color="red" ml={0.5}>
+                *
+                </Box>
+                </Box>
+
+                <CustomTextField
+                  fullWidth
+                  id="coin_CorreoElectronico"
+                  placeholder="ejemploCorreo@ejemplo.com"
+                  name="coin_CorreoElectronico"
+                  value={formik.values.coin_CorreoElectronico}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_CorreoElectronico && Boolean(formik.errors.coin_CorreoElectronico)}
+                  helperText={formik.touched.coin_CorreoElectronico && formik.errors.coin_CorreoElectronico}
+                />
+              </Grid>
+
+              <Grid item lg={6}>
+                <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
+                <CustomTextField
+                  fullWidth
+                  id="coin_CorreoElectronicoAlternativo"
+                  placeholder="ejemploCorreo@ejemplo.com"
+                  name="coin_CorreoElectronicoAlternativo"
+                  value={formik.values.coin_CorreoElectronicoAlternativo}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_CorreoElectronicoAlternativo && Boolean(formik.errors.coin_CorreoElectronicoAlternativo)}
+                  helperText={formik.touched.coin_CorreoElectronicoAlternativo && formik.errors.coin_CorreoElectronicoAlternativo}
+                />
+              </Grid>
 
 
               </Grid>
