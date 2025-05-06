@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -21,9 +21,10 @@ const validationSchema = yup.object({
     usua_NombreCompleto: yup.string().required('El nombre completo es requerido'),
     usua_Email: yup.string().email('Ingrese un email válido').required('El email es requerido'),
     usua_ImagenPerfil: yup.string(), // Por ahora manejamos la URL como string
-});
+});*/
 
 const UsuarioEditComponent = ({ usuario, onCancelar, onGuardadoExitoso }) => {
+    /*
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [imagenPerfil, setImagenPerfil] = useState(null);
     const apiUrl = process.env.REACT_APP_API_URL;
@@ -124,7 +125,8 @@ const UsuarioEditComponent = ({ usuario, onCancelar, onGuardadoExitoso }) => {
                             helperText={formik.touched.usua_Email && formik.errors.usua_Email}
                         />
                     </Grid>
-                    {/* No se permite editar la contraseña desde aquí por seguridad */}
+                    {/* No se permite editar la contraseña desde aquí por seguridad *}
+                    /*
                     <Grid item xs={12}>
                         <CustomFormLabel htmlFor="usua_ImagenPerfil">Imagen de Perfil</CustomFormLabel>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -182,7 +184,7 @@ const UsuarioEditComponent = ({ usuario, onCancelar, onGuardadoExitoso }) => {
                 </Alert>
             </Snackbar>
         </div>
-    );
+    );*/
 };
 
 export default UsuarioEditComponent;

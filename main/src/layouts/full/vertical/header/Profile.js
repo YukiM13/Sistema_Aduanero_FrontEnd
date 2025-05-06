@@ -153,7 +153,7 @@ const Profile = () => {
                 </Box>
               </Box>
               <Button
-                to="/auth/login"
+                to="/auth/login2"
                 variant="outlined"
                 color="primary"
                 component={Link}

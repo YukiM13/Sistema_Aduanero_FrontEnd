@@ -26,7 +26,7 @@ export const Profile = () => {
           </Box>
           <Box sx={{ ml: 'auto' }}>
             <Tooltip title="Logout" placement="top">
-              <IconButton color="primary" component={Link} to="/auth/login" aria-label="logout" size="small">
+              <IconButton color="primary" component={Link} to="/auth/login2" aria-label="logout" size="small">
                 <IconPower size="20" />
               </IconButton>
             </Tooltip>

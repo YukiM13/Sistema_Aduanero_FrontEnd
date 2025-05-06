@@ -7,6 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
+import AddIcon from '@mui/icons-material/Add';
 
 const validationSchema = yup.object({
     usua_Nombre: yup.string().required('El nombre es requerido'),
@@ -141,6 +142,72 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
         <div>
             <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3} mb={3}>
+                    <Grid item lg={12} md={12} sm={12} mx={'auto'}>
+                        <CustomFormLabel htmlFor="usua_Image">Imagen</CustomFormLabel>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            {!previewImage ? (
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    sx={{
+                                        width: '50px',
+                                        height: '50px',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        padding: 0,
+                                }}>
+                                <AddIcon />
+                                    <input
+                                    type="file"
+                                    id="usua_Image"
+                                    name="usua_Image"
+                                    onChange={handleImageChange}
+                                    onBlur={formik.handleBlur}
+                                    hidden/>
+                                </Button>
+                            ) : (
+                                <div style={{ position: 'relative' }}>
+                                    <img
+                                        src={previewImage}
+                                        alt="Vista previa"
+                                        style={{
+                                            width: '50px',
+                                            height: '50px',
+                                            borderRadius: '50%',
+                                            border: '1px solid',
+                                            objectFit: 'cover',
+                                        }}
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        size="small"
+                                        onClick={() => {
+                                            formik.setFieldValue('usua_Image', null);
+                                            setPreviewImage(null);
+                                        }}
+                                        sx={{
+                                            position: 'absolute',
+                                            top: '-10px',
+                                            right: '-10px',
+                                            minWidth: '24px',
+                                            width: '24px',
+                                            height: '24px',
+                                            borderRadius: '50%',
+                                            padding: 0,
+                                        }}
+                                    >
+                                        ✕
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                        {formik.touched.usua_Image && formik.errors.usua_Image && (
+                        <div style={{ color: 'red', textAlign: 'center', marginTop: '5px' }}>{formik.errors.usua_Image}</div>
+                        )}
+                    </Grid>
                     <Grid item lg={6} md={12} sm={12}>
                         <CustomFormLabel htmlFor="usua_Nombre">Nombre</CustomFormLabel>
                         <CustomTextField
@@ -213,25 +280,6 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                                 </MenuItem>
                             ))}
                         </CustomTextField>
-                    </Grid>
-
-                    <Grid item lg={6} md={12} sm={12}>
-                        <CustomFormLabel htmlFor="usua_Image">Imagen</CustomFormLabel>
-                        <input
-                            type="file"
-                            id="usua_Image"
-                            name="usua_Image"
-                            onChange={handleImageChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.touched.usua_Image && formik.errors.usua_Image && (
-                            <div style={{ color: 'red' }}>{formik.errors.usua_Image}</div>
-                        )}
-                        {previewImage && (
-                            <div style={{ marginTop: '10px' }}>
-                                <img src={previewImage} alt="Vista previa" style={{ maxWidth: '100px', maxHeight: '100px' }} />
-                            </div>
-                        )}
                     </Grid>
                 </Grid>
 

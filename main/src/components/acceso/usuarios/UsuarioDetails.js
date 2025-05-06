@@ -1,14 +1,14 @@
-import React from 'react';
+/*import React from 'react';
 import {
     Grid,
     Button,
     Avatar
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Typography from '@mui/material/Typography';
+import Typography from '@mui/material/Typography';*/
 
 const UsuarioDetailsComponent = ({ usuario, onCancelar }) => {
-    return (
+    return (/*
         <div>
             <Grid container spacing={3} mb={3}>
                 <Grid item lg={12} md={12} sm={12}>
@@ -57,7 +57,8 @@ const UsuarioDetailsComponent = ({ usuario, onCancelar }) => {
                     </Button>
                 </Grid>
             </Grid>
-        </div>
+        </div>*/
+        <p>ola</p>
     );
 };
 
