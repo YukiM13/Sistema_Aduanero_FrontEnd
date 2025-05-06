@@ -271,7 +271,7 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
             if (onGuardadoExitoso) onGuardadoExitoso(); // Solo se ejecuta al completarse correctamente
           })
           .catch(error => {
-            console.error('Error al insertar la ciudad:', error);
+            console.error('Error al editar la ciudad:', error);
           });
           
         },

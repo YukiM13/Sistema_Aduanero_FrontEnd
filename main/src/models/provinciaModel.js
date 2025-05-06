@@ -13,7 +13,7 @@ const ProvinciaModel = {
     pvin_FechaModificacion: '',
     usua_UsuarioEliminacion: '',
     pvin_FechaEliminacion: '',
-      pvin_Estado: true
+    pvin_Estado: true
   }
 
 export default ProvinciaModel;

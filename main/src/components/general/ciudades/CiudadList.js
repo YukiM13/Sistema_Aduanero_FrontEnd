@@ -274,7 +274,7 @@ const handleDelete = async (id) => {
 
   useEffect(() => {
     cargarCiudades(); //Aca llamamos
-  }, []);
+  },[]);
 
   const handleChangePage = (event, newPage) => setPage(newPage);//Cambia a la siguiente pagina
   const handleChangeRowsPerPage = (event) => {
@@ -297,143 +297,133 @@ const handleDelete = async (id) => {
 
   return (
     <div>
-      <Breadcrumb title="Ciudades" subtitle={ "Listar"} />
-      
-      
-
+        <Breadcrumb title="Ciudades" subtitle={ "Listar"}/>
       
         <ParentCard>
         {modo === 'listar' && ( //esta linea muestra el listar osea la tabla
-       
-   
-          <container>
-      <Stack direction="row" justifyContent="flex-start" mb={2}>
-          <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-            {'Nuevo'}
-          </Button>
-      </Stack>
-        <Paper variant="outlined">
-          <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-                ),
+        
+            <container>
+                <Stack direction="row" justifyContent="flex-start" mb={2}>
+                    <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
+                    {'Nuevo'}
+                    </Button>
+                </Stack>
+                <Paper variant="outlined">
+                    <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                            <SearchIcon />
+                            </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center">
+                                    <Typography variant="h6">Acciones</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="h6">Nombre</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="h6">Provincia</Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {filteredData
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((ciudad) => (
+                                <TableRow key={ciudad.ciud_Id}>
+                                    <TableCell align="center">
+
+                                        <IconButton
+                                        size="small" 
+                                        // se abre el menu y se selecciona la data de la fila 
+                                        onClick={(e) => abrirMenu(e, ciudad)}
+                                        >
+                                        <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell>{ciudad.ciud_Nombre}</TableCell>
+                                    <TableCell>{ciudad.pvin_Nombre}</TableCell>
+                                </TableRow>
+                                ))}
+                            {emptyRows > 0 && (
+                            <TableRow style={{ height: 53 * emptyRows }}>
+                                <TableCell colSpan={2} />
+                            </TableRow>
+                            )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination component="div" count={ciudades.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
+                </Paper>
+            </container>
+        )}
+
+        {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+
+            <CiudadesCreateComponent
+            onCancelar={() => setModo('listar')} 
+            onGuardadoExitoso={() => {
+                setModo('listar');
+                mostrarAlerta('guardado')
+                // Recarga los datos después de guardar
+                cargarCiudades();
             }}/>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">
-                      <Typography variant="h6">Acciones</Typography>
-                    </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Nombre</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="h6">Provincia</Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-              {filteredData
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((ciudad) => (
-                  <TableRow key={ciudad.ciud_Id}>
-                    <TableCell align="center">
+        )}
 
-                    <IconButton
-                      size="small" 
-                      // se abre el menu y se selecciona la data de la fila 
-                      onClick={(e) => abrirMenu(e, ciudad)}
-                    >
-                    <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                    </IconButton>
-                    </TableCell>
-                    <TableCell>{ciudad.ciud_Nombre}</TableCell>
-                    <TableCell>{ciudad.pvin_Nombre}</TableCell>
-                  </TableRow>
-                ))}
-                {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                     <TableCell colSpan={2} />
-                  </TableRow>
-                   )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-            <TablePagination component="div" count={ciudades.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
-            </Paper>
-          </container>
-          )}
-          {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
 
-    <CiudadesCreateComponent
-      onCancelar={() => setModo('listar')} 
-      onGuardadoExitoso={() => {
-        setModo('listar');
-        mostrarAlerta('guardado')
-        // Recarga los datos después de guardar
-        cargarCiudades();
-      }}
-    />
+            <CiudadesEditComponent
+                ciudad={ciudadSeleccionada}
+                onCancelar={() => setModo('listar')} 
+                onGuardadoExitoso={() => {
+                    setModo('listar');
+                    mostrarAlerta('actualizado')
+                    // Recarga los datos después de guardar
+                    cargarCiudades();
+                }}>
+            </CiudadesEditComponent>
 
-)}
- {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+        )}
 
-<CiudadesEditComponent
-   ciudad={ciudadSeleccionada}
-  onCancelar={() => setModo('listar')} 
-  onGuardadoExitoso={() => {
-    setModo('listar');
-    mostrarAlerta('actualizado')
-    // Recarga los datos después de guardar
-    cargarCiudades();
-  }}
-/>
-
-)}
-{modo === 'detalle' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
-
-<CiudadesDetailsComponent
-   ciudad={ciudadSeleccionada}
-  onCancelar={() => setModo('listar')} 
- 
-/>
-
-)}
-
-
+        {modo === 'detalle' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+            <CiudadesDetailsComponent
+            ciudad={ciudadSeleccionada}
+            onCancelar={() => setModo('listar')}>
+            </CiudadesDetailsComponent> 
+        )}
         </ParentCard>
+        
         <Snackbar
-  open={openSnackbar}
-  autoHideDuration={3000}
-  onClose={() => setOpenSnackbar(false)}
-  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
->
-  <Alert
-    onClose={() => setOpenSnackbar(false)}
-    severity={alertConfig.severity}
-    sx={{ width: '100%' }}
-  >
-    {alertConfig.message}
-  </Alert>
-</Snackbar>
+            open={openSnackbar}
+            autoHideDuration={3000}
+            onClose={() => setOpenSnackbar(false)}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <Alert
+                onClose={() => setOpenSnackbar(false)}
+                severity={alertConfig.severity}
+                sx={{ width: '100%' }}>
+                {alertConfig.message}
+            </Alert>
+        </Snackbar>
 
-
-      <Menu
+        <Menu
       //so, si 'menuAbierto' esta en true se muestra dado el caso q no pues se cierra 
         anchorEl={posicionMenu}
         open={menuAbierto}
-        onClose={cerrarMenu}
-      >
-        <MenuItem onClick={() => editarOficina(ciudadSeleccionada)}>
-          <ListItemIcon>
-            <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
-          </ListItemIcon>
-          <ListItemText>Editar</ListItemText>
-        </MenuItem>
+        onClose={cerrarMenu}>
+            <MenuItem onClick={() => editarOficina(ciudadSeleccionada)}>
+            <ListItemIcon>
+                <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
+            </ListItemIcon>
+            <ListItemText>Editar</ListItemText>
+            </MenuItem>
         <MenuItem onClick={() => DetalleOficina(ciudadSeleccionada)}>
           <ListItemIcon>
             <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
@@ -449,41 +439,6 @@ const handleDelete = async (id) => {
         </MenuItem>
       </Menu>
 
-      {/* <Dialog
-        open={confirmarEliminacion}
-        onClose={() => setConfirmarEliminacion(false)}
-      >
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <WarningAmberIcon color="warning" />
-          Confirmar eliminación
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            ¿Estás seguro que deseas eliminar a <strong>{ciudadSeleccionada?.ciud_Nombre}</strong>?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setConfirmarEliminacion(false)}
-            variant="outlined"
-            color="primary"
-          >
-            Cancelar
-          </Button>
-          <Button
-            onClick={() => {
-              handleDelete(ciudadSeleccionada)
-              setConfirmarEliminacion(false);
-              setciudadSeleccionada(null);
-              
-            }}
-            variant="contained"
-            color="error"
-          >
-            Eliminar
-          </Button>
-        </DialogActions>
-      </Dialog> */}
       <Dialog
   open={confirmarEliminacion}
   onClose={() => setConfirmarEliminacion(false)}
