@@ -29,6 +29,8 @@
     "formik": "^2.2.9",
     "framer-motion": "^8.5.2",
     "i18next": "^22.0.6",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "react": "^18.2.0",
