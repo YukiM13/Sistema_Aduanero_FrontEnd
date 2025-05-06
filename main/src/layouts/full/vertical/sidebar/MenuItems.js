@@ -5,6 +5,7 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
+  IconPaperBag,
 
 } from '@tabler/icons';
 //import { id } from 'date-fns/locale';
@@ -238,11 +239,16 @@ const Menuitems = [
         icon: IconPoint,
         chipColor: 'secondary',
         href: '/subCategorias/list',
-      },
-      
-     
+      }
     ],
   },
+  {
+    id: uniqueId(),
+    title: 'Declaración de valor',
+    icon: IconPaperBag,
+    chipColor: 'secondary',
+    href: '/declaracion-de-valor',
+  }
   
 ];
 
