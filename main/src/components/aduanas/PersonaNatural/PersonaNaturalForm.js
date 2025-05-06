@@ -15,7 +15,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Fetch the list of cities
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
     axios
@@ -29,7 +28,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         console.error('Error al obtener las ciudades:', error);
       });
 
-    // Fetch the list of personas
     axios
       .get(`${apiUrl}/api/Personas/Listar`, { headers: { 'XApiKey': apiKey } })
       .then((response) => {
@@ -51,22 +49,22 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     }
   };
 
-  const validateTabFields = (validateAll = false) => {
+  const validateTabFields = (validar = false) => {
     const newErrors = {};
-    if (validateAll || activeTab === 0) {
+    if (validar || activeTab === 0) {
       if (!formData.pers_Id) newErrors.pers_Id = 'El campo Persona ID es obligatorio.';
       if (!formData.pena_DireccionExacta) newErrors.pena_DireccionExacta = 'El campo Dirección Exacta es obligatorio.';
       if (!formData.ciud_Id) newErrors.ciud_Id = 'El campo Ciudad es obligatorio.';
     }
-    if (validateAll || activeTab === 1) {
+    if (validar || activeTab === 1) {
       if (!formData.pena_TelefonoCelular) newErrors.pena_TelefonoCelular = 'El campo Teléfono Celular es obligatorio.';
       if (!formData.pena_CorreoElectronico) newErrors.pena_CorreoElectronico = 'El campo Correo Electrónico es obligatorio.';
     }
-    if (validateAll || activeTab === 2) {
+    if (validar || activeTab === 2) {
       if (!formData.pena_RTN) newErrors.pena_RTN = 'El campo RTN es obligatorio.';
       if (!formData.pena_DNI) newErrors.pena_DNI = 'El campo DNI es obligatorio.';
     }
-    if (validateAll || activeTab === 3) {
+    if (validar || activeTab === 3) {
       if (!formData.pena_NumeroRecibo) newErrors.pena_NumeroRecibo = 'El campo Número Recibo es obligatorio.';
     }
     setErrors(newErrors);
@@ -74,18 +72,17 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   };
 
   const handleTabChange = (event, newValue) => {
-    // Prevent direct tab selection
     if (newValue === activeTab) return;
   };
 
   const handleNext = () => {
     if (validateTabFields()) {
-      setActiveTab((prev) => Math.min(prev + 1, 3)); // Move to the next tab
+      setActiveTab((prev) => Math.min(prev + 1, 3));
     }
   };
 
   const handleBack = () => {
-    setActiveTab((prev) => Math.max(prev - 1, 0)); // Move to the previous tab
+    setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 
   const handleSubmit = (e) => {
@@ -97,7 +94,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 0: // Datos Personales
+      case 0: // datos personales
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -115,7 +112,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                   MenuProps: {
                     PaperProps: {
                       style: {
-                        maxHeight: 200, // Limit the height of the dropdown
+                        maxHeight: 200,
                       },
                     },
                   },
@@ -155,7 +152,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                   MenuProps: {
                     PaperProps: {
                       style: {
-                        maxHeight: 200, // Limit the height of the dropdown
+                        maxHeight: 200,
                       },
                     },
                   },
@@ -163,14 +160,14 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
               >
                 {ciudades.map((ciudad) => (
                   <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
-                    {ciudad.ciud_Nombre}
+                    {`${ciudad.ciud_Nombre} ${ciudad.ciud_Id}`}
                   </MenuItem>
                 ))}
               </CustomTextField>
             </Grid>
           </Grid>
         );
-      case 1: // Datos de Contacto
+      case 1: // datos de contacto
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -206,6 +203,11 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 error={!!errors.pena_CorreoElectronico}
                 helperText={errors.pena_CorreoElectronico}
               />
+               <Grid item>
+                          <Button variant="contained" type="submit" startIcon={<check />}>
+                            Verificar correo
+                          </Button>
+                        </Grid>
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Correo Alternativo</CustomFormLabel>
@@ -219,7 +221,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
             </Grid>
           </Grid>
         );
-      case 2: // Identificación y Documentación
+      case 2: // identificacicn y cocumentacion
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -268,7 +270,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
             </Grid>
           </Grid>
         );
-      case 3: // Información de Pago
+      case 3: // informacion de pago
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
