@@ -117,6 +117,7 @@ const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvi
 
 
 // Acceso
+const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -263,8 +264,7 @@ const Router = [
       { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
-
-
+      { path: '/usuarios/list', element: <Usuarios  /> },
 
 
 
