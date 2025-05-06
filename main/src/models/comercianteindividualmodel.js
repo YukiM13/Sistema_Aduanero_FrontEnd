@@ -43,8 +43,10 @@ coin_TelefonoCelular: '',
 coin_TelefonoFijo: '',
 coin_CorreoElectronico: '',
 coin_CorreoElectronicoAlternativo: '',
-usua_UsuarioModificacion: 0,
-coin_FechaModificacion: '',
+//usua_UsuarioModificacion: 0,
+//coin_FechaModificacion: '',
+
+//documentos
 
 
   }

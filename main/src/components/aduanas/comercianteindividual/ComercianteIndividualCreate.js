@@ -9,6 +9,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
+//import ComercianteIndividual from 'src/models/comercianteindividualmodel';
 
 const validationSchema = yup.object({
   pers_RTN: yup.string().required('El RTN es requerido'),
@@ -19,7 +20,31 @@ const validationSchema = yup.object({
   ofpr_Id: yup.number().required('El oficio es requerido').moreThan(0, 'Requerido'),
   pers_OfprRepresentante: yup.number().required('El oficio del representante es requerido').moreThan(0, 'Requerido'),
   ciud_Id: yup.number().required('La ciudad es requerida').moreThan(0, 'Requerido'),
+  coin_TelefonoCelular: yup.string()
+  .matches(/^\+504 \d{4}-\d{4}$/, 'Debe tener el formato +504 0000-0000')
+  .required('Este campo es obligatorio'),
 });
+
+
+
+//Para Celular
+const formatHondurasPhone = (input) => {
+  // Elimina todo lo que no sea número
+  const digits = input.replace(/\D/g, '');
+
+  // Elimina el prefijo si el usuario lo pone
+  const raw = digits.startsWith('504') ? digits.slice(3) : digits;
+
+  // Solo toma los primeros 8 dígitos
+  const clean = raw.slice(0, 8);
+  const formatted = clean.length > 4
+    ? `${clean.slice(0, 4)}-${clean.slice(4)}`
+    : clean;
+
+  return `+504 ${formatted}`;
+};
+
+
 
 const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -338,31 +363,208 @@ helperText={formik.touched.colo_Id && formik.errors.colo_Id}
                 />
               </Grid>
 
+              <Grid item lg={6}>
+                <CustomFormLabel>Punto de Referencia</CustomFormLabel>
+                <CustomTextField
+                  fullWidth
+                  id="coin_NumeroLocalApart"
+                  name="coin_NumeroLocalApart"
+                  value={formik.values.coin_PuntoReferencia}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_PuntoReferencia && Boolean(formik.errors.coin_PuntoReferencia)}
+                  helperText={formik.touched.coin_PuntoReferencia && formik.errors.coin_PuntoReferencia}
+                />
+              </Grid>
+
   </Grid>
 )}
 {/* Fin Localización */}
 
+
+          {/* Inicio Representante */}
           {tabIndex === 2 && (
             <Grid container spacing={3}>
-            
+            <Grid item lg={6}>
+      <CustomFormLabel>Ciudad Representante</CustomFormLabel>
+      <CustomTextField
+        select
+        fullWidth
+        id="coin_CiudadRepresentante" // Esto es lo que se va a enviar
+        name="coin_CiudadRepresentante"
+        value={formik.values.coin_CiudadRepresentante}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.coin_CiudadRepresentante && Boolean(formik.errors.coin_CiudadRepresentante)}
+        helperText={formik.touched.coin_CiudadRepresentante && formik.errors.coin_CiudadRepresentante}
+      >
+        {ciudades.map((ciudad) => (
+          <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
+            {ciudad.ciud_Nombre} {/* Mostrar el nombre, pero enviar el ID */}
+          </MenuItem>
+        ))}
+      </CustomTextField>
+    </Grid>
+
+    <Grid item lg={6}>
+  <CustomFormLabel>Aldea Representante</CustomFormLabel>
+  <CustomTextField
+select
+fullWidth
+id="coin_AldeaRepresentante"
+name="coin_AldeaRepresentante"
+value={formik.values.coin_AldeaRepresentante}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+error={formik.touched.coin_AldeaRepresentante && Boolean(formik.errors.coin_AldeaRepresentante)}
+helperText={formik.touched.coin_AldeaRepresentante && formik.errors.coin_AldeaRepresentante}
+  >
+ {aldeas.map((aldea) => (
+          <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
+            {aldea.alde_Nombre}
+          </MenuItem>
+        ))}
+
+  </CustomTextField>
+</Grid>
+
+<Grid item lg={6}>
+        <CustomFormLabel>Colonia Representante</CustomFormLabel>
+  <CustomTextField
+select
+fullWidth
+id="coin_coloniaIdRepresentante"
+name="coin_coloniaIdRepresentante"
+value={formik.values.coin_coloniaIdRepresentante}
+onChange={formik.handleChange}
+onBlur={formik.handleBlur}
+error={formik.touched.coin_coloniaIdRepresentante && Boolean(formik.errors.coin_coloniaIdRepresentante)}
+helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_coloniaIdRepresentante}
+  >
+    {colonias.map((colonia) => (
+          <MenuItem key={colonia.colo_Id} value={colonia.colo_Id}>
+            {colonia.colo_Nombre}
+          </MenuItem>
+        ))}
+  </CustomTextField>
+          </Grid>
+
+          <Grid item lg={6}>
+                <CustomFormLabel>Numero de Local o Apartamento Representante</CustomFormLabel>
+                <CustomTextField
+                  fullWidth
+                  id="coin_NumeroLocaDepartRepresentante"
+                  name="coin_NumeroLocaDepartRepresentante"
+                  value={formik.values.coin_NumeroLocaDepartRepresentante}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_NumeroLocaDepartRepresentante && Boolean(formik.errors.coin_NumeroLocaDepartRepresentante)}
+                  helperText={formik.touched.coin_NumeroLocaDepartRepresentante && formik.errors.coin_NumeroLocaDepartRepresentante}
+                />
+              </Grid>
+
+              <Grid item lg={6}>
+                <CustomFormLabel>Punto de Referencia Representante</CustomFormLabel>
+                <CustomTextField
+                  fullWidth
+                  id="coin_PuntoReferenciaReprentante"
+                  name="coin_PuntoReferenciaReprentante"
+                  value={formik.values.coin_PuntoReferenciaReprentante}
+                  onChange={handleNombreChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.coin_PuntoReferenciaReprentante && Boolean(formik.errors.coin_PuntoReferenciaReprentante)}
+                  helperText={formik.touched.coin_PuntoReferenciaReprentante && formik.errors.coin_PuntoReferenciaReprentante}
+                />
+              </Grid>
+
+
             </Grid>
           )}
 
           {tabIndex === 3 && (
             <Grid container spacing={3}>
+             <Grid item lg={6}>
+  <CustomFormLabel>Teléfono Celular</CustomFormLabel>
+  <InputMask
+    mask="+504 9999-9999"
+    value={formik.values.coin_TelefonoCelular}
+    onChange={(e) => {
+      const formatted = formatHondurasPhone(e.target.value);
+      formik.setFieldValue('coin_TelefonoCelular', formatted);
+    }}
+    onBlur={formik.handleBlur}
+  >
+    {(inputProps) => (
+      <CustomTextField
+        {...inputProps}
+        fullWidth
+        id="coin_TelefonoCelular"
+        name="coin_TelefonoCelular"
+        error={formik.touched.coin_TelefonoCelular && Boolean(formik.errors.coin_TelefonoCelular)}
+        helperText={formik.touched.coin_TelefonoCelular && formik.errors.coin_TelefonoCelular}
+      />
+    )}
+  </InputMask>
+</Grid>
+
+
               </Grid>
           )}
 
         </Box>
 
-        <Box mt={3}>
-          <Button type="submit" variant="contained" color="primary" startIcon={<SaveIcon />}>
-            Guardar
-          </Button>
-          <Button variant="outlined" color="secondary" onClick={onCancelar} startIcon={<CancelIcon />} style={{ marginLeft: '10px' }}>
-            Cancelar
-          </Button>
-        </Box>
+      
+
+        <Box mt={3} display="flex" justifyContent="space-between">
+  <div>
+    {tabIndex > 0 && (
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => setTabIndex(tabIndex - 1)}
+      >
+        Anterior
+      </Button>
+    )}
+  </div>
+  
+  <div>
+    {tabIndex < 3 && (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setTabIndex(tabIndex + 1)}
+      >
+        Siguiente
+      </Button>
+    )}
+
+    {tabIndex === 3 && (
+      <>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          startIcon={<SaveIcon />}
+        >
+          Guardar
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={onCancelar}
+          startIcon={<CancelIcon />}
+          style={{ marginLeft: '10px' }}
+        >
+          Cancelar
+        </Button>
+      </>
+    )}
+  </div>
+</Box>
+
+
+
       </form>
 
       <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
