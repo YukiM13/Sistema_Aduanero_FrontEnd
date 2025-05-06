@@ -6,6 +6,7 @@ import {
   IconBuildingFactory2,
   IconPackgeExport,
   IconPaperBag,
+  IconFileCertificate
 
 } from '@tabler/icons';
 //import { id } from 'date-fns/locale';
@@ -156,13 +157,6 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-        title: 'Duca',
-        icon: IconPoint,
-        href: '/duca',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
         title: 'Formas de Pago',
         icon: IconPoint,
         href: '/formasdepago/list',
@@ -255,7 +249,14 @@ const Menuitems = [
     icon: IconPaperBag,
     chipColor: 'secondary',
     href: '/declaracion-de-valor',
-  }
+  },
+  {
+    id: uniqueId(),
+    title: 'Duca',
+    icon: IconFileCertificate,
+    href: '/duca',
+    chipColor: 'secondary',
+  },
   
 ];
 

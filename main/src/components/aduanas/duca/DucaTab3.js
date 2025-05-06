@@ -48,8 +48,10 @@ const validationSchema = yup.object({
    
 const DucaTab3Component = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => { //esto es lo que manda para saber cuando cerrar el crear
 const [paises, setPaises] = useState([]);
+const [modoTransporte, setModoTransporte] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
 const [selectedPais, setSelectedPais] = useState(null);
+const [selectedModoTransporte, setSelectedModoTransporte] = useState(null);
 const [selectedPaisDestino, setSelectedPaisDestino] = useState(null);
 const [initialValues, setInitialValues] = useState(Duca);
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -70,6 +72,21 @@ const [initialValues, setInitialValues] = useState(Duca);
     .catch(error => {
         console.error('Error al obtener los datos del país:', error);
     });
+} 
+const listarModoTransporte = () => {
+  axios.get(`${apiUrl}​/api​/ModoTransporte​/Listar`, {
+      headers: {
+          'XApiKey': apiKey
+      }
+
+  })
+  .then(response => {
+    setModoTransporte(response.data.data);
+      console.log("React E10", response.data.data)
+  })
+  .catch(error => {
+      console.error('Error al obtener los datos del país:', error);
+  });
 } 
 
 
@@ -193,7 +210,7 @@ useEffect(() => {
       }));
       useEffect(() => {
         listarpaises();
-       
+        listarModoTransporte();
         if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
           setOpenSnackbar(true);
         }
@@ -317,6 +334,31 @@ useEffect(() => {
                        error={formik.touched.motr_Id && Boolean(formik.errors.motr_Id)}
                        helperText={formik.touched.motr_Id && formik.errors.motr_Id}
                    />
+                   <Autocomplete
+                        options={modoTransporte}
+                        getOptionLabel={(option) => option.motr_Descripcion || ''}
+                        value={selectedModoTransporte}
+                        onChange={(event, newValue) => {
+                            setSelectedModoTransporte(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('motr_Id', newValue.motr_Id);
+                            } else {
+                            formik.setFieldValue('motr_Id', 0);
+                            
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione un Modo de transporte"
+                            error={formik.touched.motr_Id && Boolean(formik.errors.motr_Id)}
+                            helperText={formik.touched.motr_Id && formik.errors.motr_Id}
+                            />
+                        )}
+                        noOptionsText="No hay modos de transporte disponibles"
+                        isOptionEqualToValue={(option, value) => option.motr_Id === value?.motr_Id}
+                      />
                    
              
                 </Grid>
@@ -414,10 +456,10 @@ useEffect(() => {
                             error={formik.touched. pais_IdExpedicion && Boolean(formik.errors. pais_IdExpedicion)}
                             helperText={formik.touched. pais_IdExpedicion && formik.errors. pais_IdExpedicion}
                             />
-              )}
-              noOptionsText="No hay países disponibles"
-              isOptionEqualToValue={(option, value) => option.pais_Id === value?. pais_IdExpedicion}
-            />
+                        )}
+                        noOptionsText="No hay países disponibles"
+                        isOptionEqualToValue={(option, value) => option.pais_Id === value?. pais_IdExpedicion}
+                      />
                   
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
