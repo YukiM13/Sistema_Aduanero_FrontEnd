@@ -295,8 +295,9 @@ useEffect(() => {
           setSelectedPaisDestino(paisDestino);
         }
         if (marcas.length > 0 && formik.values.marca_Id > 0) {
-          const marcaSelecionada = marcas.find(p => parseInt(p.marca_Id) === parseInt(formik.values.transporte_marca_Id));
-          console.log('marcaSelecionada', marcaSelecionada)
+          console.log('marca id',formik.values.marca_Id);
+          const marcaSelecionada = marcas.find(p => p.marc_Id === formik.values.transporte_marca_Id);
+          console.log('marcaSelecionada', marcaSelecionada);
           setSelectedMarca(marcaSelecionada);
         }
        
