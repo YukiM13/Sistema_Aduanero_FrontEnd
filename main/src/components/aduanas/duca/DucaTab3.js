@@ -130,14 +130,12 @@ useEffect(() => {
         : rawData;
     
       if (data && typeof data === 'object') {
-        const camposUtiles = Object.entries(data).filter(([key, value]) => {
-          return key !== 'duca_Id' && value !== null && value !== undefined && value !== '';
-        });
+        
     
-        const esSoloPreinsert = camposUtiles.length === 0;
+        const esSoloPreinsert = localStorage.getItem('insert');
     
         if (esSoloPreinsert) {
-     
+        
           setInitialValues({...Duca });
         } else {
 
@@ -177,15 +175,18 @@ useEffect(() => {
         initialValues: initialValues,
         validationSchema,
         onSubmit: async(values) => {
+          let todosExitosos = true;
           try {
            
           
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            let todosExitosos = true;
-            if(localStorage.getItem('edit') === 'true') {
-
+            
+           const edit = localStorage.getItem('edit');
+           console.log(edit);
+            if(edit !== 'true') {
+              console.log('entro al edit');
               values.usua_UsuarioModificacion = 1;
               values.duca_FechaModificacion = new Date().toISOString();
 
@@ -193,38 +194,56 @@ useEffect(() => {
                   headers: { 'XApiKey': apiKey },
                   'Content-Type': 'application/json'
                 });
-                if (response.data.data.messageStatus !== '1') {
+                if (response.status !== 200 || response.data.data.messageStatus !== '1') {
                   todosExitosos = false;
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                  
+                
                 }
                 if (todosExitosos) {
                   if (onGuardadoExitoso) onGuardadoExitoso();
                 } else {
                   setOpenSnackbar(true);
+                  throw new Error('Error');
                 }
+           
             }
             else{
+              console.log('entro al insert');
               values.usua_UsuarioCreacion = 1;
               const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
                 headers: { 'XApiKey': apiKey },
                 'Content-Type': 'application/json'
               });
-              if (response.data.data.messageStatus !== '1') {
+              if (response.status !== 200 || response.data.data.messageStatus === '0') {
                 todosExitosos = false;
+                setOpenSnackbar(true);
+                throw new Error('Error');
+                
+          
               }
               if (todosExitosos) {
                 if (onGuardadoExitoso) onGuardadoExitoso();
+                localStorage.removeItem('insert');
               } else {
                 setOpenSnackbar(true);
+                throw new Error('Error');
               }
-            } 
-           
-       
-          
      
           
+            } 
+           
+   
+        
           } catch (error) {
+            todosExitosos = false;
+            setOpenSnackbar(true);
             console.error('Error al insertar:', error);
+            throw new Error('Error al insertar:');
+            
           }
+         
         },
       });
     
@@ -275,7 +294,7 @@ useEffect(() => {
           setSelectedPais(paisProcedencia );
           setSelectedPaisDestino(paisDestino);
         }
-        if (marcas.length > 0) {
+        if (marcas.length > 0 && formik.values.marca_Id > 0) {
           const marcaSelecionada = marcas.find(p => parseInt(p.marca_Id) === parseInt(formik.values.transporte_marca_Id));
           console.log('marcaSelecionada', marcaSelecionada)
           setSelectedMarca(marcaSelecionada);
@@ -452,7 +471,7 @@ useEffect(() => {
              </Grid>
              <Grid item lg={4} md={12} sm={12}>
                 
-                <CustomFormLabel>Nmbre del Conductor</CustomFormLabel>
+                <CustomFormLabel>Nombre del Conductor</CustomFormLabel>
                 <CustomTextField
                     fullWidth
                     id="cont_Nombre"

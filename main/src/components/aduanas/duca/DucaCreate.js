@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import axios from 'axios';
 import {
   Box,
   Stepper,
@@ -6,6 +7,8 @@ import {
   StepLabel,
   Button,
   Alert,
+  Snackbar,
+
 } from '@mui/material';
 import PageContainer from '../../../components/container/PageContainer';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -23,6 +26,8 @@ const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', '
 const DucaCreateComponent = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
+    const [openSnackbar, setOpenSnackbar] = React.useState(false); 
+    const [deva, setDeva] = React.useState([]);
     const ducaTab1Ref = React.useRef();
     const ducaTab2Ref = React.useRef();
     const ducaTab3Ref = React.useRef();
@@ -31,17 +36,18 @@ const DucaCreateComponent = () => {
     const isStepSkipped = (step) => skipped.has(step);
   
     const handleNext = async() => {
-      // if (activeStep === 0 && ducaTab1Ref.current) {
-      //   const exito = await ducaTab1Ref.current.submit();
-      //   if (!exito) {
-      //     // Detenemos el avance
-      //     return;
-      //   }
-      // }
+       if (activeStep === 0 && ducaTab1Ref.current) {
+          const exito = await ducaTab1Ref.current.submit();
+          if (!exito) {
+            setOpenSnackbar(true);
+            return;
+         }
+       }
       if (activeStep === 1 && ducaTab2Ref.current) {
         const exito = await ducaTab2Ref.current.submit();
         if (!exito) {
           // Detenemos el avance
+          setOpenSnackbar(true);
           return;
         }
       }
@@ -49,20 +55,17 @@ const DucaCreateComponent = () => {
       if (activeStep === 2 && ducaTab3Ref.current) {
         const exito = await ducaTab3Ref.current.submit();
         if (!exito) {
-          // Detenemos el avance
+          setOpenSnackbar(true);
           return;
         }
       }
       if (activeStep === 3 && ducaTab4Ref.current) {
         const exito = await ducaTab4Ref.current.submit();
-        if (exito) {
-          localStorage.removeItem('ducaId'); 
-          localStorage.removeItem('edit'); 
+        if (!exito) {
+          setOpenSnackbar(true);
+          return
         }
-        else{
         
-          return;
-        }
       }
      
       let newSkipped = skipped;
@@ -78,9 +81,24 @@ const DucaCreateComponent = () => {
     const handleBack = () => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
-  
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
     
+    const listarDevas = () => {
+      axios.get(`${apiUrl}/api/Duca/ListaDevaNoDuca`, {
+          headers: {
+              'XApiKey': apiKey
+          }
   
+      })
+      .then(response => {
+          setDeva(response.data.data);
+          console.log("React E10", response.data.data)
+      })
+      .catch(error => {
+          console.error('Error al obtener los datos del país:', error);
+      });
+  } 
     // eslint-disable-next-line consistent-return
     const handleSteps = (step) => {
       switch (step) {
@@ -107,8 +125,16 @@ const DucaCreateComponent = () => {
     };
   
     const handleReset = () => {
+      localStorage.removeItem('ducaId'); 
+      localStorage.removeItem('edit');
       setActiveStep(0);
     };
+     useEffect(() => {
+            listarDevas();
+            
+            
+    }, []);
+          
     return (
       <PageContainer>
         <Breadcrumb title="DUCA" description="this is Form Wizard page" />
@@ -159,6 +185,7 @@ const DucaCreateComponent = () => {
                 <Button
                   onClick={handleNext}
                   variant="contained"
+                  disabled={activeStep === 0 && deva.length ===0}
                   color={activeStep === steps.length - 1 ? 'success' : 'primary'}
                   endIcon={
                     activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />
@@ -171,6 +198,21 @@ const DucaCreateComponent = () => {
             )}
           </Box>
         </ParentCard>
+         <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000} // Duración de la alerta
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              >
+                <Alert
+                  onClose={() => setOpenSnackbar(false)}
+                  severity="error"
+                  sx={{ width: '100%' }}
+                >
+                  Hubo un error intente de vuelta.
+                </Alert>
+              </Snackbar>   
+        
       </PageContainer>
     );
   };

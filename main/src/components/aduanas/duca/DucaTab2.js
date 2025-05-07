@@ -39,7 +39,7 @@ const validationSchema = yup.object({
     duca_Pais_Procedencia: yup.number().required('El pais de procedencia es requerido').moreThan(0,'El pais de procedencia es requerido'),
     duca_Pais_Destino: yup.number().required('El pais de destino es requerido').moreThan(0,'El pais de destino es requerido'),
     duca_Deposito_Aduanero: yup.string().required('El deposito aduanero es requerido'),
-    duca_Lugar_Desembarque: yup.string().required('El lugar de desembarque es requerido'),
+    duca_Lugar_Desembarque: yup.number().required('El lugar de desembarque es requerido').moreThan(0,'El lugar de desembarque es requerido'),
     duca_Manifiesto: yup.string().required('El manifiesto es requerido'),
     duca_Titulo: yup.string().required('El titulo es requerido'),
     trli_Id: yup.number().required('El tratado de libre comercio es requerido').moreThan(0,'El tratado de libre comercio es requerido'),
@@ -164,7 +164,9 @@ const listarTratadosLibreComercio = () => {
 } 
 useEffect(() => {
   const ducaIdString = localStorage.getItem('ducaId');
-  if (ducaIdString !== null) {
+  console.log('ducaId', ducaIdString);
+  if (ducaIdString != null) {
+    console.log('entro');
     const ducaId = parseInt(ducaIdString);
     axios.post(`${apiUrl}/api/Duca/Listar_ById?id=${ducaId}`, null , {
       headers: {
@@ -173,7 +175,7 @@ useEffect(() => {
     })
     .then(response => {
       const rawData = response.data.data;
-
+      console.log(rawData);
       const data = Array.isArray(rawData)
         ? rawData[0]
         : rawData[0] !== undefined
@@ -188,7 +190,8 @@ useEffect(() => {
         const esSoloPreinsert = camposUtiles.length === 0;
     
         if (esSoloPreinsert) {
-     
+          console.log('entro al solo preinsert');
+          localStorage.setItem('insert','true')
           setInitialValues({...Duca });
         } else {
 
@@ -221,31 +224,39 @@ useEffect(() => {
         initialValues: initialValues,
         validationSchema,
         onSubmit: async(values) => {
+
+          let todosExitosos = true;
           try {
             values.usua_UsuarioCreacion = 1;
           
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            let todosExitosos = true;
+            
             const response = await axios.post(`${apiUrl}/api/Duca/InsertPart1`, values, {
               headers: { 'XApiKey': apiKey },
               'Content-Type': 'application/json'
             });
        
-          if (response.data.data.messageStatus !== '1') {
-                todosExitosos = false;
-          
-          }
-          if (todosExitosos) {
-            if (onGuardadoExitoso) onGuardadoExitoso();
-          } else {
-            setOpenSnackbar(true);
-          }
+            if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+              todosExitosos = false;
+              throw new Error('Error');
+              
+            
+            }
+            if (todosExitosos) {
+              if (onGuardadoExitoso) onGuardadoExitoso();
+            } else {
+              setOpenSnackbar(true);
+              throw new Error('Error');
+            }
      
           
           } catch (error) {
+            todosExitosos = false;
             console.error('Error al insertar:', error);
+            throw new Error('Error al insertar:');
+            
           }
         },
       });
