@@ -36,8 +36,7 @@ const Gallery = Loadable(lazy(() => import('../views/apps/user-profile/Gallery')
 const RollbaseCASL = Loadable(lazy(() => import('../views/pages/rollbaseCASL/RollbaseCASL')));
 const Treeview = Loadable(lazy(() => import('../views/pages/treeview/Treeview')));
 const Pricing = Loadable(lazy(() => import('../views/pages/pricing/Pricing')));
-const AccountSetting = Loadable(
-  lazy(() => import('../views/pages/account-setting/AccountSetting')),
+const AccountSetting = Loadable(lazy(() => import('../views/pages/account-setting/AccountSetting')),
 );
 const Faq = Loadable(lazy(() => import('../views/pages/faq/Faq')));
 
@@ -100,6 +99,8 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
@@ -107,6 +108,7 @@ const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/ad
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
+const ProvinciaCrear =  Loadable(lazy(() => import('../components/general/provincias/ProvinciasCreate')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Moneda = Loadable(lazy(() => import('../components/general/monedas/MonedasList')));
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
@@ -117,6 +119,8 @@ const Empleado = Loadable(lazy(() => import('../components/general/empleados/Emp
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
+const CiudadCrear =  Loadable(lazy(() => import('../components/general/ciudades/CiudadCreate')));
+const CiudadEditar =  Loadable(lazy(() => import('../components/general/ciudades/CiudadEdit')));
 const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
@@ -124,6 +128,7 @@ const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvi
 const Aldea = Loadable(lazy(() => import('../components/general/aldeas/AldeasList')));
 
 const Colonias = Loadable(lazy(() => import('../components/general/colonias/ColoniasList')));
+
 
 
 // Acceso
@@ -135,7 +140,9 @@ const Categorias  = Loadable(lazy(() => import('../components/produccion/categor
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
-
+const OrdenCompra =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
+const OrdenCompraDetalle =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
+const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -284,8 +291,17 @@ const Router = [
       { path: '/usuarios/list', element: <Usuarios  /> },
       { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
+
+      { path: '/ordenCompra', element: <OrdenCompra  /> },
+      { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalle  /> },
+      { path: '/ordenCompraDetalle/create', element: <OrdenCompraDetalleCrear  /> },
+      { path: '/ciudades/create', element: <CiudadCrear  /> },
+      { path: '/ciudades/edit', element: <CiudadEditar  /> },
+
       { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
+
+      { path: '/provincias/create', element: <ProvinciaCrear  /> },
 
 
 
