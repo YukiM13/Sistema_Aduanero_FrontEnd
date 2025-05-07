@@ -146,7 +146,7 @@ useEffect(() => {
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
             let todosExitosos = true;
-            const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
+            const response = await axios.post(`${apiUrl}/api/Duca/InsertPart3`, values, {
               headers: { 'XApiKey': apiKey },
               'Content-Type': 'application/json'
             });
