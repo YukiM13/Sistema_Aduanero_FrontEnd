@@ -11,31 +11,54 @@ import 'jspdf-autotable';
 import ParentCard from '../../../components/shared/ParentCard';
 import { useRef } from 'react';
 import html2pdf from 'html2pdf.js';
+import { storage } from '../../../layouts/config/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import QRCode from 'qrcode';
 
 const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
-     const contentRef = useRef(null);
-    const convertToPdf = () => {
-          const content = contentRef.current;
-  
-          const options = {
-            margin: [0.5, 0.5, 0.5, 0.5], // Márgenes más pequeños
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 1.5, scrollX: 0, scrollY: 0 }, // Escala el contenido
-            jsPDF: {
-                unit: 'in',
-                format: 'letter',
-                orientation: 'landscape', // Cambia a 'landscape' si es necesario
-            },
-        };
-  
-          html2pdf().set(options).from(content).toPdf().get('pdf').then((pdf) => {
-              const blobUrl = URL.createObjectURL(pdf.output('blob'));
-              const newWindow = window.open(blobUrl);
-              newWindow.onload = function () {
-                  newWindow.print();
-              };
-          });
-      };
+ 
+     const contenidoRef = useRef();
+
+     const convertToPdf = async () => {
+       // 1. Generar el PDF en blob (sin QR aún)
+       const opt = {
+         margin: 1,
+         filename: 'temporal.pdf',
+         image: { type: 'jpeg', quality: 0.98 },
+         html2canvas: { scale: 2 },
+         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+       };
+   
+       const pdfBlob = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+   
+       // 2. Subir el PDF a Firebase
+       const nombreArchivo = `documentos/archivo-${Date.now()}.pdf`;
+       const archivoRef = ref(storage, nombreArchivo);
+       await uploadBytes(archivoRef, pdfBlob);
+   
+       // 3. Obtener URL pública
+       const urlPDF = await getDownloadURL(ref(storage, '...'));
+
+   
+       // 4. Generar QR
+       const qrDataUrl = await QRCode.toDataURL(urlPDF);
+   
+       // 5. Agregar QR al DOM
+       
+
+       const qrContainer = document.getElementById("qr");
+       qrContainer.innerHTML = `<img src="${qrDataUrl}" width="100"/>`;
+       contenidoRef.current.appendChild(qrContainer);
+   
+       // 6. Generar el PDF final (con QR)
+       html2pdf().from(contenidoRef.current).set({
+         ...opt,
+         filename: 'PDF-con-QR.pdf'
+       }).save();
+   
+       // 7. Quitar el QR del DOM después
+       contenidoRef.current.removeChild(qrContainer);
+     };
 
     return (
         <>
@@ -61,7 +84,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <ParentCard>
 
 
-<div ref={contentRef} style={{ display: 'flex'}}>
+<div ref={contenidoRef} style={{ display: 'flex'}}>
 <p>fecha y hora de impresion: {new Date().toLocaleString()} </p>
 
 {/* <div style={{ width: '20px', backgroundColor: 'gray', textAlign: 'center' ,fontSize: 'auto' }}>
@@ -76,7 +99,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <tr bgcolor="#eeeeee">
     {/* <td style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>Invertido</td> */}
     <th colspan="6" style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>DECLARACION DE VALOR DE IMPORTACIÓN Y EXPORTACIÓN <br /> <span style={{ fontSize: '17px' }}>-- IMPRESA --</span> </th>
-    <th rowspan="2"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
+    <th rowspan="2" id="qr"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
   </tr>
 
   <tr>
