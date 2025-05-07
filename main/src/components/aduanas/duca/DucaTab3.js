@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { Snackbar, Alert } from '@mui/material';
 import {
     Grid,
-    Autocomplete,TextField,
+    Autocomplete,TextField, Typography
     
 
   } from '@mui/material';
@@ -49,8 +49,10 @@ const validationSchema = yup.object({
 const DucaTab3Component = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => { //esto es lo que manda para saber cuando cerrar el crear
 const [paises, setPaises] = useState([]);
 const [modoTransporte, setModoTransporte] = useState([]);
+const [marcas, setMarcas] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
 const [selectedPais, setSelectedPais] = useState(null);
+const [selectedMarca, setSelectedMarca] = useState(null);
 const [selectedModoTransporte, setSelectedModoTransporte] = useState(null);
 const [selectedPaisDestino, setSelectedPaisDestino] = useState(null);
 const [initialValues, setInitialValues] = useState(Duca);
@@ -73,8 +75,10 @@ const [initialValues, setInitialValues] = useState(Duca);
         console.error('Error al obtener los datos del país:', error);
     });
 } 
+
+
 const listarModoTransporte = () => {
-  axios.get(`${apiUrl}​/api​/ModoTransporte​/Listar`, {
+  axios.get(`${apiUrl}/api/ModoTransporte/Listar`, {
       headers: {
           'XApiKey': apiKey
       }
@@ -88,6 +92,23 @@ const listarModoTransporte = () => {
       console.error('Error al obtener los datos del país:', error);
   });
 } 
+
+const listarMarcas = () => {
+  axios.get(`${apiUrl}/api/Marcas/Listar`, {
+      headers: {
+          'XApiKey': apiKey
+      }
+
+  })
+  .then(response => {
+    setMarcas(response.data.data);
+      console.log("React E10", response.data.data)
+  })
+  .catch(error => {
+      console.error('Error al obtener los datos del país:', error);
+  });
+} 
+
 
 
 useEffect(() => {
@@ -109,14 +130,12 @@ useEffect(() => {
         : rawData;
     
       if (data && typeof data === 'object') {
-        const camposUtiles = Object.entries(data).filter(([key, value]) => {
-          return key !== 'duca_Id' && value !== null && value !== undefined && value !== '';
-        });
+        
     
-        const esSoloPreinsert = camposUtiles.length === 0;
+        const esSoloPreinsert = localStorage.getItem('insert');
     
         if (esSoloPreinsert) {
-     
+        
           setInitialValues({...Duca });
         } else {
 
@@ -138,6 +157,7 @@ useEffect(() => {
     
          
           setInitialValues({ ...Duca });
+          localStorage.setItem('edit', 'true');
         }
     
         console.log("DUCA RELLENA O VACÍA:", Duca);
@@ -155,32 +175,75 @@ useEffect(() => {
         initialValues: initialValues,
         validationSchema,
         onSubmit: async(values) => {
+          let todosExitosos = true;
           try {
-            values.usua_UsuarioCreacion = 1;
+           
           
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            let todosExitosos = true;
-            const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
-              headers: { 'XApiKey': apiKey },
-              'Content-Type': 'application/json'
-            });
-       
-          if (response.data.data.messageStatus !== '1') {
+            
+           const edit = localStorage.getItem('edit');
+           console.log(edit);
+            if(edit !== 'true') {
+              console.log('entro al edit');
+              values.usua_UsuarioModificacion = 1;
+              values.duca_FechaModificacion = new Date().toISOString();
+
+                const response = await axios.post(`${apiUrl}/api/Duca/EditarPart2`, values, {
+                  headers: { 'XApiKey': apiKey },
+                  'Content-Type': 'application/json'
+                });
+                if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+                  todosExitosos = false;
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                  
+                
+                }
+                if (todosExitosos) {
+                  if (onGuardadoExitoso) onGuardadoExitoso();
+                } else {
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                }
+           
+            }
+            else{
+              console.log('entro al insert');
+              values.usua_UsuarioCreacion = 1;
+              const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
+                headers: { 'XApiKey': apiKey },
+                'Content-Type': 'application/json'
+              });
+              if (response.status !== 200 || response.data.data.messageStatus === '0') {
                 todosExitosos = false;
+                setOpenSnackbar(true);
+                throw new Error('Error');
+                
           
-          }
-          if (todosExitosos) {
-            if (onGuardadoExitoso) onGuardadoExitoso();
-          } else {
-            setOpenSnackbar(true);
-          }
+              }
+              if (todosExitosos) {
+                if (onGuardadoExitoso) onGuardadoExitoso();
+                localStorage.removeItem('insert');
+              } else {
+                setOpenSnackbar(true);
+                throw new Error('Error');
+              }
      
           
+            } 
+           
+   
+        
           } catch (error) {
+            todosExitosos = false;
+            setOpenSnackbar(true);
             console.error('Error al insertar:', error);
+            throw new Error('Error al insertar:');
+            
           }
+         
         },
       });
     
@@ -208,14 +271,39 @@ useEffect(() => {
           }
         },
       }));
+      
       useEffect(() => {
         listarpaises();
         listarModoTransporte();
+        listarMarcas();
         if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
           setOpenSnackbar(true);
         }
         
       }, [formik.errors, formik.submitCount]);
+
+      useEffect(() => {
+        if (modoTransporte.length > 0) {
+          const modoTransporteSelecionado = modoTransporte.find(p => p.motr_Id === formik.values.motr_Id);
+          setSelectedModoTransporte(modoTransporteSelecionado);
+
+        }
+        if (paises.length > 0) {
+          const paisProcedencia = paises.find(p => p.pais_Id === formik.values.pais_IdExpedicion);
+          const paisDestino = paises.find(p => p.pais_Id === formik.values.id_pais_transporte);
+          setSelectedPais(paisProcedencia );
+          setSelectedPaisDestino(paisDestino);
+        }
+        if (marcas.length > 0 && formik.values.marca_Id > 0) {
+          const marcaSelecionada = marcas.find(p => parseInt(p.marca_Id) === parseInt(formik.values.transporte_marca_Id));
+          console.log('marcaSelecionada', marcaSelecionada)
+          setSelectedMarca(marcaSelecionada);
+        }
+       
+        
+      
+      },[paises,marcas,modoTransporte,formik.values.pais_IdExpedicion, formik.values.motr_Id, formik.values.id_pais_transporte, formik.values.transporte_marca_Id]);
+      
       
       
      
@@ -225,6 +313,11 @@ useEffect(() => {
       
         <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={3} mb={3}>  {/* Esto es como el div con class row */}
+            <Grid item xs={12}>
+                <Typography variant="h6" sx={{color: '#003859'}} mt={2}>
+                  Declarante
+                </Typography>
+              </Grid>
                 <Grid item lg={4} md={12} sm={12}> {/* Esto es como el div con class col-md-6 */}
                   
                         <CustomFormLabel>Codigo del Declarante</CustomFormLabel>
@@ -288,6 +381,12 @@ useEffect(() => {
                    />
              
                 </Grid>
+                <Grid item xs={12}>
+                <hr></hr>
+                <Typography variant="h6" sx={{color: '#003859'}} mt={2}>
+                  Conductor
+                </Typography>
+              </Grid>
                 <Grid item lg={4} md={12} sm={12}>
                    
                    <CustomFormLabel>Codigo Transportista</CustomFormLabel>
@@ -323,17 +422,7 @@ useEffect(() => {
                 <Grid item lg={4} md={12} sm={12}>
                 
                    <CustomFormLabel>Modo de transporte</CustomFormLabel>
-                   <CustomTextField
-                       fullWidth
-                       id="motr_Id"
-                       name="motr_Id"
-                       type="text"
-                       value={formik.values.motr_Id}
-                       onChange={formik.handleChange}
-                       onBlur={formik.handleBlur}
-                       error={formik.touched.motr_Id && Boolean(formik.errors.motr_Id)}
-                       helperText={formik.touched.motr_Id && formik.errors.motr_Id}
-                   />
+                   
                    <Autocomplete
                         options={modoTransporte}
                         getOptionLabel={(option) => option.motr_Descripcion || ''}
@@ -382,7 +471,7 @@ useEffect(() => {
              </Grid>
              <Grid item lg={4} md={12} sm={12}>
                 
-                <CustomFormLabel>Nmbre del Conductor</CustomFormLabel>
+                <CustomFormLabel>Nombre del Conductor</CustomFormLabel>
                 <CustomTextField
                     fullWidth
                     id="cont_Nombre"
@@ -462,6 +551,12 @@ useEffect(() => {
                       />
                   
                 </Grid>
+                <Grid item xs={12}>
+                <hr></hr>
+                <Typography variant="h6" sx={{color: '#003859'}} mt={2}>
+                  Transporte
+                </Typography>
+                </Grid>
                 <Grid item lg={4} md={12} sm={12}>
                    
                    <CustomFormLabel>Pais Transporte</CustomFormLabel>
@@ -495,17 +590,33 @@ useEffect(() => {
            <Grid item lg={4} md={12} sm={12}>
                 
                 <CustomFormLabel>Marca de Transporte</CustomFormLabel>
-                <CustomTextField
-                    fullWidth
-                    id="transporte_marca_Id"
-                    name="transporte_marca_Id"
-                    type="text"
-                    value={formik.values.transporte_marca_Id}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.transporte_marca_Id && Boolean(formik.errors.transporte_marca_Id)}
-                    helperText={formik.touched.transporte_marca_Id && formik.errors.transporte_marca_Id}
-                />
+               
+                 <Autocomplete
+                        options={marcas}
+                        getOptionLabel={(option) => option.marc_Descripcion || ''}
+                        value={selectedMarca}
+                        onChange={(event, newValue) => {
+                            setSelectedMarca(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('transporte_marca_Id', newValue.marc_Id);
+                            } else {
+                            formik.setFieldValue('transporte_marca_Id', 0);
+                            
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione una Marca"
+                            error={formik.touched.transporte_marca_Id && Boolean(formik.errors.transporte_marca_Id)}
+                            helperText={formik.touched.transporte_marca_Id && formik.errors.transporte_marca_Id}
+                            />
+                        )}
+                        noOptionsText="No hay marcas disponibles"
+                        isOptionEqualToValue={(option, value) => option.marc_Id === value?.transporte_marca_Id}
+                      />
+                   
                 
           
              </Grid>
