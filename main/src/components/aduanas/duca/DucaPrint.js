@@ -185,7 +185,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -204,7 +204,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -223,7 +223,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -242,7 +242,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -261,7 +261,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -280,7 +280,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -299,7 +299,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -318,7 +318,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
@@ -337,7 +337,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Box
                     sx={{
                     flex: 1,
-                    borderBottom: '1px solid black',
+                    borderLeft: '1px solid black',
                     // writingMode: 'vertical-lr',
                     textOrientation: 'mixed',
                     transform: 'rotate(-90deg)',
