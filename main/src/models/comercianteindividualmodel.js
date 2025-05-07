@@ -36,8 +36,8 @@ coin_AldeaRepresentante: 0,
 coin_coloniaIdRepresentante: 0,
 coin_NumeroLocaDepartRepresentante: '',
 coin_PuntoReferenciaReprentante: '',
-usua_UsuarioModificacion: 0,
-coin_FechaModificacion	: '',
+//usua_UsuarioModificacion: 0,
+//coin_FechaModificacion	: '',
 
 //tab4
 //coin_Id: 0,
@@ -48,13 +48,8 @@ coin_CorreoElectronicoAlternativo: '',
 //usua_UsuarioModificacion: 0,
 //coin_FechaModificacion: '',
 
-//documentos
-
-
+//tab5
+doco_URLImagen: '',
+doco_FechaCreacion: '',
   }
-
-
-
-
-
 export default ComercianteIndividual;
