@@ -259,6 +259,13 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/ordenCompra',
       },
+      {
+        id: uniqueId(),
+        title: 'Orden Compra Detalle',
+        icon: IconPoint,
+        chipColor: 'secondary',
+        href: '/ordenCompraDetalle/list',
+      },
      
     ],
   },

@@ -324,7 +324,7 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                     >
                     {provincias.map((provincia) => (
                         <MenuItem key={provincia.pvin_Id} value={provincia.pvin_Id}>
-                        {provincia.escv_Nombre}
+                        {provincia.pvin_Nombre}
                         </MenuItem>
                     ))}
                     </CustomTextField>

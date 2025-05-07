@@ -29,7 +29,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
-const OrdenesCompras = () => {
+const OrdenesComprasDetalle = () => {
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
   const [ordenCompraDetalleEditando, setOrdenCompraDetalleEditando] = useState(null);
@@ -293,7 +293,7 @@ const OrdenesCompras = () => {
   );
 };
 
-export default OrdenesCompras;
+export default OrdenesComprasDetalle;
 
 //  @orco_Id						INT,
 // 	@code_CantidadPrenda			INT,
