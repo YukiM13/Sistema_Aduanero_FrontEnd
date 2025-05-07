@@ -14,6 +14,12 @@ import TopPerformers from '../../components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 
 const Modern = () => {
+<<<<<<< Updated upstream
+=======
+  if (localStorage.getItem('DataUsuario') === null) {
+    window.location.href = '/auth/login';
+  }
+>>>>>>> Stashed changes
   return (
     <Box>
       <Grid container spacing={3}>
