@@ -7,8 +7,12 @@ import { Avatar, Box } from '@mui/material';
 
 const AuthSocialButtons = ({ title }) => (
   <>
-    <Stack direction="row" justifyContent="center" spacing={2} mt={3}>
-      <CustomSocialButton>
+    <Stack direction="row" justifyContent="center" spacing={2} mt={-5}>
+      <CustomSocialButton
+        sx={{
+          visibility: 'hidden',
+        }}
+      >
         <Avatar
           src={icon1}
           alt={icon1}
@@ -19,12 +23,23 @@ const AuthSocialButtons = ({ title }) => (
             mr: 1,
           }}
         />
-        <Box sx={{ display: { xs: 'none', sm: 'flex' }, whiteSpace: 'nowrap', mr: { sm: '3px' } }}>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            whiteSpace: 'nowrap',
+            mr: { sm: '3px' },
+            border: 'none',
+          }}
+        >
           {title}{' '}
         </Box>{' '}
         Google
       </CustomSocialButton>
-      <CustomSocialButton>
+      <CustomSocialButton
+        sx={{
+          visibility: 'hidden',
+        }}
+      >
         <Avatar
           src={icon2}
           alt={icon2}
@@ -35,7 +50,13 @@ const AuthSocialButtons = ({ title }) => (
             mr: 1,
           }}
         />
-        <Box sx={{ display: { xs: 'none', sm: 'flex' }, whiteSpace: 'nowrap', mr: { sm: '3px' } }}>
+        <Box
+          sx={{
+            display: { xs: 'none', sm: 'flex' },
+            whiteSpace: 'nowrap',
+            mr: { sm: '3px' },
+          }}
+        >
           {title}{' '}
         </Box>{' '}
         FB

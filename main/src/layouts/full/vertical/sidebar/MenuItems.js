@@ -5,7 +5,7 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
-  IconAperture,
+  IconFileText,
   IconPaperBag,
   IconFileCertificate
 
@@ -29,7 +29,15 @@ const Menuitems = [
     title: 'Acceso',
     icon: IconUser,
     href: '/apps/blog/',
-    children: [],
+    children: [
+      {
+        id: uniqueId(),
+        title: 'Usuarios',
+        icon: IconPoint,
+        href: '/usuarios/list',
+        chipColor: 'secondary',
+      },
+    ],
   },
   {
     id: uniqueId(),
@@ -184,6 +192,13 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+        title: 'Comerciante Individual',
+        icon: IconPoint,
+        href: '/comercianteindividual/create',
+      },
+
+      {
+        id: uniqueId(),
         title: 'Niveles Comerciales',
         icon: IconPoint,
         href: '/niveles-comerciales/list',
@@ -265,7 +280,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Declaración de valor',
-    icon: IconPaperBag,
+    icon: IconFileText,
     chipColor: 'secondary',
     href: '/declaracion-de-valor',
   },

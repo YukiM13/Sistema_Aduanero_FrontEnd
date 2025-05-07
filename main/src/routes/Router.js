@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PersonaJuridica from 'src/models/PersonaJuridicaModel';
 
-
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -102,6 +101,7 @@ const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTra
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
@@ -126,6 +126,7 @@ const Colonias = Loadable(lazy(() => import('../components/general/colonias/Colo
 
 
 // Acceso
+const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -278,6 +279,8 @@ const Router = [
       { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
+      { path: '/usuarios/list', element: <Usuarios  /> },
+      { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
       { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
