@@ -56,11 +56,13 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [ciudades, setCiudades] = useState([]);
   const [aldeas, setAldea] = useState([]);
   const [colonias, setColonias] = useState([]);
+  const [paises, setPaises] = useState([]);
+  const [provincias, setProvincias] = useState([]);
   
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-///api/Aldea/FiltrarPorCiudades
+
   const formik = useFormik({
     initialValues: Persona,
     validationSchema,
@@ -104,16 +106,92 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
       .then(res => setOficinas(res.data.data || []));
     axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setOficioProfesion(res.data.data || []));
-    axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
-      .then(res => setCiudades(res.data.data || []));
+
+    // axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
+    //   .then(res => setCiudades(res.data.data || []));
+
     //axios.get(`${apiUrl}/api/Aldea/Listar`, { headers: { 'XApiKey': apiKey } })
       //.then(res => setAldea(res.data.data || []));
     axios.get(`${apiUrl}/api/Colonias/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(res => setColonias(res.data.data || []));
+    axios.get(`${apiUrl}/api/Paises/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(res => {setPaises(res.data.data || []);
+        setPaises( res.data.data.sort((a, b) => a.pais_Nombre.localeCompare(b.pais_Nombre)) ); // Ordenar alfabéticamente por nombre
+
+      });
   }, []);
 
- 
+//Filtrar Provincias por pais
+const handlePaisChange = async (e) => {
+  const selectedPaisId = e.target.value;
+
+  formik.setFieldValue('pais_Id', selectedPaisId);
+  formik.setFieldValue('pvin_Id', '');
+
+  try {
+    const response = await axios.get(`${apiUrl}/api/Provincias/ProvinciasFiltradaPorPais`, {
+      headers: { 'XApiKey': apiKey },
+      params: { pais_Id: selectedPaisId }
+    });
+
+    const provinciasFiltradas = response.data?.data ?? [];
+
+    if (!Array.isArray(provinciasFiltradas)) {
+      console.error("La respuesta no es un array:", provinciasFiltradas);
+      setAldea([]);
+    } else {
+      setProvincias(provinciasFiltradas);
+    }
+
+    console.log("Provincias filtradas:", provinciasFiltradas);
+  } catch (error) {
+    console.error('Error al cargar las provincias:', error);
+  }
+};
+
+//Ciudades por Provincias
+const handleProvinciaChange = async (e) => {
+  const selectedProvinciaId = e.target.value;
+
+  formik.setFieldValue('pvin_Id', selectedProvinciaId);
+  formik.setFieldValue('ciud_Id', '');
+  formik.setFieldValue('alde_Id', '');
+
+  setAldea([]); // limpia aldeas si cambia provincia
+
+  try {
+      
+    const response = await axios.get(`${apiUrl}/api/Ciudades/CiudadesFiltradaPorProvincias`, {
+      headers: { 'XApiKey': apiKey },
+      params: { pvin_Id: selectedProvinciaId }
+    });
+    
+    const ciudadesFiltradas = response.data?.data ?? [];
+
+    if (!Array.isArray(ciudadesFiltradas)) {
+      console.error("La respuesta no es un array:", ciudadesFiltradas);
+      setAldea([]);
+    } else {
+      setCiudades(ciudadesFiltradas);
+    }
+    //setCiudades(Array.isArray(ciudadesFiltradas) ? ciudadesFiltradas : []);
+    
+    console.log("Ciudades filtradas:", ciudadesFiltradas);
+    
+  } catch (error) {
+    console.error('Error al cargar las ciudades:', error);
+    
+  }
+};
+
+
+ //Filtrar para Aldeas por Ciudad
   const handleCiudadChange = async (e) => {
+
+    if (ciudades.length <= 0) {
+      alert("nosemate");
+      return;
+    }
     const selectedCiudadId = e.target.value;
   
     formik.setFieldValue('ciud_Id', selectedCiudadId);
@@ -139,6 +217,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
       console.error('Error al cargar aldeas:', error);
     }
   };
+  
   
   
 
@@ -315,6 +394,68 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
 {tabIndex === 1 && (
   <Grid container spacing={3}>
 
+<Grid item lg={6}>
+        <CustomFormLabel>Pais</CustomFormLabel>
+  <CustomTextField
+select
+fullWidth
+id="pais_Id"
+name="pais_Id"
+value={formik.values.pais_Id}
+onChange={handlePaisChange}
+onBlur={formik.handleBlur}
+error={formik.touched.pais_Id && Boolean(formik.errors.pais_Id)}
+helperText={formik.touched.pais_Id && formik.errors.pais_Id}
+  >
+    {paises.map((pais) => (
+  <MenuItem key={pais.pais_Id} value={pais.pais_Id}>
+    {pais.pais_Nombre}
+  </MenuItem>
+))}
+
+  </CustomTextField>
+          </Grid>
+
+          <Grid item lg={6}>
+  <CustomFormLabel>Provincia</CustomFormLabel>
+  <CustomTextField
+  select
+  fullWidth
+  id="pvin_Id"
+  name="pvin_Id"
+  value={formik.values.pvin_Id}
+  onChange={handleProvinciaChange} //
+  onBlur={formik.handleBlur}
+  error={formik.touched.pvin_Id && Boolean(formik.errors.pvin_Id)}
+  helperText={formik.touched.pvin_Id && formik.errors.pvin_Id}
+>
+
+  {!formik.values.pais_Id && (
+    <MenuItem disabled value="">
+      No se ha seleccionado un País
+    </MenuItem>
+  )}
+
+  {formik.values.pais_Id && provincias.length === 0 && (
+    <MenuItem disabled value="">
+      No hay provincias disponibles para este país
+    </MenuItem>
+  )}
+
+  {provincias.length > 0 &&
+    provincias.map((provincia) => (
+      <MenuItem key={provincia.pvin_Id} value={provincia.pvin_Id}>
+        {provincia.pvin_Nombre}
+      </MenuItem>
+    ))}
+</CustomTextField>
+
+</Grid>
+
+
+
+
+
     <Grid item lg={6}>
       <CustomFormLabel>Ciudad</CustomFormLabel>
       <CustomTextField
@@ -328,7 +469,16 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
   helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
 >
-  {ciudades.map((ciudad) => (
+
+{!formik.values.ciud_Id && (
+    <MenuItem disabled value="">
+      No se ha seleccionado un País
+    </MenuItem>
+  )}
+
+
+  {ciudades.length > 0 &&
+    ciudades.map((ciudad) => (
     <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
       {ciudad.ciud_Nombre}
     </MenuItem>

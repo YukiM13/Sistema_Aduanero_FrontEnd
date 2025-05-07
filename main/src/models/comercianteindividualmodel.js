@@ -21,6 +21,8 @@ const ComercianteIndividual = {
     ciud_Id: 0,
     alde_Id: 0,
     colo_Id: 0,
+    pais_Id: 0,
+    pvin_Id: 0,
     coin_NumeroLocalApart: '',
     coin_PuntoReferencia: '',
     usua_UsuarioModificacion:0,
