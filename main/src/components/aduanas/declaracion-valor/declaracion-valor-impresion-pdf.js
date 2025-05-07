@@ -57,153 +57,134 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
                 </Button>
             </Stack>
 
+<h1 style={{ textAlign: 'center' }}>  Previsualización Declaración de Valor</h1>
 <div ref={contentRef}>
 
- <h5>hola - {declaracionValor.deva_Id}</h5> 
-<h5>hola - {declaracionValor.adua_IngresoNombre} k</h5>
-<h5>holas - {declaracionValor.adua_IngresoCodigo}</h5>
-<h5>holas - {declaracionValor.adua_DespachoNombre} </h5>
-<h5>holas - {declaracionValor.deva_FechaAceptacion}</h5>
-<h5>holas - {declaracionValor.regi_Codigo}</h5>
-<h5>holas - {declaracionValor.regi_Descripcion}</h5>
-<h5>holas - {declaracionValor.inco_Codigo}</h5>
-<h5>holas - {declaracionValor.deva_DeclaracionMercancia}</h5>
-<h5>holas - {declaracionValor.deva_FechaAceptacion}</h5>
-<h5>holas - {declaracionValor.deva_Finalizacion}</h5>
-<h5>holas - {declaracionValor.deva_PagoEfectuado}</h5>
-<h5>holas - {declaracionValor.pais_ExportacionNombre}</h5>
-<h5>holas - {declaracionValor.deva_FechaExportacion}</h5>
-<h5>holas - {declaracionValor.mone_Id}</h5>
-<h5>holas - {declaracionValor.mone_Otra}</h5>
-<h5>holas - {declaracionValor.monedaNombre}</h5>Z
-<h5>holas - {declaracionValor.deva_Observaciones}</h5>
-<h5>holas - {declaracionValor.deva_ConversionDolares}</h5>
-<h5>holas - {declaracionValor.embarcacionNombre}</h5>
-<h5>holas - {declaracionValor.lugarEmbarque}</h5>
-<h5>holas - {declaracionValor.nico_Descripcion}</h5>
-<h5>holas - {declaracionValor.nico_Id}</h5>
-<h5>holas - {declaracionValor.impo_Id}</h5>
-<h5>holas - {declaracionValor.impo_NumRegistro}</h5>
-<h5>holas - {declaracionValor.impo_NivelComercial_Otro}</h5>
-<h5>holas - {declaracionValor.impo_Correo_Electronico}</h5>
-<h5>holas - {declaracionValor.impo_Fax}</h5>
-<h5>holas - {declaracionValor.impo_ciudId}</h5>
-<h5>holas - {declaracionValor.impo_paisId}</h5>
-<h5>holas - {declaracionValor.coco_Id}</h5>
-<h5>holas - {declaracionValor.coco_Descripcion}</h5>
-<h5>holas - {declaracionValor.pvde_Condicion_Otra}</h5>
-<h5>holas - {declaracionValor.pvde_Id}</h5>
-<h5>holas - {declaracionValor.prov_NumeroIdentificacion}</h5>
-<h5>holas - {declaracionValor.prov_Nombre_Raso}</h5>
-<h5>holas - {declaracionValor.prov_Direccion_Exacta}</h5>
-<h5>holas - {declaracionValor.prov_CiudadNombre}</h5>
-<h5>holas - {declaracionValor.prov_PaisNombre}</h5>
-<h5>holas - {declaracionValor.prov_Telefono}</h5>
-<h5>holas - {declaracionValor.prov_Fax}</h5>
-<h5>holas - {declaracionValor.prov_ciudId}</h5>
-<h5>holas - {declaracionValor.prov_paisId}</h5>
-<h5>holas - {declaracionValor.tite_Id}</h5>
-<h5>holas - {declaracionValor.tite_Descripcion}</h5>
-<h5>holas - {declaracionValor.tipoIntermediario}</h5>
-<h5>holas - {declaracionValor.inte_Id}</h5>
-<h5>holas - {declaracionValor.inte_Nombre_Raso}</h5>
-<h5>holas - {declaracionValor.inte_RTN}</h5>
-<h5>holas - {declaracionValor.inte_Direccion_Exacta}</h5>
-<h5>holas - {declaracionValor.inte_CiudadNombre}</h5>
-<h5>holas - {declaracionValor.inte_PaisNombre}</h5>
-<h5>holas - {declaracionValor.inte_Telefono}</h5>
-<h5>holas - {declaracionValor.inte_Fax}</h5>
-<h5>holas - {declaracionValor.deva_LugarEntrega}</h5>
-<h5>holas - {declaracionValor.pais_EntregaNombre}</h5>
-<h5>holas - {declaracionValor.inco_Id}</h5>
-<h5>holas - {declaracionValor.inco_Descripcion}</h5>
-<h5>holas - {declaracionValor.inco_Version}</h5>
-<h5>holas - {declaracionValor.deva_NumeroContrato}</h5>
-<h5>holas - {declaracionValor.deva_FechaContrato}</h5>
-<h5>holas - {declaracionValor.foen_Id}</h5>
-<h5>holas - {declaracionValor.foen_Descripcion}</h5>    
-<h5>holas - {declaracionValor.deva_FormaEnvioOtra}</h5>
-<h5>holas - {declaracionValor.fopa_Id}</h5>
-<h5>holas - {declaracionValor.fopa_Descripcion}</h5>
-<h5>holas - {declaracionValor.deva_FormaPagoOtra}</h5>
-<h5>holas - {declaracionValor.codi_Id}</h5>
-<h5>holas - {declaracionValor.codi_Descripcion}</h5>
-<h5>holas - {declaracionValor.codi_Restricciones_Utilizacion}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Restricciones_Utilizacion}</h5>
-<h5>holas - {declaracionValor.codi_Depende_Precio_Condicion}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Existe_Condicion}</h5>
-<h5>holas - {declaracionValor.codi_Condicionada_Revertir}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Condicionada_Revertir}</h5>
-<h5>holas - {declaracionValor.codi_Vinculacion_Comprador_Vendedor}</h5>
-<h5>holas - {declaracionValor.codi_Tipo_Vinculacion}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Tipo_Vinculacion}</h5>
-<h5>holas - {declaracionValor.codi_Vinculacion_Influye_Precio}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Vinculacion_Influye_Precio}</h5>
-<h5>holas - {declaracionValor.codi_Pagos_Descuentos_Indirectos}</h5>
-<h5>holas - {declaracionValor.codi_Concepto_Monto_Declarado}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Concepto_Monto_Declarado}</h5>
-<h5>holas - {declaracionValor.codi_Monto_Declarado}</h5>
-<h5>holas - {declaracionValor.codi_Existen_Canones}</h5>
-<h5>holas - {declaracionValor.codi_Indicar_Canones}</h5>
-<h5>holas - {declaracionValor.codi_Canones}</h5>
-<h5>holas - {declaracionValor.base_Id}</h5>
-<h5>holas - {declaracionValor.base_PrecioFactura}</h5>
-<h5>holas - {declaracionValor.base_PagosIndirectos}</h5>
-<h5>holas - {declaracionValor.base_PrecioReal}</h5>
-<h5>holas - {declaracionValor.base_PrecioFinal}</h5>
-<h5>holas - {declaracionValor.base_PrecioDeclarado}</h5>
-<h5>holas - {declaracionValor.base_MontCondicion}</h5>
-<h5>holas - {declaracionValor.base_MontoReversion}</h5>
-<h5>holas - {declaracionValor.base_MontoDescuento}</h5>
-<h5>holas - {declaracionValor.base_ComisionCorrelaje}</h5>
-<h5>holas - {declaracionValor.base_Gasto_Envase_Embalaje}</h5>
-<h5>holas - {declaracionValor.base_Gasto_Transporte}</h5>
-<h5>holas - {declaracionValor.base_Gasto_Seguro}</h5>
-<h5>holas - {declaracionValor.base_Gasto_Otros}</h5>    
-<h5>holas - {declaracionValor.base_ValoresMateriales_Incorporado}</h5>
-<h5>holas - {declaracionValor.base_Valor_Materiales_Utilizados}</h5>    
-<h5>holas - {declaracionValor.base_Valor_Materiales_Consumidos}</h5>
-<h5>holas - {declaracionValor.base_Valor_Ingenieria_Importado}</h5>    
-<h5>holas - {declaracionValor.base_Valor_Ingenieria_Utilizados}</h5>
-<h5>holas - {declaracionValor.base_Valor_Canones}</h5>
-<h5>holas - {declaracionValor.base_Gasto_TransporteM_Importada}</h5>
-<h5>holas - {declaracionValor.base_Gastos_Carga_Importada}</h5>
-<h5>holas - {declaracionValor.base_Costos_Seguro}</h5>
-<h5>holas - {declaracionValor.base_Total_Ajustes_Precio_Pagado}</h5>
-<h5>holas - {declaracionValor.base_Gastos_Asistencia_Tecnica}</h5>
-<h5>holas - {declaracionValor.base_Gastos_Transporte_Posterior}</h5>
-<h5>holas - {declaracionValor.base_Gastos_Mantenimiento}</h5>
-<h5>holas - {declaracionValor.base_Gastos_Otros}</h5>
-<h5>holas - {declaracionValor.base_Derechos_Impuestos}</h5>
-<h5>holas - {declaracionValor.base_Otros_Ajustes}</h5>
-<h5>holas - {declaracionValor.base_Monto_Intereses}</h5>
-|<h5>holas - {declaracionValor.base_Monto_Total}</h5>
-<h5>holas - {declaracionValor.base_Deducciones_Legales}</h5>
-<h5>holas - {declaracionValor.base_Total_Deducciones_Precio}</h5>
-<h5>holas - {declaracionValor.base_Valor_Aduana}</h5>
-
-<h5>holas - {declaracionValor.impo_Nombre_Raso}</h5>
-<h5>holas - {declaracionValor.impo_RTN}</h5>
-<h5>holas - {declaracionValor.impo_Direccion_Exacta}</h5>
-<h5>holas - {declaracionValor.impo_CiudadNombre}</h5>
-<h5>holas - {declaracionValor.impo_PaisNombre}</h5>
-<h5>holas - {declaracionValor.impo_Telefono}</h5>
-
-
-<h5>holas - {declaracionValor.adua_DespachoCodigo}</h5>
-<h5>holas - {declaracionValor.prov_CiudadNombre}</h5>
-
-
-<table border="5">
-<tr>
-  <td>manzana</td><td colspan="2" rowspan="4" >pera</td><td>fresa</td><td>naranja</td>
-</tr>
-<tr>
-  <td>melón</td><td>sandía</td><td>pomelo</td><td>cereza</td><td>granada</td>
-</tr>
-<tr>
-  <td colspan="3">melocotón</td><td colspan="2">kiwi</td>
-</tr>
+<table border="2" cellpadding="8" cellspacing="0" width="100%">
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">DECLARACION UNICA DE ADUANAS - DUA PROV. DE EXPORTACION</th>
+  </tr>
+  <tr>
+    <th style={{border:"2px solid black"}} bgcolor="#f8f8f8">adua_IngresoNombre</th>
+    <td>{declaracionValor.adua_IngresoNombre}</td>
+    <th bgcolor="#f8f8f8">adua_IngresoCodigo</th>
+    <td>{declaracionValor.adua_IngresoCodigo}</td>
+    <th bgcolor="#f8f8f8">adua_DespachoCodigo</th>
+    <td>{declaracionValor.adua_DespachoCodigo}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">deva_Id</th>
+    <td>{declaracionValor.deva_Id}</td>
+    <th bgcolor="#f8f8f8">regi_Codigo</th>
+    <td>{declaracionValor.regi_Codigo}</td>
+    <th bgcolor="#f8f8f8">duca_No_DUCA</th>
+    <td>{declaracionValor.duca_No_DUCA}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">regi_Descripcion</th> 
+    <td colspan="3">{declaracionValor.regi_Descripcion}</td>
+    <th bgcolor="#f8f8f8">deva_FechaAceptacion</th>
+    <td>{declaracionValor.deva_FechaAceptacion}</td>
+  </tr>
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">INFORMACIÓN DEL IMPORTADOR</th>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">impo_Nombre_Raso</th>
+    <td colspan="5">{declaracionValor.impo_Nombre_Raso}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">impo_NumRegistro</th>
+    <td colspan="2">{declaracionValor.impo_NumRegistro}</td>
+    <th bgcolor="#f8f8f8">impo_RTN</th>
+    <td colspan="2">{declaracionValor.impo_RTN}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">impo_Direccion_Exacta</th>
+    <td colspan="5">{declaracionValor.impo_Direccion_Exacta}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">impo_CiudadNombre</th>
+    <td>{declaracionValor.impo_CiudadNombre}</td>
+    <th bgcolor="#f8f8f8">impo_PaisNombre</th>
+    <td>{declaracionValor.impo_PaisNombre}</td>
+    <th bgcolor="#f8f8f8">impo_Telefono</th>
+    <td>{declaracionValor.impo_Telefono}</td>
+  </tr>
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">TRANSPORTE Y EXPORTACIÓN</th>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">embarcacionNombre</th>
+    <td colspan="2">{declaracionValor.embarcacionNombre}</td>
+    <th bgcolor="#f8f8f8">pais_ExportacionNombre</th>
+    <td colspan="2">{declaracionValor.pais_ExportacionNombre}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">deva_FechaExportacion</th>
+    <td colspan="2">{declaracionValor.deva_FechaExportacion}</td>
+    <th bgcolor="#f8f8f8">lugarEmbarque</th>
+    <td colspan="2">{declaracionValor.lugarEmbarque}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">monedaNombre</th>
+    <td>{declaracionValor.monedaNombre}</td>
+    <th bgcolor="#f8f8f8">inco_Descripcion</th>
+    <td>{declaracionValor.inco_Descripcion}</td>
+    <th bgcolor="#f8f8f8">inco_Version</th>
+    <td>{declaracionValor.inco_Version}</td>
+  </tr>
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">PROVEEDOR</th>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">prov_Nombre_Raso</th>
+    <td colspan="5">{declaracionValor.prov_Nombre_Raso}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">prov_NumeroIdentificacion</th>
+    <td colspan="2">{declaracionValor.prov_NumeroIdentificacion}</td>
+    <th bgcolor="#f8f8f8">coco_Descripcion</th>
+    <td colspan="2">{declaracionValor.coco_Descripcion}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">prov_Direccion_Exacta</th>
+    <td colspan="5">{declaracionValor.prov_Direccion_Exacta}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">prov_CiudadNombre</th>
+    <td>{declaracionValor.prov_CiudadNombre}</td>
+    <th bgcolor="#f8f8f8">prov_PaisNombre</th>
+    <td>{declaracionValor.prov_PaisNombre}</td>
+    <th bgcolor="#f8f8f8">prov_Telefono</th>
+    <td>{declaracionValor.prov_Telefono}</td>
+  </tr>
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">VALORES</th>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">base_PrecioFactura</th>
+    <td bgcolor="#f8f8f8">{declaracionValor.base_PrecioFactura}</td>
+    <th bgcolor="#f8f8f8">base_ComisionCorrelaje</th>
+    <td>{declaracionValor.base_ComisionCorrelaje}</td>
+    <th bgcolor="#f8f8f8">base_Gasto_Otros</th>
+    <td>{declaracionValor.base_Gasto_Otros}</td>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">base_Total_Ajustes_Precio_Pagado</th>
+    <td>{declaracionValor.base_Total_Ajustes_Precio_Pagado}</td>
+    <th bgcolor="#f8f8f8">base_PrecioReal</th>
+    <td>{declaracionValor.base_PrecioReal}</td>
+    <th bgcolor="#f8f8f8">base_Valor_Aduana</th>
+    <td>{declaracionValor.base_Valor_Aduana}</td>
+  </tr>
+  <tr bgcolor="#eeeeee">
+    <th colspan="6">OBSERVACIONES</th>
+  </tr>
+  <tr>
+    <th bgcolor="#f8f8f8">deva_Observaciones</th>
+    <td colspan="5">{declaracionValor.deva_Observaciones}</td>
+  </tr>
 </table>
 
 {/* 
@@ -336,77 +317,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
       "deva_FechaModificacion": "2023-08-29T20:18:55.553",
       "deva_Estado": true */}
 
-            <ParentCard title="Vista Previa de Declaración de Valor">
-                
-                <Paper elevation={0} sx={{ p: 3 }}>
-                    <Typography variant="h5" gutterBottom align="center">
-                        DECLARACIÓN DE VALOR
-                    </Typography>
-                    
-                    <Typography variant="subtitle1" gutterBottom align="right">
-                        Declaración #: {declaracionValor.deva_Id}
-                    </Typography>
-                    
-                    <Divider sx={{ my: 2 }} />
-                    
-                    <Box sx={{ mb: 3 }}>
-                        
-                        <Typography variant="h6" gutterBottom>INFORMACIÓN DE LA ADUANA</Typography>
-                        <Grid container spacing={3}>
-                            <Grid item lg={6} md={6} sm={12}>
-                                <Typography variant="subtitle2">Aduana de Ingreso:</Typography>
-                                <Typography>{declaracionValor.adua_IngresoNombre} ({declaracionValor.adua_IngresoCodigo})</Typography>
-                            </Grid>
-                            <Grid item lg={6} md={6} sm={12}>
-                                <Typography variant="subtitle2">Aduana de Despacho:</Typography>
-                                <Typography>{declaracionValor.adua_DespachoNombre} ({declaracionValor.adua_DespachoCodigo})</Typography>
-                            </Grid>
-                            <Grid item lg={6} md={6} sm={12}>
-                                <Typography variant="subtitle2">Régimen:</Typography>
-                                <Typography>{declaracionValor.regi_Descripcion} ({declaracionValor.regi_Codigo})</Typography>
-                            </Grid>
-                            <Grid item lg={6} md={6} sm={12}>
-                                <Typography variant="subtitle2">Fecha de Aceptación:</Typography>
-                                <Typography>{new Date(declaracionValor.deva_FechaAceptacion).toLocaleDateString()}</Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    
-                    <Divider sx={{ my: 2 }} />
-                    
-                    {declaracionValor.impo_Nombre_Raso && (
-                        <Box sx={{ mb: 3 }}>
-                            <Typography variant="h6" gutterBottom>INFORMACIÓN DEL IMPORTADOR</Typography>
-                            <Grid container spacing={3}>
-                                <Grid item lg={6} md={6} sm={12}>
-                                    <Typography variant="subtitle2">Nombre:</Typography>
-                                    <Typography>{declaracionValor.impo_Nombre_Raso}</Typography>
-                                </Grid>
-                                <Grid item lg={6} md={6} sm={12}>
-                                    <Typography variant="subtitle2">RTN:</Typography>
-                                    <Typography>{declaracionValor.impo_RTN || 'No disponible'}</Typography>
-                                </Grid>
-                                <Grid item lg={12} md={12} sm={12}>
-                                    <Typography variant="subtitle2">Dirección:</Typography>
-                                    <Typography>{declaracionValor.impo_Direccion_Exacta || 'No disponible'}</Typography>
-                                </Grid>
-                                {(declaracionValor.impo_CiudadNombre && declaracionValor.impo_PaisNombre) && (
-                                    <Grid item lg={6} md={6} sm={12}>
-                                        <Typography variant="subtitle2">Ciudad/País:</Typography>
-                                        <Typography>{declaracionValor.impo_CiudadNombre}, {declaracionValor.impo_PaisNombre}</Typography>
-                                    </Grid>
-                                )}
-                                {declaracionValor.impo_Telefono && (
-                                    <Grid item lg={6} md={6} sm={12}>
-                                        <Typography variant="subtitle2">Teléfono:</Typography>
-                                        <Typography>{declaracionValor.impo_Telefono}</Typography>
-                                    </Grid>
-                                )}
-                            </Grid>
-                        </Box>
-                    )}
-                </Paper>
-            </ParentCard>
+          
         </div>
         </>
 
