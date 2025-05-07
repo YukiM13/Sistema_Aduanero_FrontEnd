@@ -10,9 +10,9 @@ import {
   Snackbar,
 
 } from '@mui/material';
-import PageContainer from '../../../components/container/PageContainer';
+import PageContainer from '../../container/PageContainer';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../../components/shared/ParentCard';
+import ParentCard from '../../shared/ParentCard';
 import { Stack } from '@mui/system';
 import DucaTab2Component from './DucaTab2';
 import DucaTab1Component from './DucaTab1';

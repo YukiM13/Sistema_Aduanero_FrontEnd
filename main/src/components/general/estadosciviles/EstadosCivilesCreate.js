@@ -13,12 +13,14 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import EstadoCivilModel from 'src/models/estadocivilmodel';
+import { string } from 'prop-types';
 
 const validationSchema = yup.object({
   escv_Nombre: yup
     .string()
-    .required('El nombre del estado civil es requerido'),
-});
+    .required('El nombre del estado civil es requerido')
+    .transform((_, value) => {return value === '' ? undefined : value}),
+  });
 
 const EstadosCivilesCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -31,6 +33,8 @@ const EstadosCivilesCreate = ({ onCancelar, onGuardadoExitoso }) => {
     validationSchema,
     onSubmit: (values, { setSubmitting, resetForm }) => {
       const estadoCivil = new EstadoCivilModel(values.escv_Nombre.trim());
+      console.log("Este es el valor de mi campo: ", values.escv_Nombre);
+      
 
       axios.post(`${apiUrl}/api/EstadosCiviles/Insertar`, estadoCivil, {
         headers: {
@@ -38,14 +42,17 @@ const EstadosCivilesCreate = ({ onCancelar, onGuardadoExitoso }) => {
         }
       })
         .then(() => {
-          if (onGuardadoExitoso) onGuardadoExitoso();
+          if (onGuardadoExitoso && values.escv_Nombre.trim() !== ''){
+            onGuardadoExitoso();
+          } 
+            
           resetForm();
         })
         .catch((error) => {
           console.error('Error al guardar el estado civil:', error);
         })
         .finally(() => {
-          setSubmitting(false);
+            setSubmitting(false);
         });
     },
   });
