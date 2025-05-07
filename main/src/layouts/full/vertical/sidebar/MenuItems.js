@@ -6,6 +6,9 @@ import {
   IconBuildingFactory2,
   IconPackgeExport,
   IconAperture,
+  IconPaperBag,
+  IconFileCertificate
+
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -319,6 +322,21 @@ const Menuitems = [
       },
     ],
   },
+  {
+    id: uniqueId(),
+    title: 'Declaración de valor',
+    icon: IconPaperBag,
+    chipColor: 'secondary',
+    href: '/declaracion-de-valor',
+  },
+  {
+    id: uniqueId(),
+    title: 'Duca',
+    icon: IconFileCertificate,
+    href: '/duca',
+    chipColor: 'secondary',
+  },
+  
 ];
 
 export default Menuitems;

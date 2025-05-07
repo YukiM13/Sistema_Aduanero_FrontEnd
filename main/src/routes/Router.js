@@ -100,7 +100,9 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -114,6 +116,7 @@ const Empleado = Loadable(lazy(() => import('../components/general/empleados/Emp
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
+const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
@@ -275,6 +278,9 @@ const Router = [
       { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural  /> },
       { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
+      { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
+      { path: '/duca', element: <Duca  /> },
+      { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
 
 
