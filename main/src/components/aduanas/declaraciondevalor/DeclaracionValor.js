@@ -17,12 +17,16 @@ import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import ParentCard from 'src/components/shared/ParentCard';
 import { Stack } from '@mui/system';
+import Tab1 from './DeclaracionTab1';
+import Tab2 from './DeclaracionTab2';
+import Tab3 from './DeclaracionTab3';
 
-const steps = ['Account', 'Profile', 'Finish'];
+const steps = ['Información del importador', 'Informacion del proveedor e intermediario', 'Transacción'];
 
 const DeclaracionValor = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+
 
   const isStepOptional = (step) => step === 1;
 
@@ -63,69 +67,15 @@ const DeclaracionValor = () => {
     switch (step) {
       case 0:
         return (
-          <Box>
-            <CustomFormLabel htmlFor="Name">Name</CustomFormLabel>
-            <CustomTextField
-              id="Name"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Email">Email</CustomFormLabel>
-            <CustomTextField
-              id="Email"
-              type="email"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Password">Password</CustomFormLabel>
-            <CustomTextField
-              id="Password"
-              type="password"
-              variant="outlined"
-              fullWidth
-            />
-          </Box>
+          <Tab1 />
         );
       case 1:
         return (
-          <Box>
-            <CustomFormLabel htmlFor="Fname">First Name</CustomFormLabel>
-            <CustomTextField
-              id="Fname"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Lname">Last Name</CustomFormLabel>
-            <CustomTextField
-              id="Lname"
-              type="text"
-              variant="outlined"
-              fullWidth
-            />
-            <CustomFormLabel htmlFor="Address">Address</CustomFormLabel>
-            <CustomTextField
-              id="Address"
-              multiline
-              rows={4}
-              variant="outlined"
-              fullWidth
-            />
-          </Box>
+          <Tab2 />
         );
       case 2:
         return (
-          <Box pt={3}>
-            <Typography variant="h5">Terms and condition</Typography>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              Sard about this site or you have been to it, but you cannot figure out what it is or
-              what it can do. MTA web directory isSard about this site or you have been to it, but
-              you cannot figure out what it is or what it can do. MTA web directory is
-            </Typography>
-            <FormControlLabel
-              control={<CustomCheckbox defaultChecked />}
-              label="Agree with terms?"
-            />
-          </Box>
+          <Tab3 />
         );
       default:
         break;
@@ -145,7 +95,7 @@ const DeclaracionValor = () => {
               const stepProps = {};
               const labelProps = {};
               if (isStepOptional(index)) {
-                labelProps.optional = <Typography variant="caption">Optional</Typography>;
+                labelProps.optional = <Typography variant="caption"></Typography>;
               }
               if (isStepSkipped(index)) {
                 stepProps.completed = false;
@@ -160,7 +110,7 @@ const DeclaracionValor = () => {
           {activeStep === steps.length ? (
             <>
               <Stack spacing={2} mt={3}>
-                <Alert severity='success' mt={2}>All steps completed - you&apos;re finished</Alert>
+                <Alert severity='success' mt={2}>Todos los datos se han completado</Alert>
 
                 <Box textAlign="right">
                   <Button onClick={handleReset} variant="contained" color="error">
@@ -184,12 +134,7 @@ const DeclaracionValor = () => {
                   Back
                 </Button>
                 <Box flex="1 1 auto" />
-                {isStepOptional(activeStep) && (
-                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                    Skip
-                  </Button>
-                )}
-
+                
                 <Button
                   onClick={handleNext}
                   variant="contained"

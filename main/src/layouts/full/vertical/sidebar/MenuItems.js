@@ -5,6 +5,7 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
+  IconFileText,
   IconPaperBag,
   IconFileCertificate
 
@@ -246,7 +247,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Declaración de valor',
-    icon: IconPaperBag,
+    icon: IconFileText,
     chipColor: 'secondary',
     href: '/declaracion-de-valor',
   },
