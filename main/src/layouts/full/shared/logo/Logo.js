@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { ReactComponent as LogoDark } from 'src/assets/images/logos/LOGO.svg';
-import { ReactComponent as LogoDarkRTL } from 'src/assets/images/logos/LOGO.svg';
-import { ReactComponent as LogoLight } from 'src/assets/images/logos/LOGO.svg';
-import { ReactComponent as LogoLightRTL } from 'src/assets/images/logos/LOGO.svg';
+import { ReactComponent as LogoDark } from 'src/assets/images/logos/dark-logo.svg';
+import { ReactComponent as LogoDarkRTL } from 'src/assets/images/logos/dark-rtl-logo.svg';
+import { ReactComponent as LogoLight } from 'src/assets/images/logos/LOGO_FL_GRADIENTE.svg';
+import { ReactComponent as LogoLightRTL } from 'src/assets/images/logos/light-logo-rtl.svg';
 import { styled } from '@mui/material';
 
 const Logo = () => {
@@ -18,7 +18,7 @@ const Logo = () => {
   if (customizer.activeDir === 'ltr') {
     return (
       <LinkStyled to="/">
-        {customizer.activeMode === 'light' ? (
+        {customizer.activeMode === 'dark' ? (
           <LogoLight height={customizer.TopbarHeight} />
         ) : (
           <LogoDark height={customizer.TopbarHeight} />
@@ -28,7 +28,7 @@ const Logo = () => {
   }
   return (
     <LinkStyled to="/">
-      {customizer.activeMode === 'light' ? (
+      {customizer.activeMode === 'dark' ? (
         <LogoDarkRTL height={customizer.TopbarHeight} />
       ) : (
         <LogoLightRTL height={customizer.TopbarHeight} />

@@ -41,21 +41,21 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
     marginBottom: '2px',
     padding: '8px 10px',
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
-    backgroundColor: open && level < 2 ? '#13567d' : '',
+    backgroundColor: open && level < 2 ? theme.palette.primary.main : '',
     whiteSpace: 'nowrap',
     '&:hover': {
       backgroundColor:
         pathname.includes(menu.href) || open
-          ? 'white'
+          ? theme.palette.primary.main
           : theme.palette.primary.light,
-      color: pathname.includes(menu.href) || open ? '#13567d' : '#13567d',
+      color: pathname.includes(menu.href) || open ? 'white' : theme.palette.primary.main,
     },
     color:
       open && level < 2
         ? 'white'
         : `inherit` && level > 1 && open
         ? theme.palette.primary.main
-        : 'white',
+        : theme.palette.text.secondary,
     borderRadius: `${customizer.borderRadius}px`,
   }));
   // If Menu has Children

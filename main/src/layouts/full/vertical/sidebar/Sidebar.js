@@ -61,10 +61,12 @@ const Sidebar = () => {
           {/* ------------------------------------------- */}
           <Box
             sx={{
-              backgroundColor: '#003859',
+              backgroundColor:
+                customizer.activeSidebarBg === '#ffffff' && customizer.activeMode === 'dark'
+                  ? customizer.darkBackground900
+                  : customizer.activeSidebarBg,
               color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
               height: '100%',
-              borderRadius:'0px 20px 20px 0px'
             }}
           >
             {/* ------------------------------------------- */}

@@ -5,8 +5,6 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
-  IconPaperBag,
-  IconFileCertificate
 
 } from '@tabler/icons';
 //import { id } from 'date-fns/locale';
@@ -25,6 +23,12 @@ const Menuitems = [
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
+ 
+
+ 
+  
+
+  
   {
     id: uniqueId(),
     title: 'Acceso',
@@ -247,22 +251,10 @@ const Menuitems = [
         icon: IconPoint,
         chipColor: 'secondary',
         href: '/subCategorias/list',
-      }
+      },
+      
+     
     ],
-  },
-  {
-    id: uniqueId(),
-    title: 'Declaración de valor',
-    icon: IconPaperBag,
-    chipColor: 'secondary',
-    href: '/declaracion-de-valor',
-  },
-  {
-    id: uniqueId(),
-    title: 'Duca',
-    icon: IconFileCertificate,
-    href: '/duca',
-    chipColor: 'secondary',
   },
   
 ];

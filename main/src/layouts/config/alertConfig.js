@@ -23,20 +23,4 @@ export const alertMessages = {
           severity: 'error',
           message: 'Hubo un error al actualizar',
         },
-    activado: {
-          severity: 'success',
-          message: 'Activacion exitosamente!',
-    },
-    errorActivacion: {
-            severity: 'error',
-            message: 'Hubo un error al activar',
-    },
-    desactivar: {
-            severity: 'success',
-            message: 'Desactivacion exitosamente!',
-    },
-    errorDesactivar: {
-              severity: 'error',
-              message: 'Hubo un error al desactivar',
-    },
   };
