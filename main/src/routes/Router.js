@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
+import PersonaJuridica from 'src/models/PersonaJuridicaModel';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -88,6 +89,8 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 // Aduana
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
+const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
+const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
@@ -116,6 +119,10 @@ const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/e
 const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
+
+const Aldea = Loadable(lazy(() => import('../components/general/aldeas/AldeasList')));
+
+const Colonias = Loadable(lazy(() => import('../components/general/colonias/ColoniasList')));
 
 
 // Acceso
@@ -235,6 +242,10 @@ const Router = [
       { path: '/personas/list', element: <Persona  /> },
       { path: '/tallas/list', element: <Tallas  /> },
       { path: '/aduanas/list', element: <Aduana  /> },
+      { path: '/aldeas/list', element: <Aldea  /> },
+      { path: '/ciudades/list', element: <Ciudad  /> },
+      {path: '/cargos/list', element: <Cargo  /> },
+      { path: '/colonias/list', element: <Colonias  /> },
       { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
       { path: '/formasdepago/list', element: <FormasPago  /> },
 
@@ -258,11 +269,14 @@ const Router = [
        { path: '/proveedores/list', element: <Proveedor  /> },
       { path: '/ciudades/list', element: <Ciudad  /> },
       { path: '/cargos/list', element: <Cargo  /> },
+      { path: '/PersonaNatural/list', element: <PersonaNatural  /> },
       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
       { path: '/empleado/list', element: <Empleado  /> },
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
       { path: '/moneda/list', element: <Moneda  /> },
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
+      { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural  /> },
+      { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
       { path: '/usuarios/list', element: <Usuarios  /> },
