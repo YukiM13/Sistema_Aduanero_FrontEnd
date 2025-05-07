@@ -18,15 +18,15 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
           const content = contentRef.current;
   
           const options = {
-              margin: 1,
-              image: { type: 'jpeg', quality: 0.98 },
-              html2canvas: { scale: 2 },
-              jsPDF: {
-                  unit: 'in',
-                  format: 'letter',
-                  orientation: 'portrait',
-              },
-          };
+            margin: [0.5, 0.5, 0.5, 0.5], // Márgenes más pequeños
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 1.5, scrollX: 0, scrollY: 0 }, // Escala el contenido
+            jsPDF: {
+                unit: 'in',
+                format: 'letter',
+                orientation: 'landscape', // Cambia a 'landscape' si es necesario
+            },
+        };
   
           html2pdf().set(options).from(content).toPdf().get('pdf').then((pdf) => {
               const blobUrl = URL.createObjectURL(pdf.output('blob'));
@@ -57,21 +57,37 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
                 </Button>
             </Stack>
 
-<h1 style={{ textAlign: 'center' }}>  Previsualización Declaración de Valor</h1>
-<div ref={contentRef}>
+<h5 style={{ textAlign: 'center' }}>  Previsualización Declaración de Valor </h5>
+<ParentCard>
 
-<table border="2" cellpadding="8" cellspacing="0" width="100%">
-  <tr bgcolor="#eeeeee">
-    <th colspan="6">DECLARACION UNICA DE ADUANAS - DUA PROV. DE EXPORTACION</th>
+
+<div ref={contentRef} style={{ display: 'flex'}}>
+<p>fecha y hora de impresion: {new Date().toLocaleString()} </p>
+
+{/* <div style={{ width: '20px', backgroundColor: 'gray', textAlign: 'center' ,fontSize: 'auto' }}>
+<p style={{ rotate: '90deg' }}>
+      Declaracion de Valor de Importacion y Exportacion
+</p>
+</div> */}
+
+
+<div style={{ width: '720px' }}>
+<table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word' }} border="2" cellpadding="8" cellspacing="0">
+<tr bgcolor="#eeeeee">
+    {/* <td style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>Invertido</td> */}
+    <th colspan="6" style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>DECLARACION DE VALOR DE IMPORTACIÓN Y EXPORTACIÓN <br /> <span style={{ fontSize: '17px' }}>-- IMPRESA --</span> </th>
+    <th rowspan="2"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
   </tr>
+
   <tr>
-    <th style={{border:"2px solid black"}} bgcolor="#f8f8f8">adua_IngresoNombre</th>
-    <td>{declaracionValor.adua_IngresoNombre}</td>
+    <th  bgcolor="#f8f8f8">Aduana : </th>
+    <td >{declaracionValor.adua_IngresoNombre}</td>
     <th bgcolor="#f8f8f8">adua_IngresoCodigo</th>
     <td>{declaracionValor.adua_IngresoCodigo}</td>
     <th bgcolor="#f8f8f8">adua_DespachoCodigo</th>
     <td>{declaracionValor.adua_DespachoCodigo}</td>
   </tr>
+
   <tr>
     <th bgcolor="#f8f8f8">deva_Id</th>
     <td>{declaracionValor.deva_Id}</td>
@@ -87,17 +103,17 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.deva_FechaAceptacion}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6">INFORMACIÓN DEL IMPORTADOR</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_Nombre_Raso</th>
-    <td colspan="5">{declaracionValor.impo_Nombre_Raso}</td>
+    <td >{declaracionValor.impo_Nombre_Raso}</td>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_NumRegistro</th>
-    <td colspan="2">{declaracionValor.impo_NumRegistro}</td>
+    <td >{declaracionValor.impo_NumRegistro}</td>
     <th bgcolor="#f8f8f8">impo_RTN</th>
-    <td colspan="2">{declaracionValor.impo_RTN}</td>
+    <td >{declaracionValor.impo_RTN}</td>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_Direccion_Exacta</th>
@@ -112,19 +128,19 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.impo_Telefono}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6">TRANSPORTE Y EXPORTACIÓN</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">embarcacionNombre</th>
-    <td colspan="2">{declaracionValor.embarcacionNombre}</td>
+    <td >{declaracionValor.embarcacionNombre}</td>
     <th bgcolor="#f8f8f8">pais_ExportacionNombre</th>
-    <td colspan="2">{declaracionValor.pais_ExportacionNombre}</td>
+    <td >{declaracionValor.pais_ExportacionNombre}</td>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">deva_FechaExportacion</th>
-    <td colspan="2">{declaracionValor.deva_FechaExportacion}</td>
+    <td >{declaracionValor.deva_FechaExportacion}</td>
     <th bgcolor="#f8f8f8">lugarEmbarque</th>
-    <td colspan="2">{declaracionValor.lugarEmbarque}</td>
+    <td >{declaracionValor.lugarEmbarque}</td>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">monedaNombre</th>
@@ -135,7 +151,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.inco_Version}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6">PROVEEDOR</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>PROVEEDOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_Nombre_Raso</th>
@@ -143,9 +159,9 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_NumeroIdentificacion</th>
-    <td colspan="2">{declaracionValor.prov_NumeroIdentificacion}</td>
+    <td >{declaracionValor.prov_NumeroIdentificacion}</td>
     <th bgcolor="#f8f8f8">coco_Descripcion</th>
-    <td colspan="2">{declaracionValor.coco_Descripcion}</td>
+    <td >{declaracionValor.coco_Descripcion}</td>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_Direccion_Exacta</th>
@@ -159,10 +175,11 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <th bgcolor="#f8f8f8">prov_Telefono</th>
     <td>{declaracionValor.prov_Telefono}</td>
   </tr>
-  <tr bgcolor="#eeeeee">
-    <th colspan="6">VALORES</th>
+
+  <tr bgcolor="#eeeeee" style={{ border: "2px solid black" }}>
+    <th colspan="7">VALORES</th>
   </tr>
-  <tr>
+  <tr >
     <th bgcolor="#f8f8f8">base_PrecioFactura</th>
     <td bgcolor="#f8f8f8">{declaracionValor.base_PrecioFactura}</td>
     <th bgcolor="#f8f8f8">base_ComisionCorrelaje</th>
@@ -178,14 +195,18 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <th bgcolor="#f8f8f8">base_Valor_Aduana</th>
     <td>{declaracionValor.base_Valor_Aduana}</td>
   </tr>
+
+  
   <tr bgcolor="#eeeeee">
-    <th colspan="6">OBSERVACIONES</th>
+    <th colspan="7" style={{ border: "2px solid black" }}>OBSERVACIONES</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">deva_Observaciones</th>
     <td colspan="5">{declaracionValor.deva_Observaciones}</td>
   </tr>
+
 </table>
+</div>
 
 {/* 
 "deva_Id": 23,
@@ -317,8 +338,10 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
       "deva_FechaModificacion": "2023-08-29T20:18:55.553",
       "deva_Estado": true */}
 
+
           
         </div>
+        </ParentCard>
         </>
 
     );
