@@ -62,11 +62,12 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  
+
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
+
     if (name === "ciud_Id" && value) {
-      const apiUrl = process.env.REACT_APP_API_URL;
-      const apiKey = process.env.REACT_APP_API_KEY;
-  
+      // Fetch colonias and aldeas for Empresa
       axios
         .get(`${apiUrl}/api/Colonias/FiltrarPorCiudad?ciud_Id=${value}`, {
           headers: { 'XApiKey': apiKey },
@@ -77,8 +78,43 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           }
         })
         .catch((error) => console.error(error));
+
+      axios
+        .get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?alde_Id=${value}`, {
+          headers: { 'XApiKey': apiKey },
+        })
+        .then((response) => {
+          if (response.data && Array.isArray(response.data.data)) {
+            setaldeas(response.data.data);
+          }
+        })
+        .catch((error) => console.error(error));
     }
-    
+
+    if (name === "peju_CiudadIdRepresentante" && value) {
+      // Fetch colonias and aldeas for Representante
+      axios
+        .get(`${apiUrl}/api/Colonias/FiltrarPorCiudad?ciud_Id=${value}`, {
+          headers: { 'XApiKey': apiKey },
+        })
+        .then((response) => {
+          if (response.data && Array.isArray(response.data.data)) {
+            setColonias(response.data.data);
+          }
+        })
+        .catch((error) => console.error(error));
+
+      axios
+        .get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?alde_Id=${value}`, {
+          headers: { 'XApiKey': apiKey },
+        })
+        .then((response) => {
+          if (response.data && Array.isArray(response.data.data)) {
+            setaldeas(response.data.data);
+          }
+        })
+        .catch((error) => console.error(error));
+    }
   };
 
   const validateTabFields = (validar = true) => {
@@ -314,7 +350,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 name="peju_CiudadIdRepresentante"
                 value={formData.peju_CiudadIdRepresentante}
                 onChange={handleChange}
-                error={!!errors.ciupeju_CiudadIdRepresentanted_Id}
+                error={!!errors.peju_CiudadIdRepresentante}
                 helperText={errors.peju_CiudadIdRepresentante}
                 SelectProps={{
                   MenuProps: {
@@ -341,10 +377,10 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_ColoniaRepresentante"
                 name="peju_ColoniaRepresentante"
                 value={formData.peju_ColoniaRepresentante}
-                onChange={handleChange} 
-                error={!!errors.colo_Id}
-                helperText={errors.colo_Id}
-                disabled={!formData.ciud_Id}
+                onChange={handleChange}
+                error={!!errors.peju_ColoniaRepresentante}
+                helperText={errors.peju_ColoniaRepresentante}
+                disabled={!formData.peju_CiudadIdRepresentante}
               >
                 {colonias.map((colonia) => (
                   <MenuItem key={colonia.colo_Id} value={colonia.colo_Id}>
@@ -362,9 +398,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 name="peju_AldeaIdRepresentante"
                 value={formData.peju_AldeaIdRepresentante}
                 onChange={handleChange} 
-                error={!!errors.alde_Id}
-                helperText={errors.alde_Id}
-                disabled={!formData.ciud_Id}
+                error={!!errors.peju_AldeaIdRepresentante}
+                helperText={errors.peju_AldeaIdRepresentante}
+                disabled={!formData.peju_CiudadIdRepresentante}
               >
                 {aldeas.map((aldea) => (
                   <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
@@ -398,6 +434,32 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 name="peju_TelefonoEmpresa"
                 value={formData.peju_TelefonoEmpresa}
                 onChange={handleChange}
+                error={!!errors.peju_TelefonoEmpresa}
+                helperText={errors.peju_TelefonoEmpresa}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel>Teléfono Fijo Representante Legal</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="peju_TelefonoFijoRepresentanteLegal"
+                name="peju_TelefonoFijoRepresentanteLegal"
+                value={formData.peju_TelefonoFijoRepresentanteLegal}
+                onChange={handleChange}
+                error={!!errors.peju_TelefonoFijoRepresentanteLegal}
+                helperText={errors.peju_TelefonoFijoRepresentanteLegal}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel>Teléfono Representante Legal</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="peju_TelefonoRepresentanteLegal"
+                name="peju_TelefonoRepresentanteLegal"
+                value={formData.peju_TelefonoRepresentanteLegal}
+                onChange={handleChange}
+                error={!!errors.peju_TelefonoRepresentanteLegal}
+                helperText={errors.peju_TelefonoRepresentanteLegal}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -408,18 +470,31 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 name="peju_CorreoElectronico"
                 value={formData.peju_CorreoElectronico}
                 onChange={handleChange}
-                
+                error={!!errors.peju_CorreoElectronico}
+                helperText={errors.peju_CorreoElectronico}
               />
-               <Grid item>
-            <Button variant="contained" type="submit" startIcon={<Check />}>
-              Verificar correo
-            </Button>
-          </Grid>
+              <Button variant="contained" sx={{ mt: 1 }} startIcon={<Check />}>
+                Verificar correo
+              </Button>
             </Grid>
-           
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="peju_CorreoElectronicoAlternativo"
+                name="peju_CorreoElectronicoAlternativo"
+                value={formData.peju_CorreoElectronicoAlternativo}
+                onChange={handleChange}
+                error={!!errors.peju_CorreoElectronicoAlternativo}
+                helperText={errors.peju_CorreoElectronicoAlternativo}
+              />
+              <Button variant="contained" sx={{ mt: 1 }} startIcon={<Check />}>
+                Verificar correo
+              </Button>
+            </Grid>
           </Grid>
         );
-      }
+    }
   };
 
   return (
