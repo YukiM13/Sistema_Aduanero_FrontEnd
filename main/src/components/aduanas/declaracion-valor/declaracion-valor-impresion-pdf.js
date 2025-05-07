@@ -61,7 +61,6 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <ParentCard>
 
 
-
 <p>fecha y hora de impresion: {new Date().toLocaleString()} </p>
 
 {/* <div style={{ width: '20px', backgroundColor: 'gray', textAlign: 'center' ,fontSize: 'auto' }}>
@@ -75,7 +74,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word' }} border="2" cellpadding="8" cellspacing="0">
 <tr bgcolor="#eeeeee">
     {/* <td style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>Invertido</td> */}
-    <th colspan="6" style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>DECLARACION DE VALOR DE IMPORTACIÓN Y EXPORTACIÓN <br /> <span style={{ fontSize: '17px' }}>-- IMPRESA --</span> </th>
+    <th colspan="7" style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>DECLARACION DE VALOR DE IMPORTACIÓN Y EXPORTACIÓN <br /> <span style={{ fontSize: '17px' }}>-- IMPRESA --</span> </th>
     <th rowspan="2"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
   </tr>
 
@@ -103,7 +102,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.deva_FechaAceptacion}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
+    <th colspan="8" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_Nombre_Raso</th>
@@ -128,7 +127,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.impo_Telefono}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
+    <th colspan="8" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">embarcacionNombre</th>
@@ -151,7 +150,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.inco_Version}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>PROVEEDOR</th>
+    <th colspan="8" style={{ border: "2px solid black" }}>PROVEEDOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_Nombre_Raso</th>
@@ -177,7 +176,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
   </tr>
 
   <tr bgcolor="#eeeeee" style={{ border: "2px solid black" }}>
-    <th colspan="7">VALORES</th>
+    <th colspan="8">VALORES</th>
   </tr>
   <tr >
     <th bgcolor="#f8f8f8">base_PrecioFactura</th>
@@ -198,7 +197,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 
   
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>OBSERVACIONES</th>
+    <th colspan="8" style={{ border: "2px solid black" }}>OBSERVACIONES</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">deva_Observaciones</th>
@@ -340,7 +339,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 
 
           
-        
+      
         </ParentCard>
         </>
 
