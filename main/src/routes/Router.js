@@ -102,6 +102,7 @@ const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/ti
 const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
@@ -291,6 +292,8 @@ const Router = [
       { path: '/usuarios/list', element: <Usuarios  /> },
       { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
+      { path: '/ducas/list', element: <DucasList  /> },
+      { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
       { path: '/ordenCompra', element: <OrdenCompra  /> },
       { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalle  /> },

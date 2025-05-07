@@ -184,6 +184,14 @@ const Menuitems = [
         href: '/concepto-de-pago/list',
         chipColor: 'secondary',
       },
+      
+      {
+        id: uniqueId(),
+        title: 'Ducas',
+        icon: IconPoint,
+        href: '/ducas/list',
+        chipColor: 'secondary',
+      },
       {
         id: uniqueId(),
         title: 'Formas de Pago',
