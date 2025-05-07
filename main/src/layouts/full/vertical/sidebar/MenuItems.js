@@ -31,7 +31,13 @@ const Menuitems = [
     icon: IconUser,
     href: '/apps/blog/',
     children: [
-     
+      {
+        id: uniqueId(),
+        title: 'Usuarios',
+        icon: IconPoint,
+        href: '/usuarios/list',
+        chipColor: 'secondary',
+      },
     ],
   },
   {

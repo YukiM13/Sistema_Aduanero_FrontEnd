@@ -19,6 +19,13 @@ const Profile = () => {
     setAnchorEl2(null);
   };
 
+  const localStorageData = localStorage.getItem('DataUsuario');
+  const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+  const userName = parsedData ? parsedData.emplNombreCompleto : 'Usuario';
+  const userEmail = parsedData ? parsedData.empl_CorreoElectronico : 'Correo';
+  const userRole = parsedData ? parsedData.role_Descripcion : 'Rol';
+  const userImage = parsedData ? parsedData.usua_Image : 'Imagen';
+
   return (
     <Box>
       <IconButton
@@ -35,7 +42,7 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={ProfileImg}
+          src={userImage || ProfileImg}
           alt={ProfileImg}
           sx={{
             width: 35,
@@ -43,9 +50,7 @@ const Profile = () => {
           }}
         />
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
+      
       <Menu
         id="msgs-menu"
         anchorEl={anchorEl2}
@@ -62,15 +67,15 @@ const Profile = () => {
       >
         <Scrollbar sx={{ height: '100%', maxHeight: '85vh' }}>
           <Box p={3}>
-            <Typography variant="h5">User Profile</Typography>
+            <Typography variant="h5">Usuario</Typography>
             <Stack direction="row" py={3} spacing={2} alignItems="center">
-              <Avatar src={ProfileImg} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
+              <Avatar src={userImage} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
               <Box>
                 <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-                  Mathew Anderson
+                  {userName}
                 </Typography>
                 <Typography variant="subtitle2" color="textSecondary">
-                  Designer
+                  {userRole}
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -80,7 +85,7 @@ const Profile = () => {
                   gap={1}
                 >
                   <IconMail width={15} height={15} />
-                  info@modernize.com
+                  {userEmail}
                 </Typography>
               </Box>
             </Stack>
@@ -159,7 +164,7 @@ const Profile = () => {
                 component={Link}
                 fullWidth
               >
-                Logout
+                Cerrar sesión
               </Button>
             </Box>
           </Box>

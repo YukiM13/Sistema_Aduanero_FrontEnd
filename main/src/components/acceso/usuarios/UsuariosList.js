@@ -174,6 +174,9 @@ const UsuariosComponent = () => {
                                             <TableCell>
                                                 <Typography variant="h6">Email</Typography>
                                             </TableCell>
+                                            <TableCell>
+                                                <Typography variant="h6">Rol</Typography>
+                                            </TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -201,6 +204,7 @@ const UsuariosComponent = () => {
                                                     <TableCell>{usuario.usua_Nombre}</TableCell>
                                                     <TableCell>{usuario.emplNombreCompleto}</TableCell>
                                                     <TableCell>{usuario.empl_CorreoElectronico}</TableCell>
+                                                    <TableCell>{usuario.role_Descripcion}</TableCell>
                                                 </TableRow>
                                             ))}
                                         {usuarios.length === 0 && (

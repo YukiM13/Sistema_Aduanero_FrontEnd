@@ -66,52 +66,62 @@ const Login2 = () => {
         spacing={0}
         justifyContent="center"
         alignItems="center"
-        sx={{ minHeight: '100vh' }}
+        sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
-          <Card elevation={3}>
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-              <Logo />
-              <Typography variant="h4" gutterBottom>
+          <Card elevation={3} sx={{ p: 4 }}>
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
+              <Box sx={{ display: 'inline-block', p: 2, backgroundColor: '#5D87FF', borderRadius: '50%' }}>
+                <Logo />
+              </Box>
+              <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
                 Bienvenido
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
                 Inicia sesión para continuar
+                 <br />
+                -angie
+                <br />
+                -123
               </Typography>
             </Box>
-            <Box sx={{ p: 3 }}>
-              {/* Form wrapper */}
+            <Box>
               <form onSubmit={formik.handleSubmit}>
-                <Stack spacing={2}>
-                  <CustomFormLabel htmlFor="usua_Nombre">Nombre</CustomFormLabel>
-                  <CustomTextField
-                    fullWidth
-                    id="usua_Nombre"
-                    name="usua_Nombre"
-                    value={formik.values.usua_Nombre}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.usua_Nombre && Boolean(formik.errors.usua_Nombre)}
-                    helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
-                  />
-                  <CustomFormLabel htmlFor="usua_Contrasenia">Contraseña</CustomFormLabel>
-                  <CustomTextField
-                    fullWidth
-                    id="usua_Contrasenia"
-                    name="usua_Contrasenia"
-                    type="password"
-                    value={formik.values.usua_Contrasenia}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.usua_Contrasenia && Boolean(formik.errors.usua_Contrasenia)}
-                    helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
-                  />
-                </Stack>
-                <Stack spacing={2} sx={{ p: 3 }} alignItems="center">
-                  <Button variant="contained" type="submit">
-                    Guardar
+                <Stack spacing={3} alignItems="center">
+                  <Box sx={{ width: '100%' }}>
+                    <CustomFormLabel htmlFor="usua_Nombre">Nombre</CustomFormLabel>
+                    <CustomTextField
+                      fullWidth
+                      id="usua_Nombre"
+                      name="usua_Nombre"
+                      value={formik.values.usua_Nombre}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.usua_Nombre && Boolean(formik.errors.usua_Nombre)}
+                      helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
+                    />
+                  </Box>
+                  <Box sx={{ width: '100%' }}>
+                    <CustomFormLabel htmlFor="usua_Contrasenia">Contraseña</CustomFormLabel>
+                    <CustomTextField
+                      fullWidth
+                      id="usua_Contrasenia"
+                      name="usua_Contrasenia"
+                      type="password"
+                      value={formik.values.usua_Contrasenia}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.usua_Contrasenia && Boolean(formik.errors.usua_Contrasenia)}
+                      helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
+                    />
+                  </Box>
+                  <br />
+                  <Button variant="contained" type="submit" fullWidth>
+                    Iniciar sesión
                   </Button>
-                  <Link to="/auth/register">Create an account</Link>
+                  <Link to="/auth/register" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                    ¿Olvidaste tu contraseña?
+                  </Link>
                 </Stack>
               </form>
             </Box>
