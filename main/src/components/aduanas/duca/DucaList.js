@@ -5,7 +5,7 @@ import {
   TableHead, TableRow, Paper, Button, Stack,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText
+  DialogContentText, Container
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
@@ -13,9 +13,11 @@ import ParentCard from '../../../components/shared/ParentCard';
 // import DucaCreateComponent from './DucaCreate';
 // import DucaEditComponent from './DucaEdit';
 // import DucaDetailsComponent from './DucaDetails';
+import DucaPrintComponent from './DucaPrint';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import PrintIco from '@mui/icons-material/Print';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Snackbar, Alert } from '@mui/material';
@@ -24,6 +26,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import { PrintOutlined } from '@mui/icons-material';
 
 
 
@@ -41,12 +44,13 @@ const DucasList = () => {
       const [searchQuery, setSearchQuery] = useState('');
       const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
       const [alertConfig, setAlertConfig] = useState({
-        severity: '',
+        severity: 'info',
         message: '',
       });
 
       const apiUrl = process.env.REACT_APP_API_URL;
       const apiKey = process.env.REACT_APP_API_KEY;
+      console.log('API URL:', apiKey);
 
       const mostrarAlerta = (tipo) => {
         const config = alertMessages[tipo];
@@ -61,6 +65,7 @@ const DucasList = () => {
       
     function DetalleDuca(Duca) {
       // console.log('Detaie:', Duca.duca_Id);
+      setDucaSeleccionada(Duca);
       setModo('detalle');
       cerrarMenu();
     }
@@ -162,20 +167,6 @@ const DucasList = () => {
 
     return (
 
-        // <div>
-        //     <h2>Listado de Tallas</h2>
-        //     <ul>
-        //         {tallas.map(talla => (
-        //             <li>
-        //                 {talla.tall_Id} - {talla.tall_Nombre}
-        //             </li>
-        //         ))}
-        //     </ul>
-        // </div>
-
-
-      
-        
           <div>
             <Breadcrumb title="Ducas" subtitle={ "Listar"} />
             
@@ -186,12 +177,12 @@ const DucasList = () => {
               {modo === 'listar' && ( //esta linea muestra el listar osea la tabla
              
          
-                <container>
-            <Stack direction="row" justifyContent="flex-start" mb={2}>
+                <Container>
+            {/* <Stack direction="row" justifyContent="flex-start" mb={2}>
                 <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
                   {'Nuevo'}
                 </Button>
-            </Stack>
+            </Stack> */}
               <Paper variant="outlined">
                 <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
@@ -230,15 +221,23 @@ const DucasList = () => {
                       .map((Duca) => (
                         <TableRow key={Duca.duca_Id}>
                           <TableCell align="center">
-      
-                          <IconButton
+
+                          <Button variant="contained" onClick={() => DetalleDuca(Duca)}   
+                          startIcon={<PrintIco />}>
+                            {'Imprimir'}
+                          </Button>
+                          
+                          {/* onClick={() => DetalleDuca(DucaSeleccionada) */}
+
+                          {/* <IconButton
                             size="small" 
                             // se abre el menu y se Selecciona la data de la fila 
                             onClick={(e) => abrirMenu(e, Duca)}
                           >
                           <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                          </IconButton>
+                          </IconButton> */}
                           </TableCell>
+
                           <TableCell>{Duca.duca_Id}</TableCell>
                           <TableCell>{Duca.duca_No_Duca}</TableCell>
                           <TableCell>{Duca.duca_No_Correlativo_Referencia}</TableCell>
@@ -255,8 +254,47 @@ const DucasList = () => {
                 </TableContainer>
                   <TablePagination component="div" count={Ducas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
                   </Paper>
-                </container>
+                </Container>
                 )}
+                
+                {modo === 'detalle' && ( 
+      
+                <DucaPrintComponent
+                    Duca={DucaSeleccionada}
+                    onCancelar={() => setModo('listar')} 
+                
+                />
+                
+                )}
+                {/* {modo === 'crear' && ( 
+      
+                    <DucaPrintComponent
+                        onCancelar={() => setModo('listar')} 
+                        onGuardadoExitoso={() => {
+                        setModo('listar');
+                        mostrarAlerta('guardado')
+                        // Recarga los datos después de guardar
+                        cargarDucas();
+                        }}
+                    />
+                
+                )} */}
+
+                {/* {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+      
+      <DucaCreateComponent
+        onCancelar={() => setModo('listar')} 
+        onGuardadoExitoso={() => {
+          setModo('listar');
+          mostrarAlerta('guardado')
+          // Recarga los datos después de guardar
+          cargarDucas();
+        }}
+      />
+  
+  )} */}
+
+
                 {/* {modo === 'crear' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
           <DucaCreateComponent
@@ -324,7 +362,7 @@ const DucasList = () => {
                 </ListItemIcon>
                 <ListItemText>Editar</ListItemText>
               </MenuItem>
-              
+
               <MenuItem onClick={() => DetalleDuca(DucaSeleccionada)}>
                 <ListItemIcon>
                   <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
