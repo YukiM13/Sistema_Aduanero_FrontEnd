@@ -3,7 +3,6 @@ import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 
-
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')));
@@ -120,6 +119,7 @@ const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvi
 
 
 // Acceso
+const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -265,6 +265,7 @@ const Router = [
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
+      { path: '/usuarios/list', element: <Usuarios  /> },
       { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
       { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
