@@ -61,7 +61,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <ParentCard>
 
 
-<div ref={contentRef} style={{ display: 'flex'}}>
+
 <p>fecha y hora de impresion: {new Date().toLocaleString()} </p>
 
 {/* <div style={{ width: '20px', backgroundColor: 'gray', textAlign: 'center' ,fontSize: 'auto' }}>
@@ -71,7 +71,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 </div> */}
 
 
-<div style={{ width: '720px' }}>
+
 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word' }} border="2" cellpadding="8" cellspacing="0">
 <tr bgcolor="#eeeeee">
     {/* <td style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>Invertido</td> */}
@@ -103,7 +103,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.deva_FechaAceptacion}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
+    <th colspan="7" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_Nombre_Raso</th>
@@ -128,7 +128,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.impo_Telefono}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
+    <th colspan="7" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">embarcacionNombre</th>
@@ -151,7 +151,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.inco_Version}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="6" style={{ border: "2px solid black" }}>PROVEEDOR</th>
+    <th colspan="7" style={{ border: "2px solid black" }}>PROVEEDOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_Nombre_Raso</th>
@@ -206,7 +206,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
   </tr>
 
 </table>
-</div>
+
 
 {/* 
 "deva_Id": 23,
@@ -340,7 +340,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 
 
           
-        </div>
+        
         </ParentCard>
         </>
 
