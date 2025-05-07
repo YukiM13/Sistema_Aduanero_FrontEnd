@@ -29,8 +29,8 @@ import { Stack } from '@mui/system';
 import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
-    prov_decl_Nombre_Raso: yup.number().required('La aduana de ingreso es requerida'),
-    prov_decl_Direccion_Exacta: yup.number().required('El La aduana de despacho es requerida'),
+    prov_decl_Nombre_Raso: yup.string().required('La razón social del proveedor es requerida'),
+    prov_decl_Direccion_Exacta: yup.string().required('La dirección es requerida'),
     prov_ciud_Id: yup.string().required('La declaración de mercancia es necesaria'),
     prov_decl_Correo_Electronico: yup.date().required('El destino de aduana es requerido'),
     prov_decl_Telefono: yup.number().required('El regimen aduanero es requerido'),
@@ -52,15 +52,23 @@ const validationSchema = yup.object({
 
 const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [ciudades, setCiudades] = useState([]);
+        const [ciudadIntermediario, setCiudadIntermediario] = useState([]);
+        const [paises, setPaises] = useState([]);
         const [aduanas, setAduanas] = useState([]);
         const [regimenAduanero, setRegimenAduanero] = useState([]);
         const [nivelComercial, setNivelComercial] = useState(null);
+        const [condicionComercial, setCondicionComercial] = useState(null);
+        const [tipoIntermediario, setTipoIntermediario] = useState(false);
         
         const [openSnackbar, setOpenSnackbar] = useState(false); 
         const [selectedCiudad, setSelectedCiudad] = useState(null);
+        const [selectedCiudadIntermediario, setSelectedCiudadIntermediario] = useState(null);
+        const [selectedTipoIntermediario, setSelectedTipoIntermediario] = useState(null);
         const [selectAduanaIngreso, setSelectedAduanaIngreso] = useState(null);
         const [selectAduanaDespacho, setSelectedAduanaDespacho] = useState(null);
         const [selectedRegimenAduanero, setSelectedRegimenAduanero] = useState(null);
+        const [selectedPais, setSelectedPais] = useState(null);
+        const [selectedCondicionComercial, setSelectedCondicionComercial] = useState(null);
         
         const [selectedNivelComercial, setSelectedNivelComercial] = useState(null);
         const [initialValues, setInitialValues] = useState(Deva);
@@ -68,12 +76,28 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
 
+        //Endpoint para obtener los datos de las condiciones comerciales
+        const listarCondicionesComerciales = () => {
+          axios.get(`${apiUrl}/api/CondicionesComerciales/Listar`, {
+              headers: {
+                  'XApiKey': apiKey
+              }
+          })
+          .then(response => {
+              setCondicionComercial(response.data.data);
+              console.log("Condiciones comerciales encontradas con éxito", response.data.data)
+          })
+          .catch(error => {
+              console.error('Error al obtener los datos de las condiciones comerciales:', error);
+          });
+        }
+
+        //Endpoint para obtener los datos de las ciudades
         const listarCiudades = () => {
         axios.get(`${apiUrl}/api/Ciudades/Listar`, {
             headers: {
                 'XApiKey': apiKey
             }
-    
         })
         .then(response => {
             setCiudades(response.data.data);
@@ -84,12 +108,12 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         });
         } 
 
+        //Endpoint para obtener los datos de las aduanas
         const listarAduanas = () => {
           axios.get(`${apiUrl}/api/Aduanas/Listar`, {
               headers: {
                   'XApiKey': apiKey
               }
-        
           })
           .then(response => {
             setAduanas(response.data.data);
@@ -100,6 +124,23 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           });
         } 
 
+        //Endpoint para obtener los datos de las aduanas
+        const listarTiposIntermediario = () => {
+          axios.get(`${apiUrl}/api/TipoIntermediario/Listar`, {
+              headers: {
+                  'XApiKey': apiKey
+              }
+          })
+          .then(response => {
+            setTipoIntermediario(response.data.data);
+              console.log("React E10", response.data.data)
+          })
+          .catch(error => {
+              console.error('Error al obtener los datos de los tipos de intermediario:', error);
+          });
+        } 
+
+        //Endpoint para obtener los datos de los regimenes aduaneros
         const listarRegimenAduaneros = () => {
         axios.get(`${apiUrl}/api/RegimenAduanero/Listar`, {
             headers: {
@@ -116,6 +157,7 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           });
         } 
 
+        //Endpoint para obtener los datos de los niveles comerciales
         const listarNivelesComerciales = () => {
           axios.get(`${apiUrl}/api/NivelesComerciales/Listar`, {
               headers: {
@@ -247,7 +289,9 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 listarCiudades();
                 listarAduanas();
                 listarNivelesComerciales();
+                listarCondicionesComerciales();
                 listarRegimenAduaneros();
+                listarTiposIntermediario();
                 if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
                   setOpenSnackbar(true);
                 }
@@ -283,193 +327,37 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     </Grid>
                     <Grid item lg={4} md={12} sm={12} mt={0}>
                         <CustomFormLabel>Nombre o razón social</CustomFormLabel>
-                        <Autocomplete
-                                options={aduanas}
-                                getOptionLabel={(option) => option.adua_Nombre || ''}
-                                value={selectAduanaIngreso}
-                                onChange={(event, newValue) => {
-                                    setSelectedAduanaIngreso(newValue);
-                                    if (newValue) {
-                                    formik.setFieldValue('deva_AduanaIngresoId', newValue.deva_AduanaIngresoId);
-                                    } else {
-                                    formik.setFieldValue('deva_AduanaIngresoId', 0);
-                                    
-                                    }
-                                }}
-                                renderInput={(params) => (
-                                    <TextField 
-                                    {...params} 
-                                    variant="outlined" 
-                                    placeholder="Seleccione una aduana"
-                                    error={formik.touched.duca_AduanaRegistro && Boolean(formik.errors.duca_AduanaRegistro)}
-                                    helperText={formik.touched.duca_AduanaRegistro && formik.errors.duca_AduanaRegistro}
-                                    />
-                                )}
-                                noOptionsText="No hay aduanas disponibles"
-                                isOptionEqualToValue={(option, value) => option.adua_Id === value?.duca_AduanaRegistro}
-                        />
+                        <CustomTextField
+                                fullWidth
+                                id="prov_decl_Nombre_Raso"
+                                name="prov_decl_Nombre_Raso"
+                                type="text"
+                                value={formik.values.prov_decl_Nombre_Raso}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.prov_decl_Nombre_Raso && Boolean(formik.errors.prov_decl_Nombre_Raso)}
+                                helperText={formik.touched.prov_decl_Nombre_Raso && formik.errors.prov_decl_Nombre_Raso}
+                            />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Dirección</CustomFormLabel>
-                    <Autocomplete
-                            options={aduanas}
-                            getOptionLabel={(option) => option.adua_Nombre || ''}
-                            value={selectAduanaDespacho}
-                            onChange={(event, newValue) => {
-                                setSelectedAduanaDespacho(newValue);
-                                if (newValue) {
-                                formik.setFieldValue('deva_AduanaDespachoId', newValue.deva_AduanaDespachoId);
-                                } else {
-                                formik.setFieldValue('deva_AduanaDespachoId', 0);
-                                
-                                }
-                            }}
-                            renderInput={(params) => (
-                                <TextField 
-                                {...params} 
-                                variant="outlined" 
-                                placeholder="Seleccione la aduana de despacho"
-                                error={formik.touched.deva_AduanaDespachoId && Boolean(formik.errors.deva_AduanaDespachoId)}
-                                helperText={formik.touched.deva_AduanaDespachoId && formik.errors.deva_AduanaDespachoId}
-                                />
-                            )}
-                            noOptionsText="No hay aduanas disponibles"
-                            isOptionEqualToValue={(option, value) => option.adua_Id === value?.deva_AduanaDespachoId}
+                      <CustomTextField
+                                  fullWidth
+                                  id="prov_decl_Direccion_Exacta"
+                                  name="prov_decl_Direccion_Exacta"
+                                  type="text"
+                                  value={formik.values.prov_decl_Direccion_Exacta}
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  error={formik.touched.prov_decl_Direccion_Exacta && Boolean(formik.errors.prov_decl_Direccion_Exacta)}
+                                  helperText={formik.touched.prov_decl_Direccion_Exacta && formik.errors.prov_decl_Direccion_Exacta}
                         />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}> {/* Esto es como el div con class col-md-6 */}
-                            <CustomFormLabel>Ciudad</CustomFormLabel>
-                            <CustomTextField
-                                fullWidth
-                                id="deva_DeclaracionMercancia"
-                                name="deva_DeclaracionMercancia"
-                                type="text"
-                                value={formik.values.deva_DeclaracionMercancia}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.deva_DeclaracionMercancia && Boolean(formik.errors.deva_DeclaracionMercancia)}
-                                helperText={formik.touched.deva_DeclaracionMercancia && formik.errors.deva_DeclaracionMercancia}
-                            />
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Pais</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="deva_FechaAceptacion"
-                            name="deva_FechaAceptacion"
-                            type="date"
-                            value={formik.values.deva_FechaAceptacion}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FechaAceptacion && Boolean(formik.errors.deva_FechaAceptacion)}
-                            helperText={formik.touched.deva_FechaAceptacion && formik.errors.deva_FechaAceptacion}
-                        />
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                    <CustomFormLabel>Correo electrónico</CustomFormLabel>
-                    <Autocomplete
-                            options={regimenAduanero}
-                            getOptionLabel={(option) => option.regi_Descripcion || ''}
-                            value={selectedRegimenAduanero}
-                            onChange={(event, newValue) => {
-                                setSelectedRegimenAduanero(newValue);
-                                if (newValue) {
-                                formik.setFieldValue('regi_Id', newValue.regi_Id);
-                                } else {
-                                formik.setFieldValue('regi_Id', 0);
-                                
-                                }
-                            }}
-                            renderInput={(params) => (
-                                <TextField 
-                                {...params} 
-                                variant="outlined" 
-                                placeholder="Seleccione una aduana"
-                                error={formik.touched.regi_Id && Boolean(formik.errors.regi_Id)}
-                                helperText={formik.touched.regi_Id && formik.errors.regi_Id}
-                                />
-                            )}
-                            noOptionsText="No hay regimenes disponibles"
-                            isOptionEqualToValue={(option, value) => option.regi_Id === value?.regi_Id}
-                        />
-                
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Teléfono</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="decl_Nombre_Raso"
-                            name="decl_Nombre_Raso"
-                            type="text"
-                            value={formik.values.decl_Nombre_Raso}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Nombre_Raso && Boolean(formik.errors.decl_Nombre_Raso)}
-                            helperText={formik.touched.decl_Nombre_Raso && formik.errors.decl_Nombre_Raso}
-                        />
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Fax</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="impo_RTN"
-                            name="impo_RTN"
-                            type="text"
-                            value={formik.values.impo_RTN}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.impo_RTN && Boolean(formik.errors.impo_RTN)}
-                            helperText={formik.touched.impo_RTN && formik.errors.impo_RTN}
-                        />
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Condición comercial</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="impo_NumRegistro"
-                            name="impo_NumRegistro"
-                            type="text"
-                            value={formik.values.impo_NumRegistro}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.impo_NumRegistro && Boolean(formik.errors.impo_NumRegistro)}
-                            helperText={formik.touched.impo_NumRegistro && formik.errors.impo_NumRegistro}
-                        />
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Otra Condición</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="decl_Direccion_Exacta"
-                            name="decl_Direccion_Exacta"
-                            type="text"
-                            value={formik.values.decl_Direccion_Exacta}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Direccion_Exacta && Boolean(formik.errors.decl_Direccion_Exacta)}
-                            helperText={formik.touched.decl_Direccion_Exacta && formik.errors.decl_Direccion_Exacta}
-                        />
-                    </Grid>
-
-
-
-                    <Grid item xs={12}>
-                        <Typography mt={4} variant={'h6'}>
-                            Información general del intermediario
-                        </Typography>
-                        <hr style={{border:'1px solid #003859'}}/>
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12}>
-                    
-                            <CustomFormLabel>Nombre o razón social</CustomFormLabel>
-                            <Autocomplete
+                        <CustomFormLabel>Ciudad</CustomFormLabel>
+                        <Autocomplete
                             options={ciudades}
                             getOptionLabel={(option) => option.ciud_Nombre || ''}
                             value={selectedCiudad}
@@ -494,49 +382,160 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             noOptionsText="No hay ciudades disponibles"
                             isOptionEqualToValue={(option, value) => option.ciud_Id === value?.ciud_Id}
                         />
+                    </Grid>
+                    <Grid item lg={4} md={12} sm={12}>
+                      <CustomFormLabel>Correo electrónico</CustomFormLabel>
+                      <CustomTextField
+                                  fullWidth
+                                  id="prov_decl_Correo_Electronico"
+                                  name="prov_decl_Correo_Electronico"
+                                  type="text"
+                                  value={formik.values.prov_decl_Correo_Electronico}
+                                  onChange={formik.handleChange}
+                                  onBlur={formik.handleBlur}
+                                  error={formik.touched.prov_decl_Correo_Electronico && Boolean(formik.errors.prov_decl_Correo_Electronico)}
+                                  helperText={formik.touched.prov_decl_Correo_Electronico && formik.errors.prov_decl_Correo_Electronico}
+                        />
+                    </Grid>
+
+                    <Grid item lg={4} md={12} sm={12}>
+                        <CustomFormLabel>Teléfono</CustomFormLabel>
+                        <CustomTextField
+                            fullWidth
+                            id="prov_decl_Telefono"
+                            name="prov_decl_Telefono"
+                            type="text"
+                            value={formik.values.prov_decl_Telefono}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.prov_decl_Telefono && Boolean(formik.errors.prov_decl_Telefono)}
+                            helperText={formik.touched.prov_decl_Telefono && formik.errors.prov_decl_Telefono}
+                        />
+                    </Grid>
+
+                    <Grid item lg={4} md={12} sm={12}>
+                        <CustomFormLabel>Fax</CustomFormLabel>
+                        <CustomTextField
+                            fullWidth
+                            id="impo_RTN"
+                            name="impo_RTN"
+                            type="text"
+                            value={formik.values.impo_RTN}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.impo_RTN && Boolean(formik.errors.impo_RTN)}
+                            helperText={formik.touched.impo_RTN && formik.errors.impo_RTN}
+                        />
+                    </Grid>
+
+                    <Grid item lg={4} md={12} sm={12}>
+                        <CustomFormLabel>Condición comercial</CustomFormLabel>
+                        <Autocomplete
+                            options={condicionComercial}
+                            getOptionLabel={(option) => option.coco_Descripcion || ''}
+                            value={selectedCondicionComercial}
+                            onChange={(event, newValue) => {
+                                setSelectedCondicionComercial(newValue);
+                                if (newValue) {
+                                formik.setFieldValue('coco_Id', newValue.coco_Id);
+                                } else {
+                                formik.setFieldValue('coco_Id', 0);
+                                
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                variant="outlined" 
+                                placeholder="Seleccione la condición comercial"
+                                error={formik.touched.coco_Id && Boolean(formik.errors.coco_Id)}
+                                helperText={formik.touched.coco_Id && formik.errors.coco_Id}
+                                />
+                            )}
+                            noOptionsText="No hay ciudades disponibles"
+                            isOptionEqualToValue={(option, value) => option.coco_Id === value?.coco_Id}
+                        />
+                    </Grid>
+
+                    <Grid item lg={4} md={12} sm={12}>
+                        <CustomFormLabel>Otra Condición</CustomFormLabel>
+                        <CustomTextField
+                            fullWidth
+                            id="pvde_Condicion_Otra"
+                            name="pvde_Condicion_Otra"
+                            type="text"
+                            value={formik.values.pvde_Condicion_Otra}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.pvde_Condicion_Otra && Boolean(formik.errors.pvde_Condicion_Otra)}
+                            helperText={formik.touched.pvde_Condicion_Otra && formik.errors.pvde_Condicion_Otra}
+                        />
+                    </Grid>
+
+
+
+                    <Grid item xs={12}>
+                        <Typography mt={4} variant={'h6'}>
+                            Información general del intermediario
+                        </Typography>
+                        <hr style={{border:'1px solid #003859'}}/>
+                    </Grid>
+                    <Grid item lg={4} md={12} sm={12}>
+                    
+                        <CustomFormLabel>Nombre o razón social</CustomFormLabel>
+                        <CustomTextField
+                        fullWidth
+                        id="inte_decl_Nombre_Raso"
+                        name="inte_decl_Nombre_Raso"
+                        type="text"
+                        value={formik.values.inte_decl_Nombre_Raso}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.inte_decl_Nombre_Raso && Boolean(formik.errors.inte_decl_Nombre_Raso)}
+                        helperText={formik.touched.inte_decl_Nombre_Raso && formik.errors.inte_decl_Nombre_Raso}
+                        />
                     
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Dirección</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="decl_Correo_Electronico"
-                            name="decl_Correo_Electronico"
+                            id="inte_decl_Direccion_Exacta"
+                            name="inte_decl_Direccion_Exacta"
                             type="text"
-                            value={formik.values.decl_Correo_Electronico}
+                            value={formik.values.inte_decl_Direccion_Exacta}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Correo_Electronico && Boolean(formik.errors.decl_Correo_Electronico)}
-                            helperText={formik.touched.decl_Correo_Electronico && formik.errors.decl_Correo_Electronico}
+                            error={formik.touched.inte_decl_Direccion_Exacta && Boolean(formik.errors.inte_decl_Direccion_Exacta)}
+                            helperText={formik.touched.inte_decl_Direccion_Exacta && formik.errors.inte_decl_Direccion_Exacta}
                         />
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Ciudad</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="decl_Correo_Electronico"
-                            name="decl_Correo_Electronico"
-                            type="text"
-                            value={formik.values.decl_Correo_Electronico}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Correo_Electronico && Boolean(formik.errors.decl_Correo_Electronico)}
-                            helperText={formik.touched.decl_Correo_Electronico && formik.errors.decl_Correo_Electronico}
-                        />
-                    </Grid>
-
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Pais</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="deva_FechaAceptacion"
-                            name="deva_FechaAceptacion"
-                            type="date"
-                            value={formik.values.deva_FechaAceptacion}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FechaAceptacion && Boolean(formik.errors.deva_FechaAceptacion)}
-                            helperText={formik.touched.deva_FechaAceptacion && formik.errors.deva_FechaAceptacion}
+                        <Autocomplete
+                            options={ciudades}
+                            getOptionLabel={(option) => option.ciud_Nombre || ''}
+                            value={selectedCiudad}
+                            onChange={(event, newValue) => {
+                                setSelectedCiudad(newValue);
+                                if (newValue) {
+                                formik.setFieldValue('ciud_Id', newValue.ciud_Id);
+                                } else {
+                                formik.setFieldValue('ciud_Id', 0);
+                                
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                variant="outlined" 
+                                placeholder="Seleccione la ciudad"
+                                error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
+                                helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
+                                />
+                            )}
+                            noOptionsText="No hay ciudades disponibles"
+                            isOptionEqualToValue={(option, value) => option.ciud_Id === value?.ciud_Id}
                         />
                     </Grid>
 
@@ -585,17 +584,31 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 <Grid item lg={4} md={12} sm={12}>
                     
                     <CustomFormLabel>Tipo intermediario</CustomFormLabel>
-                    <CustomTextField
-                        fullWidth
-                        id="decl_Fax"
-                        name="decl_Fax"
-                        type="text"
-                        value={formik.values.decl_Fax}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.decl_Fax && Boolean(formik.errors.decl_Fax)}
-                        helperText={formik.touched.decl_Fax && formik.errors.decl_Fax}
-                    />
+                    <Autocomplete
+                            options={tipoIntermediario}
+                            getOptionLabel={(option) => option.tite_Descripcion || ''}
+                            value={selectedTipoIntermediario}
+                            onChange={(event, newValue) => {
+                                setSelectedTipoIntermediario(newValue);
+                                if (newValue) {
+                                formik.setFieldValue('tite_Id', newValue.tite_Id);
+                                } else {
+                                formik.setFieldValue('tite_Id', 0);
+                                
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                variant="outlined" 
+                                placeholder="Seleccione un tipo de intermediario"
+                                error={formik.touched.tite_Id && Boolean(formik.errors.tite_Id)}
+                                helperText={formik.touched.tite_Id && formik.errors.tite_Id}
+                                />
+                            )}
+                            noOptionsText="No hay tipos de intermediario disponibles"
+                            isOptionEqualToValue={(option, value) => option.tite_Id === value?.tite_Id}
+                        />
                     
             
                 </Grid>
@@ -605,10 +618,10 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Otro tipo de intermediario</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="impo_NivelComercial_Otro"
-                        name="impo_NivelComercial_Otro"
+                        id="inte_Tipo_Otro"
+                        name="inte_Tipo_Otro"
                         type="text"
-                        value={formik.values.impo_NivelComercial_Otro}
+                        value={formik.values.inte_Tipo_Otro}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                     />

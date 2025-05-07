@@ -58,6 +58,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [selectedRegimenAduanero, setSelectedRegimenAduanero] = useState(null);
         
         const [selectedNivelComercial, setSelectedNivelComercial] = useState(null);
+        
         const [initialValues, setInitialValues] = useState(Deva);
         
         const apiUrl = process.env.REACT_APP_API_URL;
@@ -68,7 +69,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             headers: {
                 'XApiKey': apiKey
             }
-    
         })
         .then(response => {
             setCiudades(response.data.data);
