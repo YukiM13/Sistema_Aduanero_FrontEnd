@@ -13,13 +13,23 @@ import {
     Autocomplete,
     TextField,
   Alert,
-  Snackbar
+  Snackbar,
+  InputAdornment, IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
 } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import PageContainer from 'src/components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import { IconSearch} from '@tabler/icons';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
@@ -52,6 +62,48 @@ const validationSchema = yup.object({
 
 const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [initialValues, setInitialValues] = useState(Deva);
+        const [open, setOpen] = React.useState(false);
+        const theme = useTheme();
+        const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+        const [codigoEmbarque, setCodigoEmbarque] = useState('');
+
+        //Lugar de embarque
+        const [embarque, setEmbarque] = useState([]);
+        const [selectedEmbarque, setSelectedEmbarque] = useState(null);
+
+        const handleInputChange = (e) => {
+          setCodigoEmbarque(e.target.value);
+        };
+        const handleBuscarClick = () => {
+          buscarEmbarque(codigoEmbarque); // Esta función la llamas al hacer clic
+        };
+
+        const handleClickOpen = () => {
+          setOpen(true);
+      };
+      
+      const handleClose = () => {
+          setOpen(false);
+      };
+
+      const buscarEmbarque = (searchTerm) => {
+        axios.get(`${apiUrl}/api/LugaresEmbarque/Listar?codigo=${searchTerm}`, {
+          headers: {
+            'XApiKey': apiKey
+          } 
+      })
+      .then(response => {
+        setEmbarque(response.data.data);
+        console.log("React E10", response.data.data)
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del país:', error);
+        });
+    }
+
+        //Moneda
+        const [monedas, setMoneda] = useState([]);
+        const [selectedMoneda, setSelectedMoneda] = useState(null);
 
         //Formas de pago
         const [formaPago, setFormaPago] = useState([]);
@@ -83,12 +135,29 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         //Paises
         const [paises, setPaises] = useState(false);
         const [selectedPaisEntrega, setSelectedPaisEntrega] = useState(null);
+        const [selectedPaisExportacion, setSelectedPaisExportacion] = useState(null);
 
         const [openSnackbar, setOpenSnackbar] = useState(false); 
 
         // Variables de entorno
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
+
+        //Endpoint para obtener las formas de pago
+        const listarMonedas = () => {
+          axios.get(`${apiUrl}/api/Moneda/Listar`, {
+              headers: {
+                  'XApiKey': apiKey
+              }
+          })
+          .then(response => {
+              setMoneda(response.data.data);
+              console.log("React E10", response.data.data)
+          })
+          .catch(error => {
+              console.error('Error al obtener los datos de las formas de pago:', error);
+          });
+        } 
 
 
         //Endpoint para obtener las formas de pago
@@ -343,6 +412,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 listarIncoterms();
                 listarFormasEnvio();
                 listarFormasPago();
+                listarMonedas();
                 if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
                   setOpenSnackbar(true);
                 }
@@ -588,46 +658,57 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Lugar de embarque</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="decl_Correo_Electronico"
-                            name="decl_Correo_Electronico"
-                            type="text"
-                            value={formik.values.decl_Correo_Electronico}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Correo_Electronico && Boolean(formik.errors.decl_Correo_Electronico)}
-                            helperText={formik.touched.decl_Correo_Electronico && formik.errors.decl_Correo_Electronico}
-                        />
-                    </Grid>
-                    <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Pais de embarque</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="decl_Correo_Electronico"
-                            name="decl_Correo_Electronico"
-                            type="text"
-                            value={formik.values.decl_Correo_Electronico}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.decl_Correo_Electronico && Boolean(formik.errors.decl_Correo_Electronico)}
-                            helperText={formik.touched.decl_Correo_Electronico && formik.errors.decl_Correo_Electronico}
-                        />
-                    </Grid>
-
+                                    
+                                    <CustomFormLabel>Lugar de Embarque</CustomFormLabel>
+                                   
+                                    <CustomTextField
+                                    fullWidth
+                                    id="emba_Id"
+                                    name="emba_Id"
+                                    type="text"
+                                    value={formik.values.emba_Id}
+                                    disabled
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.emba_Id && Boolean(formik.errors.emba_Id)}
+                                    helperText={formik.touched.emba_Id && formik.errors.emba_Id}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment position="end">
+                                          <IconButton onClick={handleClickOpen}>
+                                            <IconSearch />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )
+                                    }}
+                                  />
+                                 </Grid>
+                    
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Pais de exportacion</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="deva_FechaAceptacion"
-                            name="deva_FechaAceptacion"
-                            type="date"
-                            value={formik.values.deva_FechaAceptacion}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FechaAceptacion && Boolean(formik.errors.deva_FechaAceptacion)}
-                            helperText={formik.touched.deva_FechaAceptacion && formik.errors.deva_FechaAceptacion}
+                        <Autocomplete
+                            options={paises}
+                            getOptionLabel={(option) => option.pais_Nombre || ''}
+                            value={selectedPaisExportacion}
+                            onChange={(event, newValue) => {
+                                setSelectedPaisExportacion(newValue);
+                                if (newValue) {
+                                formik.setFieldValue('pais_ExportacionId', newValue.pais_ExportacionId);
+                                } else {
+                                formik.setFieldValue('pais_ExportacionId', 0);
+                                
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                variant="outlined" 
+                                placeholder="Seleccione el pais de exportacion"
+                                error={formik.touched.pais_ExportacionId	 && Boolean(formik.errors.pais_ExportacionId	)}
+                                helperText={formik.touched.pais_ExportacionId	 && formik.errors.pais_ExportacionId	}
+                                />
+                            )}
+                            noOptionsText="No hay paises disponibles"
+                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.pais_ExportacionId	}
                         />
                     </Grid>
 
@@ -635,42 +716,56 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fecha de exportación</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="decl_Telefono"
-                        name="decl_Telefono"
-                        type="text"
-                        value={formik.values.decl_Telefono}
+                        id="deva_FechaExportacion"
+                        name="deva_FechaExportacion"
+                        type="date"
+                        value={formik.values.deva_FechaExportacion}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.decl_Telefono && Boolean(formik.errors.decl_Telefono)}
-                        helperText={formik.touched.decl_Telefono && formik.errors.decl_Telefono}
+                        error={formik.touched.deva_FechaExportacion && Boolean(formik.errors.deva_FechaExportacion)}
+                        helperText={formik.touched.deva_FechaExportacion && formik.errors.deva_FechaExportacion}
                     />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Moneda en que se realizó la transacción</CustomFormLabel>
-                    <CustomTextField
-                        fullWidth
-                        id="decl_Telefono"
-                        name="decl_Telefono"
-                        type="text"
-                        value={formik.values.decl_Telefono}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.decl_Telefono && Boolean(formik.errors.decl_Telefono)}
-                        helperText={formik.touched.decl_Telefono && formik.errors.decl_Telefono}
-                    />
+                    <Autocomplete
+                            options={monedas}
+                            getOptionLabel={(option) => option.mone_Codigo +' - ' +option.mone_Descripcion || ''}
+                            value={selectedMoneda}
+                            onChange={(event, newValue) => {
+                                setSelectedMoneda(newValue);
+                                if (newValue) {
+                                formik.setFieldValue('mone_Id', newValue.mone_Id);
+                                } else {
+                                formik.setFieldValue('mone_Id', 0);
+                                
+                                }
+                            }}
+                            renderInput={(params) => (
+                                <TextField 
+                                {...params} 
+                                variant="outlined" 
+                                placeholder="Seleccione la moneda"
+                                error={formik.touched.mone_Id	 && Boolean(formik.errors.mone_Id	)}
+                                helperText={formik.touched.mone_Id	 && formik.errors.mone_Id	}
+                                />
+                            )}
+                            noOptionsText="No hay paises disponibles"
+                            isOptionEqualToValue={(option, value) => option.mone_Id === value?.mone_Id	}
+                        />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Otra moneda (Especifique)</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="decl_Telefono"
-                        name="decl_Telefono"
+                        id="mone_Otra"
+                        name="mone_Otra"
                         type="text"
-                        value={formik.values.decl_Telefono}
+                        value={formik.values.mone_Otra}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.decl_Telefono && Boolean(formik.errors.decl_Telefono)}
-                        helperText={formik.touched.decl_Telefono && formik.errors.decl_Telefono}
+                        error={formik.touched.mone_Otra && Boolean(formik.errors.mone_Otra)}
+                        helperText={formik.touched.mone_Otra && formik.errors.mone_Otra}
                     />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
@@ -678,14 +773,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Tipo de cambio de moneda extranjera a dólares USD</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="decl_Fax"
-                        name="decl_Fax"
+                        id="deva_ConversionDolares"
+                        name="deva_ConversionDolares"
                         type="text"
-                        value={formik.values.decl_Fax}
+                        value={formik.values.deva_ConversionDolares}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.decl_Fax && Boolean(formik.errors.decl_Fax)}
-                        helperText={formik.touched.decl_Fax && formik.errors.decl_Fax}
+                        error={formik.touched.deva_ConversionDolares && Boolean(formik.errors.deva_ConversionDolares)}
+                        helperText={formik.touched.deva_ConversionDolares && formik.errors.deva_ConversionDolares}
                     />
                 </Grid>
             </Grid>
@@ -705,7 +800,77 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             >
             No puede haber campos vacios.
             </Alert>
-        </Snackbar>                  
+        </Snackbar>        
+
+        <Dialog
+                fullScreen={fullScreen}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="responsive-dialog-title"
+              >
+                <DialogTitle id="responsive-dialog-title">{"Buscar lugar de Embarque"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                  <CustomFormLabel>Codigo Embarque</CustomFormLabel>
+                  <Grid container spacing={3} mb={3}>  
+                    <Grid item lg={8} md={12} sm={12}>
+                        <CustomTextField
+                            fullWidth
+                            id="CodigoEmbarque"
+                            name="CodigoEmbarque"
+                            type="text"
+                            inputProps={{ maxLength: 2 }}
+                            placeholder="HN"
+                            value={codigoEmbarque}
+                            onChange={handleInputChange}
+                           
+                        />
+                     </Grid>
+                      <Grid item lg={4} md={12} sm={12}> 
+                      <Button sx={{color:'secundary'}} onClick={handleBuscarClick}> <IconSearch /> </Button>
+                      </Grid>
+                      <Grid item lg={12} md={12} sm={12}>
+                        <CustomFormLabel>Seleccionar Embarque</CustomFormLabel>
+                        <Autocomplete
+                                options={embarque}
+                                getOptionLabel={(option) =>  option.emba_Codigo && option.emba_Descripcion
+                                  ? `${option.emba_Codigo} - ${option.emba_Descripcion}`
+                                  : ''}
+                                value={selectedEmbarque}
+                                onChange={(event, newValue) => {
+                                    setSelectedEmbarque(newValue);
+                                    if (newValue) {
+                                    formik.setFieldValue('emba_Id', newValue.emba_Id );
+                                    } else {
+                                    formik.setFieldValue('emba_Id', 0);
+                                    
+                                    }
+                                }}
+                                renderInput={(params) => (
+                                    <TextField 
+                                    {...params} 
+                                    variant="outlined" 
+                                    placeholder="Seleccione un lugar de embarque"
+                                    error={formik.touched.emba_Id && Boolean(formik.errors.emba_Id)}
+                                    helperText={formik.touched.emba_Id && formik.errors.emba_Id}
+                                    />
+                                )}
+                                noOptionsText="No hay lugares de embarque disponibles"
+                                isOptionEqualToValue={(option, value) => option.emba_Id === value?.emba_Id}
+                              />
+                      </Grid>
+                  </Grid>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="error" autoFocus  onClick={handleClose}>
+                    Cerrar
+                  </Button>
+                  <Button onClick={handleClose} autoFocus>
+                    Guardar
+                  </Button>
+                </DialogActions>
+              </Dialog>            
 
      
         </div>

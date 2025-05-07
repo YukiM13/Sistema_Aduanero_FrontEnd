@@ -84,7 +84,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               headers: {
                   'XApiKey': apiKey
               }
-        
           })
           .then(response => {
             setAduanas(response.data.data);
@@ -100,7 +99,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             headers: {
                 'XApiKey': apiKey
         }
-        
           })
           .then(response => {
             setRegimenAduanero(response.data.data);
@@ -187,9 +185,9 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 onSubmit: async(values) => {
                   try {
                     values.usua_UsuarioCreacion = 1;
+                    values.deva_FechaCreacion = new Date().toISOString();
                   
                     console.log("Enviando valores:", values);
-                    values.deva_Id =  parseInt(localStorage.getItem('deva_Id'));
                     
                     let todosExitosos = true;
                     const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
@@ -547,6 +545,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                     <CustomFormLabel>Nivel comercial</CustomFormLabel>
                     <Autocomplete
+                    options={nivelComercial}
                     getOptionLabel={(option) => option.nico_Descripcion || ''}
                     value={selectedNivelComercial}
                     onChange={(event, newValue) => {
