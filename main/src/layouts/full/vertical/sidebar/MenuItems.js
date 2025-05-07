@@ -5,6 +5,9 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
+  IconFileText,
+  IconPaperBag,
+  IconFileCertificate
 
 } from '@tabler/icons';
 //import { id } from 'date-fns/locale';
@@ -23,19 +26,19 @@ const Menuitems = [
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
- 
-
- 
-  
-
-  
   {
     id: uniqueId(),
     title: 'Acceso',
     icon: IconUser,
     href: '/apps/blog/',
     children: [
-     
+      {
+        id: uniqueId(),
+        title: 'Usuarios',
+        icon: IconPoint,
+        href: '/usuarios/list',
+        chipColor: 'secondary',
+      },
     ],
   },
   {
@@ -159,13 +162,7 @@ const Menuitems = [
         href: '/concepto-de-pago/list',
         chipColor: 'secondary',
       },
-      {
-        id: uniqueId(),
-        title: 'Duca',
-        icon: IconPoint,
-        href: '/duca',
-        chipColor: 'secondary',
-      },
+      
       {
         id: uniqueId(),
         title: 'Ducas',
@@ -173,14 +170,18 @@ const Menuitems = [
         href: '/ducas/list',
         chipColor: 'secondary',
       },
-
       {
         id: uniqueId(),
         title: 'Formas de Pago',
         icon: IconPoint,
         href: '/formasdepago/list',
       },
-    
+      {
+        id: uniqueId(),
+        title: 'Comerciante Individual',
+        icon: IconPoint,
+        href: '/comercianteindividual/create',
+      },
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
@@ -259,10 +260,22 @@ const Menuitems = [
         icon: IconPoint,
         chipColor: 'secondary',
         href: '/subCategorias/list',
-      },
-      
-     
+      }
     ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Declaración de valor',
+    icon: IconFileText,
+    chipColor: 'secondary',
+    href: '/declaracion-de-valor',
+  },
+  {
+    id: uniqueId(),
+    title: 'Duca',
+    icon: IconFileCertificate,
+    href: '/duca',
+    chipColor: 'secondary',
   },
   
 ];
