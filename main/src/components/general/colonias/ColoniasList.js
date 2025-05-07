@@ -8,24 +8,25 @@ import {
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
-import CargosCreateComponent from './CargosCreate';
-import CargosEditComponent from './CargosEdit';
-import CargosDetailsComponent from './CargosDetails';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
-import { alertMessages } from 'src/layouts/config/alertConfig';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import ColoniasCreateComponent from './ColoniasCreate';
+import ColoniasEditComponent from './ColoniasEdit';
+import ColoniasDetailsComponent from './ColoniasDetails';
+import Colonias from '../../../models/coloniasmodel';
 
-const CargosComponent = () => {
-  const [cargos, setCargos] = useState([]);
-  const [modo, setModo] = useState('listar');
+const ColoniasComponent = () => {
+  const [colonias, setColonias] = useState([]);
+  const [modo, setModo] = useState('listar'); 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
-  const [cargoSeleccionado, setCargoSeleccionado] = useState(null);
+  const [coloniaSeleccionada, setColoniaSeleccionada] = useState(Colonias);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
@@ -34,26 +35,16 @@ const CargosComponent = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  const mostrarAlerta = (tipo) => {
-    const config = alertMessages[tipo];
-    if (config) {
-      setAlertConfig(config);
-      setOpenSnackbar(true);
-    } else {
-      console.error('Tipo de alerta no encontrado:', tipo);
-    }
-  };
-
-  const cargarCargos = () => {
-    axios.get(`${apiUrl}/api/Cargos/Listar`, {
+  const cargarColonias = () => {
+    axios.get(`${apiUrl}/api/Colonias/Listar`, {
       headers: { 'XApiKey': apiKey }
     })
-      .then(response => setCargos(response.data.data))
-      .catch(error => console.error('Error al obtener los cargos:', error));
+      .then(response => setColonias(response.data.data))
+      .catch(error => console.error('Error al obtener las colonias:', error));
   };
 
   useEffect(() => {
-    cargarCargos();
+    cargarColonias();
   }, []);
 
   const handleChangePage = (event, newPage) => setPage(newPage);
@@ -62,24 +53,40 @@ const CargosComponent = () => {
     setPage(0);
   };
 
-  const filteredData = cargos.filter((cargo) =>
-    cargo.carg_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    cargo.carg_Id.toString().includes(searchQuery.trim())
+  const filteredData = colonias.filter((colonia) =>
+    colonia.colo_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    colonia.colo_Id.toString().includes(searchQuery.trim())
   );
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
 
-  const abrirMenu = (evento, cargo) => {
+  const abrirMenu = (evento, colonia) => {
     setPosicionMenu(evento.currentTarget);
-    setCargoSeleccionado(cargo);
+    setColoniaSeleccionada(colonia);
     setMenuAbierto(true);
   };
 
   const cerrarMenu = () => setMenuAbierto(false);
 
+  const eliminarColonia = (coloniaId) => {
+    axios.post(`${apiUrl}/api/Colonias/Eliminar`, { colo_Id: coloniaId }, {
+      headers: { 'XApiKey': apiKey },
+    })
+      .then(() => {
+        cargarColonias();
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'success', message: 'Colonia eliminada exitosamente.' });
+      })
+      .catch((error) => {
+        console.error('Error al eliminar la colonia:', error);
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'error', message: 'Error al eliminar la colonia.' });
+      });
+  };
+
   return (
     <div>
-      <Breadcrumb title="Cargos" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
+      <Breadcrumb title="Colonias" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
       <ParentCard>
         {modo === 'listar' && (
           <>
@@ -117,23 +124,27 @@ const CargosComponent = () => {
                       <TableCell>
                         <Typography variant="h6">Nombre</Typography>
                       </TableCell>
+                      <TableCell>
+                        <Typography variant="h6">Ciudad</Typography>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => (
-                      <TableRow key={cargo.carg_Id}>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((colonia) => (
+                      <TableRow key={colonia.colo_Id}>
                         <TableCell align="center">
-                          <IconButton size="small" onClick={(e) => abrirMenu(e, cargo)}>
+                          <IconButton size="small" onClick={(e) => abrirMenu(e, colonia)}>
                             <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
                           </IconButton>
                         </TableCell>
-                        <TableCell>{cargo.carg_Id}</TableCell>
-                        <TableCell>{cargo.carg_Nombre}</TableCell>
+                        <TableCell>{colonia.colo_Id}</TableCell>
+                        <TableCell>{colonia.colo_Nombre}</TableCell>
+                        <TableCell>{colonia.ciud_Nombre}</TableCell>
                       </TableRow>
                     ))}
                     {emptyRows > 0 && (
                       <TableRow style={{ height: 53 * emptyRows }}>
-                        <TableCell colSpan={3} />
+                        <TableCell colSpan={4} />
                       </TableRow>
                     )}
                   </TableBody>
@@ -153,29 +164,31 @@ const CargosComponent = () => {
           </>
         )}
         {modo === 'crear' && (
-          <CargosCreateComponent
+          <ColoniasCreateComponent
             onCancelar={() => setModo('listar')}
             onGuardadoExitoso={() => {
               setModo('listar');
-              cargarCargos();
-              mostrarAlerta('guardado');
+              cargarColonias();
+              setOpenSnackbar(true);
+              setAlertConfig({ severity: 'success', message: 'Colonia creada exitosamente.' });
             }}
           />
         )}
         {modo === 'editar' && (
-          <CargosEditComponent
-            cargo={cargoSeleccionado}
+          <ColoniasEditComponent
+            colonia={coloniaSeleccionada}
             onCancelar={() => setModo('listar')}
-            onGuardadoExitoso={() => {
+            onGuardadoExitoso={() => {    
               setModo('listar');
-              cargarCargos();
-              mostrarAlerta('actualizado');
+              cargarColonias();
+              setOpenSnackbar(true);
+              setAlertConfig({ severity: 'success', message: 'Colonia editada exitosamente.' });
             }}
           />
         )}
         {modo === 'detalle' && (
-          <CargosDetailsComponent
-            cargo={cargoSeleccionado}
+          <ColoniasDetailsComponent
+            colonia={coloniaSeleccionada}
             onCancelar={() => setModo('listar')}
           />
         )}
@@ -207,9 +220,15 @@ const CargosComponent = () => {
           </ListItemIcon>
           <ListItemText>Detalles</ListItemText>
         </MenuItem>
+        <MenuItem onClick={() => { eliminarColonia(coloniaSeleccionada.colo_Id); cerrarMenu(); }}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
+          </ListItemIcon>
+          <ListItemText>Eliminar</ListItemText>
+        </MenuItem>
       </Menu>
     </div>
   );
 };
 
-export default CargosComponent;
+export default ColoniasComponent;
