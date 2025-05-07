@@ -171,22 +171,29 @@ const itemPorDuca =  itemDevaPorDucaModel;
           </TableRow>
         </TableHead>
         <TableBody>
-          {deva.map((fila) => (
-            <TableRow key={fila.deva_Id}>
-              <TableCell>
-              <Checkbox
-                checked={formik.values.seleccionados.includes(fila.deva_Id)}
-                onChange={() => handleSeleccion(fila.deva_Id)}
-                />
+        {deva.length > 0 ? (
+            deva.map((fila) => (
+              <TableRow key={fila.deva_Id}>
+                <TableCell>
+                  <Checkbox
+                    checked={formik.values.seleccionados.includes(fila.deva_Id)}
+                    onChange={() => handleSeleccion(fila.deva_Id)}
+                  />
+                </TableCell>
+                <TableCell>{fila.regi_Codigo}</TableCell>
+                <TableCell>{fila.pais_Nombre}</TableCell>
+                <TableCell>{fila.regi_Descripcion}</TableCell>
+                <TableCell>{fila.deva_FechaAceptacion}</TableCell>
+                <TableCell>{fila.deva_ConversionDolares}</TableCell> 
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                No hay DEVAS disponibles
               </TableCell>
-            <TableCell>{fila.regi_Codigo}</TableCell>
-            <TableCell>{fila.pais_Nombre}</TableCell>
-            <TableCell>{fila.regi_Descripcion}</TableCell>
-            <TableCell>{fila.deva_FechaAceptacion}</TableCell>
-            <TableCell>{fila.deva_ConversionDolares}</TableCell> 
-
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </TableContainer>

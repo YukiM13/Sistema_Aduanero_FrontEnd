@@ -5,9 +5,11 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
+  IconFileText,
+  IconPaperBag,
+  IconFileCertificate
 
 } from '@tabler/icons';
-//import { id } from 'date-fns/locale';
 
 import { uniqueId } from 'lodash';
 
@@ -16,26 +18,25 @@ const Menuitems = [
     navlabel: true,
     subheader: 'Home',
   },
-
   {
     id: uniqueId(),
     title: 'eCommerce',
     icon: IconShoppingCart,
     href: '/dashboards/ecommerce',
   },
- 
-
- 
-  
-
-  
   {
     id: uniqueId(),
     title: 'Acceso',
     icon: IconUser,
     href: '/apps/blog/',
     children: [
-     
+      {
+        id: uniqueId(),
+        title: 'Usuarios',
+        icon: IconPoint,
+        href: '/usuarios/list',
+        chipColor: 'secondary',
+      },
     ],
   },
   {
@@ -46,6 +47,13 @@ const Menuitems = [
     children: [
       {
         id: uniqueId(),
+        title: 'Aldea',
+        icon: IconPoint,
+        href: '/Aldeas/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Cargos',
         icon: IconPoint,
         href: '/cargos/list',
@@ -53,10 +61,17 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
+        title: 'Colonias',
+        icon: IconPoint,
+        href: '/Colonias/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
         title: 'Ciudades',
         icon: IconPoint,
         href: '/ciudades/list',
-         chipColor: 'secondary',
+        chipColor: 'secondary',
       },
       {
         id: uniqueId(),
@@ -72,7 +87,6 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/empleado/list',
       },
-
       {
         id: uniqueId(),
         title: 'Oficinas',
@@ -93,7 +107,6 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasenvio/list',
       },
-    
       {
         id: uniqueId(),
         title: 'Monedas',
@@ -103,7 +116,6 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-    
         title: 'Paises',
         icon: IconPoint,
         href: '/paises/list',
@@ -129,7 +141,6 @@ const Menuitems = [
         href: '/unidadesmedidas/list',
         chipColor: 'secondary',
       },
-
     ],
   },
   {
@@ -154,16 +165,23 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-        title: 'Concepto de Pago',
+        title: 'Persona Natural',
         icon: IconPoint,
-        href: '/concepto-de-pago/list',
+        href: '/PersonaNatural/PersonaNaturalForm',
         chipColor: 'secondary',
       },
       {
         id: uniqueId(),
-        title: 'Duca',
+        title: 'Persona Jurídica',
         icon: IconPoint,
-        href: '/duca',
+        href: '/PersonaJuridica/PersonaJuridicaForm',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
+        title: 'Concepto de Pago',
+        icon: IconPoint,
+        href: '/concepto-de-pago/list',
         chipColor: 'secondary',
       },
       {
@@ -172,12 +190,25 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasdepago/list',
       },
-    
+      {
+        id: uniqueId(),
+        title: 'Comerciante Individual',
+        icon: IconPoint,
+        href: '/comercianteindividual/create',
+      },
+
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
         icon: IconPoint,
         href: '/niveles-comerciales/list',
+        chipColor: 'secondary',
+      },
+      {
+        id: uniqueId(),
+        title: 'Declaracion de Valor',
+        icon: IconPoint,
+        href: '/declaracionValor/list',
         chipColor: 'secondary',
       },
       {
@@ -239,7 +270,6 @@ const Menuitems = [
       },
       {
         id: uniqueId(),
-    
         title: 'Tallas',
         icon: IconPoint,
         href: '/tallas/list',
@@ -252,6 +282,7 @@ const Menuitems = [
         chipColor: 'secondary',
         href: '/subCategorias/list',
       },
+
       {
         id: uniqueId(),
         title: 'Orden Compra',
@@ -267,7 +298,22 @@ const Menuitems = [
         href: '/ordenCompraDetalle/list',
       },
      
+
     ],
+  },
+  {
+    id: uniqueId(),
+    title: 'Declaración de valor',
+    icon: IconFileText,
+    chipColor: 'secondary',
+    href: '/declaracion-de-valor',
+  },
+  {
+    id: uniqueId(),
+    title: 'Duca',
+    icon: IconFileCertificate,
+    href: '/duca',
+    chipColor: 'secondary',
   },
   
 ];
