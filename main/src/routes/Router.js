@@ -274,7 +274,6 @@ const Router = [
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
       { path: '/moneda/list', element: <Moneda  /> },
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
-      { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural  /> },
       { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },

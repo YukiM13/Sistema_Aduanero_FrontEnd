@@ -71,9 +71,6 @@
       return Object.keys(newErrors).length === 0;
     };
 
-    const handleTabChange = (event, newValue) => {
-      if (newValue === activeTab) return;
-    };
 
     const handleNext = () => {
       if (validateTabFields()) {
@@ -90,7 +87,7 @@
       if (validateTabFields(true)) {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-        
+        console.log('Datos del forsssssssssssssssssssssmulario:', formData);
         axios
           .post(`${apiUrl}/api/PersonaNatural/Insertar`, formData, {
             headers: {
@@ -121,7 +118,7 @@
                   id="pers_Id"
                   name="pers_Id"
                   value={formData.pers_Id}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pers_Id}
                   helperText={errors.pers_Id}
                   SelectProps={{
@@ -148,7 +145,7 @@
                   id="pena_DireccionExacta"
                   name="pena_DireccionExacta"
                   value={formData.pena_DireccionExacta}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_DireccionExacta}
                   helperText={errors.pena_DireccionExacta}
                 />
@@ -161,7 +158,7 @@
                   id="ciud_Id"
                   name="ciud_Id"
                   value={formData.ciud_Id}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.ciud_Id}
                   helperText={errors.ciud_Id}
                   SelectProps={{
@@ -193,7 +190,7 @@
                   id="pena_TelefonoFijo"
                   name="pena_TelefonoFijo"
                   value={formData.pena_TelefonoFijo}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item lg={6} md={12} sm={12}>
@@ -203,7 +200,7 @@
                   id="pena_TelefonoCelular"
                   name="pena_TelefonoCelular"
                   value={formData.pena_TelefonoCelular}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_TelefonoCelular}
                   helperText={errors.pena_TelefonoCelular}
                 />
@@ -215,7 +212,7 @@
                   id="pena_CorreoElectronico"
                   name="pena_CorreoElectronico"
                   value={formData.pena_CorreoElectronico}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_CorreoElectronico}
                   helperText={errors.pena_CorreoElectronico}
                 />
@@ -232,7 +229,7 @@
                   id="pena_CorreoAlternativo"
                   name="pena_CorreoAlternativo"
                   value={formData.pena_CorreoAlternativo}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                 />
               </Grid>
             </Grid>
@@ -247,7 +244,7 @@
                   id="pena_RTN"
                   name="pena_RTN"
                   value={formData.pena_RTN}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_RTN}
                   helperText={errors.pena_RTN}
                 />
@@ -256,10 +253,10 @@
                 <CustomFormLabel>Archivo RTN</CustomFormLabel>
                 <CustomTextField
                   fullWidth
-                  id="pena_ArchivoRTN"
-                  name="pena_Archivo89"
+                  id="ArchivoRTN" 
+                  name="ArchivoRTN"
                   type="file"
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item lg={6} md={12} sm={12}>
@@ -269,7 +266,7 @@
                   id="pena_DNI"
                   name="pena_DNI"
                   value={formData.pena_DNI}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_DNI}
                   helperText={errors.pena_DNI}
                 />
@@ -281,7 +278,7 @@
                   id="pena_ArchivoDNI"
                   name="pena_ArchivoDNI"
                   type="text"
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                 />
               </Grid>
             </Grid>
@@ -296,7 +293,7 @@
                   id="pena_NumeroRecibo"
                   name="pena_NumeroRecibo"
                   value={formData.pena_NumeroRecibo}
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                   error={!!errors.pena_NumeroRecibo}
                   helperText={errors.pena_NumeroRecibo}
                 />
@@ -308,7 +305,7 @@
                   id="pena_ArchivoNumeroRecibo"
                   name="pena_ArchivoNumeroRecibo"
                   type="text"
-                  onChange={formData.handleChange}
+                  onChange={handleChange}
                 />
               </Grid>
             </Grid>
