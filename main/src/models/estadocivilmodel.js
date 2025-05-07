@@ -9,7 +9,8 @@ class EstadoCivilModel {
     this.escv_FechaEliminacion= new Date().toISOString();
     this.usua_UsuarioModificacion= 1; // Aquí irá la sesión UwU.
     this.escv_FechaModificacion= new Date().toISOString();
-    //usuarioCreacionNombre
+   this.usuarioCreacionNombre= ''; 
+   this.usuarioModificacionNombre= '';
     //usuarioModificacionNombre
     //usuarioEliminacionNombre
   }
