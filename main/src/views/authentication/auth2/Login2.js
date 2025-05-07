@@ -69,7 +69,7 @@ const Login2 = () => {
         sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}
       >
         <Grid item xs={12} sm={8} md={6} lg={4}>
-          <Card elevation={3} sx={{ p: 4 }}>
+          <Card elevation={3} sx={{ p: 4 , backgroundColor: '#fff'}}>
             <Box sx={{ textAlign: 'center', mb: 3 }}>
               <Box sx={{ display: 'inline-block', p: 2, backgroundColor: '#5D87FF', borderRadius: '50%' }}>
                 <Logo />
@@ -79,10 +79,6 @@ const Login2 = () => {
               </Typography>
               <Typography variant="subtitle1" color="textSecondary">
                 Inicia sesión para continuar
-                 <br />
-                -angie
-                <br />
-                -123
               </Typography>
             </Box>
             <Box>

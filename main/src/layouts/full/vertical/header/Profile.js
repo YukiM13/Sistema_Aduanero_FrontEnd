@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Menu, Avatar, Typography, Divider, Button, IconButton } from '@mui/material';
-import * as dropdownData from './data';
-
+import breadcrumbImg from 'src/assets/images/breadcrumb/breadcrumb.png';
 import { IconMail } from '@tabler/icons';
 import { Stack } from '@mui/system';
-
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
-import unlimitedImg from 'src/assets/images/backgrounds/unlimited-bg.png';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 
 const Profile = () => {
@@ -90,75 +87,20 @@ const Profile = () => {
               </Box>
             </Stack>
             <Divider />
-            {dropdownData.profile.map((profile) => (
-              <Box key={profile.title}>
-                <Box sx={{ py: 2, px: 0 }} className="hover-text-primary">
-                  <Link to={profile.href}>
-                    <Stack direction="row" spacing={2}>
-                      <Box
-                        width="45px"
-                        height="45px"
-                        bgcolor="primary.light"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                      >
-                        <Avatar
-                          src={profile.icon}
-                          alt={profile.icon}
-                          sx={{
-                            width: 24,
-                            height: 24,
-                            borderRadius: 0,
-                          }}
-                        />
-                      </Box>
-                      <Box>
-                        <Typography
-                          variant="subtitle2"
-                          fontWeight={600}
-                          color="textPrimary"
-                          className="text-hover"
-                          noWrap
-                          sx={{
-                            width: '240px',
-                          }}
-                        >
-                          {profile.title}
-                        </Typography>
-                        <Typography
-                          color="textSecondary"
-                          variant="subtitle2"
-                          sx={{
-                            width: '240px',
-                          }}
-                          noWrap
-                        >
-                          {profile.subtitle}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                  </Link>
-                </Box>
-              </Box>
-            ))}
             <Box mt={2}>
               <Box bgcolor="primary.light" p={3} mb={3} overflow="hidden" position="relative">
                 <Box display="flex" justifyContent="space-between">
                   <Box>
                     <Typography variant="h5" mb={2}>
-                      Unlimited <br />
-                      Access
+                      Frontier <br />
+                      Logistic
                     </Typography>
-                    <Button variant="contained" color="primary">
-                      Upgrade
-                    </Button>
                   </Box>
-                  <img src={unlimitedImg} alt="unlimited" className="signup-bg"></img>
+                  <img src={breadcrumbImg} alt="unlimited" className="signup-bg"></img>
                 </Box>
               </Box>
               <Button
-                to="/auth/login2"
+                to="/auth/login"
                 variant="outlined"
                 color="primary"
                 component={Link}

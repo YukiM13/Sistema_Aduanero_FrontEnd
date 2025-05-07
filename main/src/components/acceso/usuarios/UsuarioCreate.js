@@ -144,37 +144,39 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                 <Grid container spacing={3} mb={3}>
                     <Grid item lg={12} md={12} sm={12} mx={'auto'}>
                         <CustomFormLabel htmlFor="usua_Image">Imagen</CustomFormLabel>
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                            {!previewImage ? (
-                                <Button
-                                    variant="contained"
-                                    component="label"
-                                    sx={{
-                                        width: '50px',
-                                        height: '50px',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        padding: 0,
-                                }}>
-                                <AddIcon />
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                {!previewImage ? (
+                                    <Button
+                                        variant="contained"
+                                        component="label"
+                                        sx={{
+                                            width: '70px',
+                                            height: '70px',
+                                            borderRadius: '50%',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            padding: 0,
+                                        }}
+                                    >
+                                    <AddIcon sx={{ fontSize: '30px' }} /> {/* Ajuste del tamaño del ícono */}
                                     <input
-                                    type="file"
-                                    id="usua_Image"
-                                    name="usua_Image"
-                                    onChange={handleImageChange}
-                                    onBlur={formik.handleBlur}
-                                    hidden/>
-                                </Button>
-                            ) : (
-                                <div style={{ position: 'relative' }}>
+                                        type="file"
+                                        id="usua_Image"
+                                        name="usua_Image"
+                                        onChange={handleImageChange}
+                                        onBlur={formik.handleBlur}
+                                        hidden
+                                    />
+                                    </Button>
+                                ) : (
+                                    <div style={{ position: 'relative' }}>
                                     <img
                                         src={previewImage}
                                         alt="Vista previa"
                                         style={{
-                                            width: '50px',
-                                            height: '50px',
+                                            width: '70px',
+                                            height: '70px',
                                             borderRadius: '50%',
                                             border: '1px solid',
                                             objectFit: 'cover',
@@ -199,13 +201,13 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                                             padding: 0,
                                         }}
                                     >
-                                        ✕
+                                    ✕
                                     </Button>
-                                </div>
-                            )}
-                        </div>
+                                    </div>
+                                )}
+                            </div>
                         {formik.touched.usua_Image && formik.errors.usua_Image && (
-                        <div style={{ color: 'red', textAlign: 'center', marginTop: '5px' }}>{formik.errors.usua_Image}</div>
+                            <div style={{ color: 'red', textAlign: 'center', marginTop: '5px' }}>{formik.errors.usua_Image}</div>
                         )}
                     </Grid>
                     <Grid item lg={6} md={12} sm={12}>

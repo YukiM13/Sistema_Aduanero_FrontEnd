@@ -7,6 +7,7 @@ import {
     ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
     DialogContentText
 } from '@mui/material';
+import { Chip } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 import UsuarioCreateComponent from './UsuarioCreate';
@@ -16,13 +17,13 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import RestoreIcon from '@mui/icons-material/Restore';
 import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
-//Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import BlockIcon from '@mui/icons-material/Block';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 
 const UsuariosComponent = () => {
@@ -55,10 +56,22 @@ const UsuariosComponent = () => {
     };
 
     const cargarUsuarios = () => {
-        axios.get(`${apiUrl}/api/Usuarios/Listar?empl_EsAduana=true`, {
-            headers: { 'XApiKey': apiKey }
-        })
-            .then(response => setUsuarios(response.data.data))
+        Promise.all([
+            axios.get(`${apiUrl}/api/Usuarios/Listar?empl_EsAduana=false`, {
+                headers: { 'XApiKey': apiKey }
+            }),
+            axios.get(`${apiUrl}/api/Usuarios/Listar?empl_EsAduana=true`, {
+                headers: { 'XApiKey': apiKey }
+            })
+        ])
+            .then(([responseFalse, responseTrue]) => {
+                const usuariosCombinados = [
+                    ...responseFalse.data.data,
+                    ...responseTrue.data.data
+                ];
+                console.log('Usuarios:', usuariosCombinados);
+                setUsuarios(usuariosCombinados);
+            })
             .catch(error => console.error('Error al obtener los usuarios:', error));
     };
 
@@ -124,6 +137,8 @@ const UsuariosComponent = () => {
         setPage(0);
     };
 
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, usuarios.length - page * rowsPerPage);
+
     const filteredData = usuarios.filter((usuario) =>
         usuario.usua_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
         usuario.emplNombreCompleto.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -177,6 +192,9 @@ const UsuariosComponent = () => {
                                             <TableCell>
                                                 <Typography variant="h6">Rol</Typography>
                                             </TableCell>
+                                            <TableCell>
+                                                <Typography variant="h6">Estado</Typography>
+                                            </TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -205,13 +223,28 @@ const UsuariosComponent = () => {
                                                     <TableCell>{usuario.emplNombreCompleto}</TableCell>
                                                     <TableCell>{usuario.empl_CorreoElectronico}</TableCell>
                                                     <TableCell>{usuario.role_Descripcion}</TableCell>
+                                                    <TableCell>
+                                                        {usuario.usua_Estado ? (
+                                                            <Chip
+                                                                label="Activo"
+                                                                color="success"
+                                                                size="small"
+                                                                sx={{ fontWeight: 'bold' }}
+                                                            />
+                                                        ) : (
+                                                            <Chip
+                                                                label="Inactivo"
+                                                                color="error"
+                                                                size="small"
+                                                                sx={{ fontWeight: 'bold' }}
+                                                            />
+                                                        )}
+                                                    </TableCell>
                                                 </TableRow>
                                             ))}
-                                        {usuarios.length === 0 && (
-                                            <TableRow>
-                                                <TableCell colSpan={6} align="center">
-                                                    <Typography variant="subtitle1">No hay usuarios registrados.</Typography>
-                                                </TableCell>
+                                        {emptyRows > 0 && (
+                                            <TableRow style={{ height: 53 * emptyRows }}>
+                                                <TableCell colSpan={2} />
                                             </TableRow>
                                         )}
                                     </TableBody>
@@ -286,16 +319,18 @@ const UsuariosComponent = () => {
                     </ListItemIcon>
                     <ListItemText>Detalles</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => eliminarUsuario(usuarioSeleccionado)}>
-                    <ListItemIcon>
-                        <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
-                    </ListItemIcon>
-                    <ListItemText>Eliminar</ListItemText>
-                </MenuItem>
-                {usuarioSeleccionado?.usua_EsEliminado && (
+                {usuarioSeleccionado?.usua_Estado === true && (
+                    <MenuItem onClick={() => eliminarUsuario(usuarioSeleccionado)}>
+                        <ListItemIcon>
+                            <BlockIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
+                        </ListItemIcon>
+                        <ListItemText>Desactivar</ListItemText>
+                    </MenuItem>
+                )}
+                {usuarioSeleccionado?.usua_Estado===false && (
                     <MenuItem onClick={() => activarUsuario(usuarioSeleccionado)}>
                         <ListItemIcon>
-                            <RestoreIcon fontSize="small" style={{ color: '#4CAF50', fontSize: '18px' }} />
+                            <CheckCircleIcon fontSize="small" style={{ color: '#4CAF50', fontSize: '18px' }} />
                         </ListItemIcon>
                         <ListItemText>Activar</ListItemText>
                     </MenuItem>
@@ -308,11 +343,11 @@ const UsuariosComponent = () => {
             >
                 <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <WarningAmberIcon color="warning" />
-                    Confirmar eliminación
+                    Confirmar Desactivación
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        ¿Estás seguro que deseas eliminar el usuario <strong>{usuarioSeleccionado?.usua_NombreUsuario}</strong>?
+                        ¿Estás seguro que deseas Desactivar el usuario <strong>{usuarioSeleccionado?.usua_Nombre}</strong>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -347,7 +382,7 @@ const UsuariosComponent = () => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        ¿Estás seguro que deseas activar el usuario <strong>{usuarioSeleccionado?.usua_NombreUsuario}</strong>?
+                        ¿Estás seguro que deseas activar el usuario <strong>{usuarioSeleccionado?.usua_Nombre   }</strong>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
