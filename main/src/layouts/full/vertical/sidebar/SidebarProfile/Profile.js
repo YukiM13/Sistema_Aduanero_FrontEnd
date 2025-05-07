@@ -14,15 +14,15 @@ export const Profile = () => {
       display={'flex'}
       alignItems="center"
       gap={2}
-      sx={{ m: 3, p: 2, bgcolor: `${'secondary.light'}` }}
+      sx={{ m: 3, p: 2, bgcolor: `${'#002d48'}` }}
     >
       {!hideMenu ? (
         <>
           <Avatar alt="Remy Sharp" src={img1} />
 
           <Box>
-            <Typography variant="h6"  color="textPrimary">Mathew</Typography>
-            <Typography variant="caption" color="textSecondary">Designer</Typography>
+            <Typography variant="h6"  color="#D6E6FF">Mathew</Typography>
+            <Typography variant="caption" color="#D6E6FF">Designer</Typography>
           </Box>
           <Box sx={{ ml: 'auto' }}>
             <Tooltip title="Logout" placement="top">
