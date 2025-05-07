@@ -36,8 +36,7 @@ const Gallery = Loadable(lazy(() => import('../views/apps/user-profile/Gallery')
 const RollbaseCASL = Loadable(lazy(() => import('../views/pages/rollbaseCASL/RollbaseCASL')));
 const Treeview = Loadable(lazy(() => import('../views/pages/treeview/Treeview')));
 const Pricing = Loadable(lazy(() => import('../views/pages/pricing/Pricing')));
-const AccountSetting = Loadable(
-  lazy(() => import('../views/pages/account-setting/AccountSetting')),
+const AccountSetting = Loadable(lazy(() => import('../views/pages/account-setting/AccountSetting')),
 );
 const Faq = Loadable(lazy(() => import('../views/pages/faq/Faq')));
 
@@ -132,6 +131,8 @@ const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/Talla
 const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
 const OrdenCompra =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
 const OrdenCompraDetalle =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
+const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
+
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -270,7 +271,8 @@ const Router = [
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
       { path: '/duca', element: <Duca  /> },
       { path: '/ordenCompra', element: <OrdenCompra  /> },
-      { path: '/ordenCompraDetalle/list', element: <OrdenCompraDetalle  /> },
+      { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalle  /> },
+      { path: '/ordenCompraDetalle/create', element: <OrdenCompraDetalleCrear  /> },
       { path: '/ciudades/create', element: <CiudadCrear  /> },
       { path: '/ciudades/edit', element: <CiudadEditar  /> },
 

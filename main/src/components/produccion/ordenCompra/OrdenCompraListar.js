@@ -101,11 +101,11 @@ const OrdenesCompras = () => {
     axios.post(`${apiUrl}/api/OrdenCompra/Eliminar`, ordenCompraEliminar, {
         headers: { 'XApiKey': apiKey }
     })
-      .then(() => {
-        cargarOrdenesCompras();
-        mostrarAlerta('eliminado');
-      })
-      .catch(() => mostrarAlerta('errorEliminar'));
+    .then(() => {
+      cargarOrdenesCompras();
+      mostrarAlerta('eliminado');
+    })
+    .catch(() => mostrarAlerta('errorEliminar'));
     setConfirmarEliminacion(false);
   };
 
@@ -116,15 +116,16 @@ const OrdenesCompras = () => {
   };
 
   const filteredData = ordenesCompras.filter((ordenCompra) =>
+    ordenCompra.clie_Nombre_O_Razon_Social.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_Codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_FechaEmision.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_FechaLimite.toString().includes(searchQuery.trim()) ||
-    ordenCompra.orco_MetodoPago.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_IdEmbalaje.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompra.fopa_Descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompra.orco_Materiales.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompra.code_EspecificacionEmbalaje.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_EstadoOrdenCompra.toString().includes(searchQuery.trim()) ||
     ordenCompra.orco_DireccionEntrega.toString().includes(searchQuery.trim()) ||
     ordenCompra.orco_Id.toString().includes(searchQuery.trim())
-    
   );
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
@@ -160,12 +161,13 @@ const OrdenesCompras = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Cliente ID</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Codigo</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Cliente</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Código</Typography></TableCell>
                             <TableCell><Typography variant="h6">Fecha Emisión</Typography></TableCell>
                             <TableCell><Typography variant="h6">Fecha Límite</Typography></TableCell>
                             <TableCell><Typography variant="h6">Método de Pago</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Embalaje ID</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Materiales</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Embalaje</Typography></TableCell>
                             <TableCell><Typography variant="h6">Estado</Typography></TableCell>
                             <TableCell><Typography variant="h6">Dirección de entrega</Typography></TableCell>
                         </TableRow>
@@ -182,21 +184,23 @@ const OrdenesCompras = () => {
                         </IconButton>
                         </TableCell>
                         {/* <TableCell>{ordenCompra.orco_Id}</TableCell> */}
-                        <TableCell>{ordenCompra.orco_IdCliente}</TableCell>
+                        <TableCell>{ordenCompra.clie_Nombre_O_Razon_Social}</TableCell>
                         <TableCell>{ordenCompra.orco_Codigo}</TableCell>
                         <TableCell>{ordenCompra.orco_FechaEmision}</TableCell>
                         <TableCell>{ordenCompra.orco_FechaLimite}</TableCell>
-                        <TableCell>{ordenCompra.orco_MetodoPago}</TableCell>
-                        <TableCell>{ordenCompra.orco_IdEmbalaje}</TableCell>
+                        <TableCell>{ordenCompra.fopa_Descripcion}</TableCell>
+                        <TableCell>{ordenCompra.orco_Materiales}</TableCell>
+                        <TableCell>{ordenCompra.code_EspecificacionEmbalaje}</TableCell>
                         <TableCell>{ordenCompra.orco_EstadoOrdenCompra}</TableCell>
                         <TableCell>{ordenCompra.orco_DireccionEntrega}</TableCell>
                         <TableCell>
-                        <Button 
-                            variant="contained" 
-                            color="primary" 
-                            onClick={() => navigate(`/ordenCompraDetalle/list/${ordenCompra.orco_Id}`)}
-                        >
-                            Ver detalle
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          disabled={!ordenCompra.orco_Id}
+                          onClick={() => navigate(`/ordenCompraDetalle/list/${ordenCompra.orco_Id}`)}
+                          >
+                          Ver detalle
                         </Button>
                         </TableCell>
                     </TableRow>

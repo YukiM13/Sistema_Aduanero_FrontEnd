@@ -30,6 +30,8 @@ import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
 const OrdenesComprasDetalle = () => {
+  const ordenCompraID = useParams().id;
+
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
   const [ordenCompraDetalleEditando, setOrdenCompraDetalleEditando] = useState(null);
@@ -57,20 +59,25 @@ const OrdenesComprasDetalle = () => {
   };
 
   const cargarOrdenesCompras = () => {
-    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${id}`, {
+    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${ordenCompraID}`, {
         headers: { 'XApiKey': apiKey }
     })
     .then(response => {
-    if (response.data && Array.isArray(response.data.data)) {
+      console.log("Respuesta:", response.data);
+      if (response.data && Array.isArray(response.data.data)) {
         setOrdenesCompras(response.data.data);
-    }
+      }
     })
       .catch(() => mostrarAlerta('errorListar'));
   };
 
   useEffect(() => {
-    cargarOrdenesCompras();
-  }, []);
+    if (ordenCompraID) {
+      cargarOrdenesCompras(ordenCompraID);
+    }
+  }, [ordenCompraID]);
+  
+  
 
   const abrirMenu = (evento, ordenCompraDetalle) => {
     setPosicionMenu(evento.currentTarget);
@@ -116,24 +123,45 @@ const OrdenesComprasDetalle = () => {
     setPage(0);
   };
 
+
+  // <TableCell>{ordenCompraDetalle.orco_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_CantidadPrenda}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.esti_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.tall_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Sexo}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.colr_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.proc_IdComienza}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.proc_IdActual}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Unidad}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Valor}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Impuesto}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_EspecificacionEmbalaje}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_FechaProcActual}</TableCell>
+
   const filteredData = ordenesCompras.filter((ordenCompraDetalle) =>
-    ordenCompraDetalle.orco_Codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.orco_FechaEmision.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.orco_FechaLimite.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.orco_MetodoPago.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.orco_IdEmbalaje.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.orco_EstadoOrdenCompra.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.orco_DireccionEntrega.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.orco_Id.toString().includes(searchQuery.trim())
-    
+    ordenCompraDetalle.code_CantidadPrenda ||
+    ordenCompraDetalle.esti_Descripcion.includes(searchQuery.toLowerCase()) ||
+    ordenCompraDetalle.tall_Nombre.toString().includes(searchQuery.trim()) ||
+    ordenCompraDetalle.code_Sexo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompraDetalle.colr_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompraDetalle.proc_DescripcionComienza.toString().includes(searchQuery.trim()) ||
+    ordenCompraDetalle.proc_DescripcionActual.toString().includes(searchQuery.trim()) ||
+    ordenCompraDetalle.code_Unidad ||
+    ordenCompraDetalle.code_Valor ||
+    ordenCompraDetalle.code_Impuesto ||
+    ordenCompraDetalle.code_EspecificacionEmbalaje.toString().includes(searchQuery.trim()) ||
+    ordenCompraDetalle.code_FechaProcActual.toString().includes(searchQuery.trim())
+    // ordenCompraDetalle.orco_Id.toString().includes(searchQuery.trim())
   );
 
+    /* SIIII */
+
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
-  const navigate = useNavigate();
-  const { id } = useParams();
+  // const navigate = useNavigate();
+  // const { id } = useParams();
 
   // Podés usar `id` para hacer fetch o lo que necesites
-  console.log("ID de la orden:", id);
+  // console.log("ID de la orden:", id);
   return (
     <div>
       <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
@@ -193,12 +221,12 @@ const OrdenesComprasDetalle = () => {
                         {/* <TableCell>{ordenCompraDetalle.orco_Id}</TableCell> */}
                         <TableCell>{ordenCompraDetalle.orco_Id}</TableCell>
                         <TableCell>{ordenCompraDetalle.code_CantidadPrenda}</TableCell>
-                        <TableCell>{ordenCompraDetalle.esti_Id}</TableCell>
-                        <TableCell>{ordenCompraDetalle.tall_Id}</TableCell>
+                        <TableCell>{ordenCompraDetalle.esti_Descripcion}</TableCell>
+                        <TableCell>{ordenCompraDetalle.tall_Nombre}</TableCell>
                         <TableCell>{ordenCompraDetalle.code_Sexo}</TableCell>
-                        <TableCell>{ordenCompraDetalle.colr_Id}</TableCell>
-                        <TableCell>{ordenCompraDetalle.proc_IdComienza}</TableCell>
-                        <TableCell>{ordenCompraDetalle.proc_IdActual}</TableCell>
+                        <TableCell>{ordenCompraDetalle.colr_Nombre}</TableCell>
+                        <TableCell>{ordenCompraDetalle.proc_DescripcionComienza}</TableCell>
+                        <TableCell>{ordenCompraDetalle.proc_DescripcionActual}</TableCell>
                         <TableCell>{ordenCompraDetalle.code_Unidad}</TableCell>
                         <TableCell>{ordenCompraDetalle.code_Valor}</TableCell>
                         <TableCell>{ordenCompraDetalle.code_Impuesto}</TableCell>
@@ -294,19 +322,3 @@ const OrdenesComprasDetalle = () => {
 };
 
 export default OrdenesComprasDetalle;
-
-//  @orco_Id						INT,
-// 	@code_CantidadPrenda			INT,
-// 	@esti_Id						INT,
-// 	@tall_Id						INT,
-// 	@code_Sexo						CHAR(1),
-// 	@colr_Id						INT,
-// 	@proc_IdComienza				INT,
-// 	@proc_IdActual					INT,
-// 	@code_Unidad					DECIMAL(18,2),
-// 	@code_Valor						DECIMAL(18,2),
-// 	@code_Impuesto					DECIMAL(18,2),
-// 	@code_EspecificacionEmbalaje	NVARCHAR(200),
-// 	@usua_UsuarioCreacion       	INT,
-// 	@code_FechaProcActual			DATETIME,
-// 	@code_FechaCreacion         	DATETIME
