@@ -97,8 +97,9 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
-const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -261,10 +262,11 @@ const Router = [
       { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
       { path: '/moneda/list', element: <Moneda  /> },
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
-      { path: '/personas/create', element: <PersonaCrear  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
       { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
+      { path: '/duca', element: <Duca  /> },
+      { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
 
 
