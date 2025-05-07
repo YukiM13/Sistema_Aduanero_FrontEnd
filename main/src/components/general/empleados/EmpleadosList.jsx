@@ -8,7 +8,7 @@ import {
   DialogContentText, Chip
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../../components/shared/ParentCard';
+import ParentCard from '../../shared/ParentCard';
 
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';

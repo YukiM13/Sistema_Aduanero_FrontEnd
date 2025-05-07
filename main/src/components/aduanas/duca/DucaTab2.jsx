@@ -6,7 +6,12 @@ import * as yup from 'yup';
 import { Snackbar, Alert } from '@mui/material';
 import {
     Grid,
-    Autocomplete,TextField,
+    Autocomplete,TextField,InputAdornment, IconButton,Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
     
 
   } from '@mui/material';
@@ -15,6 +20,10 @@ import {
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import Duca from 'src/models/ducaModel';
+import { IconSearch} from '@tabler/icons';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 
 
 
@@ -30,7 +39,7 @@ const validationSchema = yup.object({
     duca_Pais_Procedencia: yup.number().required('El pais de procedencia es requerido').moreThan(0,'El pais de procedencia es requerido'),
     duca_Pais_Destino: yup.number().required('El pais de destino es requerido').moreThan(0,'El pais de destino es requerido'),
     duca_Deposito_Aduanero: yup.string().required('El deposito aduanero es requerido'),
-    duca_Lugar_Desembarque: yup.string().required('El lugar de desembarque es requerido'),
+    duca_Lugar_Desembarque: yup.number().required('El lugar de desembarque es requerido').moreThan(0,'El lugar de desembarque es requerido'),
     duca_Manifiesto: yup.string().required('El manifiesto es requerido'),
     duca_Titulo: yup.string().required('El titulo es requerido'),
     trli_Id: yup.number().required('El tratado de libre comercio es requerido').moreThan(0,'El tratado de libre comercio es requerido'),
@@ -44,7 +53,8 @@ const DucaTab2Component = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) =>
 const [paises, setPaises] = useState([]);
 const [aduanas, setAduanas] = useState([]);
 const [regimenAduanero, setRegimenAduanero] = useState([]);
-
+const [embarque, setEmbarque] = useState([]);
+const [selectedEmbarque, setSelectedEmbarque] = useState(null);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
 const [selectedPais, setSelectedPais] = useState(null);
 const [selectedPaisDestino, setSelectedPaisDestino] = useState(null);
@@ -54,10 +64,41 @@ const [selectedRegimenAduanero, setSelectedRegimenAduanero] = useState(null);
 const [tratadoLibre, setTratadoLibre] = useState(null);
 const [selectedTratadoLibre, setSelectedTratadoLibre] = useState(null);
 const [initialValues, setInitialValues] = useState(Duca);
+const [open, setOpen] = React.useState(false);
+const theme = useTheme();
+const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+const [codigoEmbarque, setCodigoEmbarque] = useState('');
+
+const handleInputChange = (e) => {
+  setCodigoEmbarque(e.target.value);
+};
+const handleBuscarClick = () => {
+  buscarEmbarque(codigoEmbarque); // Esta función la llamas al hacer clic
+};
+const handleClickOpen = () => {
+    setOpen(true);
+};
+
+const handleClose = () => {
+    setOpen(false);
+};
+
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
-  
+  const buscarEmbarque = (searchTerm) => {
+    axios.get(`${apiUrl}/api/LugaresEmbarque/Listar?codigo=${searchTerm}`, {
+      headers: {
+        'XApiKey': apiKey
+      } 
+  })
+  .then(response => {
+    setEmbarque(response.data.data);
+    console.log("React E10", response.data.data)
+    })
+    .catch(error => {
+        console.error('Error al obtener los datos del país:', error);
+    });
+}
   const listarpaises = () => {
     axios.get(`${apiUrl}/api/Paises/Listar?pais_EsAduana=true`, {
         headers: {
@@ -123,7 +164,9 @@ const listarTratadosLibreComercio = () => {
 } 
 useEffect(() => {
   const ducaIdString = localStorage.getItem('ducaId');
-  if (ducaIdString !== null) {
+  console.log('ducaId', ducaIdString);
+  if (ducaIdString != null) {
+    console.log('entro');
     const ducaId = parseInt(ducaIdString);
     axios.post(`${apiUrl}/api/Duca/Listar_ById?id=${ducaId}`, null , {
       headers: {
@@ -132,7 +175,7 @@ useEffect(() => {
     })
     .then(response => {
       const rawData = response.data.data;
-
+      console.log(rawData);
       const data = Array.isArray(rawData)
         ? rawData[0]
         : rawData[0] !== undefined
@@ -147,7 +190,8 @@ useEffect(() => {
         const esSoloPreinsert = camposUtiles.length === 0;
     
         if (esSoloPreinsert) {
-     
+          console.log('entro al solo preinsert');
+          localStorage.setItem('insert','true')
           setInitialValues({...Duca });
         } else {
 
@@ -180,31 +224,39 @@ useEffect(() => {
         initialValues: initialValues,
         validationSchema,
         onSubmit: async(values) => {
+
+          let todosExitosos = true;
           try {
             values.usua_UsuarioCreacion = 1;
           
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            let todosExitosos = true;
+            
             const response = await axios.post(`${apiUrl}/api/Duca/InsertPart1`, values, {
               headers: { 'XApiKey': apiKey },
               'Content-Type': 'application/json'
             });
        
-          if (response.data.data.messageStatus !== '1') {
-                todosExitosos = false;
-          
-          }
-          if (todosExitosos) {
-            if (onGuardadoExitoso) onGuardadoExitoso();
-          } else {
-            setOpenSnackbar(true);
-          }
+            if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+              todosExitosos = false;
+              throw new Error('Error');
+              
+            
+            }
+            if (todosExitosos) {
+              if (onGuardadoExitoso) onGuardadoExitoso();
+            } else {
+              setOpenSnackbar(true);
+              throw new Error('Error');
+            }
      
           
           } catch (error) {
+            todosExitosos = false;
             console.error('Error al insertar:', error);
+            throw new Error('Error al insertar:');
+            
           }
         },
       });
@@ -255,7 +307,7 @@ useEffect(() => {
           const tratado = tratadoLibre.find(t => t.trli_Id === formik.values.trli_Id);
           setSelectedTratadoLibre(tratado);
         }
-      },[paises, formik.values.duca_Pais_Procedencia, formik.values.duca_Pais_Destino, tratadoLibre, formik.values.trli_Id], aduanas, formik.values.duca_AduanaRegistro, formik.values.duca_AduanaDestino, regimenAduanero, formik.values.duca_Regimen_Aduanero);
+      },[paises, formik.values.duca_Pais_Procedencia, formik.values.duca_Pais_Destino, tratadoLibre, formik.values.trli_Id, aduanas, formik.values.duca_AduanaRegistro, formik.values.duca_AduanaDestino, regimenAduanero, formik.values.duca_Regimen_Aduanero]);
         
       useEffect(() => {
         listarpaises();
@@ -530,17 +582,27 @@ useEffect(() => {
              <Grid item lg={4} md={12} sm={12}>
                 
                 <CustomFormLabel>Lugar de Desembarque</CustomFormLabel>
+               
                 <CustomTextField
-                    fullWidth
-                    id="duca_Lugar_Desembarque"
-                    name="duca_Lugar_Desembarque"
-                    type="text"
-                    value={formik.values.duca_Lugar_Desembarque}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={formik.touched.duca_Lugar_Desembarque && Boolean(formik.errors.duca_Lugar_Desembarque)}
-                    helperText={formik.touched.duca_Lugar_Desembarque && formik.errors.duca_Lugar_Desembarque}
-                />
+                fullWidth
+                id="duca_Lugar_Desembarque"
+                name="duca_Lugar_Desembarque"
+                type="text"
+                value={formik.values.duca_Lugar_Desembarque}
+                disabled
+                onBlur={formik.handleBlur}
+                error={formik.touched.duca_Lugar_Desembarque && Boolean(formik.errors.duca_Lugar_Desembarque)}
+                helperText={formik.touched.duca_Lugar_Desembarque && formik.errors.duca_Lugar_Desembarque}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickOpen}>
+                        <IconSearch />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
                 
           
              </Grid>
@@ -632,7 +694,78 @@ useEffect(() => {
         >
           No puede haber campos vacios.
         </Alert>
-      </Snackbar>                  
+      </Snackbar>   
+
+
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Buscar lugar de Embarque"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          <CustomFormLabel>Codigo Embarque</CustomFormLabel>
+          <Grid container spacing={3} mb={3}>  
+            <Grid item lg={8} md={12} sm={12}>
+                <CustomTextField
+                    fullWidth
+                    id="CodigoEmbarque"
+                    name="CodigoEmbarque"
+                    type="text"
+                    inputProps={{ maxLength: 2 }}
+                    placeholder="HN"
+                    value={codigoEmbarque}
+                    onChange={handleInputChange}
+                   
+                />
+             </Grid>
+              <Grid item lg={4} md={12} sm={12}> 
+              <Button sx={{color:'secundary'}} onClick={handleBuscarClick}> <IconSearch /> </Button>
+              </Grid>
+              <Grid item lg={12} md={12} sm={12}>
+                <CustomFormLabel>Seleccionar Embarque</CustomFormLabel>
+                <Autocomplete
+                        options={embarque}
+                        getOptionLabel={(option) =>  option.emba_Codigo && option.emba_Descripcion
+                          ? `${option.emba_Codigo} - ${option.emba_Descripcion}`
+                          : ''}
+                        value={selectedEmbarque}
+                        onChange={(event, newValue) => {
+                            setSelectedEmbarque(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('duca_Lugar_Desembarque', newValue.emba_Id );
+                            } else {
+                            formik.setFieldValue('duca_Lugar_Desembarque', 0);
+                            
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione un lugar de embarque"
+                            error={formik.touched.duca_Lugar_Desembarque && Boolean(formik.errors.duca_Lugar_Desembarque)}
+                            helperText={formik.touched.duca_Lugar_Desembarque && formik.errors.duca_Lugar_Desembarque}
+                            />
+                        )}
+                        noOptionsText="No hay lugares de embarque disponibles"
+                        isOptionEqualToValue={(option, value) => option.emba_Id === value?.duca_Lugar_Desembarque}
+                      />
+              </Grid>
+          </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" autoFocus  onClick={handleClose}>
+            Cerrar
+          </Button>
+          <Button onClick={handleClose} autoFocus>
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>               
 
      
     </div>

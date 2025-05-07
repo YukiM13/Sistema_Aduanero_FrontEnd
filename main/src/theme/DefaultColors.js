@@ -36,9 +36,9 @@ const baselightTheme = {
       contrastText: '#ffffff',
     },
     purple: {
-      A50: '#EBF3FE',
-      A100: '#6610f2',
-      A200: '#557fb9',
+      A50: '#003859',
+      A100: '#003859',
+      A200: '#003859',
     },
     grey: {
       100: '#F2F6FA',
