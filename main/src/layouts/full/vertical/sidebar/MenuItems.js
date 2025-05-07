@@ -5,6 +5,7 @@ import {
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
+  IconFileText,
   IconPaperBag,
   IconFileCertificate
 
@@ -161,7 +162,12 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasdepago/list',
       },
-    
+      {
+        id: uniqueId(),
+        title: 'Comerciante Individual',
+        icon: IconPoint,
+        href: '/comercianteindividual/create',
+      },
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',
@@ -253,7 +259,7 @@ const Menuitems = [
   {
     id: uniqueId(),
     title: 'Declaración de valor',
-    icon: IconPaperBag,
+    icon: IconFileText,
     chipColor: 'secondary',
     href: '/declaracion-de-valor',
   },
