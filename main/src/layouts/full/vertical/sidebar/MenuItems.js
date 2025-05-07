@@ -162,7 +162,12 @@ const Menuitems = [
         icon: IconPoint,
         href: '/formasdepago/list',
       },
-    
+      {
+        id: uniqueId(),
+        title: 'Comerciante Individual',
+        icon: IconPoint,
+        href: '/comercianteindividual/create',
+      },
       {
         id: uniqueId(),
         title: 'Niveles Comerciales',

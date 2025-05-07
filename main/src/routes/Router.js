@@ -99,6 +99,7 @@ const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTra
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
@@ -264,6 +265,7 @@ const Router = [
       { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
       { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
       { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
+      { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
       { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
