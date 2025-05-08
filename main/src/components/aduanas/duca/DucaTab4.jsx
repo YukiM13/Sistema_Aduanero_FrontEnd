@@ -26,7 +26,7 @@ const validationSchema = yup.object({
     doso_PaisEmision: yup.number().required('El pais de emision es requerido').moreThan(0,'El pais de emision es requerido'),
     doso_LineaAplica: yup.string().required('La linea de aplica es requerida'),
     doso_EntidadEmitioDocumento: yup.string().required('La entidad que emitio el documento es requerida'),
-    doso_Monto: yup.number().required('El monto es requerido').moreThan(0,'El monto es requerido'),
+    doso_Monto: yup.string().required('El monto es requerido'),
 });
 
 
@@ -139,31 +139,38 @@ useEffect(() => {
         initialValues: initialValues,
         validationSchema,
         onSubmit: async(values) => {
+          let todosExitosos = true;
           try {
             values.usua_UsuarioCreacion = 1;
-          
             console.log("Enviando valores:", values);
+          
+            
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            let todosExitosos = true;
-            const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
+            const response = await axios.post(`${apiUrl}/api/Duca/InsertPart3`, values, {
               headers: { 'XApiKey': apiKey },
               'Content-Type': 'application/json'
             });
        
-          if (response.data.data.messageStatus !== '1') {
+          if (response.status !== 200 || response.data.data.messageStatus !== '1') {
                 todosExitosos = false;
+                throw new Error('Error');
+                
           
           }
           if (todosExitosos) {
             if (onGuardadoExitoso) onGuardadoExitoso();
           } else {
             setOpenSnackbar(true);
+            throw new Error('Error');
           }
      
           
           } catch (error) {
+            todosExitosos = false;
             console.error('Error al insertar:', error);
+            throw new Error('Error al insertar:');
+            
           }
         },
       });
@@ -277,8 +284,8 @@ useEffect(() => {
                 <CustomFormLabel>Fecha de vencimiento</CustomFormLabel>
                    <CustomTextField
                        fullWidth
-                       id="doso_FechaEmision"
-                       name="doso_FechaEmision"
+                       id="doso_FechaVencimiento"
+                       name="doso_FechaVencimiento"
                        type="date"
                        value={formik.values.doso_FechaVencimiento}
                        onChange={formik.handleChange}
@@ -361,7 +368,7 @@ useEffect(() => {
                     fullWidth
                     id="doso_Monto"
                     name="doso_Monto"
-                    type="number"
+                    type="text"
                     value={formik.values.doso_Monto}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}

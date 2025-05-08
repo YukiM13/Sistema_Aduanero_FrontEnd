@@ -35,7 +35,7 @@ const MarcaMaquina = () => {
       const [openSnackbar, setOpenSnackbar] = useState(false);
       const [menuAbierto, setMenuAbierto] = useState(false);
       const [posicionMenu, setPosicionMenu] = useState(null);
-      const [MarcasMaquinaseleccionada, setMarcasMaquinaseleccionada] = useState(null);
+      const [MarcasMaquinaSeleccionada, setMarcasMaquinaSeleccionada] = useState(null);
       const [page, setPage] = useState(0);//Define como la pagina actual
       const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
       const [searchQuery, setSearchQuery] = useState('');
@@ -73,7 +73,7 @@ const MarcaMaquina = () => {
     
     function eliminarMarcaMaquina(MarcaMaquina) {
       // console.log('Eliminar Oficina:', persona.pers_Id);
-      setMarcasMaquinaseleccionada(MarcaMaquina);
+      setMarcasMaquinaSeleccionada(MarcaMaquina);
       setConfirmarEliminacion(true);
       cerrarMenu();
     }
@@ -82,7 +82,7 @@ const MarcaMaquina = () => {
       //obtenemos la posicion donde deberia mostrarse el menu 
       setPosicionMenu(evento.currentTarget);
       //obtenemos la fila de info correspondiente 
-      setMarcasMaquinaseleccionada(MarcaMaquina);
+      setMarcasMaquinaSeleccionada(MarcaMaquina);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
     }
@@ -227,7 +227,7 @@ const MarcaMaquina = () => {
       
                           <IconButton
                             size="small" 
-                            // se abre el menu y se selecciona la data de la fila 
+                            // se abre el menu y se Selecciona la data de la fila 
                             onClick={(e) => abrirMenu(e, MarcaMaquina)}
                           >
                           <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
@@ -266,7 +266,7 @@ const MarcaMaquina = () => {
        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
       <MarcaMaquinaEditComponent
-         MarcaMaquina={MarcasMaquinaseleccionada}
+         MarcaMaquina={MarcasMaquinaSeleccionada}
         onCancelar={() => setModo('listar')} 
         onGuardadoExitoso={() => {
           setModo('listar');
@@ -280,7 +280,7 @@ const MarcaMaquina = () => {
       {modo === 'detalle' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
       
       <MarcaMaquinaDetailsComponent
-         MarcaMaquina={MarcasMaquinaseleccionada}
+         MarcaMaquina={MarcasMaquinaSeleccionada}
         onCancelar={() => setModo('listar')} 
        
       />
@@ -311,20 +311,20 @@ const MarcaMaquina = () => {
               open={menuAbierto}
               onClose={cerrarMenu}
             >
-              <MenuItem onClick={() => editarMarcaMaquina(MarcasMaquinaseleccionada)}>
+              <MenuItem onClick={() => editarMarcaMaquina(MarcasMaquinaSeleccionada)}>
                 <ListItemIcon>
                   <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
                 </ListItemIcon>
                 <ListItemText>Editar</ListItemText>
               </MenuItem>
-              <MenuItem onClick={() => DetalleMarcaMaquina(MarcasMaquinaseleccionada)}>
+              <MenuItem onClick={() => DetalleMarcaMaquina(MarcasMaquinaSeleccionada)}>
                 <ListItemIcon>
                   <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
                 </ListItemIcon>
                 <ListItemText>Detalles</ListItemText>
               </MenuItem>
               
-              <MenuItem onClick={() => eliminarMarcaMaquina(MarcasMaquinaseleccionada)}>
+              <MenuItem onClick={() => eliminarMarcaMaquina(MarcasMaquinaSeleccionada)}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
                 </ListItemIcon>
@@ -342,7 +342,7 @@ const MarcaMaquina = () => {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText>
-                  ¿Estás seguro que deseas eliminar a <strong>{MarcasMaquinaseleccionada?.marq_Nombre}</strong>?
+                  ¿Estás seguro que deseas eliminar a <strong>{MarcasMaquinaSeleccionada?.marq_Nombre}</strong>?
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -355,9 +355,9 @@ const MarcaMaquina = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    eliminar(MarcasMaquinaseleccionada)
+                    eliminar(MarcasMaquinaSeleccionada)
                     setConfirmarEliminacion(false);
-                    MarcasMaquinaseleccionada(null);
+                    MarcasMaquinaSeleccionada(null);
                     
                   }}
                   variant="contained"

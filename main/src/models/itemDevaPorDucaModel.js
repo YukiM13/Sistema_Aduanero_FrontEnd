@@ -1,5 +1,5 @@
 const itemDevaPorDucaModel =  {
-dedu_Id: 0,
+  dedu_Id: 0,
   duca_Id: 0,
   deva_Id: 0,
   usua_UsuarioCreacion: 0,

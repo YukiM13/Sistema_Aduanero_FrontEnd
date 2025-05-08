@@ -14,6 +14,10 @@ import TopPerformers from '../../components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 
 const Modern = () => {
+  if (localStorage.getItem('DataUsuario') === null) {
+    window.location.href = '/auth/login';
+  }
+
   return (
     <Box>
       <Grid container spacing={3}>
