@@ -58,32 +58,37 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
       pers_Id: 0, // Ensure this is capitalized correctly
       usua_UsuarioCreacion: 1, // Default user ID
       pena_FechaCreacion: new Date().toISOString(),
+      pena_NumeroRecibo: '', // Explicitly initialize with empty string
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
         console.log('Valores antes de enviar:', values);
         console.log('pers_Id value:', values.pers_Id);
+        console.log('pena_NumeroRecibo:', values.pena_NumeroRecibo); // Debug log
 
         // Create FormData for file handling
         const formDataToSend = new FormData();
         
         // Explicitly add the pers_Id field to ensure it's included
         formDataToSend.append('pers_Id', values.pers_Id);
+        formDataToSend.append('pena_NumeroRecibo', values.pena_NumeroRecibo || ''); // Ensure not null
         
         // Add form fields to FormData
         Object.keys(values).forEach((key) => {
-          if (key !== 'pers_Id' && values[key] !== undefined && values[key] !== null) {
-            // Handle file objects specially
-            if (key === 'ArchivoRTN' && values[key] instanceof File) {
+          if (values[key] !== undefined && values[key] !== null) {
+            // Handle all three file objects specially
+            if ((key === 'ArchivoRTN' || key === 'ArchivoDNI' || key === 'ArchivoNumeroRecibo') && 
+                values[key] instanceof File) {
               formDataToSend.append(key, values[key]);
-              formDataToSend.append('pena_NombreArchRTN', values[key].name);
-            } else if (key === 'pena_ArchivoDNI' && values[key] instanceof File) {
-              formDataToSend.append(key, values[key]);
-              formDataToSend.append('pena_NombreArchDNI', values[key].name);
-            } else if (key === 'pena_ArchivoNumeroRecibo' && values[key] instanceof File) {
-              formDataToSend.append(key, values[key]);
-              formDataToSend.append('pena_NombreArchRecibo', values[key].name);
+              
+              if (key === 'ArchivoRTN') {
+                formDataToSend.append('pena_NombreArchRTN', values[key].name);
+              } else if (key === 'ArchivoDNI') {
+                formDataToSend.append('pena_NombreArchDNI', values[key].name);
+              } else if (key === 'ArchivoNumeroRecibo') {
+                formDataToSend.append('pena_NombreArchRecibo', values[key].name);
+              }
             } else {
               formDataToSend.append(key, values[key]);
             }
@@ -316,14 +321,13 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel htmlFor="pena_ArchivoDNI">Archivo DNI</CustomFormLabel>
+              <CustomFormLabel htmlFor="ArchivoDNI">Archivo DNI</CustomFormLabel>
               <CustomTextField
                 fullWidth
-                id="pena_ArchivoDNI"
-                name="pena_ArchivoDNI"
-                type="text" // Keep as text type
-                value={formik.values.pena_ArchivoDNI || ''}
-                onChange={formik.handleChange}
+                id="ArchivoDNI"
+                name="ArchivoDNI"
+                type="file"
+                onChange={handleFileChange}
               />
             </Grid>
           </Grid>
@@ -337,7 +341,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 fullWidth
                 id="pena_NumeroRecibo"
                 name="pena_NumeroRecibo"
-                value={formik.values.pena_NumeroRecibo}
+                type="text" // Explicitly set type to text
+                value={formik.values.pena_NumeroRecibo || ''} // Ensure not undefined
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_NumeroRecibo && Boolean(formik.errors.pena_NumeroRecibo)}
@@ -345,14 +350,13 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel htmlFor="pena_ArchivoNumeroRecibo">Archivo Número Recibo</CustomFormLabel>
+              <CustomFormLabel htmlFor="ArchivoNumeroRecibo">Archivo Número Recibo</CustomFormLabel>
               <CustomTextField
                 fullWidth
-                id="pena_ArchivoNumeroRecibo"
-                name="pena_ArchivoNumeroRecibo"
-                type="text" // Keep as text type
-                value={formik.values.pena_ArchivoNumeroRecibo || ''}
-                onChange={formik.handleChange}
+                id="ArchivoNumeroRecibo"
+                name="ArchivoNumeroRecibo"
+                type="file"
+                onChange={handleFileChange}
               />
             </Grid>
           </Grid>
