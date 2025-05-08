@@ -1,3 +1,4 @@
+import { Menu } from '@mui/material';
 import {
   IconPoint,
   IconUser,
@@ -6,324 +7,46 @@ import {
   IconBuildingFactory2,
   IconPackgeExport,
   IconFileText,
-  IconPaperBag,
-  IconFileCertificate
-
+  IconFileCertificate,
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
+
+if (localStorage.getItem('DataUsuario') === null) {
+  window.location.href = '/auth/login';
+}
+const localStorageData = localStorage.getItem('DataUsuario');
+const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+const esAdmin = parsedData ? parsedData.usua_EsAdmin : 'esAdmin';
+const roleId = parsedData ? parsedData.role_Id : 'roleId';
 
 const Menuitems = [
   {
     navlabel: true,
     subheader: 'Home',
   },
-  {
-    id: uniqueId(),
-    title: 'eCommerce',
-    icon: IconShoppingCart,
-    href: '/dashboards/ecommerce',
-  },
-  {
-    id: uniqueId(),
-    title: 'Acceso',
-    icon: IconUser,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Usuarios',
-        icon: IconPoint,
-        href: '/usuarios/list',
-        chipColor: 'secondary',
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: 'General',
-    icon: IconWorld,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Aldea',
-        icon: IconPoint,
-        href: '/Aldeas/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Cargos',
-        icon: IconPoint,
-        href: '/cargos/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Colonias',
-        icon: IconPoint,
-        href: '/Colonias/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Ciudades',
-        icon: IconPoint,
-        href: '/ciudades/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Estados Civiles',
-        icon: IconPoint,
-        href: '/estadosciviles/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Empleados',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/empleado/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Oficinas',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/oficinas/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Oficio Profesiones',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/oficioProfesiones/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Formas de Envío',
-        icon: IconPoint,
-        href: '/formasenvio/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Monedas',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/moneda/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Paises',
-        icon: IconPoint,
-        href: '/paises/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Provincias',
-        icon: IconPoint,
-        href: '/provincias/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Proveedores',
-        icon: IconPoint,
-        href: '/proveedores/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Unidades de Medida',
-        icon: IconPoint,
-        href: '/unidadesmedidas/list',
-        chipColor: 'secondary',
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: 'Aduanas',
-    icon: IconPackgeExport,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Aduanas',
-        icon: IconPoint,
-        href: '/aduanas/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Personas',
-        icon: IconPoint,
-        href: '/personas/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Persona Natural',
-        icon: IconPoint,
-        href: '/PersonaNatural/PersonaNaturalForm',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Persona Jurídica',
-        icon: IconPoint,
-        href: '/PersonaJuridica/PersonaJuridicaForm',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Concepto de Pago',
-        icon: IconPoint,
-        href: '/concepto-de-pago/list',
-        chipColor: 'secondary',
-      },
-      
-      {
-        id: uniqueId(),
-        title: 'Ducas',
-        icon: IconPoint,
-        href: '/ducas/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Formas de Pago',
-        icon: IconPoint,
-        href: '/formasdepago/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Comerciante Individual',
-        icon: IconPoint,
-        href: '/comercianteindividual/create',
-      },
-
-      {
-        id: uniqueId(),
-        title: 'Niveles Comerciales',
-        icon: IconPoint,
-        href: '/niveles-comerciales/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Declaracion de Valor',
-        icon: IconPoint,
-        href: '/declaracionValor/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Marcas',
-        icon: IconPoint,
-        href: '/marcas/list',
-        chipColor: 'primary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Modos de Transporte',
-        icon: IconPoint,
-        href: '/modotransporte/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tipos de Identificacion',
-        icon: IconPoint,
-        href: '/tiposidentificacion/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tipo Intermediario',
-        icon: IconPoint,
-        href: '/tipointermediario/list',
-        chipColor: 'secondary',
-      },
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: 'Produccion',
-    icon: IconBuildingFactory2,
-    href: '/apps/blog/',
-    children: [
-      {
-        id: uniqueId(),
-        title: 'Categorias',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/categorias/list',
-      },
-      {
-        id: uniqueId(),
-        title: 'Marcas Maquinas',
-        icon: IconPoint,
-        href: '/marcasmaquinas/list',
-        chipColor: 'primary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tipo Embalaje',
-        icon: IconPoint,
-        href: '/tipoembalaje/list',
-        chipColor: 'secondary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Tallas',
-        icon: IconPoint,
-        href: '/tallas/list',
-        chipColor: 'primary',
-      },
-      {
-        id: uniqueId(),
-        title: 'Sub Categorias',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/subCategorias/list',
-      },
-
-      {
-        id: uniqueId(),
-        title: 'Orden Compra',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/ordenCompra',
-      },
-      {
-        id: uniqueId(),
-        title: 'Orden Compra Detalle',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/ordenCompraDetalle/list',
-      },
-     
-
-    ],
-  },
-  {
-    id: uniqueId(),
-    title: 'Declaración de valor',
-    icon: IconFileText,
-    chipColor: 'secondary',
-    href: '/declaracion-de-valor',
-  },
-  {
-    id: uniqueId(),
-    title: 'Duca',
-    icon: IconFileCertificate,
-    href: '/duca',
-    chipColor: 'secondary',
-  },
-  
 ];
+console.log('Entrando al menu de items');
+if (!esAdmin) {
+  console.log('No es admin');
+  if (roleId === 9) {
+    console.log('Es admin de ventas');
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Acceso',
+      icon: IconUser,
+      href: '/apps/blog/',
+      children: [
+        {
+          id: uniqueId(),
+          title: 'Usuarios',
+          icon: IconPoint,
+          href: '/usuarios/list',
+          chipColor: 'secondary',
+        },
+      ],
+    });
+  }
+}
 
 export default Menuitems;
