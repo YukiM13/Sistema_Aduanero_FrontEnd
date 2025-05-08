@@ -55,29 +55,25 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const formik = useFormik({
     initialValues: {
       ...PersonaNatural,
-      pers_Id: 0, // Ensure this is capitalized correctly
-      usua_UsuarioCreacion: 1, // Default user ID
+      pers_Id: 0, 
+      usua_UsuarioCreacion: 1,
       pena_FechaCreacion: new Date().toISOString(),
-      pena_NumeroRecibo: '', // Explicitly initialize with empty string
+      pena_NumeroRecibo: '', 
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
         console.log('Valores antes de enviar:', values);
         console.log('pers_Id value:', values.pers_Id);
-        console.log('pena_NumeroRecibo:', values.pena_NumeroRecibo); // Debug log
+        console.log('pena_NumeroRecibo:', values.pena_NumeroRecibo);
 
-        // Create FormData for file handling
         const formDataToSend = new FormData();
-        
-        // Explicitly add the pers_Id field to ensure it's included
+
         formDataToSend.append('pers_Id', values.pers_Id);
-        formDataToSend.append('pena_NumeroRecibo', values.pena_NumeroRecibo || ''); // Ensure not null
+        formDataToSend.append('pena_NumeroRecibo', values.pena_NumeroRecibo || ''); 
         
-        // Add form fields to FormData
         Object.keys(values).forEach((key) => {
           if (values[key] !== undefined && values[key] !== null) {
-            // Handle all three file objects specially
             if ((key === 'ArchivoRTN' || key === 'ArchivoDNI' || key === 'ArchivoNumeroRecibo') && 
                 values[key] instanceof File) {
               formDataToSend.append(key, values[key]);
@@ -111,7 +107,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     let hasErrors = false;
     
     if (activeTab === 0) {
-      formik.setFieldTouched('pers_Id'); // Update to capital I
+      formik.setFieldTouched('pers_Id'); 
       formik.setFieldTouched('pena_DireccionExacta');
       formik.setFieldTouched('ciud_Id');
       hasErrors = !!(formik.errors.pers_Id || formik.errors.pena_DireccionExacta || formik.errors.ciud_Id);
@@ -147,7 +143,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 0: // datos personales
+      case 0: 
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -156,8 +152,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 select
                 fullWidth
                 id="pers_Id"
-                name="pers_Id" // Update to capital I
-                value={formik.values.pers_Id || ''} // Add fallback empty string
+                name="pers_Id" 
+                value={formik.values.pers_Id || ''} 
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pers_Id && Boolean(formik.errors.pers_Id)}
@@ -223,7 +219,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
             </Grid>
           </Grid>
         );
-      case 1: // datos de contacto
+      case 1: 
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -281,7 +277,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
             </Grid>
           </Grid>
         );
-      case 2: // identificacicn y cocumentacion
+      case 2: 
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -303,7 +299,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 fullWidth
                 id="ArchivoRTN" 
                 name="ArchivoRTN"
-                type="file" // Keep as file type
+                type="file" 
                 onChange={handleFileChange}
               />
             </Grid>
@@ -332,7 +328,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
             </Grid>
           </Grid>
         );
-      case 3: // informacion de pago
+      case 3: 
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -341,8 +337,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 fullWidth
                 id="pena_NumeroRecibo"
                 name="pena_NumeroRecibo"
-                type="text" // Explicitly set type to text
-                value={formik.values.pena_NumeroRecibo || ''} // Ensure not undefined
+                type="text" 
+                value={formik.values.pena_NumeroRecibo || ''} 
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_NumeroRecibo && Boolean(formik.errors.pena_NumeroRecibo)}
