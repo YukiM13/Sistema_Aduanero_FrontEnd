@@ -62,6 +62,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [setError] = useState(null);
   
   const [imageInputs, setImageInputs] = useState([{ id: Date.now(), file: null, preview: null }]);
+  
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -196,9 +197,76 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
     formik.setFieldValue('tabIndex', tabIndex);
   }, [tabIndex]);
 
-  // const handleTabChange = (event, newValue) => {
-  //   setTabIndex(newValue);
-  // };
+
+// Agrega esta función para guardar los datos del primer tab
+const handleSaveTap1 = async () => {
+  try {
+    // Validar solamente los campos del primer tab
+    const tabErrors = {};
+    ['pers_RTN', 'pers_Nombre', 'escv_Id', 'ofic_Id', 'ofpr_Id', 'pers_escvRepresentante', 'pers_OfprRepresentante'].forEach(field => {
+      try {
+        // Validar cada campo individualmente
+        validationSchema.fields[field].validateSync(formik.values[field]);
+      } catch (err) {
+        tabErrors[field] = err.message;
+      }
+    });
+    
+    // Si hay errores, mostrarlos y detener el proceso
+    if (Object.keys(tabErrors).length > 0) {
+      // Establecer los errores en Formik
+      formik.setErrors({...formik.errors, ...tabErrors});
+      // Tocar los campos para que se muestren los errores
+      Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
+      
+      setSnackbarMessage('Por favor completa todos los campos requeridos');
+      setOpenSnackbar(true);
+      return false;
+    }
+
+    // Preparar los datos a enviar
+    const tap1Data = {
+      pers_RTN: formik.values.pers_RTN.replace(/\?/g, ''),
+      pers_Nombre: formik.values.pers_Nombre,
+      ofic_Id: formik.values.ofic_Id,
+      escv_Id: formik.values.escv_Id,
+      ofpr_Id: formik.values.ofpr_Id,
+      pers_FormaRepresentacion: true,
+      pers_escvRepresentante: formik.values.pers_escvRepresentante,
+      pers_OfprRepresentante: formik.values.pers_OfprRepresentante,
+      usua_UsuarioCreacion: 1,
+      coin_FechaCreacion: new Date().toISOString()
+    };
+
+    // Enviar datos al API
+    const response = await axios.post(`${apiUrl}/api/ComercianteIndividual/Insertar`, tap1Data, {
+      headers: { 'XApiKey': apiKey }
+    });
+
+    // Verificar si la respuesta contiene el ID generado
+    if (response.data && response.data.coin_Id) {
+      // Guardar el ID generado para usarlo en los siguientes tabs
+      formik.setFieldValue('coin_Id', response.data.coin_Id);
+      setSnackbarMessage('Datos personales guardados correctamente');
+      setOpenSnackbar(true);
+      
+      // Avanzar al siguiente tab
+      setTabIndex(tabIndex + 1);
+      return true;
+    } else {
+      setSnackbarMessage('Error al guardar los datos: respuesta inválida');
+      setOpenSnackbar(true);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al guardar datos del tab 1:', error);
+    setSnackbarMessage(error.response?.data?.message || 'Error al guardar los datos');
+    setOpenSnackbar(true);
+    return false;
+  }
+};
+
+
 
   const handleImageChange = (index, event) => {
     const file = event.target.files[0];
@@ -234,6 +302,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
     });
   };
 
+  
   // Filtrar Provincias por país
   const handlePaisChange = async (e) => {
     try {
@@ -1021,13 +1090,21 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   
   <div>
     {tabIndex < 4 && (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setTabIndex(tabIndex + 1)}
-      >
-        Siguiente
-      </Button>
+       <Button
+       variant="contained"
+       color="primary"
+       onClick={() => {
+         if (tabIndex === 0) {
+           // Si estamos en el primer tab, guardar antes de avanzar
+           handleSaveTap1();
+         } else {
+           // Para los demás tabs, simplemente avanzar
+           setTabIndex(tabIndex + 1);
+         }
+       }}
+     >
+       Siguiente
+     </Button>
     )}
     {tabIndex === 4 && (
     <>
@@ -1052,13 +1129,16 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     )}
   </div>
 </Box>
-      </form>
 
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+
+<Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} >
         <Alert onClose={() => setOpenSnackbar(false)} severity="warning" sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
+      </form>
+
+      
     </div>
   );
 };
