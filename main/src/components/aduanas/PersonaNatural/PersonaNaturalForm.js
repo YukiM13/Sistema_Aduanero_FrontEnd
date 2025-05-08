@@ -1,353 +1,400 @@
-  import React, { useState, useEffect } from 'react';
-  import { Button, Grid, Tabs, Tab, Box, MenuItem } from '@mui/material';
-  import CustomTextField from '../../forms/theme-elements/CustomTextField';
-  import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-  import SaveIcon from '@mui/icons-material/Save';
-  import CancelIcon from '@mui/icons-material/Cancel';
-  import PersonaNatural from '../../../models/PersonaNaturalModel';
-  import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Button, Grid, Tabs, Tab, Box, MenuItem } from '@mui/material';
+import CustomTextField from '../../forms/theme-elements/CustomTextField';
+import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PersonaNatural from '../../../models/PersonaNaturalModel';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
-  const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
-    const [formData, setFormData] = useState({ ...PersonaNatural });
-    const [activeTab, setActiveTab] = useState(0);
-    const [ciudades, setCiudades] = useState([]);
-    const [personas, setPersonas] = useState([]);
-    const [errors, setErrors] = useState({});
+// Validation schema
+const validationSchema = yup.object({
+  pers_Id: yup.number().required('El campo Persona ID es obligatorio').moreThan(0, 'Debe seleccionar una persona'),
+  pena_DireccionExacta: yup.string().required('El campo Dirección Exacta es obligatorio'),
+  ciud_Id: yup.number().required('El campo Ciudad es obligatorio').moreThan(0, 'Debe seleccionar una ciudad'),
+  pena_TelefonoCelular: yup.string().required('El campo Teléfono Celular es obligatorio'),
+  pena_CorreoElectronico: yup.string().email('Formato de correo inválido').required('El campo Correo Electrónico es obligatorio'),
+  pena_RTN: yup.string().required('El campo RTN es obligatorio'),
+  pena_DNI: yup.string().required('El campo DNI es obligatorio'),
+  pena_NumeroRecibo: yup.string().required('El campo Número Recibo es obligatorio'),
+});
 
-    useEffect(() => {
-      const apiUrl = process.env.REACT_APP_API_URL;
-      const apiKey = process.env.REACT_APP_API_KEY;
-      axios
-        .get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
-        .then((response) => {
-          if (response.data && Array.isArray(response.data.data)) {
-            setCiudades(response.data.data);
+const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [ciudades, setCiudades] = useState([]);
+  const [personas, setPersonas] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const apiKey = process.env.REACT_APP_API_KEY;
+
+  useEffect(() => {
+    axios
+      .get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then((response) => {
+        if (response.data && Array.isArray(response.data.data)) {
+          setCiudades(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener las ciudades:', error);
+      });
+
+    axios
+      .get(`${apiUrl}/api/Personas/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then((response) => {
+        if (response.data && Array.isArray(response.data.data)) {
+          setPersonas(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener las personas:', error);
+      });
+  }, [apiUrl, apiKey]);
+
+  const formik = useFormik({
+    initialValues: {
+      ...PersonaNatural,
+      pers_Id: 0, // Ensure this is capitalized correctly
+      usua_UsuarioCreacion: 1, // Default user ID
+      pena_FechaCreacion: new Date().toISOString(),
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        console.log('Valores antes de enviar:', values);
+        console.log('pers_Id value:', values.pers_Id);
+
+        // Create FormData for file handling
+        const formDataToSend = new FormData();
+        
+        // Explicitly add the pers_Id field to ensure it's included
+        formDataToSend.append('pers_Id', values.pers_Id);
+        
+        // Add form fields to FormData
+        Object.keys(values).forEach((key) => {
+          if (key !== 'pers_Id' && values[key] !== undefined && values[key] !== null) {
+            // Handle file objects specially
+            if (key === 'ArchivoRTN' && values[key] instanceof File) {
+              formDataToSend.append(key, values[key]);
+              formDataToSend.append('pena_NombreArchRTN', values[key].name);
+            } else if (key === 'pena_ArchivoDNI' && values[key] instanceof File) {
+              formDataToSend.append(key, values[key]);
+              formDataToSend.append('pena_NombreArchDNI', values[key].name);
+            } else if (key === 'pena_ArchivoNumeroRecibo' && values[key] instanceof File) {
+              formDataToSend.append(key, values[key]);
+              formDataToSend.append('pena_NombreArchRecibo', values[key].name);
+            } else {
+              formDataToSend.append(key, values[key]);
+            }
           }
-        })
-        .catch((error) => {
-          console.error('Error al obtener las ciudades:', error);
         });
 
-      axios
-        .get(`${apiUrl}/api/Personas/Listar`, { headers: { 'XApiKey': apiKey } })
-        .then((response) => {
-          if (response.data && Array.isArray(response.data.data)) {
-            setPersonas(response.data.data);
-          }
-        })
-        .catch((error) => {
-          console.error('Error al obtener las personas:', error);
+        const response = await axios.post(`${apiUrl}/api/PersonaNatural/Insertar`, formDataToSend, {
+          headers: { 'XApiKey': apiKey }
         });
-    }, []);
 
-    const handleChange = (e) => {
-      const { name, value, files } = e.target;
-      if (files) {
-        setFormData({ ...formData, [name]: files[0] });
-      } else {
-        setFormData({ ...formData, [name]: value });
+        console.log('Formulario enviado con éxito:', response.data);
+        if (onGuardar) onGuardar(response.data);
+      } catch (error) {
+        console.error('Error al enviar el formulario:', error);
       }
-    };
+    },
+  });
 
-    const validateTabFields = (validar = false) => {
-      const newErrors = {};
-      if (validar || activeTab === 0) {
-        if (!formData.pers_Id) newErrors.pers_Id = 'El campo Persona ID es obligatorio.';
-        if (!formData.pena_DireccionExacta) newErrors.pena_DireccionExacta = 'El campo Dirección Exacta es obligatorio.';
-        if (!formData.ciud_Id) newErrors.ciud_Id = 'El campo Ciudad es obligatorio.';
-      }
-      if (validar || activeTab === 1) {
-        if (!formData.pena_TelefonoCelular) newErrors.pena_TelefonoCelular = 'El campo Teléfono Celular es obligatorio.';
-        if (!formData.pena_CorreoElectronico) newErrors.pena_CorreoElectronico = 'El campo Correo Electrónico es obligatorio.';
-      }
-      if (validar || activeTab === 2) {
-        if (!formData.pena_RTN) newErrors.pena_RTN = 'El campo RTN es obligatorio.';
-        if (!formData.pena_DNI) newErrors.pena_DNI = 'El campo DNI es obligatorio.';
-      }
-      if (validar || activeTab === 3) {
-        if (!formData.pena_NumeroRecibo) newErrors.pena_NumeroRecibo = 'El campo Número Recibo es obligatorio.';
-      }
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-
-
-    const handleNext = () => {
-      if (validateTabFields()) {
-        setActiveTab((prev) => Math.min(prev + 1, 3));
-      }
-    };
-
-    const handleBack = () => {
-      setActiveTab((prev) => Math.max(prev - 1, 0));
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (validateTabFields(true)) {
-        const apiUrl = process.env.REACT_APP_API_URL;
-        const apiKey = process.env.REACT_APP_API_KEY;
-        console.log('Datos del forsssssssssssssssssssssmulario:', formData);
-        axios
-          .post(`${apiUrl}/api/PersonaNatural/Insertar`, formData, {
-            headers: {
-              'XApiKey': apiKey,
-              'Content-Type': 'application/json',
-            },
-          })
-          .then((response) => {
-            console.log('Formulario enviado con éxito:', response.data);
-            if (onGuardar) onGuardar(response.data);
-          })
-          .catch((error) => {
-            console.error('Error al enviar el formulario:', error);
-          });
-      }
-    };
-
-    const renderTabContent = () => {
-      switch (activeTab) {
-        case 0: // datos personales
-          return (
-            <Grid container spacing={3}>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Persona ID</CustomFormLabel>
-                <CustomTextField
-                  select
-                  fullWidth
-                  id="pers_Id"
-                  name="pers_Id"
-                  value={formData.pers_Id}
-                  onChange={handleChange}
-                  error={!!errors.pers_Id}
-                  helperText={errors.pers_Id}
-                  SelectProps={{
-                    MenuProps: {
-                      PaperProps: {
-                        style: {
-                          maxHeight: 200,
-                        },
-                      },
-                    },
-                  }}
-                >
-                  {personas.map((persona) => (
-                    <MenuItem key={persona.pers_Id} value={persona.pers_Id}>
-                      {persona.pers_Nombre}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Dirección Exacta</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_DireccionExacta"
-                  name="pena_DireccionExacta"
-                  value={formData.pena_DireccionExacta}
-                  onChange={handleChange}
-                  error={!!errors.pena_DireccionExacta}
-                  helperText={errors.pena_DireccionExacta}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Ciudad</CustomFormLabel>
-                <CustomTextField
-                  select
-                  fullWidth
-                  id="ciud_Id"
-                  name="ciud_Id"
-                  value={formData.ciud_Id}
-                  onChange={handleChange}
-                  error={!!errors.ciud_Id}
-                  helperText={errors.ciud_Id}
-                  SelectProps={{
-                    MenuProps: {
-                      PaperProps: {
-                        style: {
-                          maxHeight: 200,
-                        },
-                      },
-                    },
-                  }}
-                >
-                  {ciudades.map((ciudad) => (
-                    <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
-                      {`${ciudad.ciud_Nombre} ${ciudad.ciud_Id}`}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-            </Grid>
-          );
-        case 1: // datos de contacto
-          return (
-            <Grid container spacing={3}>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Teléfono Fijo</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_TelefonoFijo"
-                  name="pena_TelefonoFijo"
-                  value={formData.pena_TelefonoFijo}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Teléfono Celular</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_TelefonoCelular"
-                  name="pena_TelefonoCelular"
-                  value={formData.pena_TelefonoCelular}
-                  onChange={handleChange}
-                  error={!!errors.pena_TelefonoCelular}
-                  helperText={errors.pena_TelefonoCelular}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Correo Electrónico</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_CorreoElectronico"
-                  name="pena_CorreoElectronico"
-                  value={formData.pena_CorreoElectronico}
-                  onChange={handleChange}
-                  error={!!errors.pena_CorreoElectronico}
-                  helperText={errors.pena_CorreoElectronico}
-                />
-                <Grid item>
-                            <Button variant="contained" type="submit" startIcon={<check />}>
-                              Verificar correo
-                            </Button>
-                          </Grid>
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Correo Alternativo</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_CorreoAlternativo"
-                  name="pena_CorreoAlternativo"
-                  value={formData.pena_CorreoAlternativo}
-                  onChange={handleChange}
-                />
-              </Grid>
-            </Grid>
-          );
-        case 2: // identificacicn y cocumentacion
-          return (
-            <Grid container spacing={3}>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>RTN</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_RTN"
-                  name="pena_RTN"
-                  value={formData.pena_RTN}
-                  onChange={handleChange}
-                  error={!!errors.pena_RTN}
-                  helperText={errors.pena_RTN}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Archivo RTN</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="ArchivoRTN" 
-                  name="ArchivoRTN"
-                  type="file"
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>DNI</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_DNI"
-                  name="pena_DNI"
-                  value={formData.pena_DNI}
-                  onChange={handleChange}
-                  error={!!errors.pena_DNI}
-                  helperText={errors.pena_DNI}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Archivo DNI</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_ArchivoDNI"
-                  name="pena_ArchivoDNI"
-                  type="text"
-                  onChange={handleChange}
-                />
-              </Grid>
-            </Grid>
-          );
-        case 3: // informacion de pago
-          return (
-            <Grid container spacing={3}>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Número Recibo</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_NumeroRecibo"
-                  name="pena_NumeroRecibo"
-                  value={formData.pena_NumeroRecibo}
-                  onChange={handleChange}
-                  error={!!errors.pena_NumeroRecibo}
-                  helperText={errors.pena_NumeroRecibo}
-                />
-              </Grid>
-              <Grid item lg={6} md={12} sm={12}>
-                <CustomFormLabel>Archivo Número Recibo</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="pena_ArchivoNumeroRecibo"
-                  name="pena_ArchivoNumeroRecibo"
-                  type="text"
-                  onChange={handleChange}
-                />
-              </Grid>
-            </Grid>
-          );
-        default:
-          return null;
-      }
-    };
-
-    return (
-      <form onSubmit={handleSubmit}>
-        <Tabs value={activeTab} centered>
-          <Tab label="Datos Personales" />
-          <Tab label="Datos de Contacto" />
-          <Tab label="Identificación y Documentación" />
-          <Tab label="Información de Pago" />
-        </Tabs>
-        <Box mt={3}>{renderTabContent()}</Box>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          {activeTab > 0 && (
-            <Grid item>
-              <Button variant="contained" onClick={handleBack}>
-                Volver
-              </Button>
-            </Grid>
-          )}
-          {activeTab < 3 ? (
-            <Grid item>
-              <Button variant="contained" onClick={handleNext}>
-                Siguiente
-              </Button>
-            </Grid>
-          ) : (
-            <Grid item>
-              <Button variant="contained" type="submit" startIcon={<SaveIcon />}>
-                Guardar
-              </Button>
-            </Grid>
-          )}
-        </Grid>
-      </form>
-    );
+  const validateTabFields = () => {
+    let hasErrors = false;
+    
+    if (activeTab === 0) {
+      formik.setFieldTouched('pers_Id'); // Update to capital I
+      formik.setFieldTouched('pena_DireccionExacta');
+      formik.setFieldTouched('ciud_Id');
+      hasErrors = !!(formik.errors.pers_Id || formik.errors.pena_DireccionExacta || formik.errors.ciud_Id);
+    } else if (activeTab === 1) {
+      formik.setFieldTouched('pena_TelefonoCelular');
+      formik.setFieldTouched('pena_CorreoElectronico');
+      hasErrors = !!(formik.errors.pena_TelefonoCelular || formik.errors.pena_CorreoElectronico);
+    } else if (activeTab === 2) {
+      formik.setFieldTouched('pena_RTN');
+      formik.setFieldTouched('pena_DNI');
+      hasErrors = !!(formik.errors.pena_RTN || formik.errors.pena_DNI);
+    } else if (activeTab === 3) {
+      formik.setFieldTouched('pena_NumeroRecibo');
+      hasErrors = !!formik.errors.pena_NumeroRecibo;
+    }
+    
+    return !hasErrors;
   };
 
-  export default PersonaNaturalForm;
+  const handleNext = () => {
+    if (validateTabFields()) {
+      setActiveTab((prev) => Math.min(prev + 1, 3));
+    }
+  };
+
+  const handleBack = () => {
+    setActiveTab((prev) => Math.max(prev - 1, 0));
+  };
+
+  const handleFileChange = (event) => {
+    formik.setFieldValue(event.target.name, event.target.files[0]);
+  };
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 0: // datos personales
+        return (
+          <Grid container spacing={3}>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pers_Id">Persona ID</CustomFormLabel>
+              <CustomTextField
+                select
+                fullWidth
+                id="pers_Id"
+                name="pers_Id" // Update to capital I
+                value={formik.values.pers_Id || ''} // Add fallback empty string
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pers_Id && Boolean(formik.errors.pers_Id)}
+                helperText={formik.touched.pers_Id && formik.errors.pers_Id}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      style: {
+                        maxHeight: 200,
+                      },
+                    },
+                  },
+                }}
+              >
+                {personas.map((persona) => (
+                  <MenuItem key={persona.pers_Id} value={persona.pers_Id}>
+                    {persona.pers_Nombre}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_DireccionExacta">Dirección Exacta</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_DireccionExacta"
+                name="pena_DireccionExacta"
+                value={formik.values.pena_DireccionExacta}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_DireccionExacta && Boolean(formik.errors.pena_DireccionExacta)}
+                helperText={formik.touched.pena_DireccionExacta && formik.errors.pena_DireccionExacta}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="ciud_Id">Ciudad</CustomFormLabel>
+              <CustomTextField
+                select
+                fullWidth
+                id="ciud_Id"
+                name="ciud_Id"
+                value={formik.values.ciud_Id}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
+                helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
+                SelectProps={{
+                  MenuProps: {
+                    PaperProps: {
+                      style: {
+                        maxHeight: 200,
+                      },
+                    },
+                  },
+                }}
+              >
+                {ciudades.map((ciudad) => (
+                  <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
+                    {`${ciudad.ciud_Nombre} ${ciudad.ciud_Id}`}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
+            </Grid>
+          </Grid>
+        );
+      case 1: // datos de contacto
+        return (
+          <Grid container spacing={3}>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_TelefonoFijo">Teléfono Fijo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_TelefonoFijo"
+                name="pena_TelefonoFijo"
+                value={formik.values.pena_TelefonoFijo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_TelefonoCelular">Teléfono Celular</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_TelefonoCelular"
+                name="pena_TelefonoCelular"
+                value={formik.values.pena_TelefonoCelular}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
+                helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_CorreoElectronico">Correo Electrónico</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_CorreoElectronico"
+                name="pena_CorreoElectronico"
+                value={formik.values.pena_CorreoElectronico}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_CorreoElectronico && Boolean(formik.errors.pena_CorreoElectronico)}
+                helperText={formik.touched.pena_CorreoElectronico && formik.errors.pena_CorreoElectronico}
+              />
+              <Grid item>
+                <Button variant="contained" type="submit" startIcon={<check />}>
+                  Verificar correo
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_CorreoAlternativo">Correo Alternativo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_CorreoAlternativo"
+                name="pena_CorreoAlternativo"
+                value={formik.values.pena_CorreoAlternativo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </Grid>
+          </Grid>
+        );
+      case 2: // identificacicn y cocumentacion
+        return (
+          <Grid container spacing={3}>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_RTN">RTN</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_RTN"
+                name="pena_RTN"
+                value={formik.values.pena_RTN}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_RTN && Boolean(formik.errors.pena_RTN)}
+                helperText={formik.touched.pena_RTN && formik.errors.pena_RTN}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="ArchivoRTN">Archivo RTN</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="ArchivoRTN" 
+                name="ArchivoRTN"
+                type="file" // Keep as file type
+                onChange={handleFileChange}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_DNI">DNI</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_DNI"
+                name="pena_DNI"
+                value={formik.values.pena_DNI}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_DNI && Boolean(formik.errors.pena_DNI)}
+                helperText={formik.touched.pena_DNI && formik.errors.pena_DNI}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_ArchivoDNI">Archivo DNI</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_ArchivoDNI"
+                name="pena_ArchivoDNI"
+                type="text" // Keep as text type
+                value={formik.values.pena_ArchivoDNI || ''}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+          </Grid>
+        );
+      case 3: // informacion de pago
+        return (
+          <Grid container spacing={3}>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_NumeroRecibo">Número Recibo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_NumeroRecibo"
+                name="pena_NumeroRecibo"
+                value={formik.values.pena_NumeroRecibo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_NumeroRecibo && Boolean(formik.errors.pena_NumeroRecibo)}
+                helperText={formik.touched.pena_NumeroRecibo && formik.errors.pena_NumeroRecibo}
+              />
+            </Grid>
+            <Grid item lg={6} md={12} sm={12}>
+              <CustomFormLabel htmlFor="pena_ArchivoNumeroRecibo">Archivo Número Recibo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_ArchivoNumeroRecibo"
+                name="pena_ArchivoNumeroRecibo"
+                type="text" // Keep as text type
+                value={formik.values.pena_ArchivoNumeroRecibo || ''}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+          </Grid>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <Tabs value={activeTab} centered>
+        <Tab label="Datos Personales" />
+        <Tab label="Datos de Contacto" />
+        <Tab label="Identificación y Documentación" />
+        <Tab label="Información de Pago" />
+      </Tabs>
+      <Box mt={3}>{renderTabContent()}</Box>
+      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
+        {activeTab > 0 && (
+          <Grid item>
+            <Button variant="contained" onClick={handleBack}>
+              Volver
+            </Button>
+          </Grid>
+        )}
+        {activeTab < 3 ? (
+          <Grid item>
+            <Button variant="contained" onClick={handleNext}>
+              Siguiente
+            </Button>
+          </Grid>
+        ) : (
+          <Grid item>
+            <Button variant="contained" type="submit" startIcon={<SaveIcon />}>
+              Guardar
+            </Button>
+          </Grid>
+        )}
+      </Grid>
+    </form>
+  );
+};
+
+export default PersonaNaturalForm;
