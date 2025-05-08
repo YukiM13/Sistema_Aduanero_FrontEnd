@@ -180,180 +180,169 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                     height: '306mm',
                     display: 'flex',
                     flexDirection: 'column',
+                    
                 }}
                 >
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Exportador/Proveedor
-                </Box>
+                
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Importador/Destinatario
-                </Box>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Declarante
-                </Box>
+                <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)", // Rotate the text manually
+      transformOrigin: "center", // Ensure rotation happens around the center
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Exportador/Proveedor
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Transportista
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Importador/Destinatario
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Conductor
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Declarante
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Valores Totales
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Transportista
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Mercancias
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Conductor
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Documentos de Soporte
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Valores Totales
+  </Grid>
 
-                <Box
-                    sx={{
-                    flex: 1,
-                    borderLeft: '1px solid black',
-                    // writingMode: 'vertical-lr',
-                    textOrientation: 'mixed',
-                    transform: 'rotate(-90deg)',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    borderRadius: 0,
-                    }}
-                >
-                    Observaciones y Firma
-                </Box>
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Mercancias
+  </Grid>
+
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Documentos de Soporte
+  </Grid>
+
+  <Grid
+    item
+    sx={{
+      flex: 1,
+      borderLeft: "1px solid black", // Correct border applied
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transform: "rotate(-90deg)",
+      transformOrigin: "center",
+      fontWeight: "bold",
+      textAlign: "center",
+    }}
+  >
+    Observaciones y Firma
+  </Grid>
 
                 </Grid>
+
+
+
 
                 <Grid item xs={10} sx={{ border: '1px solid #000', padding: '0%',
                     height: '306mm',
@@ -361,48 +350,121 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                  }}>
                 <Grid container spacing={0} >
 
-                    <Grid item xs={5} sx={{ border: '1px solid #000', padding: '0%',
-                    height: '34mm',
-                    display: 'flex'}}>
+                    <Grid item xs={5} sx={{ padding: '0%',
+                    height: '64mm',
+                    }}>
 
                         {/* columnas dentro */}
-
-                        <Grid container spacing={0} sx={{  padding: '10px', fontSize: "10px" }}>
-                            <Grid item xs={6} sx={{height: '33%'}}>
-                            <p style={{height: "20%", marginBottom: "5%"}}>4.1 No. Identificacion</p>
-                            <p style={{height: "20%"}}>{Duca.duca_Id}</p>
+                        <Grid item xs={12} sx={{ border: '1px solid #000', padding: '0%', height: '34mm'}}>
+                        <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px", marginBottom: "0%", marginTop: "0%" }}>
+                            <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.1 No. Identificacion</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
                             </Grid>
-                            <Grid item xs={6} sx={{height: '33%'}} style={{ textAlign: "right" }}>
-                            <p style={{height: "20%", marginBottom: "5%"}}>4.2 Tipo Identificacion</p>
-                            <p style={{height: "20%", marginTop: "0%"}}><strong>---</strong></p>
-                            </Grid>
-
-                            <Grid item xs={6} sx={{height: '33%'}}>
-                            <p style={{height: "20%", marginBottom: "5%"}}>4.3 Pais Emision</p>
-                            <p style={{height: "20%"}}>{Duca.duca_Id}</p>
-                            </Grid>
-                            <Grid item xs={6} sx={{height: '33%'}} style={{ textAlign: "right" }}>
-                            <p style={{height: "20%", marginBottom: "5%"}}>4.4 Nombre o Razón Social</p>
-                            <p style={{height: "20%", marginTop: "0%"}}><strong>---</strong></p>
+                            <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.2 Tipo Identificacion</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
                             </Grid>
 
-                            <Grid item xs={6} sx={{height: '33%'}}>
-                            <p>4.1 No. Identificacion</p>
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.3 Pais Emision</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
                             </Grid>
-                            <Grid item xs={6} sx={{height: '33%'}} style={{ textAlign: "right" }}>
-                            <p>4.2 Tipo Identificacion</p>
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.4 Nombre o Razón Social</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            </Grid>
+
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p>4.5 Domicilio Fiscal</p>
+                            </Grid>
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            {/* // llenado para que tome dos */}
                             </Grid>
 
                         </Grid>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ border: '1px solid #000', padding: '0%', height: '34mm'}}>
+                        <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px" }}>
+                        <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.1. No. Identificación</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            </Grid>
+                            <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.2. Tipo Identificación RTN</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            </Grid>
+
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.3. País Emisión</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            </Grid>
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.4. Nombre o Razón Social</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            </Grid>
+
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.5. Domicilio Fiscal</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            
+                            </Grid>
+                            <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
+                            {/* // llenado para que tome dos */}
+                            </Grid>
+
+                        </Grid>
+                        </Grid>
+
+                        
                         
 
                     </Grid>
 
                     <Grid item xs={7} sx={{
                         border: '1px solid #000', padding: '0%',
-                        height: '34mm',
-                        display: 'flex'
+                        height: '68mm',
+                        
                     }}>
+
+                        <Grid item xs={12} sx={{ border: '1px solid #000', padding: '0%', height: '34mm'}}>
+                        <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px", marginBottom: "0%", marginTop: "0%" }}>
+
+                            <Grid item xs={12} sx={{ marginBottom: "0%", marginTop: "0%" , border: '1px solid #000' }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>Identificación de la Declaración</p>
+                            
+                            </Grid>
+
+
+                            <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>1. No. Correlativo o Referencia</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            </Grid>
+                            <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} >
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.2 Tipo Identificacion</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            </Grid>
+
+                            <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.3 Pais Emision</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            </Grid>
+                            <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.4 Nombre o Razón Social</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            </Grid>
+
+                            <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
+                            <p>4.5 Domicilio Fiscal</p>
+                            </Grid>
+                            <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} >
+                            {/* // llenado para que tome dos */}
+                            </Grid>
+
+                        </Grid>
+                        </Grid>
+
 
                     </Grid>
 
