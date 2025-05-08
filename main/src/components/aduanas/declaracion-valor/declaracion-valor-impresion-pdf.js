@@ -6,69 +6,74 @@ import {
     Download as DownloadIcon,
     ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
-import jsPDF from 'jspdf';
+
 import 'jspdf-autotable';
 import ParentCard from '../../../components/shared/ParentCard';
 import { useRef } from 'react';
 import html2pdf from 'html2pdf.js';
+import { storage } from '../../../layouts/config/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import QRCode from 'qrcode';
+
 const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
  
-  const contenidoRef = useRef();
+     const contenidoRef = useRef();
 
-  const convertToPdf = async () => {
+     const convertToPdf = async () => {
 
-    const opt = {
-      margin: 1,
-      filename: 'temporal.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    const nombreArchivo = `documentos/archivo-${Date.now()}.pdf`;
-    const archivoRef = ref(storage, nombreArchivo);
-  
-    // 1. Generar primer PDF (sin QR)
-    const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-  
-    // 2. Subir a Firebase
-    await uploadBytes(archivoRef, pdfBlobSinQR);
-  
-    // 3. Obtener la URL del archivo subido
-    const urlDescarga = await getDownloadURL(archivoRef);
-  
-    // 4. Generar el QR con esa URL
-    const qrDataUrl = await QRCode.toDataURL(urlDescarga);
-  
-    // 5. Insertar el QR en el DOM
-    const qrContainer = document.getElementById("qr");
-    const img = document.createElement("img");
-    img.src = qrDataUrl;
-    img.width = 100;
-    img.style.width = "100%";
-   img.style.height = "100%";
-   img.style.objectFit = "contain";
-    qrContainer.innerHTML = '';
-    qrContainer.appendChild(img);
-  
-    // 6. Generar el PDF nuevamente, ahora con el QR
-    const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-  
-    // 7. Subir el nuevo PDF (sobrescribiendo el anterior o como otro archivo)
-    await uploadBytes(archivoRef, pdfBlobConQR);
-    setTimeout(async () => {
-     const nuevaUrlDescarga = await getDownloadURL(archivoRef);
-     const printWindow = window.open(nuevaUrlDescarga, '_blank');
-     if (printWindow) {
-       printWindow.onload = () => {
-         printWindow.print();
+       const opt = {
+         margin: 1,
+         filename: 'temporal.pdf',
+         image: { type: 'jpeg', quality: 0.98 },
+         html2canvas: { scale: 2 },
+         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
        };
-     } else {
-       alert("Por favor permite las ventanas emergentes en tu navegador.");
-     }
-   }, 1000); // Ajusta el tiempo si aún no carga
- }
-  
+   
+       const nombreArchivo = `documentos/archivo-${Date.now()}.pdf`;
+       const archivoRef = ref(storage, nombreArchivo);
+     
+       // 1. Generar primer PDF (sin QR)
+       const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+     
+       // 2. Subir a Firebase
+       await uploadBytes(archivoRef, pdfBlobSinQR);
+     
+       // 3. Obtener la URL del archivo subido
+       const urlDescarga = await getDownloadURL(archivoRef);
+     
+       // 4. Generar el QR con esa URL
+       const qrDataUrl = await QRCode.toDataURL(urlDescarga);
+     
+       // 5. Insertar el QR en el DOM
+       const qrContainer = document.getElementById("qr");
+       const img = document.createElement("img");
+       img.src = qrDataUrl;
+       img.width = 100;
+       img.style.width = "100%";
+      img.style.height = "100%";
+      img.style.objectFit = "contain";
+       qrContainer.innerHTML = '';
+       qrContainer.appendChild(img);
+     
+       // 6. Generar el PDF nuevamente, ahora con el QR
+       const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+     
+       // 7. Subir el nuevo PDF (sobrescribiendo el anterior o como otro archivo)
+       await uploadBytes(archivoRef, pdfBlobConQR);
+       setTimeout(async () => {
+        const nuevaUrlDescarga = await getDownloadURL(archivoRef);
+        const printWindow = window.open(nuevaUrlDescarga, '_blank');
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        } else {
+          alert("Por favor permite las ventanas emergentes en tu navegador.");
+        }
+      }, 1000); // Ajusta el tiempo si aún no carga
+    }
+     
+     
 
     return (
         <>
@@ -94,7 +99,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 <ParentCard>
 
 
-<div ref={contentRef}>
+<div ref={contenidoRef}>
 <p>fecha y hora de impresion: {new Date().toLocaleString()} </p>
 
 {/* <div style={{ width: '20px', backgroundColor: 'gray', textAlign: 'center' ,fontSize: 'auto' }}>
@@ -104,12 +109,12 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
 </div> */}
 
 
-
+<div style={{ width: '720px' }}>
 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word' }} border="2" cellpadding="8" cellspacing="0">
 <tr bgcolor="#eeeeee">
     {/* <td style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>Invertido</td> */}
     <th colspan="6" style={{ textAlign: 'center', fontSize: '22px',border:"2px solid black" }}>DECLARACION DE VALOR DE IMPORTACIÓN Y EXPORTACIÓN <br /> <span style={{ fontSize: '17px' }}>-- IMPRESA --</span> </th>
-    <th rowspan="2"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
+    <th rowspan="2" id="qr"  style={{ height: '150px', width: '150px',textAlign: 'center', backgroundColor: 'gray',border:"2px solid black" }}>QR</th>
   </tr>
 
   <tr>
@@ -136,7 +141,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.deva_FechaAceptacion}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>INFORMACIÓN DEL IMPORTADOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">impo_Nombre_Raso</th>
@@ -161,7 +166,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.impo_Telefono}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>TRANSPORTE Y EXPORTACIÓN</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">embarcacionNombre</th>
@@ -184,7 +189,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
     <td>{declaracionValor.inco_Version}</td>
   </tr>
   <tr bgcolor="#eeeeee">
-    <th colspan="7" style={{ border: "2px solid black" }}>PROVEEDOR</th>
+    <th colspan="6" style={{ border: "2px solid black" }}>PROVEEDOR</th>
   </tr>
   <tr>
     <th bgcolor="#f8f8f8">prov_Nombre_Raso</th>
@@ -239,7 +244,7 @@ const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
   </tr>
 
 </table>
-
+</div>
 
 {/* 
 "deva_Id": 23,
