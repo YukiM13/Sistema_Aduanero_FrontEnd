@@ -11,31 +11,64 @@ import 'jspdf-autotable';
 import ParentCard from '../../../components/shared/ParentCard';
 import { useRef } from 'react';
 import html2pdf from 'html2pdf.js';
-
 const DeclaracionValorImpresionPdf = ({declaracionValor, onCancelar}) => {
-     const contentRef = useRef(null);
-    const convertToPdf = () => {
-          const content = contentRef.current;
+ 
+  const contenidoRef = useRef();
+
+  const convertToPdf = async () => {
+
+    const opt = {
+      margin: 1,
+      filename: 'temporal.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    const nombreArchivo = `documentos/archivo-${Date.now()}.pdf`;
+    const archivoRef = ref(storage, nombreArchivo);
   
-          const options = {
-            margin: [0.5, 0.5, 0.5, 0.5], // Márgenes más pequeños
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 1.5, scrollX: 0, scrollY: 0 }, // Escala el contenido
-            jsPDF: {
-                unit: 'in',
-                format: 'letter',
-                orientation: 'landscape', // Cambia a 'landscape' si es necesario
-            },
-        };
+    // 1. Generar primer PDF (sin QR)
+    const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
   
-          html2pdf().set(options).from(content).toPdf().get('pdf').then((pdf) => {
-              const blobUrl = URL.createObjectURL(pdf.output('blob'));
-              const newWindow = window.open(blobUrl);
-              newWindow.onload = function () {
-                  newWindow.print();
-              };
-          });
-      };
+    // 2. Subir a Firebase
+    await uploadBytes(archivoRef, pdfBlobSinQR);
+  
+    // 3. Obtener la URL del archivo subido
+    const urlDescarga = await getDownloadURL(archivoRef);
+  
+    // 4. Generar el QR con esa URL
+    const qrDataUrl = await QRCode.toDataURL(urlDescarga);
+  
+    // 5. Insertar el QR en el DOM
+    const qrContainer = document.getElementById("qr");
+    const img = document.createElement("img");
+    img.src = qrDataUrl;
+    img.width = 100;
+    img.style.width = "100%";
+   img.style.height = "100%";
+   img.style.objectFit = "contain";
+    qrContainer.innerHTML = '';
+    qrContainer.appendChild(img);
+  
+    // 6. Generar el PDF nuevamente, ahora con el QR
+    const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+  
+    // 7. Subir el nuevo PDF (sobrescribiendo el anterior o como otro archivo)
+    await uploadBytes(archivoRef, pdfBlobConQR);
+    setTimeout(async () => {
+     const nuevaUrlDescarga = await getDownloadURL(archivoRef);
+     const printWindow = window.open(nuevaUrlDescarga, '_blank');
+     if (printWindow) {
+       printWindow.onload = () => {
+         printWindow.print();
+       };
+     } else {
+       alert("Por favor permite las ventanas emergentes en tu navegador.");
+     }
+   }, 1000); // Ajusta el tiempo si aún no carga
+ }
+  
 
     return (
         <>
