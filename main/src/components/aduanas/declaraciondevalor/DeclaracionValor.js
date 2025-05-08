@@ -7,6 +7,7 @@ import {
   Button,
   Typography,
   FormControlLabel,
+  Snackbar,
   Alert,
 } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
@@ -26,22 +27,56 @@ const steps = ['Información del importador', 'Informacion del proveedor e inter
 const DeclaracionValor = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const [openSnackbar, setOpenSnackbar] = React.useState(false); 
+
+  const devaTab1Ref = React.useRef();
+  const devaTab2Ref = React.useRef();
+  const devaTab3Ref = React.useRef();
 
 
   const isStepOptional = (step) => step === 1;
 
   const isStepSkipped = (step) => skipped.has(step);
 
-  const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
+  const handleNext = async() => {
+    if (activeStep === 0 && devaTab1Ref.current) {
+      const exito = await devaTab1Ref.current.submit();
+      if (exito) {
+        // Mostramos los valores del formulario al hacer submit exitoso
+        console.log("Datos del paso 1 enviados:", devaTab1Ref.current.getValues?.());
+  
+        // Continuar al siguiente paso
+      } else {
+        setOpenSnackbar(true);
+        return;
+      }
     }
+   if (activeStep === 1 && devaTab2Ref.current) {
+     const exito = await devaTab2Ref.current.submit();
+     if (!exito) {
+       // Detenemos el avance
+       setOpenSnackbar(true);
+       return;
+     }
+   }
 
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
-  };
+   if (activeStep === 2 && devaTab3Ref.current) {
+     const exito = await devaTab3Ref.current.submit();
+     if (!exito) {
+       setOpenSnackbar(true);
+       return;
+     }
+   }
+  
+   let newSkipped = skipped;
+   if (isStepSkipped(activeStep)) {
+     newSkipped = new Set(newSkipped.values());
+     newSkipped.delete(activeStep);
+   }
+
+   setActiveStep((prevActiveStep) => prevActiveStep + 1);
+   setSkipped(newSkipped);
+ };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -67,15 +102,15 @@ const DeclaracionValor = () => {
     switch (step) {
       case 0:
         return (
-          <Tab1 />
+          <Tab1 ref={devaTab1Ref}/>
         );
       case 1:
         return (
-          <Tab2 />
+          <Tab2 ref={devaTab2Ref}/>
         );
       case 2:
         return (
-          <Tab3 />
+          <Tab3 ref={devaTab3Ref}/>
         );
       default:
         break;

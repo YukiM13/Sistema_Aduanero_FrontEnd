@@ -29,27 +29,42 @@ import { Stack } from '@mui/system';
 import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
+  declaraciones_ValorViewModel: yup.object({
     deva_AduanaIngresoId: yup.number().required('La aduana de ingreso es requerida'),
-    deva_AduanaDespachoId: yup.number().required('El La aduana de despacho es requerida'),
-    deva_DeclaracionMercancia: yup.string().required('La declaración de mercancia es necesaria'),
-    deva_FechaAceptacion: yup.date().required('El destino de aduana es requerido'),
-    regi_Id: yup.number().required('El regimen aduanero es requerido'),
+    deva_AduanaDespachoId: yup.number().required('La aduana de despacho es requerida'),
+    deva_DeclaracionMercancia: yup.string().required('La declaración de mercancía es necesaria'),
+    deva_FechaAceptacion: yup.date().required('La fecha de aceptación es requerida'),
+    regi_Id: yup.number().required('El régimen aduanero es requerido'),
+  }),
+  declarantesImpo_ViewModel: yup.object({
     decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerido'),
     impo_RTN: yup.string().required('El RTN es requerido'),
     impo_NumRegistro: yup.string().required('El número de registro es requerido'),
-    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida'),
-    ciud_Id: yup.number().required('El pais de destino es requerido').moreThan(0,'La ciudad es requerida'),
+  }),
+  declarantesProv_ViewModel: yup.object({
+    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida')
+  }),
+  declarantesInte_ViewModel: yup.object({
     decl_Correo_Electronico: yup.string().required('El correo del declarante es requerido'),
-    decl_Telefono: yup.string().required('El teléfono de desembarque es requerido'),
-    decl_Fax: yup.string().required('El fax es requerido')
-    
+    decl_Telefono: yup.string().required('El teléfono es requerido'),
+    decl_Fax: yup.string().required('El fax es requerido'),
+    ciud_Id: yup.number()
+      .required('La ciudad es requerida')
+      .moreThan(0, 'Debe seleccionar una ciudad válida'),
+  }),
+  importadores_ViewModel: yup.object({
+    impo_NivelComercial_Otro: yup.string().required('El nivel comercial es requerido'),
+    nico_Id: yup.number()
+      .required('El nivel comercial es requerido')
+      .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
+  }),
 });
 
 const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [ciudades, setCiudades] = useState([]);
         const [aduanas, setAduanas] = useState([]);
         const [regimenAduanero, setRegimenAduanero] = useState([]);
-        const [nivelComercial, setNivelComercial] = useState(null);
+        const [nivelComercial, setNivelComercial] = useState([]);
         
         const [openSnackbar, setOpenSnackbar] = useState(false); 
         const [selectedCiudad, setSelectedCiudad] = useState(null);
@@ -172,7 +187,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 }
               })
               .catch(error => {
-                console.error('Error al obtener los datos del país:', error);
+                console.error('Error al obtener los datos de la deva:', error);
               });
             }
           }, []); 
@@ -218,7 +233,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   const errors = await formik.validateForm();
                   if (Object.keys(errors).length === 0) {
                     try {
-                      await formik.submitForm(); // Espera a que termine el submit real
+                      await formik.submitForm(); // Este ejecuta el console.log que ya tienes
                       return true;
                     } catch (e) {
                       return false;
@@ -231,10 +246,13 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       }, {}),
                       true
                     );
-                    setOpenSnackbar(true); // Esto es tu alerta
+                    setOpenSnackbar(true);
                     return false;
                   }
                 },
+                getValues() {
+                  return formik.values;
+                }
               }));
               useEffect(() => {
                 listarCiudades();
@@ -248,21 +266,40 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               }, [formik.errors, formik.submitCount]);
 
               useEffect(() => {
-                if (ciudades.length > 0) {
-                  const ciudad = ciudades.find(p => p.ciud_Id === formik.values.ciud_Id);
-                  setSelectedCiudad(ciudad );
+                if (ciudades.length > 0 ) {
+                  const ciudad = ciudades.find(p => p.ciud_Id === formik.values.declarantesInte_ViewModel.ciud_Id);
+                  setSelectedCiudad(ciudad || null);
                 }
                 if (aduanas.length > 0) {
-                  const aduanaIngreso = aduanas.find(a => a.adua_Id === formik.values.deva_AduanaIngresoId);
-                  const aduanaDespacho = aduanas.find(a => a.adua_Id === formik.values.deva_AduanaDespachoId);
-                  setSelectedAduanaIngreso(aduanaIngreso);
-                  setSelectedAduanaDespacho(aduanaDespacho);
+                  const aduanaIngreso = aduanas.find(a => a.adua_Id === formik.values.declaraciones_ValorViewModel.deva_AduanaIngresoId);
+                  const aduanaDespacho = aduanas.find(a => a.adua_Id === formik.values.declaraciones_ValorViewModel.deva_AduanaDespachoId);
+                  setSelectedAduanaIngreso(aduanaIngreso || null);
+                  setSelectedAduanaDespacho(aduanaDespacho || null);
                 }
-                if (regimenAduanero.length > 0) {
-                  const regimen = regimenAduanero.find(r => r.regi_Id === formik.values.regi_Id);
-                  setSelectedRegimenAduanero(regimen);
+              
+                if (regimenAduanero.length > 0 ) {
+                  const regimen = regimenAduanero.find(r => r.regi_Id === formik.values.declaraciones_ValorViewModel.regi_Id);
+                  setSelectedRegimenAduanero(regimen || null);
                 }
-              },[ciudades, formik.values.ciud_Id, nivelComercial, formik.values.nico_Id], aduanas, formik.values.deva_AduanaIngresoId, formik.values.deva_AduanaDespachoId, regimenAduanero, formik.values.regi_Id);
+              
+                if (nivelComercial.length > 0 &&
+                  formik.values.importadores_ViewModel &&
+                  formik.values.importadores_ViewModel.nico_Id
+                 ) {
+                  const nivel = nivelComercial.find(n => n.nico_Id === formik.values.importadores_ViewModel.nico_Id);
+                  setSelectedNivelComercial(nivel || null);
+                }
+              }, [
+                ciudades,
+                formik.values.declarantesInte_ViewModel.ciud_Id,
+                aduanas,
+                formik.values.declaraciones_ValorViewModel.deva_AduanaIngresoId,
+                formik.values.declaraciones_ValorViewModel.deva_AduanaDespachoId,
+                regimenAduanero,
+                formik.values.declaraciones_ValorViewModel.regi_Id,
+                nivelComercial,
+                formik.values.importadores_ViewModel.nico_Id
+              ]);
         
     return (
         <div>
@@ -277,9 +314,9 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 onChange={(event, newValue) => {
                                     setSelectedAduanaIngreso(newValue);
                                     if (newValue) {
-                                    formik.setFieldValue('deva_AduanaIngresoId', newValue.deva_AduanaIngresoId);
+                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', newValue.adua_Id);
                                     } else {
-                                    formik.setFieldValue('deva_AduanaIngresoId', 0);
+                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', 0);
                                     
                                     }
                                 }}
@@ -288,42 +325,49 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                     {...params} 
                                     variant="outlined" 
                                     placeholder="Seleccione una aduana"
-                                    error={formik.touched.duca_AduanaRegistro && Boolean(formik.errors.duca_AduanaRegistro)}
-                                    helperText={formik.touched.duca_AduanaRegistro && formik.errors.duca_AduanaRegistro}
+                                    error={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId)}
+                                    helperText={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
                                     />
                                 )}
                                 noOptionsText="No hay aduanas disponibles"
-                                isOptionEqualToValue={(option, value) => option.adua_Id === value?.duca_AduanaRegistro}
+                                isOptionEqualToValue={(option, value) => option.adua_Id === value?.declaraciones_ValorViewModel.deva_AduanaIngresoId}
                         />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Aduana de despacho</CustomFormLabel>
                     <Autocomplete
-                            options={aduanas}
-                            getOptionLabel={(option) => option.adua_Nombre || ''}
-                            value={selectAduanaDespacho}
-                            onChange={(event, newValue) => {
-                                setSelectedAduanaDespacho(newValue);
-                                if (newValue) {
-                                formik.setFieldValue('deva_AduanaDespachoId', newValue.deva_AduanaDespachoId);
-                                } else {
-                                formik.setFieldValue('deva_AduanaDespachoId', 0);
-                                
-                                }
-                            }}
-                            renderInput={(params) => (
-                                <TextField 
-                                {...params} 
-                                variant="outlined" 
-                                placeholder="Seleccione la aduana de despacho"
-                                error={formik.touched.deva_AduanaDespachoId && Boolean(formik.errors.deva_AduanaDespachoId)}
-                                helperText={formik.touched.deva_AduanaDespachoId && formik.errors.deva_AduanaDespachoId}
-                                />
-                            )}
-                            noOptionsText="No hay aduanas disponibles"
-                            isOptionEqualToValue={(option, value) => option.adua_Id === value?.deva_AduanaDespachoId}
-                        />
+                    options={aduanas}
+                    getOptionLabel={(option) => option.adua_Nombre || ''}
+                    value={selectAduanaDespacho}
+                    onChange={(event, newValue) => {
+                      setSelectedAduanaDespacho(newValue);
+                      if (newValue) {
+                        formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaDespachoId', newValue.adua_Id);
+                      } else {
+                        formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaDespachoId', 0);
+                      }
+                    }}
+                    renderInput={(params) => (
+                      <TextField 
+                        {...params} 
+                        variant="outlined" 
+                        placeholder="Seleccione la aduana de despacho"
+                        error={
+                          formik.touched.declaraciones_ValorViewModel?.deva_AduanaDespachoId &&
+                          Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaDespachoId)
+                        }
+                        helperText={
+                          formik.touched.declaraciones_ValorViewModel?.deva_AduanaDespachoId &&
+                          formik.errors.declaraciones_ValorViewModel?.deva_AduanaDespachoId
+                        }
+                      />
+                    )}
+                    noOptionsText="No hay aduanas disponibles"
+                    isOptionEqualToValue={(option, value) =>
+                      option.adua_Id === value?.declaraciones_ValorViewModel.deva_AduanaDespachoId // usa esto si value es el objeto completo
+                    }
+                  />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}> {/* Esto es como el div con class col-md-6 */}
@@ -333,11 +377,11 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 id="deva_DeclaracionMercancia"
                                 name="deva_DeclaracionMercancia"
                                 type="text"
-                                value={formik.values.deva_DeclaracionMercancia}
+                                value={formik.values.declaraciones_ValorViewModel.deva_DeclaracionMercancia}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.deva_DeclaracionMercancia && Boolean(formik.errors.deva_DeclaracionMercancia)}
-                                helperText={formik.touched.deva_DeclaracionMercancia && formik.errors.deva_DeclaracionMercancia}
+                                error={formik.touched.declaraciones_ValorViewModel?.deva_DeclaracionMercancia && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_DeclaracionMercancia)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.deva_DeclaracionMercancia && formik.errors.declaraciones_ValorViewModel?.deva_DeclaracionMercancia}
                             />
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
@@ -347,11 +391,11 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             id="deva_FechaAceptacion"
                             name="deva_FechaAceptacion"
                             type="date"
-                            value={formik.values.deva_FechaAceptacion}
+                            value={formik.values.declaraciones_ValorViewModel.deva_FechaAceptacion}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FechaAceptacion && Boolean(formik.errors.deva_FechaAceptacion)}
-                            helperText={formik.touched.deva_FechaAceptacion && formik.errors.deva_FechaAceptacion}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_FechaAceptacion && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_FechaAceptacion)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_FechaAceptacion && formik.errors.declaraciones_ValorViewModel?.deva_FechaAceptacion}
                         />
                     </Grid>
 
@@ -364,9 +408,9 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedRegimenAduanero(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('regi_Id', newValue.regi_Id);
+                                formik.setFieldValue('declaraciones_ValorViewModel.regi_Id', newValue.regi_Id);
                                 } else {
-                                formik.setFieldValue('regi_Id', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.regi_Id', 0);
                                 
                                 }
                             }}
@@ -375,12 +419,12 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione una aduana"
-                                error={formik.touched.regi_Id && Boolean(formik.errors.regi_Id)}
-                                helperText={formik.touched.regi_Id && formik.errors.regi_Id}
+                                error={formik.touched.declaraciones_ValorViewModel?.regi_Id && Boolean(formik.errors.declaraciones_ValorViewModel?.regi_Id)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.regi_Id && formik.errors.declaraciones_ValorViewModel?.regi_Id}
                                 />
                             )}
                             noOptionsText="No hay regimenes disponibles"
-                            isOptionEqualToValue={(option, value) => option.regi_Id === value?.regi_Id}
+                            isOptionEqualToValue={(option, value) => option.regi_Id === value?.declaraciones_ValorViewModel.regi_Id}
                         />
                 
                     </Grid>
@@ -449,30 +493,30 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                             <CustomFormLabel>Ciudad</CustomFormLabel>
                             <Autocomplete
-                            options={ciudades}
-                            getOptionLabel={(option) => option.ciud_Nombre || ''}
-                            value={selectedCiudad}
-                            onChange={(event, newValue) => {
+                              options={ciudades}
+                              getOptionLabel={(option) => option.ciud_Nombre || ''}
+                              value={selectedCiudad}
+                              onChange={(event, newValue) => {
                                 setSelectedCiudad(newValue);
-                                if (newValue) {
-                                formik.setFieldValue('ciud_Id', newValue.ciud_Id);
-                                } else {
-                                formik.setFieldValue('ciud_Id', 0);
-                                
-                                }
-                            }}
-                            renderInput={(params) => (
-                                <TextField 
-                                {...params} 
-                                variant="outlined" 
-                                placeholder="Seleccione la ciudad"
-                                error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
-                                helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
+                                formik.setFieldValue('declarantesInte_ViewModel.ciud_Id', newValue?.ciud_Id || 0);
+                              }}
+                              renderOption={(props, option) => (
+                                <li {...props} key={option.ciud_Id}>
+                                  {option.ciud_Nombre}
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant="outlined"
+                                  placeholder="Seleccione la ciudad"
+                                  error={formik.touched.declarantesInte_ViewModel?.ciud_Id && Boolean(formik.errors.declarantesInte_ViewModel?.ciud_Id)}
+                                  helperText={formik.touched.declarantesInte_ViewModel?.ciud_Id && formik.errors.declarantesInte_ViewModel?.ciud_Id}
                                 />
-                            )}
-                            noOptionsText="No hay ciudades disponibles"
-                            isOptionEqualToValue={(option, value) => option.ciud_Id === value?.ciud_Id}
-                        />
+                              )}
+                              noOptionsText="No hay ciudades disponibles"
+                              isOptionEqualToValue={(option, value) => option.ciud_Id === value?.declarantesInte_ViewModel.ciud_Id}
+                            />
                     
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
@@ -551,9 +595,9 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     onChange={(event, newValue) => {
                         setSelectedNivelComercial(newValue);
                         if (newValue) {
-                        formik.setFieldValue('nico_Id', newValue.nico_Id);
+                        formik.setFieldValue('importadores_ViewModel.nico_Id', newValue.nico_Id);
                         } else {
-                        formik.setFieldValue('nico_Id', 0);
+                        formik.setFieldValue('importadores_ViewModel.nico_Id', 0);
                         
                         }
                     }}
@@ -562,24 +606,15 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         {...params} 
                         variant="outlined" 
                         placeholder="Seleccione un nivel comercial"
-                        error={formik.touched.nico_Id && Boolean(formik.errors.nico_Id)}
-                        helperText={formik.touched.nico_Id && formik.errors.nico_Id}
+                        error={formik.touched.importadores_ViewModel?.nico_Id && Boolean(formik.errors.importadores_ViewModel?.nico_Id)}
+                        helperText={formik.touched.importadores_ViewModel?.nico_Id && formik.errors.importadores_ViewModel?.nico_Id}
                         />
             )}
             noOptionsText="No hay tratados disponibles"
-            isOptionEqualToValue={(option, value) => option.nico_Id === value?.nico_Id}
+            isOptionEqualToValue={(option, value) => option.nico_Id === value?.importadores_ViewModel?.nico_Id}
         />
         </Grid>
-
-                    
-
-
-
-
-
                 </Grid>
-                
-            
             </form >
             <Snackbar
             open={openSnackbar}
