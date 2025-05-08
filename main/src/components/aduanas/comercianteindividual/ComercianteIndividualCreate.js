@@ -60,6 +60,21 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [provincias, setProvincias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [setError] = useState(null);
+
+const [snackbarType, setSnackbarType] = useState('success');
+
+const showSuccessMessage = (message) => {
+  setSnackbarMessage(message);
+  setSnackbarType('success');
+  setOpenSnackbar(true);
+};
+
+// Función para mostrar mensaje de error
+const showErrorMessage = (message) => {
+  setSnackbarMessage(message);
+  setSnackbarType('error');
+  setOpenSnackbar(true);
+};
   
   const [imageInputs, setImageInputs] = useState([{ id: Date.now(), file: null, preview: null }]);
   
@@ -71,6 +86,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const initialValues = {
     // Tab 1
     pers_Id: 0,
+    coin_Id: 0,
     pers_RTN: '',
     pers_Nombre: '',
     ofic_Id: 0,
@@ -198,7 +214,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   }, [tabIndex]);
 
 
-// Agrega esta función para guardar los datos del primer tab
+// Guardar en 1er tap
 const handleSaveTap1 = async () => {
   try {
     // Validar solamente los campos del primer tab
@@ -219,8 +235,7 @@ const handleSaveTap1 = async () => {
       // Tocar los campos para que se muestren los errores
       Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
       
-      setSnackbarMessage('Por favor completa todos los campos requeridos');
-      setOpenSnackbar(true);
+      showErrorMessage('Por favor completa todos los campos requeridos');
       return false;
     }
 
@@ -243,25 +258,135 @@ const handleSaveTap1 = async () => {
       headers: { 'XApiKey': apiKey }
     });
 
-    // Verificar si la respuesta contiene el ID generado
-    if (response.data && response.data.coin_Id) {
-      // Guardar el ID generado para usarlo en los siguientes tabs
-      formik.setFieldValue('coin_Id', response.data.coin_Id);
-      setSnackbarMessage('Datos personales guardados correctamente');
-      setOpenSnackbar(true);
-      
-      // Avanzar al siguiente tab
-      setTabIndex(tabIndex + 1);
-      return true;
+    console.log('Respuesta del servidor (Tab 1):', response.data);
+
+    // Verificar si la respuesta tiene la estructura esperada
+    if (response.data && response.data.success === true) {
+      // Extraer ID del comerciante individual del messageStatus (formato: "29.162")
+      let coinId = null;
+      if (response.data.data && response.data.data.messageStatus) {
+        // Extraer el número antes del punto
+        const idParts = response.data.data.messageStatus.split('.');
+        if (idParts.length > 0) {
+          coinId = parseInt(idParts[0]);
+        }
+      }
+
+      if (coinId) {
+        // Guardar el ID para usarlo en los siguientes tabs
+        formik.setFieldValue('coin_Id', coinId);
+        showSuccessMessage('Datos personales guardados correctamente');
+        return true;
+      } else {
+        showErrorMessage('No se pudo obtener el ID del comerciante. Por favor, intente nuevamente.');
+        return false;
+      }
     } else {
-      setSnackbarMessage('Error al guardar los datos: respuesta inválida');
-      setOpenSnackbar(true);
+      showErrorMessage(response.data?.message || 'Error al guardar los datos: respuesta inválida');
       return false;
     }
   } catch (error) {
     console.error('Error al guardar datos del tab 1:', error);
-    setSnackbarMessage(error.response?.data?.message || 'Error al guardar los datos');
-    setOpenSnackbar(true);
+    
+    let errorMessage = 'Error al guardar los datos';
+    
+    if (error.response) {
+      // Error del servidor con respuesta
+      errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+    } else if (error.request) {
+      // Error de red (no se recibió respuesta)
+      errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+    }
+    
+    showErrorMessage(errorMessage);
+    return false;
+  }
+};
+
+//Guardar en en 2do tap
+const handleSaveTap2 = async () => {
+  try {
+    // Validar solamente los campos del segundo tab
+    const tabErrors = {};
+    ['ciud_Id', 'colo_Id', 'coin_NumeroLocalApart', 'coin_PuntoReferencia'].forEach(field => {
+      try {
+        // Validar cada campo individualmente (excepto alde_Id que puede ser null)
+        if (validationSchema.fields[field]) {
+          validationSchema.fields[field].validateSync(formik.values[field]);
+        }
+      } catch (err) {
+        tabErrors[field] = err.message;
+      }
+    });
+    
+    // Si hay errores, mostrarlos y detener el proceso
+    if (Object.keys(tabErrors).length > 0) {
+      // Establecer los errores en Formik
+      formik.setErrors({...formik.errors, ...tabErrors});
+      // Tocar los campos para que se muestren los errores
+      Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
+      
+      showErrorMessage('Por favor completa todos los campos requeridos');
+      return false;
+    }
+
+    // Verificar que existe coin_Id (que se guardó en el tab 1)
+    if (!formik.values.coin_Id) {
+      showErrorMessage('Error: No se encontró el ID del comerciante. Por favor guarde los datos del primer tab.');
+      return false;
+    }
+
+    // Preparar los datos a enviar
+    const tap2Data = {
+      coin_Id: formik.values.coin_Id,
+      ciud_Id: formik.values.ciud_Id,
+      alde_Id: formik.values.alde_Id || 0, // Si no hay aldea, enviar 0 como indica el SP
+      colo_Id: formik.values.colo_Id,
+      coin_NumeroLocalApart: formik.values.coin_NumeroLocalApart,
+      coin_PuntoReferencia: formik.values.coin_PuntoReferencia,
+      usua_UsuarioModificacion: 1, // Ajusta según tu sistema de usuarios
+      coin_FechaModificacion: new Date().toISOString()
+    };
+
+    // Mostrar datos a enviar para debug
+    console.log('Datos a enviar (Tab 2):', tap2Data);
+
+    // Enviar datos al API
+    const response = await axios.post(`${apiUrl}/api/ComercianteIndividual/InsertarTap2`, tap2Data, {
+      headers: { 'XApiKey': apiKey }
+    });
+
+    // Verificar la respuesta
+    console.log('Respuesta del servidor (Tab 2):', response.data);
+    
+    // Verificar si la respuesta tiene la estructura esperada
+    if (response.data && response.data.success === true) {
+      showSuccessMessage('Dirección guardada correctamente');
+      return true;
+    } else {
+      // Si la respuesta contiene un mensaje de error específico
+      if (response.data && response.data.message) {
+        showErrorMessage(response.data.message);
+      } else {
+        showErrorMessage('Error al guardar los datos de dirección');
+      }
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al guardar datos del tab 2:', error);
+    
+    let errorMessage = 'Error al guardar los datos de dirección';
+    
+    if (error.response) {
+      // Error del servidor con respuesta
+      console.error('Respuesta de error del servidor:', error.response.data);
+      errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+    } else if (error.request) {
+      // Error de red (no se recibió respuesta)
+      errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+    }
+    
+    showErrorMessage(errorMessage);
     return false;
   }
 };
@@ -1090,21 +1215,34 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   
   <div>
     {tabIndex < 4 && (
-       <Button
-       variant="contained"
-       color="primary"
-       onClick={() => {
-         if (tabIndex === 0) {
-           // Si estamos en el primer tab, guardar antes de avanzar
-           handleSaveTap1();
-         } else {
-           // Para los demás tabs, simplemente avanzar
-           setTabIndex(tabIndex + 1);
-         }
-       }}
-     >
-       Siguiente
-     </Button>
+      <Button
+      variant="contained"
+      color="primary"
+      onClick={async () => {
+        let success = false;
+        
+        // Manejo diferente según el tab actual
+        if (tabIndex === 0) {
+          // Tab 1: Guardar datos personales
+          success = await handleSaveTap1();
+        } else if (tabIndex === 1) {
+          // Tab 2: Guardar dirección
+          success = await handleSaveTap2();
+        } else {
+          // Para los demás tabs (por ahora simplemente avanzar)
+          success = true;
+        }
+        
+        // Solo avanzar al siguiente tab si la operación fue exitosa
+        if (success) {
+          setTabIndex(tabIndex + 1);
+        }
+      }}
+    >
+      Siguiente
+    </Button>
+    
+     
     )}
     {tabIndex === 4 && (
     <>
@@ -1130,12 +1268,26 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   </div>
 </Box>
 
-
-<Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)} >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="warning" sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+<Snackbar 
+  open={openSnackbar} 
+  autoHideDuration={6000} 
+  onClose={() => setOpenSnackbar(false)}
+  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+  sx={{ 
+    marginTop: '20px',  // Para evitar que quede muy pegado al borde superior
+    marginRight: '20px', // Añadir un margen para evitar que se pegue al borde
+    zIndex: 9999 // Asegurar que esté sobre el sidebar
+  }}
+>
+  <Alert 
+    onClose={() => setOpenSnackbar(false)} 
+    severity={snackbarType} // Usa "success" o "error" según corresponda
+    variant="filled"
+    sx={{ width: '100%' }}
+  >
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
       </form>
 
       
