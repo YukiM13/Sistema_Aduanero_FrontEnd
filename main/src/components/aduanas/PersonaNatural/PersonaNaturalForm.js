@@ -11,10 +11,10 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import emailjs from 'emailjs-com';
 import { CheckCircleRounded } from '@mui/icons-material';
-import { Snackbar, Alert } from '@mui/material'; // Add these imports
+import { Snackbar, Alert } from '@mui/material'; 
 
 
-// Validation schema
+
 const validationSchema = yup.object({
   pers_Id: yup.number().required('El campo Persona ID es obligatorio').moreThan(0, 'Debe seleccionar una persona'),
   pena_DireccionExacta: yup.string().required('El campo Dirección Exacta es obligatorio'),
@@ -29,7 +29,7 @@ const validationSchema = yup.object({
   ArchivoNumeroRecibo: yup.mixed().required('El archivo del recibo es obligatorio'),
 });
 
-// Custom styled components for improved tab design
+
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   '& .MuiTabs-indicator': {
@@ -84,11 +84,11 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
-  // Add state variables for alternative email verification
   const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
   const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
   const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
   const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(false);
+  const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
 
 
  
@@ -117,27 +117,25 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   }, [apiUrl, apiKey]);
   
  const enviarCodigoVerificacion = (correoElectronico) => {
-    // Generar código aleatorio de 7 dígitos
+    setVerificarCorreoDeshabilitado(true);
     console.log("Correo electrónico:", correoElectronico);
     const generarCodigoAleatorio = () => {
       return Math.floor(1000000 + Math.random() * 9000000).toString();
     };
 
     const codigo = generarCodigoAleatorio();
-    setCodigoVerificacion(codigo); // Save the generated code in state
+    setCodigoVerificacion(codigo);
     console.log("Código generado:", codigo);
-    
-    // Enviar correo con EmailJS
     emailjs.send('service_5x68ulj', 'template_lwiowkp', {
       email: correoElectronico,
-      codigo: codigo // Código generado dinámicamente
+      codigo: codigo 
     }, 'mnyq6v-rJ4eMaYUOb')
     .then((response) => {
       console.log('Correo enviado:', response.text);
       setMensajeSnackbar('Código de verificación enviado correctamente.');
       setSeveritySnackbar('success');
       setOpenSnackbar(true);
-      setMostrarInputCodigo(true); // Show the code input field
+      setMostrarInputCodigo(true);
     })
     .catch((error) => {
       console.error('Error al enviar correo:', error);
@@ -164,7 +162,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     setCodigoIngresado(e.target.value);
   };
 
-  // Add function for the alternative email verification
   const enviarCodigoVerificacionAlt = (correoElectronico) => {
     console.log("Correo alternativo:", correoElectronico);
     const generarCodigoAleatorio = () => {
@@ -226,7 +223,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         console.log('pers_Id value:', values.pers_Id);
         console.log('pena_NumeroRecibo:', values.pena_NumeroRecibo);
 
-        // Check for required files
         if (!values.ArchivoRTN) {
           setMensajeSnackbar('El archivo RTN es obligatorio');
           setSeveritySnackbar('error');
@@ -276,34 +272,29 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
         console.log('Formulario enviado con éxito:', response.data);
         
-        // Always show success message
         setMensajeSnackbar('Persona insertada con éxito');
         setSeveritySnackbar('success');
         setOpenSnackbar(true);
         
-        // Always redirect after a brief delay to show the message
         setTimeout(() => {
           if (onGuardar) {
             onGuardar();
           } 
-          // Redirect to dashboard regardless
-          window.location.href = 'http://localhost:3000/dashboards/modern'; // Adjust this path as needed
+          window.location.href = 'http://localhost:3000/dashboards/modern';
         }, 1500);
         
       } catch (error) {
         console.error('Error al enviar el formulario:', error);
         
-        // Always show success and redirect regardless of errors
         setMensajeSnackbar('Persona insertada con éxito');
         setSeveritySnackbar('success');
         setOpenSnackbar(true);
         
-        // Redirect after delay
         setTimeout(() => {
           if (onGuardar) {
             onGuardar();
           }
-          window.location.href = 'http://localhost:3000/dashboards/modern'; // Adjust this path as needed
+          window.location.href = 'http://localhost:3000/dashboards/modern';
         }, 1500);
       }
     },
@@ -313,9 +304,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     let hasErrors = false;
     const camposrequeridos = [];
     
-    // Mark all required fields in current tab as touched and check if they're empty
-    if (activeTab === 0) {
-      // Check individual fields in this tab
+    if (activeTab === 0) {b
       if (!formik.values.pers_Id || formik.values.pers_Id === 0) {
         camposrequeridos.push('Persona ID');
       }
@@ -326,15 +315,12 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         camposrequeridos.push('Ciudad');
       }
       
-      // Mark fields as touched to trigger validation visuals
       formik.setFieldTouched('pers_Id', true);
       formik.setFieldTouched('pena_DireccionExacta', true);
       formik.setFieldTouched('ciud_Id', true);
       
-      // Check for formik validation errors
       hasErrors = !!(formik.errors.pers_Id || formik.errors.pena_DireccionExacta || formik.errors.ciud_Id);
     } else if (activeTab === 1) {
-      // Check required fields in this tab
       if (!formik.values.pena_TelefonoCelular) {
         camposrequeridos.push('Teléfono Celular');
       }
@@ -342,7 +328,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         camposrequeridos.push('Correo Electrónico');
       }
       
-      // Check if email has been verified
       if (formik.values.pena_CorreoElectronico && !correoVerificado) {
         setMensajeSnackbar('Debe verificar el correo electrónico antes de continuar');
         setSeveritySnackbar('error');
@@ -356,18 +341,18 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
       
       hasErrors = !!(formik.errors.pena_TelefonoCelular || formik.errors.pena_CorreoElectronico);
     } else if (activeTab === 2) {
-      // Fix: Add clear validation rules for tab 2
+
       if (!formik.values.pena_RTN) {
         camposrequeridos.push('RTN');
       }
       if (!formik.values.pena_DNI) {
         camposrequeridos.push('DNI');
       }
-      // Check for RTN file
+
       if (!formik.values.ArchivoRTN) {
         camposrequeridos.push('Archivo RTN');
       }
-      // Check for DNI file
+
       if (!formik.values.ArchivoDNI) {
         camposrequeridos.push('Archivo DNI');
       }
@@ -380,16 +365,10 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
       hasErrors = !!(formik.errors.pena_RTN || formik.errors.pena_DNI || 
                      formik.errors.ArchivoRTN || formik.errors.ArchivoDNI);
     } else if (activeTab === 3) {
-      // Fix: Move receipt validation to its own tab (tab 3)
-      // We don't need to validate these fields when clicking "Next" since this is the last tab
-      // Only validate when submitting the form
-      return true; // This ensures we don't block navigation from tab 3 to tab 4
+
+      return true;
     }
-    
-    // Force form validation to refresh
     formik.validateForm();
-    
-    // Show alert for validation errors with specific field names
     if (hasErrors || camposrequeridos.length > 0) {
       let message = 'Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.';
       
@@ -407,10 +386,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   };
 
   const handleNext = () => {
-    // This will mark fields as touched, validate them, and show errors if needed
     const isValid = validateTabFields();
     if (isValid) {
-      // Fix: Make sure we don't go beyond the last tab
       setActiveTab((prev) => {
         if (prev < 3) return prev + 1;
         return prev;
@@ -425,9 +402,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const handleFileChange = (event) => {
     const { name, files } = event.target;
     
-    // Simply set the file in formik state without creating preview elements
     if (files && files.length > 0) {
-      // Set the file value in Formik state
       formik.setFieldValue(name, files[0]);
       console.log(`File "${files[0].name}" selected for ${name}`);
     }
@@ -436,12 +411,10 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Mark all fields as touched to trigger validation
     Object.keys(formik.values).forEach(field => {
       formik.setFieldTouched(field, true);
     });
-    
-    // Add special validation for the last tab fields
+    ds
     if (!formik.values.pena_NumeroRecibo) {
       setMensajeSnackbar('El campo Número Recibo es obligatorio');
       setSeveritySnackbar('error');
@@ -464,6 +437,11 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     }
     
     formik.handleSubmit(e);
+  };
+  const handlePhoneChange = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, '');
+    formik.setFieldValue(name, numericValue);
   };
 
   const renderTabContent = () => {
@@ -554,8 +532,9 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_TelefonoFijo"
                 name="pena_TelefonoFijo"
                 value={formik.values.pena_TelefonoFijo}
-                onChange={formik.handleChange}
+                onChange={handlePhoneChange}
                 onBlur={formik.handleBlur}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -565,10 +544,11 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_TelefonoCelular"
                 name="pena_TelefonoCelular"
                 value={formik.values.pena_TelefonoCelular}
-                onChange={formik.handleChange}
+                onChange={handlePhoneChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
                 helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -582,8 +562,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_CorreoElectronico && Boolean(formik.errors.pena_CorreoElectronico)}
                 helperText={formik.touched.pena_CorreoElectronico && formik.errors.pena_CorreoElectronico}
-                disabled={correoVerificado} // Disable the field when email is verified
-                sx={correoVerificado ? { bgcolor: '#f5f5f5' } : {}} // Add a subtle background color when disabled
+                disabled={correoVerificado}
+                sx={correoVerificado ? { bgcolor: '#f5f5f5' } : {}}
               />
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
                 <Button 
@@ -591,7 +571,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                   type="button" 
                   startIcon={<CheckCircleRounded />}
                   onClick={() => enviarCodigoVerificacion(formik.values.pena_CorreoElectronico)}
-                  disabled={correoVerificado}
+                  disabled={correoVerificado || verificarCorreoDeshabilitado}
                 >
                   {correoVerificado ? "Correo Verificado" : "Verificar correo"}
                 </Button>
@@ -599,8 +579,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                   <CheckCircleRounded color="success" />
                 )}
               </Box>
-              
-              {/* Código de verificación input */}
               {mostrarInputCodigo && !correoVerificado && (
                 <Box sx={{ mt: 2 }}>
                   <Grid container spacing={2}>
@@ -709,7 +687,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 helperText={formik.touched.ArchivoRTN && !formik.values.ArchivoRTN ? 'El archivo RTN es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
-                  key: 'rtn-file-input' // Add key to ensure uniqueness
+                  key: 'rtn-file-input'
                 }}
               />
             </Grid>
@@ -738,7 +716,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 helperText={formik.touched.ArchivoDNI && !formik.values.ArchivoDNI ? 'El archivo DNI es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
-                  key: 'dni-file-input' // Add key to ensure uniqueness
+                  key: 'dni-file-input'
                 }}
               />
             </Grid>
@@ -773,7 +751,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 helperText={formik.touched.ArchivoNumeroRecibo && !formik.values.ArchivoNumeroRecibo ? 'El archivo del recibo es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
-                  key: 'receipt-file-input' // Add key to ensure uniqueness
+                  key: 'receipt-file-input'
                 }}
               />
             </Grid>
@@ -826,7 +804,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         />
       </StyledTabs>
       
-      {/* Progress bar showing form completion */}
       <Box sx={{ width: '100%', mb: 2 }}>
         <Box 
           sx={{ 
@@ -863,7 +840,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
           </Grid>
         )}
       </Grid>
-      {/* Add Snackbar for alerts */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
