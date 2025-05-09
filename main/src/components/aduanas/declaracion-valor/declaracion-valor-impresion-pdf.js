@@ -30,7 +30,7 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
             }
         };
 
-        const nombreArchivo = `documentos/archivo-${Date.now()}.pdf`;
+        const nombreArchivo = `documentos/deva-${Date.now()}.pdf`;
         const archivoRef = ref(storage, nombreArchivo);
 
         // 1. Generar primer PDF (sin QR)
@@ -81,7 +81,7 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBackIcon fontSize="small" />}
-                    onClick={onCancelar}
+                    onClick={onCancelar} 
                 >
                     Volver
                 </Button>
