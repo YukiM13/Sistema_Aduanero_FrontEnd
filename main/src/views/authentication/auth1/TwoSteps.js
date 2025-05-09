@@ -14,7 +14,7 @@ const TwoSteps = () => {
   const [newPassword, setNewPassword] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
-  const [isRedirecting, setIsRedirecting] = useState(false); // Nuevo estado para controlar el botón
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -49,7 +49,6 @@ const TwoSteps = () => {
         setAlertConfig({ severity: 'success', message: 'Contraseña restablecida correctamente.' });
         setOpenSnackbar(true);
 
-        // Cambiar el estado del botón a "Redirigiendo..."
         setIsRedirecting(true);
 
         setTimeout(() => navigate('/auth/login'), 1000);
@@ -65,7 +64,7 @@ const TwoSteps = () => {
   };
 
   return (
-    <PageContainer title="Two Steps" description="this is Two Steps page">
+    <PageContainer title="Restablecer Contraseña" description="this is Two Steps page">
       <Grid container spacing={0} sx={{ overflowX: 'hidden' }}>
         <Grid
           item
@@ -138,7 +137,7 @@ const TwoSteps = () => {
               >
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
                   <Typography variant="h3" gutterBottom sx={{ color: '#003857' }}>
-                    Verificación en Dos Pasos
+                    Verificación
                   </Typography>
                 </Box>
                 <img src={img} alt="logo" width={180} style={{ marginTop: '8px' }} />
@@ -170,9 +169,9 @@ const TwoSteps = () => {
                   fullWidth
                   sx={{ mt: 3 }}
                   onClick={handleVerifyCode}
-                  disabled={isRedirecting} // Deshabilitar el botón si está redirigiendo
+                  disabled={isRedirecting}
                 >
-                  {isRedirecting ? 'Redirigiendo...' : 'Restablecer Contraseña'} {/* Cambiar el texto del botón */}
+                  {isRedirecting ? 'Redirigiendo...' : 'Restablecer Contraseña'}
                 </Button>
               </Box>
               <Stack justifyContent="space-around" direction="row" alignItems="center" my={2}>

@@ -67,7 +67,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <PageContainer title="Forgot Password" description="this is Forgot Password page">
+    <PageContainer title="Enviar codigo" description="this is Forgot Password page">
       <Grid container spacing={0} sx={{ overflowX: 'hidden' }}>
         <Grid
           item
@@ -140,7 +140,7 @@ const ForgotPassword = () => {
               >
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
                   <Typography variant="h3" gutterBottom sx={{ color: '#003857' }}>
-                    Recuperar Contraseña
+                    Enviar Código
                   </Typography>
                 </Box>
                 <img src={img} alt="logo" width={180} style={{ marginTop: '8px' }} />
