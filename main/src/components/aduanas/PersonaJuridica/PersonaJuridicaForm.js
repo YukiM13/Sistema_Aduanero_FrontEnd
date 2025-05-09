@@ -12,7 +12,6 @@ import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import emailjs from 'emailjs-com';
 import { Snackbar, Alert } from '@mui/material';
 
-
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   '& .MuiTabs-indicator': {
@@ -85,6 +84,13 @@ const validationSchemas = [
   }),
 ];
 
+const camposPorTab = [
+  ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
+  ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
+  ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
+  ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico', 'peju_CorreoElectronicoAlternativo'],
+];
+
 const PersonaJuridicaForm = ({ onGuardar }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [ciudades, setCiudades] = useState([]);
@@ -108,7 +114,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
-  
+
   const enviarCodigoVerificacion = (correoElectronico) => {
     setVerificarCorreoDeshabilitado(true);
     const generarCodigoAleatorio = () => {
@@ -117,26 +123,23 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
 
     const codigo = generarCodigoAleatorio();
     setCodigoVerificacion(codigo);
-    console.log('Código generado:', codigo);
-    console.log('Correo electrónico:', correoElectronico);
     emailjs.send('service_5x68ulj', 'template_lwiowkp', {
       email: correoElectronico,
       codigo: codigo 
     }, 'mnyq6v-rJ4eMaYUOb')
-    .then((response) => {
+    .then(() => {
       setMensajeSnackbar('Código de verificación enviado correctamente.');
       setSeveritySnackbar('success');
       setOpenSnackbar(true);
       setMostrarInputCodigo(true);
     })
-    .catch((error) => {
-      console.error('Error al enviar correo:', error);
+    .catch(() => {
       setMensajeSnackbar('Error al enviar el código de verificación.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
     });
   };
-  
+
   const verificarCodigo = () => {
     if (codigoIngresado === codigoVerificacion) {
       setCorreoVerificado(true);
@@ -161,25 +164,24 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
 
     const codigo = generarCodigoAleatorio();
     setCodigoVerificacionAlt(codigo);
-    
+
     emailjs.send('service_5x68ulj', 'template_lwiowkp', {
       email: correoElectronico,
       codigo: codigo
     }, 'mnyq6v-rJ4eMaYUOb')
-    .then((response) => {
+    .then(() => {
       setMensajeSnackbar('Código de verificación enviado correctamente al correo alternativo.');
       setSeveritySnackbar('success');
       setOpenSnackbar(true);
       setMostrarInputCodigoAlt(true);
     })
-    .catch((error) => {
-      console.error('Error al enviar correo alternativo:', error);
+    .catch(() => {
       setMensajeSnackbar('Error al enviar el código al correo alternativo.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
     });
   };
-  
+
   const verificarCodigoAlt = () => {
     if (codigoIngresadoAlt === codigoVerificacionAlt) {
       setCorreoAlternativoVerificado(true);
@@ -196,7 +198,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   const handleCodigoChangeAlt = (e) => {
     setCodigoIngresadoAlt(e.target.value);
   };
-  
+
   const formik = useFormik({
     initialValues: {
       pers_Nombre: '',
@@ -235,7 +237,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           setPersonaJuridicaId(returnedId);
           setActiveTab((prev) => prev + 1); 
         } catch (error) {
-          console.error('Error al insertar los datos de Persona Jurídica:', error);
+          setMensajeSnackbar('Error al insertar los datos de Persona Jurídica');
+          setSeveritySnackbar('error');
+          setOpenSnackbar(true);
         }
       } else if (activeTab === 1) {
         try {
@@ -249,14 +253,14 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             usua_UsuarioCreacion: 1,
             peju_FechaCreacion: new Date().toISOString(),
           };
-          console.log('Data to be sent:', data);
-          console.log(activeTab);
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
             headers: { 'XApiKey': apiKey },
           });
           setActiveTab((prev) => prev + 1); 
         } catch (error) {
-          console.error('Error al insertar la ubicación de la empresa:', error);
+          setMensajeSnackbar('Error al insertar la ubicación de la empresa');
+          setSeveritySnackbar('error');
+          setOpenSnackbar(true);
         }
       } else if (activeTab === 2) {
         try {
@@ -275,7 +279,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           });
           setActiveTab((prev) => prev + 1);
         } catch (error) {
-          console.error('Error al insertar la ubicación del representante:', error);
+          setMensajeSnackbar('Error al insertar la ubicación del representante');
+          setSeveritySnackbar('error');
+          setOpenSnackbar(true);
         }
       } else if (activeTab === 3) {
         try {
@@ -294,7 +300,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           });
           if (onGuardar) onGuardar();
         } catch (error) {
-          console.error('Error al insertar el contacto:', error);
+          setMensajeSnackbar('Error al insertar el contacto');
+          setSeveritySnackbar('error');
+          setOpenSnackbar(true);
         }
       }
     },
@@ -303,20 +311,17 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   useEffect(() => {
     axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
       .then((response) => setCiudades(response.data.data || []))
-      .catch((error) => console.error('Error al obtener ciudades:', error));
-
+      .catch(() => {});
     axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, { headers: { 'XApiKey': apiKey } })
       .then((response) => setEstadoCivil(response.data.data || []))
-      .catch((error) => console.error('Error al obtener estados civiles:', error));
-
+      .catch(() => {});
     axios.get(`${apiUrl}/api/Oficinas/Listar`, { headers: { 'XApiKey': apiKey } })
       .then((response) => setOficinas(response.data.data || []))
-      .catch((error) => console.error('Error al obtener oficinas:', error));
-
+      .catch(() => {});
     axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
       .then((response) => setOficioProfesion(response.data.data || []))
-      .catch((error) => console.error('Error al obtener oficios:', error));
-  }, []);
+      .catch(() => {});
+  }, [apiUrl, apiKey]);
 
   const handleCityChange = (e) => {
     const { name, value } = e.target;
@@ -325,24 +330,56 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
     if (name === 'ciud_Id' || name === 'peju_CiudadIdRepresentante') {
       axios.get(`${apiUrl}/api/Colonias/FiltrarPorCiudad?ciud_Id=${value}`, { headers: { 'XApiKey': apiKey } })
         .then((response) => setColonias(response.data.data || []))
-        .catch((error) => console.error('Error al obtener colonias:', error));
-
+        .catch(() => {});
       axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?ciud_Id=${value}`, { headers: { 'XApiKey': apiKey } })
         .then((response) => setAldeas(response.data.data || []))
-        .catch((error) => console.error('Error al obtener aldeas:', error));
+        .catch(() => {});
     }
   };
 
   const handleNext = () => {
-    if (formik.isValid) { 
+    const tocados = {};
+    camposPorTab[activeTab].forEach(campo => {
+      tocados[campo] = true;
+    });
+    formik.setTouched(tocados, true);
+
+    formik.validateForm().then(errores => {
+      const hayErrores = Object.keys(errores).length > 0;
+      if (hayErrores) {
+        setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
       formik.handleSubmit();
-    }
-    else{
-      setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      return;
-    }
+    });
+  };
+
+  const handleSubmitFinal = (e) => {
+    e.preventDefault();
+    const tocados = {};
+    camposPorTab[activeTab].forEach(campo => {
+      tocados[campo] = true;
+    });
+    formik.setTouched(tocados, true);
+
+    formik.validateForm().then(errores => {
+      const hayErrores = Object.keys(errores).length > 0;
+      if (hayErrores) {
+        setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
+      if (!correoVerificado) {
+        setMensajeSnackbar('Debe verificar el correo electrónico antes de guardar.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
+      formik.handleSubmit();
+    });
   };
 
   const handleBack = () => {
@@ -786,50 +823,54 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   };
 
   return (
-
-    <form onSubmit={formik.handleSubmit}>
-           <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
-            <ParentCard >
-      <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
-        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
-        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
-        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
-        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
-      </StyledTabs>
-      <Box sx={{ width: '100%', mb: 2 }}>
-        <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
-      </Box>
-      <Box mt={3}>{renderTabContent()}</Box>
-      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-        {activeTab > 0 && (
-          <Grid item>
-            <Button variant="contained" onClick={handleBack}>Volver</Button>
-          </Grid>
-        )}
-        {activeTab < 3 ? (
-          <Grid item>
-            <Button variant="contained" onClick={handleNext}>Siguiente</Button>
-          </Grid>
-        ) : (
-          <Grid item>
-            <Button variant="contained" type="submit" startIcon={<SaveIcon />}>Guardar</Button>
-          </Grid>
-        )}
-      </Grid>
-      
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
-          {mensajeSnackbar}
-        </Alert>
-      </Snackbar>
-          </ParentCard>
+    <form onSubmit={handleSubmitFinal}>
+      <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
+      <ParentCard>
+        <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
+          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
+          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
+          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
+          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
+        </StyledTabs>
+        <Box sx={{ width: '100%', mb: 2 }}>
+          <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
+        </Box>
+        <Box mt={3}>{renderTabContent()}</Box>
+        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
+          {activeTab > 0 && (
+            <Grid item>
+              <Button variant="contained" onClick={handleBack}>Volver</Button>
+            </Grid>
+          )}
+          {activeTab < 3 ? (
+            <Grid item>
+              <Button variant="contained" onClick={handleNext}>Siguiente</Button>
+            </Grid>
+          ) : (
+            <Grid item>
+              <Button
+                variant="contained"
+                type="submit"
+                startIcon={<SaveIcon />}
+                disabled={!correoVerificado}
+              >
+                Guardar
+              </Button>
+            </Grid>
+          )}
+        </Grid>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenSnackbar(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
+            {mensajeSnackbar}
+          </Alert>
+        </Snackbar>
+      </ParentCard>
     </form>
-
   );
 };
 
