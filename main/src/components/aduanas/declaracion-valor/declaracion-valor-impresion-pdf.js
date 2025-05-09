@@ -117,18 +117,42 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
                         </tr>
 
                         <tr>
-                            <th bgcolor="#f8f8f8">ID Declaración Valor :</th>
-                            <td colSpan="2">{declaracionValor.deva_Id}</td>
-                            <th bgcolor="#f8f8f8">Codigo Regimen :</th>
+                            {/* <th bgcolor="#f8f8f8">ID Declaración Valor :</th>
+                            <td colSpan="2">{declaracionValor.deva_Id}</td> */}
+                            <th bgcolor="#f8f8f8">Codigo Regimen:</th>
                             <td colSpan="2">{declaracionValor.regi_Codigo}</td>
                             <th bgcolor="#f8f8f8">No DUCA :</th>
                             <td colSpan="2">{declaracionValor.duca_No_DUCA}</td>
+
+                            <th colSpan="1" bgcolor="#f8f8f8">Nivel Comercial :</th>
+                            <td colSpan="1">{declaracionValor.nico_Descripcion}</td>
                         </tr>
+
                         <tr>
                             <th bgcolor="#f8f8f8">Regimen :</th>
                             <td colSpan="2">{declaracionValor.regi_Descripcion}</td>
                             <th bgcolor="#f8f8f8">Fecha aceptación :</th>
-                            <td>{declaracionValor.deva_FechaAceptacion}</td>
+                            <td colSpan="2">{declaracionValor.deva_FechaAceptacion}</td>
+                            <th bgcolor="#f8f8f8">Finalizado :</th>
+                            <td>{declaracionValor.deva_Finalizacion ? 'Si' : 'No'}</td>
+                        </tr>
+
+                        <tr>
+                            <th bgcolor="#f8f8f8">Declaracion Mercancia :</th>
+                            <td colSpan="2">{declaracionValor.deva_DeclaracionMercancia}</td>
+                            <th bgcolor="#f8f8f8">Pago Realizado :</th>
+                            <td colSpan="2">{declaracionValor.deva_PagoEfectuado ? 'Si' : 'No'}</td>
+                            <th bgcolor="#f8f8f8">Lugar de entrega :</th>
+                            <td>{declaracionValor.deva_LugarEntrega}</td>
+                        </tr>
+                        
+                           <tr>
+                            <th bgcolor="#f8f8f8">Conversion Dolares:</th>
+                            <td colSpan="2">{declaracionValor.deva_ConversionDolares}</td>
+                            <th bgcolor="#f8f8f8">Numero Contrato :</th>
+                            <td colSpan="2">{declaracionValor.deva_NumeroContrato}</td>
+                            <th bgcolor="#f8f8f8">Fecha Contrato :</th>
+                            <td>{declaracionValor.deva_FechaContrato}</td>
                         </tr>
                         <tr bgcolor="#eeeeee">
                             <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DEL IMPORTADOR</th>
@@ -177,7 +201,7 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
                             <td colSpan="2">{declaracionValor.monedaNombre}</td>
                             <th bgcolor="#f8f8f8">Incoterm :</th>
                             <td colSpan="2">{declaracionValor.inco_Descripcion}</td>
-                            <th bgcolor="#f8f8f8">Version Incoterm :</th>
+                            <th bgcolor="#f8f8f8">Version Incoterm:</th>
                             <td colSpan="2">{declaracionValor.inco_Version}</td>
                         </tr>
                         <tr bgcolor="#eeeeee">
@@ -214,21 +238,74 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
                             <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>VALORES</th>
                         </tr>
                         <tr >
-                            <th bgcolor="#f8f8f8">Precio Factura:</th>
-                            <td colSpan="2">{declaracionValor.base_PrecioFactura}</td>
-                            <th bgcolor="#f8f8f8">Comision Correlaje :</th>
-                            <td colSpan="2">{declaracionValor.base_ComisionCorrelaje}</td>
-                            <th bgcolor="#f8f8f8">Gasto u Otros :</th>
-                            <td colSpan="2">{declaracionValor.base_Gasto_Otros}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Precio Factura:</th>
+                            <td colSpan="1">{declaracionValor.base_PrecioFactura}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Comision Correlaje :</th>
+                            <td colSpan="1">{declaracionValor.base_ComisionCorrelaje}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Gasto u Otros :</th>
+                            <td colSpan="1">{declaracionValor.base_Gasto_Otros}</td>
                         </tr>
                         <tr>
-                            <th bgcolor="#f8f8f8">Precio Pagado:</th>
-                            <td colSpan="2">{declaracionValor.base_Total_Ajustes_Precio_Pagado}</td>
-                            <th bgcolor="#f8f8f8">Precio Real :</th>
-                            <td colSpan="2">{declaracionValor.base_PrecioReal}</td>
-                            <th bgcolor="#f8f8f8">Valor Aduana :</th>
-                            <td colSpan="2">{declaracionValor.base_Valor_Aduana}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Precio Pagado:</th>
+                            <td colSpan="1">{declaracionValor.base_Total_Ajustes_Precio_Pagado}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Precio Real :</th>
+                            <td colSpan="1">{declaracionValor.base_PrecioReal}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Valor Aduana :</th>
+                            <td colSpan="1">{declaracionValor.base_Valor_Aduana}</td>
                         </tr>
+
+                       <tr>
+                            <th colSpan="2" bgcolor="#f8f8f8">Pagos Indirectos:</th>
+                            <td colSpan="1">{declaracionValor.base_PagosIndirectos}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Condicion de Monto :</th>
+                            <td colSpan="1">{declaracionValor.base_MontCondicion}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Monto Reversion :</th>
+                            <td colSpan="1">{declaracionValor.base_MontoReversion}</td>
+                        </tr>
+                        <tr>     
+                            <th colSpan="2" bgcolor="#f8f8f8">Gasto envase Embalaje :</th>
+                            <td colSpan="1">{declaracionValor.base_Gasto_Envase_Embalaje}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Valores materiales incorporados :</th>
+                            <td colSpan="1">{declaracionValor.base_ValoresMateriales_Incorporado}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Valor Materiales :</th>
+                            <td colSpan="1">{declaracionValor.base_Valor_Materiales_Utilizados}</td>
+                        </tr>
+                        <tr>
+                            <th colSpan="2" bgcolor="#f8f8f8">Valor Materiales Consumidos :</th>
+                            <td colSpan="1">{declaracionValor.base_Valor_Materiales_Consumidos}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Valor Ingenieria Importado :</th>
+                            <td colSpan="1">{declaracionValor.base_Valor_Ingenieria_Importado}</td>
+                             <th colSpan="2" bgcolor="#f8f8f8">Total Deducciones :</th>
+                            <td colSpan="1">{declaracionValor.base_Total_Deducciones_Precio}</td>
+                         </tr>   
+                          <tr>  
+                            <th colSpan="2" bgcolor="#f8f8f8">Valores Canones :</th>
+                            <td colSpan="1">{declaracionValor.base_Valor_Canones}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Gasto Transporte M. Importada :</th>
+                            <td colSpan="1">{declaracionValor.base_Gasto_TransporteM_Importada}</td> 
+                            <th colSpan="2" bgcolor="#f8f8f8">Gastos Carga Importada :</th>
+                            <td colSpan="1">{declaracionValor.base_Gastos_Carga_Importada}</td>
+                          </tr>
+                          <tr>
+                            <th colSpan="2" bgcolor="#f8f8f8">Costos Seguros :</th>
+                            <td colSpan="1">{declaracionValor.base_Costos_Seguro}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Gastos Asistencia Tecnica :</th>
+                            <td colSpan="1">{declaracionValor.base_Gastos_Asistencia_Tecnica}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Gastos Transporte Posterior :</th>
+                            <td colSpan="1">{declaracionValor.base_Gastos_Transporte_Posterio}</td>
+                          </tr>
+                        <tr>
+                            <th colSpan="2" bgcolor="#f8f8f8">Derechos Impuestos :</th>
+                            <td colSpan="1">{declaracionValor.base_Derechos_Impuestos}</td>
+                            <th colSpan="2" bgcolor="#f8f8f8">Intereses :</th>
+                            <td colSpan="1">{declaracionValor.base_Monto_Intereses}</td>   
+                            <th colSpan="2" bgcolor="#f8f8f8">Deducciones Legales :</th>
+                            <td colSpan="1">{declaracionValor.base_Deducciones_Legales}</td>
+                        </tr>
+                     
+
+                       
+
 
                         <tr bgcolor="#eeeeee">
                             <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>OBSERVACIONES</th>
@@ -237,7 +314,7 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
                             <th colSpan="2" bgcolor="#f8f8f8">Observaciones :</th>
                             <td colSpan="5">{declaracionValor.deva_Observaciones}</td>
                         </tr>
-
+  
                     </table>
                     <div
                         style={{
