@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Grid, Box, Typography, Card, Button, Snackbar, Alert } from '@mui/material';
+import { Grid, Box, Typography, Card, Button, Snackbar, Alert, Stack } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import img1 from 'src/assets/images/backgrounds/bgdelogin.jpg';
 import img from 'src/assets/images/logos/LOGOAZUL.svg';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,6 +14,7 @@ const TwoSteps = () => {
   const [newPassword, setNewPassword] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
+  const [isRedirecting, setIsRedirecting] = useState(false); // Nuevo estado para controlar el botón
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -46,6 +48,9 @@ const TwoSteps = () => {
       if (response.data.success) {
         setAlertConfig({ severity: 'success', message: 'Contraseña restablecida correctamente.' });
         setOpenSnackbar(true);
+
+        // Cambiar el estado del botón a "Redirigiendo..."
+        setIsRedirecting(true);
 
         setTimeout(() => navigate('/auth/login'), 1000);
       } else {
@@ -165,10 +170,21 @@ const TwoSteps = () => {
                   fullWidth
                   sx={{ mt: 3 }}
                   onClick={handleVerifyCode}
+                  disabled={isRedirecting} // Deshabilitar el botón si está redirigiendo
                 >
-                  Restablecer Contraseña
+                  {isRedirecting ? 'Redirigiendo...' : 'Restablecer Contraseña'} {/* Cambiar el texto del botón */}
                 </Button>
               </Box>
+              <Stack justifyContent="space-around" direction="row" alignItems="center" my={2}>
+                <Typography
+                  component={Link}
+                  to="/auth/login"
+                  fontWeight="500"
+                  sx={{ textDecoration: 'none', color: 'primary.main' }}
+                >
+                  Volver al Login
+                </Typography>
+              </Stack>
             </Card>
           </Box>
         </Grid>

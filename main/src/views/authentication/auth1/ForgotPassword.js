@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Grid, Box, Typography, Card, Button, Snackbar, Alert } from '@mui/material';
+import { Grid, Box, Typography, Card, Button, Snackbar, Alert, Stack } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import img1 from 'src/assets/images/backgrounds/bgdelogin.jpg';
 import img from 'src/assets/images/logos/LOGOAZUL.svg';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const ForgotPassword = () => {
   const [username, setUsername] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -31,6 +33,11 @@ const ForgotPassword = () => {
       if (response.data.success) {
         const [correo, codigo] = response.data.data.messageStatus.split(' ');
 
+        setIsRedirecting(true);
+
+        setTimeout(() => {
+        }, 2000);
+
         await axios.post(`${apiUrl}/api/Email/EnviarCodigo`, {
           correoDestino: correo,
           codigo: codigo,
@@ -41,10 +48,13 @@ const ForgotPassword = () => {
         localStorage.setItem('ForgotPasswordUser', username);
         localStorage.setItem('ForgotPasswordCode', codigo);
 
+        setTimeout(() => {
+          navigate('/auth/two-steps');
+        }, 2000);
+
         setAlertConfig({ severity: 'success', message: 'Código enviado al correo registrado.' });
         setOpenSnackbar(true);
 
-        setTimeout(() => navigate('/auth/two-steps'), 2000);
       } else {
         setAlertConfig({ severity: 'error', message: response.data.message || 'Usuario no encontrado.' });
         setOpenSnackbar(true);
@@ -151,10 +161,21 @@ const ForgotPassword = () => {
                   fullWidth
                   sx={{ mt: 3 }}
                   onClick={handleSendCode}
+                  disabled={isRedirecting}
                 >
-                  Enviar Código
+                  {isRedirecting ? 'Enviando Codigo...' : 'Enviar Código'}
                 </Button>
               </Box>
+              <Stack justifyContent="space-around" direction="row" alignItems="center" my={2}>
+                <Typography
+                  component={Link}
+                  to="/auth/login"
+                  fontWeight="500"
+                  sx={{ textDecoration: 'none', color: 'primary.main' }}
+                >
+                  Volver al Login
+                </Typography>
+              </Stack>
             </Card>
           </Box>
         </Grid>
