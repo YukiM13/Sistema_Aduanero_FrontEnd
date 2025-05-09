@@ -30,35 +30,32 @@ import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
   declaraciones_ValorViewModel: yup.object({
-    deva_AduanaIngresoId: yup.number().required('La aduana de ingreso es requerida'),
-    deva_AduanaDespachoId: yup.number().required('La aduana de despacho es requerida'),
-    deva_DeclaracionMercancia: yup.string().required('La declaración de mercancía es necesaria'),
-    deva_FechaAceptacion: yup.date().required('La fecha de aceptación es requerida'),
-    regi_Id: yup.number().required('El régimen aduanero es requerido'),
-  }),
-  declarantesImpo_ViewModel: yup.object({
-    decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerido'),
-    impo_RTN: yup.string().required('El RTN es requerido'),
-    impo_NumRegistro: yup.string().required('El número de registro es requerido'),
-    ciud_Id: yup.number()
-      .required('La ciudad es requerida')
-      .moreThan(0, 'Debe seleccionar una ciudad válida')
-  }),
-  declarantesProv_ViewModel: yup.object({
-    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida')
-  }),
-  declarantesInte_ViewModel: yup.object({
-    decl_Correo_Electronico: yup.string().required('El correo del declarante es requerido'),
-    decl_Telefono: yup.string().required('El teléfono es requerido'),
-    decl_Fax: yup.string().required('El fax es requerido'),
-    
-  }),
-  importadoresViewModel: yup.object({
-    impo_NivelComercial_Otro: yup.string().required('El nivel comercial es requerido'),
-    nico_Id: yup.number()
-      .required('El nivel comercial es requerido')
-      .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
-  }),
+      deva_AduanaIngresoId: yup.number().required('La aduana de ingreso es requerida'),
+      deva_AduanaDespachoId: yup.number().required('La aduana de despacho es requerida'),
+      deva_DeclaracionMercancia: yup.string().required('La declaración de mercancía es necesaria'),
+      deva_FechaAceptacion: yup.date().required('La fecha de aceptación es requerida'),
+      regi_Id: yup.number().required('El régimen aduanero es requerido'),
+    }),
+    declarantesImpo_ViewModel: yup.object({
+      decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerido'),
+     
+      ciud_Id: yup.number()
+        .required('La ciudad es requerida')
+        .moreThan(0, 'Debe seleccionar una ciudad válida'),
+      decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida'),
+      decl_Correo_Electronico: yup.string().required('El correo del declarante es requerido'),
+      decl_Telefono: yup.string().required('El teléfono es requerido'),
+      decl_Fax: yup.string().required('El fax es requerido'),
+    }),
+    importadoresViewModel: yup.object({
+      impo_NivelComercial_Otro: yup.string().required('El nivel comercial es requerido'),
+      nico_Id: yup.number()
+        .required('El nivel comercial es requerido')
+        .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
+       impo_RTN: yup.string().required('El RTN es requerido'),
+      impo_NumRegistro: yup.string().required('El número de registro es requerido'),
+    }),
+
 });
 
 const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
@@ -141,50 +138,53 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         } 
 
         useEffect(() => {
-            const devaIdString = localStorage.getItem('deva_Id');
+            const devaIdString = localStorage.getItem('devaId');
             if (devaIdString !== null) {
               const deva_Id = parseInt(devaIdString);
-              axios.post(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, null , {
+              axios.get(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, {
                 headers: {
                   'XApiKey': apiKey
                 }
               })
-              .then(response => {
+             .then(response => {
                 const rawData = response.data.data;
-          
+
                 const data = Array.isArray(rawData)
                   ? rawData[0]
-                  : rawData[0] !== undefined
-                  ? rawData[0]
                   : rawData;
-              
+
                 if (data && typeof data === 'object') {
-                  const camposUtiles = Object.entries(data).filter(([key, value]) => {
-                    return key !== 'deva_Id' && value !== null && value !== undefined && value !== '';
-                  });
-              
-                  const esSoloPreinsert = camposUtiles.length === 0;
-              
-                  if (esSoloPreinsert) {
-               
-                    setInitialValues({...Deva });
-                  } else {
-          
-                    Object.keys(data).forEach(key => {
-                      if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
-                        Deva[key] = data[key];
-                      }
-                    });
-              
-                    const fechaFormateada = new Date(Deva.deva_FechaAceptacion).toISOString().split('T')[0];
-                    Deva.deva_FechaAceptacion = fechaFormateada;
-              
-                    
-              
-                    setInitialValues({ ...Deva });
-                  }
-              
-                  console.log("DEVA RELLENA O VACÍA:", Deva);
+                  // Creamos una nueva estructura basada en tus esquemas Yup
+                  const mappedValues = {
+                    declaraciones_ValorViewModel: {
+                      deva_AduanaIngresoId: data.deva_AduanaIngresoId ?? '',
+                      deva_AduanaDespachoId: data.deva_AduanaDespachoId ?? '',
+                      deva_DeclaracionMercancia: data.deva_DeclaracionMercancia ?? '',
+                      deva_FechaAceptacion: data.deva_FechaAceptacion
+                        ? new Date(data.deva_FechaAceptacion).toISOString().split('T')[0]
+                        : '',
+                      regi_Id: data.regi_Id ?? '',
+
+                    },
+                    declarantesImpo_ViewModel: {
+                      decl_Nombre_Raso: data.impo_Nombre_Raso ?? '',
+                      ciud_Id: data.impo_ciudId ?? 0,
+                      decl_Direccion_Exacta: data.impo_Direccion_Exacta ?? '',
+                      decl_Correo_Electronico: data.impo_Correo_Electronico ?? '',
+                      decl_Telefono: data.impo_Telefono ?? '',
+                      decl_Fax: data.impo_Fax ?? '',
+                    },
+                    importadoresViewModel: {
+                      impo_NivelComercial_Otro: data.impo_NivelComercial_Otro ?? '',
+                      nico_Id: data.nico_Id ?? 0,
+                       impo_RTN: data.impo_RTN ?? '',
+                      impo_NumRegistro: data.impo_NumRegistro ?? '',
+                      
+                    }
+                  };
+
+                  setInitialValues(mappedValues);
+                  console.log("Valores seteados:", mappedValues);
                 }
               })
               .catch(error => {
@@ -201,36 +201,61 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 onSubmit: async(values) => {
                   try {
                     values.declaraciones_ValorViewModel.usua_UsuarioCreacion = 1;
-                    values.declarantesInte_ViewModel.usua_UsuarioCreacion = 1;
                     values.declarantesImpo_ViewModel.usua_UsuarioCreacion = 1;
                     values.importadoresViewModel.usua_UsuarioCreacion = 1;
-                    values.declarantesProv_ViewModel.usua_UsuarioCreacion = 1;
+                 
                     values.declaraciones_ValorViewModel.deva_FechaCreacion = new Date().toISOString();
                   
                     console.log("Enviando valores:", values);
                     
                     let todosExitosos = true;
-                    if(localStorage.getItem('devaId')){
+                    if(localStorage.getItem('devaId'))
+                    {
+                     
                       const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
                         headers: { 'XApiKey': apiKey },
                         'Content-Type': 'application/json'
                       });
                  
-                      if (response.data.data.messageStatus == '0') {
+                      if (response.data.data.messageStatus === '0') { 
                             todosExitosos = false;
                       
                       }
                       if (todosExitosos) {
-                        if (onGuardadoExitoso) onGuardadoExitoso();
                         localStorage.setItem('devaId', response.data.data.messageStatus)
+                        if (onGuardadoExitoso) onGuardadoExitoso();
+                        
                       } else {
                         setOpenSnackbar(true);
                       }
                     }
                     else{
+                      values.declaraciones_ValorViewModel.deva_Id = parseInt(localStorage.getItem('devaId'));
+                      values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
+                      values.declarantesImpo_ViewModel.usua_UsuarioModificacion = 1;
+                      values.importadoresViewModel.usua_UsuarioModificacion = 1;
+                  
+                      values.declaraciones_ValorViewModel.deva_FechaModificacion = new Date().toISOString();
+                    
+                      console.log("Enviando valores:", values);
+                       const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/EditarTab1`, values, {
+                        headers: { 'XApiKey': apiKey },
+                        'Content-Type': 'application/json'
+                      });
+                 
+                      if (response.data.data.messageStatus === '0') { 
+                            todosExitosos = false;
                       
+                      }
+                      if (todosExitosos) {
+                        if (onGuardadoExitoso) onGuardadoExitoso();
+                        
+                      } else {
+                        setOpenSnackbar(true);
+                      }
                     }
-                   
+                      
+                  
              
                   
                   } catch (error) {
@@ -469,14 +494,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Registro Tributario (RTN)</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesImpo_ViewModel.impo_RTN"
-                            name="declarantesImpo_ViewModel.impo_RTN"
+                            id="importadoresViewModel.impo_RTN"
+                            name="importadoresViewModel.impo_RTN"
                             type="text"
-                            value={formik.values.declarantesImpo_ViewModel?.impo_RTN}
+                            value={formik.values.importadoresViewModel?.impo_RTN}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesImpo_ViewModel?.impo_RTN && Boolean(formik.errors.declarantesImpo_ViewModel?.impo_RTN)}
-                            helperText={formik.touched.declarantesImpo_ViewModel?.impo_RTN && formik.errors.declarantesImpo_ViewModel?.impo_RTN}
+                            error={formik.touched.importadoresViewModel?.impo_RTN && Boolean(formik.errors.importadoresViewModel?.impo_RTN)}
+                            helperText={formik.touched.importadoresViewModel?.impo_RTN && formik.errors.importadoresViewModel?.impo_RTN}
                         />
                     </Grid>
 
@@ -484,14 +509,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Número de registro</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesImpo_ViewModel.impo_NumRegistro"
-                            name="declarantesImpo_ViewModel.impo_NumRegistro"
+                            id="importadoresViewModel.impo_NumRegistro"
+                            name="importadoresViewModel.impo_NumRegistro"
                             type="text"
-                            value={formik.values.declarantesImpo_ViewModel?.impo_NumRegistro}
+                            value={formik.values.importadoresViewModel?.impo_NumRegistro}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesImpo_ViewModel?.impo_NumRegistro && Boolean(formik.errors.declarantesImpo_ViewModel?.impo_NumRegistro)}
-                            helperText={formik.touched.declarantesImpo_ViewModel?.impo_NumRegistro && formik.errors.declarantesImpo_ViewModel?.impo_NumRegistro}
+                            error={formik.touched.importadoresViewModel?.impo_NumRegistro && Boolean(formik.errors.importadoresViewModel?.impo_NumRegistro)}
+                            helperText={formik.touched.importadoresViewModel?.impo_NumRegistro && formik.errors.importadoresViewModel?.impo_NumRegistro}
                         />
                     </Grid>
 
@@ -499,14 +524,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Dirección exacta</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesProv_ViewModel.decl_Direccion_Exacta"
-                            name="declarantesProv_ViewModel.decl_Direccion_Exacta"
+                            id="declarantesImpo_ViewModel.decl_Direccion_Exacta"
+                            name="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             type="text"
-                            value={formik.values.declarantesProv_ViewModel?.decl_Direccion_Exacta}
+                            value={formik.values.declarantesImpo_ViewModel?.decl_Direccion_Exacta}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesProv_ViewModel?.decl_Direccion_Exacta && Boolean(formik.errors.declarantesProv_ViewModel?.decl_Direccion_Exacta)}
-                            helperText={formik.touched.declarantesProv_ViewModel?.decl_Direccion_Exacta && formik.errors.declarantesProv_ViewModel?.decl_Direccion_Exacta}
+                            error={formik.touched.declarantesImpo_ViewModel?.decl_Direccion_Exacta && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Direccion_Exacta)}
+                            helperText={formik.touched.declarantesImpo_ViewModel?.decl_Direccion_Exacta && formik.errors.declarantesImpo_ViewModel?.decl_Direccion_Exacta}
                         />
                     </Grid>
 
@@ -544,14 +569,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Correo electrónico</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesInte_ViewModel.decl_Correo_Electronico"
-                            name="declarantesInte_ViewModel.decl_Correo_Electronico"
+                            id="declarantesImpo_ViewModel.decl_Correo_Electronico"
+                            name="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             type="text"
-                            value={formik.values.declarantesInte_ViewModel?.decl_Correo_Electronico}
+                            value={formik.values.declarantesImpo_ViewModel?.decl_Correo_Electronico}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesInte_ViewModel?.decl_Correo_Electronico && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Correo_Electronico)}
-                            helperText={formik.touched.declarantesInte_ViewModel?.decl_Correo_Electronico && formik.errors.declarantesInte_ViewModel?.decl_Correo_Electronico}
+                            error={formik.touched.declarantesImpo_ViewModel?.decl_Correo_Electronico && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Correo_Electronico)}
+                            helperText={formik.touched.declarantesImpo_ViewModel?.decl_Correo_Electronico && formik.errors.declarantesImpo_ViewModel?.decl_Correo_Electronico}
                         />
                     </Grid>
 
@@ -560,14 +585,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Teléfono</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="declarantesInte_ViewModel.decl_Telefono"
-                        name="declarantesInte_ViewModel.decl_Telefono"
+                        id="declarantesImpo_ViewModel.decl_Telefono"
+                        name="declarantesImpo_ViewModel.decl_Telefono"
                         type="text"
-                        value={formik.values.declarantesInte_ViewModel?.decl_Telefono}
+                        value={formik.values.declarantesImpo_ViewModel?.decl_Telefono}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.declarantesInte_ViewModel?.decl_Telefono && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Telefono)}
-                        helperText={formik.touched.declarantesInte_ViewModel?.decl_Telefono && formik.errors.declarantesInte_ViewModel?.decl_Telefono}
+                        error={formik.touched.declarantesImpo_ViewModel?.decl_Telefono && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Telefono)}
+                        helperText={formik.touched.declarantesImpo_ViewModel?.decl_Telefono && formik.errors.declarantesImpo_ViewModel?.decl_Telefono}
                     />
                     
             
@@ -577,14 +602,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fax</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="declarantesInte_ViewModel.decl_Fax"
-                        name="declarantesInte_ViewModel.decl_Fax"
+                        id="declarantesImpo_ViewModel.decl_Fax"
+                        name="declarantesImpo_ViewModel.decl_Fax"
                         type="text"
-                        value={formik.values.declarantesInte_ViewModel?.decl_Fax}
+                        value={formik.values.declarantesImpo_ViewModel?.decl_Fax}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.declarantesInte_ViewModel?.decl_Fax && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Fax)}
-                        helperText={formik.touched.declarantesInte_ViewModel?.decl_Fax && formik.errors.declarantesInte_ViewModel?.decl_Fax}
+                        error={formik.touched.declarantesImpo_ViewModel?.decl_Fax && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Fax)}
+                        helperText={formik.touched.declarantesImpo_ViewModel?.decl_Fax && formik.errors.declarantesImpo_ViewModel?.decl_Fax}
                     />
                     
             
@@ -656,6 +681,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
 
      
         </div>
+
     );
 });
 
