@@ -304,7 +304,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     let hasErrors = false;
     const camposrequeridos = [];
     
-    if (activeTab === 0) {b
+    if (activeTab === 0) {
       if (!formik.values.pers_Id || formik.values.pers_Id === 0) {
         camposrequeridos.push('Persona ID');
       }
@@ -414,7 +414,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     Object.keys(formik.values).forEach(field => {
       formik.setFieldTouched(field, true);
     });
-    ds
     if (!formik.values.pena_NumeroRecibo) {
       setMensajeSnackbar('El campo Número Recibo es obligatorio');
       setSeveritySnackbar('error');
