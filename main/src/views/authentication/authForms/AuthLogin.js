@@ -21,9 +21,28 @@ const validationSchema = yup.object({
   usua_Contrasenia: yup.string().required('La Contraseña es requerida'),
 });
 
-const AuthLogin = ({ title, subtitle, subtext }) => {
-  localStorage.removeItem('DataUsuario');
+const obtenerPantallasPermitidas = async (roleId, apiUrl, apiKey) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/api/RolesPorPantallas/DibujarMenu?role_Id=${roleId}`,
+      {
+        headers: { XApiKey: apiKey },
+      }
+    );
 
+    if (response.data?.success && Array.isArray(response.data?.data)) {
+      return response.data.data.map(item => item.pant_Nombre);
+    } else {
+      console.error('Error al obtener pantallas:', response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error en la petición:', error);
+    return [];
+  }
+};
+
+const AuthLogin = ({ title, subtitle, subtext }) => {
   const [alertMessage, setAlertMessage] = React.useState('');
   const [alertSeverity, setAlertSeverity] = React.useState('error');
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
@@ -37,54 +56,57 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       usua_Contrasenia: '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      axios
-        .post(`${apiUrl}/api/Usuarios/Login`, values, {
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(`${apiUrl}/api/Usuarios/Login`, values, {
           headers: { XApiKey: apiKey },
-        })
-        .then((response) => {
-          if (response.status === 200 && response.data.success) {
-            localStorage.setItem('DataUsuario', JSON.stringify(response.data.data));
-            window.location.href = '/dashboards/modern';
-          } else {
-            setAlertMessage(response.data.message || 'Error desconocido.');
-            setAlertSeverity('error');
-            setOpenSnackbar(true);
-          }
-        })
-        .catch((error) => {
-          console.error('Error al iniciar sesión:', error);
-          setAlertMessage('Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
+        });
+
+        if (response.status === 200 && response.data.success) {
+          const usuario = response.data.data;
+          localStorage.setItem('DataUsuario', JSON.stringify(usuario));
+
+          const pantallasPermitidas = await obtenerPantallasPermitidas(usuario.role_Id, apiUrl, apiKey);
+          localStorage.setItem('PantallasPermitidas', JSON.stringify(pantallasPermitidas));
+          
+          window.location.href = '/dashboards/modern';
+        } else {
+          setAlertMessage(response.data.message || 'Error desconocido.');
           setAlertSeverity('error');
           setOpenSnackbar(true);
-        });
+        }
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        setAlertMessage('Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
+        setAlertSeverity('error');
+        setOpenSnackbar(true);
+      }
     },
   });
 
   return (
     <>
-      {title ? (
+      {title && (
         <Typography fontWeight="700" variant="h3" mb={1}>
           {title}
         </Typography>
-      ) : null}
+      )}
 
       {subtext}
 
       <AuthSocialButtons title="Sign in with" />
+
       <Box>
         <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-          >
-          </Typography>
+          <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" />
         </Divider>
       </Box>
-      <Typography variant="h6" gutterBottom sx={{ color: '#003857', mt:5, textAlign:'center'  }}>
+
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: '#003857', mt: 5, textAlign: 'center' }}
+      >
         Inicia sesión para continuar
       </Typography>
 
@@ -121,7 +143,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           </Box>
         </Stack>
         <Box mt={3}>
-          <Button color='primary' variant="contained" size="large" fullWidth type="submit">
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
             Iniciar sesión
           </Button>
         </Box>
@@ -130,10 +152,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             component={Link}
             to="/auth/forgot-password"
             fontWeight="500"
-            sx={{
-              textDecoration: 'none',
-              color: 'primary.main',
-            }}
+            sx={{ textDecoration: 'none', color: 'primary.main' }}
           >
             ¿Olvidaste tu contraseña?
           </Typography>
