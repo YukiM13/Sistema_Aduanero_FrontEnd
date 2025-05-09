@@ -2,17 +2,31 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { Snackbar, Alert, Tabs, Tab, Box, Grid, MenuItem, Button } from '@mui/material';
+import { 
+  Snackbar, 
+  Alert, 
+  Tabs, 
+  Tab, 
+  Box, 
+  Grid, 
+  MenuItem, 
+  Button,
+  CircularProgress, 
+  FormControl,
+  InputLabel,
+  Select,
+  TextField, // O usa tu CustomTextField si prefieres
+  IconButton 
+} from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import CloseIcon from '@mui/icons-material/Close';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import 'src/layouts/config/StylePhone.css';
 import ReactIntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import InputMask from 'react-input-mask';
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 
 
 const validationSchema = yup.object({
@@ -44,6 +58,12 @@ const validationSchema = yup.object({
     then: () => yup.number().required('La aldea es requerida').moreThan(0, 'Requerido'),
     otherwise: () => yup.number().nullable()
   }),
+
+   coin_CiudadRepresentante: yup.number().required('La ciudad del representante es requerida').moreThan(0, 'Requerido'),
+  coin_coloniaIdRepresentante: yup.number().required('La colonia del representante es requerida').moreThan(0, 'Requerido'),
+  coin_NumeroLocaDepartRepresentante: yup.string().required('El número de local/departamento es requerido'),
+  coin_PuntoReferenciaReprentante: yup.string().required('El punto de referencia es requerido'),
+  coin_AldeaRepresentante: yup.number() // Este podría ser opcional según tu código
 });
 
 const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
@@ -63,6 +83,7 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
 
 const [snackbarType, setSnackbarType] = useState('success');
 
+
 const showSuccessMessage = (message) => {
   setSnackbarMessage(message);
   setSnackbarType('success');
@@ -76,7 +97,15 @@ const showErrorMessage = (message) => {
   setOpenSnackbar(true);
 };
   
-  const [imageInputs, setImageInputs] = useState([{ id: Date.now(), file: null, preview: null }]);
+ const [imageInputs, setImageInputs] = useState([
+  { 
+    id: Date.now(), 
+    file: null, 
+    preview: null, 
+    tipoDocumento: '', 
+    numeroReferencia: '' 
+  }
+]);
   
 
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -213,6 +242,12 @@ const showErrorMessage = (message) => {
     formik.setFieldValue('tabIndex', tabIndex);
   }, [tabIndex]);
 
+
+  const handleDocumentFieldChange = (index, field, value) => {
+  const updatedInputs = [...imageInputs];
+  updatedInputs[index][field] = value;
+  setImageInputs(updatedInputs);
+};
 
 // Guardar en 1er tap
 const handleSaveTap1 = async () => {
@@ -391,28 +426,325 @@ const handleSaveTap2 = async () => {
   }
 };
 
+// Guardar en 3er tap
+const handleSaveTap3 = async () => {
+  try {
+    console.log('Valores actuales del formulario:', formik.values);
+    
+    // Validar manualmente sin usar el esquema de validación
+    const tabErrors = {};
+    const camposRequeridos = ['coin_CiudadRepresentante', 'coin_coloniaIdRepresentante', 'coin_NumeroLocaDepartRepresentante', 'coin_PuntoReferenciaReprentante'];
+    
+    camposRequeridos.forEach(field => {
+      const value = formik.values[field];
+      if (!value || (typeof value === 'number' && value <= 0) || value === '') {
+        tabErrors[field] = 'Este campo es requerido';
+      }
+    });
+    
+    console.log('Errores encontrados:', tabErrors);
+    
+    // Si hay errores, mostrarlos y detener el proceso
+    if (Object.keys(tabErrors).length > 0) {
+      // Establecer los errores en Formik
+      formik.setErrors({...formik.errors, ...tabErrors});
+      // Tocar los campos para que se muestren los errores
+      Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
+      
+      showErrorMessage('Por favor completa todos los campos requeridos');
+      return false;
+    }
+
+    // Preparar los datos a enviar según el procedimiento almacenado
+    const tap3Data = {
+      coin_Id: formik.values.coin_Id,
+      coin_CiudadRepresentante: parseInt(formik.values.coin_CiudadRepresentante),
+      coin_AldeaRepresentante: parseInt(formik.values.coin_AldeaRepresentante) || 0,
+      coin_coloniaIdRepresentante: parseInt(formik.values.coin_coloniaIdRepresentante),
+      coin_NumeroLocaDepartRepresentante: formik.values.coin_NumeroLocaDepartRepresentante,
+      coin_PuntoReferenciaReprentante: formik.values.coin_PuntoReferenciaReprentante,
+      usua_UsuarioModificacion: 1, // O el ID del usuario actual
+      coin_FechaModificacion: new Date().toISOString()
+    };
+
+    // Enviar datos al API
+    const response = await axios.post(`${apiUrl}/api/ComercianteIndividual/InsertarTap3`, tap3Data, {
+      headers: { 'XApiKey': apiKey }
+    });
+
+    console.log('Respuesta del servidor (Tab 3):', response.data);
+
+    // Verificar si la respuesta tiene la estructura esperada
+    if (response.data && response.data.success === true) {
+      showSuccessMessage('Datos de la dirección del representante guardados correctamente');
+      return true;
+    } else if (response.data === 1) {
+      // Si el SP devuelve directamente 1 como éxito
+      showSuccessMessage('Datos de la dirección del representante guardados correctamente');
+      return true;
+    } else {
+      showErrorMessage(response.data?.message || 'Error al guardar los datos: respuesta inválida');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al guardar datos del tab 3:', error);
+    
+    let errorMessage = 'Error al guardar los datos';
+    
+    if (error.response) {
+      // Error del servidor con respuesta
+      errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+    } else if (error.request) {
+      // Error de red (no se recibió respuesta)
+      errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+    }
+    
+    showErrorMessage(errorMessage);
+    return false;
+  }
+};
+
+// Guardar en 4to tap
+const handleSaveTap4 = async () => {
+  try {
+    console.log('Valores actuales del formulario (Tap 4):', formik.values);
+    
+    // Validar manualmente sin usar el esquema de validación
+    const tabErrors = {};
+    const camposRequeridos = ['coin_TelefonoCelular', 'coin_TelefonoFijo', 'coin_CorreoElectronico'];
+    
+    camposRequeridos.forEach(field => {
+      const value = formik.values[field];
+      if (!value || value === '') {
+        tabErrors[field] = 'Este campo es requerido';
+      }
+    });
+    
+    // Validación específica para correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (formik.values.coin_CorreoElectronico && !emailRegex.test(formik.values.coin_CorreoElectronico)) {
+      tabErrors.coin_CorreoElectronico = 'Formato de correo electrónico inválido';
+    }
+    if (formik.values.coin_CorreoElectronicoAlternativo && !emailRegex.test(formik.values.coin_CorreoElectronicoAlternativo)) {
+      tabErrors.coin_CorreoElectronicoAlternativo = 'Formato de correo electrónico alternativo inválido';
+    }
+    
+    console.log('Errores encontrados (Tap 4):', tabErrors);
+    
+    // Si hay errores, mostrarlos y detener el proceso
+    if (Object.keys(tabErrors).length > 0) {
+      // Establecer los errores en Formik
+      formik.setErrors({...formik.errors, ...tabErrors});
+      // Tocar los campos para que se muestren los errores
+      Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
+      
+      showErrorMessage('Por favor completa todos los campos requeridos correctamente');
+      return false;
+    }
+
+    // Preparar los datos a enviar según el procedimiento almacenado
+    const tap4Data = {
+      coin_Id: formik.values.coin_Id,
+      coin_TelefonoCelular: formik.values.coin_TelefonoCelular,
+      coin_TelefonoFijo: formik.values.coin_TelefonoFijo,
+      coin_CorreoElectronico: formik.values.coin_CorreoElectronico,
+      coin_CorreoElectronicoAlternativo: formik.values.coin_CorreoElectronicoAlternativo || '',
+      usua_UsuarioModificacion: 1, // O el ID del usuario actual que tengan almacenado
+      coin_FechaModificacion: new Date().toISOString()
+    };
+
+    // Enviar datos al API
+    const response = await axios.post(`${apiUrl}/api/ComercianteIndividual/InsertarTap4`, tap4Data, {
+      headers: { 'XApiKey': apiKey }
+    });
+
+    console.log('Respuesta del servidor (Tab 4):', response.data);
+
+    // Verificar si la respuesta tiene la estructura esperada
+    if (response.data && response.data.success === true) {
+      showSuccessMessage('Datos de contacto guardados correctamente');
+      return true;
+    } else if (response.data === 1) {
+      // Si el SP devuelve directamente 1 como éxito
+      showSuccessMessage('Datos de contacto guardados correctamente');
+      return true;
+    } else {
+      showErrorMessage(response.data?.message || 'Error al guardar los datos: respuesta inválida');
+      return false;
+    }
+  } catch (error) {
+    console.error('Error al guardar datos del tab 4:', error);
+    
+    let errorMessage = 'Error al guardar los datos';
+    
+    if (error.response) {
+      // Error del servidor con respuesta
+      errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
+    } else if (error.request) {
+      // Error de red (no se recibió respuesta)
+      errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+    }
+    
+    showErrorMessage(errorMessage);
+    return false;
+  }
+};
 
 
   const handleImageChange = (index, event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const updatedInputs = [...imageInputs];
-        updatedInputs[index].file = file;
-        updatedInputs[index].preview = reader.result;
-        setImageInputs(updatedInputs);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const updatedInputs = [...imageInputs];
+      updatedInputs[index].file = file;
+      updatedInputs[index].preview = reader.result;
+      setImageInputs(updatedInputs);
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
-  const addImageInput = () => {
-    setImageInputs((prev) => [
-      ...prev,
-      { id: Date.now(), file: null, preview: null }
-    ]);
-  };
+ const addImageInput = () => {
+  setImageInputs(prev => [
+    ...prev,
+    { 
+      id: Date.now(), 
+      file: null, 
+      preview: null, 
+      tipoDocumento: '', 
+      numeroReferencia: '' 
+    }
+  ]);
+};
+
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const response = await fetch('/api/upload-image', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      throw new Error('Error al subir la imagen');
+    }
+    
+    const data = await response.json();
+    return data.imageUrl; // Asume que el servidor devuelve la URL de la imagen
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};
+
+// Función para guardar todos los documentos
+const handleSaveDocuments = async () => {
+  try {
+    // Validar que formik.values.coin_Id exista
+    if (!formik.values.coin_Id) {
+      showErrorMessage('No se ha encontrado el ID del comerciante. Por favor, complete los pasos anteriores.');
+      return false;
+    }
+
+    // Validar que al menos haya un documento con todos los campos completos
+    const validDocuments = imageInputs.filter(input => 
+      input.file && input.tipoDocumento && input.numeroReferencia
+    );
+    
+    if (validDocuments.length === 0) {
+      showErrorMessage('Debe agregar al menos un documento con todos los campos completos');
+      return false;
+    }
+    
+    // Mostrar loader
+    setLoading(true);
+    
+    // Primero subir las imágenes y obtener las URLs
+    const documentPromises = validDocuments.map(async (input) => {
+      try {
+        // Crear FormData para subir la imagen
+        const formData = new FormData();
+        formData.append('file', input.file);
+        
+        // Aquí implementa la lógica para subir la imagen a tu servidor
+        // Esta parte depende de tu backend y cómo manejas las subidas de archivos
+        const uploadResponse = await axios.post(`${apiUrl}/api/Upload/SubirArchivo`, formData, {
+          headers: { 
+            'XApiKey': apiKey,
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        
+        // Verificar respuesta y obtener URL
+        if (uploadResponse.data && uploadResponse.data.data) {
+          const imageUrl = uploadResponse.data.data;
+          
+          // Retornar el objeto con los datos del documento
+          return {
+            doco_TipoDocumento: input.tipoDocumento,
+            doco_Numero_O_Referencia: input.numeroReferencia,
+            doco_URLImagen: imageUrl
+          };
+        } else {
+          throw new Error('La respuesta del servidor no contiene la URL de la imagen');
+        }
+      } catch (error) {
+        console.error('Error al subir imagen:', error);
+        throw new Error(`Error al subir imagen: ${error.message || 'Error desconocido'}`);
+      }
+    });
+    
+    try {
+      // Esperar a que todas las imágenes se suban
+      const documentosData = await Promise.all(documentPromises);
+      
+      // Preparar el objeto JSON para el SP
+      const jsonData = {
+        documentos: documentosData
+      };
+      
+      // Llamar a la API para insertar los documentos
+      const response = await axios.post(
+        `${apiUrl}/api/DocumentosContratos/InsertarDocuComerciante`, 
+        {
+          coin_Id: formik.values.coin_Id,
+          doco_URLImagen: JSON.stringify(jsonData),
+          usua_UsuarioCreacion: 1, // Usar el mismo usuario que en otros tabs
+          doco_FechaCreacion: new Date().toISOString()
+        },
+        {
+          headers: { 'XApiKey': apiKey }
+        }
+      );
+      
+      // Verificar si la operación fue exitosa
+      if (response.data === 1) {
+        showSuccessMessage('Documentos guardados correctamente');
+        if (onGuardadoExitoso) onGuardadoExitoso();
+        return true;
+      } else {
+        showErrorMessage('Error al guardar los documentos: ' + (response.data || 'Respuesta inválida'));
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al guardar documentos:', error);
+      showErrorMessage(`Error al guardar documentos: ${error.message || 'Error desconocido'}`);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error general en handleSaveDocuments:', error);
+    showErrorMessage(`Error: ${error.message || 'Error desconocido'}`);
+    return false;
+  } finally {
+    setLoading(false); // Ocultar loader
+  }
+};
+
+// Actualiza tu componente para agregar el estado de isLoading si no existe:
+const [isLoading, setIsLoading] = useState(false);
 
   const removeImageInput = (indexToRemove) => {
     setImageInputs((prev) => {
@@ -427,6 +759,11 @@ const handleSaveTap2 = async () => {
     });
   };
 
+  const handleInputChange = (index, field, value) => {
+  const updatedInputs = [...imageInputs];
+  updatedInputs[index][field] = value;
+  setImageInputs(updatedInputs);
+};
   
   // Filtrar Provincias por país
   const handlePaisChange = async (e) => {
@@ -870,33 +1207,34 @@ helperText={formik.touched.colo_Id && formik.errors.colo_Id}
   </CustomTextField>
           </Grid>
 
-          <Grid item lg={6}>
-                <CustomFormLabel>Numero de Local o Apartamento</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="coin_NumeroLocalApart"
-                  name="coin_NumeroLocalApart"
-                  value={formik.values.coin_NumeroLocalApart}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_NumeroLocalApart && Boolean(formik.errors.coin_NumeroLocalApart)}
-                  helperText={formik.touched.coin_NumeroLocalApart && formik.errors.coin_NumeroLocalApart}
-                />
-              </Grid>
+         
+<Grid item lg={6}>
+  <CustomFormLabel>Numero de Local o Apartamento Representante</CustomFormLabel>
+  <CustomTextField
+    fullWidth
+    id="coin_NumeroLocalApart"
+    name="coin_NumeroLocalApart"
+    value={formik.values.coin_NumeroLocalApart}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_NumeroLocalApart && Boolean(formik.errors.coin_NumeroLocalApart)}
+    helperText={formik.touched.coin_NumeroLocalApart && formik.errors.coin_NumeroLocalApart}
+  />
+</Grid>
 
               <Grid item lg={6}>
-                <CustomFormLabel>Punto de Referencia</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="coin_NumeroLocalApart"
-                  name="coin_NumeroLocalApart"
-                  value={formik.values.coin_PuntoReferencia}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_PuntoReferencia && Boolean(formik.errors.coin_PuntoReferencia)}
-                  helperText={formik.touched.coin_PuntoReferencia && formik.errors.coin_PuntoReferencia}
-                />
-              </Grid>
+  <CustomFormLabel>Punto de Referencia</CustomFormLabel>
+  <CustomTextField
+    fullWidth
+    id="coin_PuntoReferencia"
+    name="coin_PuntoReferencia"
+    value={formik.values.coin_PuntoReferencia}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_PuntoReferencia && Boolean(formik.errors.coin_PuntoReferencia)}
+    helperText={formik.touched.coin_PuntoReferencia && formik.errors.coin_PuntoReferencia}
+  />
+</Grid>
 
   </Grid>
 )}
@@ -970,38 +1308,39 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   </CustomTextField>
           </Grid>
 
-          <Grid item lg={6}>
-                <CustomFormLabel>Numero de Local o Apartamento Representante</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="coin_NumeroLocaDepartRepresentante"
-                  name="coin_NumeroLocaDepartRepresentante"
-                  value={formik.values.coin_NumeroLocaDepartRepresentante}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_NumeroLocaDepartRepresentante && Boolean(formik.errors.coin_NumeroLocaDepartRepresentante)}
-                  helperText={formik.touched.coin_NumeroLocaDepartRepresentante && formik.errors.coin_NumeroLocaDepartRepresentante}
-                />
-              </Grid>
+          
+<Grid item lg={6}>
+  <CustomFormLabel>Numero de Local o Apartamento Representante</CustomFormLabel>
+  <CustomTextField
+    fullWidth
+    id="coin_NumeroLocaDepartRepresentante"
+    name="coin_NumeroLocaDepartRepresentante"
+    value={formik.values.coin_NumeroLocaDepartRepresentante}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_NumeroLocaDepartRepresentante && Boolean(formik.errors.coin_NumeroLocaDepartRepresentante)}
+    helperText={formik.touched.coin_NumeroLocaDepartRepresentante && formik.errors.coin_NumeroLocaDepartRepresentante}
+  />
+</Grid>
 
-              <Grid item lg={6}>
-              <Box display="flex" alignItems="center">
-                <CustomFormLabel>Punto de Referencia Representante</CustomFormLabel>
-                <Box component="span" color="red" ml={0.5}>
-                *
-                </Box>
-                </Box>
-                <CustomTextField
-                  fullWidth
-                  id="coin_PuntoReferenciaReprentante"
-                  name="coin_PuntoReferenciaReprentante"
-                  value={formik.values.coin_PuntoReferenciaReprentante}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_PuntoReferenciaReprentante && Boolean(formik.errors.coin_PuntoReferenciaReprentante)}
-                  helperText={formik.touched.coin_PuntoReferenciaReprentante && formik.errors.coin_PuntoReferenciaReprentante}
-                />
-              </Grid>
+             <Grid item lg={6}>
+  <Box display="flex" alignItems="center">
+    <CustomFormLabel>Punto de Referencia Representante</CustomFormLabel>
+    <Box component="span" color="red" ml={0.5}>
+      *
+    </Box>
+  </Box>
+  <CustomTextField
+    fullWidth
+    id="coin_PuntoReferenciaReprentante"
+    name="coin_PuntoReferenciaReprentante"
+    value={formik.values.coin_PuntoReferenciaReprentante}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_PuntoReferenciaReprentante && Boolean(formik.errors.coin_PuntoReferenciaReprentante)}
+    helperText={formik.touched.coin_PuntoReferenciaReprentante && formik.errors.coin_PuntoReferenciaReprentante}
+  />
+</Grid>
 
 
             </Grid>
@@ -1010,8 +1349,8 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
 
 {/* Contacto */}
           {tabIndex === 3 && (
-            <Grid container spacing={3}>
-           <Grid item lg={6}>
+           <Grid container spacing={3}>
+       <Grid item lg={6}>
   <Box display="flex" alignItems="center">
     <CustomFormLabel>Teléfono Celular</CustomFormLabel>
     <Box component="span" color="red" ml={0.5}>
@@ -1079,46 +1418,45 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   />
 </Grid>
 
-
                 <Grid item lg={6}>
-                <Box display="flex" alignItems="center">
-                <CustomFormLabel>Correo Electrónico</CustomFormLabel>
-                <Box component="span" color="red" ml={0.5}>
-                *
-                </Box>
-                </Box>
+  <Box display="flex" alignItems="center">
+    <CustomFormLabel>Correo Electrónico</CustomFormLabel>
+    <Box component="span" color="red" ml={0.5}>
+      *
+    </Box>
+  </Box>
 
-                <CustomTextField
-                  fullWidth
-                  id="coin_CorreoElectronico"
-                  placeholder="ejemploCorreo@ejemplo.com"
-                  name="coin_CorreoElectronico"
-                  value={formik.values.coin_CorreoElectronico}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_CorreoElectronico && Boolean(formik.errors.coin_CorreoElectronico)}
-                  helperText={formik.touched.coin_CorreoElectronico && formik.errors.coin_CorreoElectronico}
-                />
-              </Grid>
+  <CustomTextField
+    fullWidth
+    id="coin_CorreoElectronico"
+    placeholder="ejemploCorreo@ejemplo.com"
+    name="coin_CorreoElectronico"
+    value={formik.values.coin_CorreoElectronico}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_CorreoElectronico && Boolean(formik.errors.coin_CorreoElectronico)}
+    helperText={formik.touched.coin_CorreoElectronico && formik.errors.coin_CorreoElectronico}
+  />
+</Grid>
 
               <Grid item lg={6}>
-                <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
-                <CustomTextField
-                  fullWidth
-                  id="coin_CorreoElectronicoAlternativo"
-                  placeholder="ejemploCorreo@ejemplo.com"
-                  name="coin_CorreoElectronicoAlternativo"
-                  value={formik.values.coin_CorreoElectronicoAlternativo}
-                  onChange={handleNombreChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.coin_CorreoElectronicoAlternativo && Boolean(formik.errors.coin_CorreoElectronicoAlternativo)}
-                  helperText={formik.touched.coin_CorreoElectronicoAlternativo && formik.errors.coin_CorreoElectronicoAlternativo}
-                />
-              </Grid>
-              </Grid>
+  <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
+  <CustomTextField
+    fullWidth
+    id="coin_CorreoElectronicoAlternativo"
+    placeholder="ejemploCorreo@ejemplo.com"
+    name="coin_CorreoElectronicoAlternativo"
+    value={formik.values.coin_CorreoElectronicoAlternativo}
+    onChange={formik.handleChange}
+    onBlur={formik.handleBlur}
+    error={formik.touched.coin_CorreoElectronicoAlternativo && Boolean(formik.errors.coin_CorreoElectronicoAlternativo)}
+    helperText={formik.touched.coin_CorreoElectronicoAlternativo && formik.errors.coin_CorreoElectronicoAlternativo}
+  />
+</Grid>
+      </Grid>
           )}
 
-{/*Inicio Docuementos */}
+{/* Inicio Documentos */}
 {tabIndex === 4 && (
   <Grid container spacing={2}>
     {imageInputs.map((input, index) => {
@@ -1137,7 +1475,36 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
             textAlign="center"
             position="relative"
           >
-            <label style={{ cursor: 'pointer', marginBottom: '8px' }}>
+            {/* Tipo de documento */}
+            <FormControl fullWidth margin="dense" size="small">
+              <InputLabel id={`tipo-doc-${index}`}>Tipo Documento</InputLabel>
+              <Select
+                labelId={`tipo-doc-${index}`}
+                value={input.tipoDocumento || ''}
+                onChange={(e) => handleInputChange(index, 'tipoDocumento', e.target.value)}
+                label="Tipo Documento"
+                size="small"
+              >
+                <MenuItem value="">Seleccionar</MenuItem>
+                <MenuItem value="DOC1">DNI-CI</MenuItem>
+                <MenuItem value="DOC2">RNT-CI</MenuItem>
+                <MenuItem value="DOC3">DECL-CI</MenuItem>
+                {/* Añadir más opciones según necesites */}
+              </Select>
+            </FormControl>
+
+            {/* Número de referencia */}
+            <TextField
+              fullWidth
+              margin="dense"
+              size="small"
+              label="Número o Referencia"
+              value={input.numeroReferencia || ''}
+              onChange={(e) => handleInputChange(index, 'numeroReferencia', e.target.value)}
+            />
+
+            {/* Selector de imagen (esto ya lo tienes) */}
+            <label style={{ cursor: 'pointer', marginBottom: '8px', marginTop: '8px' }}>
               <input
                 type="file"
                 accept="image/*"
@@ -1175,23 +1542,22 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
               </Button>
             )}
 
-<IconButton
-  size="small"
-  onClick={() => removeImageInput(index)}
-  sx={{
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    color: 'error.main',
-    backgroundColor: 'rgba(255, 0, 0, 0.1)',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 0, 0, 0.2)',
-    },
-  }}
->
-  <CloseIcon fontSize="small" />
-</IconButton>
-
+            <IconButton
+              size="small"
+              onClick={() => removeImageInput(index)}
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                color: 'error.main',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                },
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
           </Box>
         </Grid>
       );
@@ -1215,56 +1581,66 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   
   <div>
     {tabIndex < 4 && (
-      <Button
-      variant="contained"
-      color="primary"
-      onClick={async () => {
-        let success = false;
-        
-        // Manejo diferente según el tab actual
-        if (tabIndex === 0) {
-          // Tab 1: Guardar datos personales
-          success = await handleSaveTap1();
-        } else if (tabIndex === 1) {
-          // Tab 2: Guardar dirección
-          success = await handleSaveTap2();
-        } else {
-          // Para los demás tabs (por ahora simplemente avanzar)
-          success = true;
-        }
-        
-        // Solo avanzar al siguiente tab si la operación fue exitosa
-        if (success) {
-          setTabIndex(tabIndex + 1);
-        }
-      }}
-    >
-      Siguiente
-    </Button>
+      
+<Button
+  variant="contained"
+  color="primary"
+  onClick={async () => {
+    let success = false;
+    
+    // Manejo diferente según el tab actual
+    if (tabIndex === 0) {
+      // Tab 1: Guardar datos personales
+      success = await handleSaveTap1();
+    } else if (tabIndex === 1) {
+      // Tab 2: Guardar dirección
+      success = await handleSaveTap2();
+    } else if (tabIndex === 2) {
+      // Tab 3: Guardar dirección del representante
+      success = await handleSaveTap3();
+    } else if (tabIndex === 3) {
+      // Tab 4: Guardar información de contacto
+      success = await handleSaveTap4();
+    } else {
+      // Para los demás tabs (por ahora simplemente avanzar)
+      success = true;
+    }
+    
+    // Solo avanzar al siguiente tab si la operación fue exitosa
+    if (success) {
+      setTabIndex(tabIndex + 1);
+    }
+  }}
+>
+  Siguiente
+</Button>
     
      
     )}
-    {tabIndex === 4 && (
-    <>
-     <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          startIcon={<SaveIcon />}
-        >
-          Guardar
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={onCancelar}
-          startIcon={<CancelIcon />}
-          style={{ marginLeft: '10px' }}
-        >
-          Cancelar
-        </Button>
-    </>  
-    )}
+   {tabIndex === 4 && (
+  <>
+    <Button
+      type="button" // Cambiado de "submit" a "button" para evitar envío automático del formulario
+      variant="contained"
+      color="primary"
+      startIcon={<SaveIcon />}
+      onClick={handleSaveDocuments}
+      disabled={isLoading} // Deshabilitar mientras está cargando
+    >
+      {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Guardar'}
+    </Button>
+    <Button
+      variant="outlined"
+      color="secondary"
+      onClick={onCancelar}
+      startIcon={<CancelIcon />}
+      style={{ marginLeft: '10px' }}
+      disabled={isLoading} // Deshabilitar mientras está cargando
+    >
+      Cancelar
+    </Button>
+  </>  
+)}
   </div>
 </Box>
 
