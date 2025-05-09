@@ -7,6 +7,9 @@ import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
+import emailjs from 'emailjs-com';
+import { Snackbar, Alert } from '@mui/material';
+
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
@@ -88,10 +91,108 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   const [oficinas, setOficinas] = useState([]);
   const [oficioProfesion, setOficioProfesion] = useState([]);
   const [estadoCivil, setEstadoCivil] = useState([]);
-  const [personaJuridicaId, setPersonaJuridicaId] = useState(null); // Store the returned ID
+  const [personaJuridicaId, setPersonaJuridicaId] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+const [codigoVerificacion, setCodigoVerificacion] = useState('');
+  const [codigoIngresado, setCodigoIngresado] = useState('');
+  const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
+  const [correoVerificado, setCorreoVerificado] = useState(false);
+  const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
+  const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
+  const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
+  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(false);
+  const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+  const [severitySnackbar, setSeveritySnackbar] = useState('success');
+const enviarCodigoVerificacion = (correoElectronico) => {
+    setVerificarCorreoDeshabilitado(true);
+    const generarCodigoAleatorio = () => {
+      return Math.floor(1000000 + Math.random() * 9000000).toString();
+    };
 
+    const codigo = generarCodigoAleatorio();
+    setCodigoVerificacion(codigo);
+    console.log('Código generado:', codigo);
+    console.log('Correo electrónico:', correoElectronico);
+    emailjs.send('service_5x68ulj', 'template_lwiowkp', {
+      email: correoElectronico,
+      codigo: codigo 
+    }, 'mnyq6v-rJ4eMaYUOb')
+    .then((response) => {
+      setMensajeSnackbar('Código de verificación enviado correctamente.');
+      setSeveritySnackbar('success');
+      setOpenSnackbar(true);
+      setMostrarInputCodigo(true);
+    })
+    .catch((error) => {
+      console.error('Error al enviar correo:', error);
+      setMensajeSnackbar('Error al enviar el código de verificación.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    });
+  };
+  
+  const verificarCodigo = () => {
+    if (codigoIngresado === codigoVerificacion) {
+      setCorreoVerificado(true);
+      setMensajeSnackbar('Correo electrónico verificado correctamente.');
+      setSeveritySnackbar('success');
+      setOpenSnackbar(true);
+    } else {
+      setMensajeSnackbar('El código de verificación no es válido.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCodigoChange = (e) => {
+    setCodigoIngresado(e.target.value);
+  };
+
+  const enviarCodigoVerificacionAlt = (correoElectronico) => {
+    const generarCodigoAleatorio = () => {
+      return Math.floor(1000000 + Math.random() * 9000000).toString();
+    };
+
+    const codigo = generarCodigoAleatorio();
+    setCodigoVerificacionAlt(codigo);
+    
+    emailjs.send('service_5x68ulj', 'template_lwiowkp', {
+      email: correoElectronico,
+      codigo: codigo
+    }, 'mnyq6v-rJ4eMaYUOb')
+    .then((response) => {
+      setMensajeSnackbar('Código de verificación enviado correctamente al correo alternativo.');
+      setSeveritySnackbar('success');
+      setOpenSnackbar(true);
+      setMostrarInputCodigoAlt(true);
+    })
+    .catch((error) => {
+      console.error('Error al enviar correo alternativo:', error);
+      setMensajeSnackbar('Error al enviar el código al correo alternativo.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    });
+  };
+  
+  const verificarCodigoAlt = () => {
+    if (codigoIngresadoAlt === codigoVerificacionAlt) {
+      setCorreoAlternativoVerificado(true);
+      setMensajeSnackbar('Correo alternativo verificado correctamente.');
+      setSeveritySnackbar('success');
+      setOpenSnackbar(true);
+    } else {
+      setMensajeSnackbar('El código de verificación no es válido.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCodigoChangeAlt = (e) => {
+    setCodigoIngresadoAlt(e.target.value);
+  };
   const formik = useFormik({
     initialValues: {
       pers_Nombre: '',
@@ -136,7 +237,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
       } else if (activeTab === 1) {
         try {
           const data = {
-            peju_Id: personaJuridicaId, // Use the previously returned ID
+            peju_Id: personaJuridicaId,
             ciud_Id: values.ciud_Id,
             colo_Id: values.colo_Id,
             alde_Id: values.alde_Id,
@@ -145,8 +246,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             usua_UsuarioCreacion: 1,
             peju_FechaCreacion: new Date().toISOString(),
           };
-          console.log('Data to be sent:', data); // Log the data being sent
-          console.log(activeTab); // Log the active tab
+          console.log('Data to be sent:', data);
+          console.log(activeTab);
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
             headers: { 'XApiKey': apiKey },
           });
@@ -169,15 +270,14 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap3`, data, {
             headers: { 'XApiKey': apiKey },
           });
-          alert('Ubicación del representante guardada correctamente.');
-          setActiveTab((prev) => prev + 1); // Move to the next tab
+          setActiveTab((prev) => prev + 1);
         } catch (error) {
           console.error('Error al insertar la ubicación del representante:', error);
         }
       } else if (activeTab === 3) {
         try {
           const data = {
-            peju_Id: personaJuridicaId, // Use the previously returned ID
+            peju_Id: personaJuridicaId,
             peju_TelefonoEmpresa: values.peju_TelefonoEmpresa,
             peju_TelefonoFijoRepresentanteLegal: values.peju_TelefonoFijoRepresentanteLegal,
             peju_TelefonoRepresentanteLegal: values.peju_TelefonoRepresentanteLegal,
@@ -189,8 +289,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap4`, data, {
             headers: { 'XApiKey': apiKey },
           });
-          alert('Contacto guardado correctamente.');
-          if (onGuardar) onGuardar(); // Call the callback if provided
+          if (onGuardar) onGuardar();
         } catch (error) {
           console.error('Error al insertar el contacto:', error);
         }
@@ -574,26 +673,65 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 error={formik.touched.peju_CorreoElectronico && Boolean(formik.errors.peju_CorreoElectronico)}
                 helperText={formik.touched.peju_CorreoElectronico && formik.errors.peju_CorreoElectronico}
               />
-              <Button variant="contained" sx={{ mt: 1 }} startIcon={<CheckCircleRounded />}>
+              <Button variant="contained" sx={{ mt: 1 }} startIcon={<CheckCircleRounded />}  onClick={() => enviarCodigoVerificacion(formik.values.peju_CorreoElectronico)}>
                 Verificar correo
               </Button>
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_CorreoElectronicoAlternativo"
-                name="peju_CorreoElectronicoAlternativo"
-                value={formik.values.peju_CorreoElectronicoAlternativo}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)}
-                helperText={formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo}
-              />
-              <Button variant="contained" sx={{ mt: 1 }} startIcon={<CheckCircleRounded />}>
-                Verificar correo
-              </Button>
-            </Grid>
+    <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
+    <CustomTextField
+      fullWidth
+      id="peju_CorreoElectronicoAlternativo"
+      name="peju_CorreoElectronicoAlternativo"
+      value={formik.values.peju_CorreoElectronicoAlternativo}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)}
+      helperText={formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo}
+      disabled={correoAlternativoVerificado}
+      sx={correoAlternativoVerificado ? { bgcolor: '#f5f5f5' } : {}}
+    />
+    {formik.values.peju_CorreoElectronicoAlternativo && (
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+        <Button 
+          variant="contained" 
+          type="button" 
+          startIcon={<CheckCircleRounded />}
+          onClick={() => enviarCodigoVerificacionAlt(formik.values.peju_CorreoElectronicoAlternativo)}
+          disabled={correoAlternativoVerificado}
+        >
+          {correoAlternativoVerificado ? "Correo Alternativo Verificado" : "Verificar correo alternativo"}
+        </Button>
+        {correoAlternativoVerificado && (
+          <CheckCircleRounded color="success" />
+        )}
+      </Box>
+    )}
+    {mostrarInputCodigoAlt && !correoAlternativoVerificado && (
+      <Box sx={{ mt: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <CustomTextField
+              fullWidth
+              label="Código de verificación"
+              value={codigoIngresadoAlt}
+              onChange={handleCodigoChangeAlt}
+              placeholder="Ingrese el código"
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Button 
+              variant="contained" 
+              onClick={verificarCodigoAlt}
+              sx={{ height: '100%' }}
+            >
+              Verificar
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+    )}
+  </Grid>
           </Grid>
         );
       default:
