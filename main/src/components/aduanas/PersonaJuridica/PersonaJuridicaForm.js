@@ -232,7 +232,6 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             headers: { 'XApiKey': apiKey },
           });
           const returnedId = response.data;
-          alert(`Persona Jurídica creada con ID: ${returnedId}`);
           setPersonaJuridicaId(returnedId);
           setActiveTab((prev) => prev + 1); 
         } catch (error) {
@@ -335,8 +334,14 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   };
 
   const handleNext = () => {
-    if (formik.isValid) {
+    if (formik.isValid) { 
       formik.handleSubmit();
+    }
+    else{
+      setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return;
     }
   };
 
