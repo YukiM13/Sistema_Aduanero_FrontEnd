@@ -374,10 +374,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     if (hasErrors || camposrequeridos.length > 0) {
       let message = 'Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.';
       
-      if (camposrequeridos.length > 0) {
-        message = `Los siguientes campos son obligatorios: ${camposrequeridos.join(', ')}`;
-      }
-      
       setMensajeSnackbar(message);
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
