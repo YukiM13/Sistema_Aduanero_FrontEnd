@@ -335,29 +335,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   };
 
   const handleNext = () => {
-    formik.validateForm().then(errors => {
-      const hasErrors = Object.keys(errors).length > 0;
-      
-      // Check which required fields are missing
-      const camposrequeridos = [];
-      Object.keys(errors).forEach(field => {
-        if (errors[field]?.includes('requerido')) {
-          camposrequeridos.push(field);
-        }
-      });
-      
-      if (hasErrors || camposrequeridos.length > 0) {
-        let message = 'Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.';
-        
-        setMensajeSnackbar(message);
-        setSeveritySnackbar('error');
-        setOpenSnackbar(true);
-        return false;
-      }
-      
-      // If validation passes, proceed with form submission
+    if (formik.isValid) {
       formik.handleSubmit();
-    });
+    }
   };
 
   const handleBack = () => {
@@ -801,48 +781,50 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   };
 
   return (
+
     <form onSubmit={formik.handleSubmit}>
-      <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
-      <ParentCard>
-        <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
-        </StyledTabs>
-        <Box sx={{ width: '100%', mb: 2 }}>
-          <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
-        </Box>
-        <Box mt={3}>{renderTabContent()}</Box>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          {activeTab > 0 && (
-            <Grid item>
-              <Button variant="contained" onClick={handleBack}>Volver</Button>
-            </Grid>
-          )}
-          {activeTab < 3 ? (
-            <Grid item>
-              <Button variant="contained" onClick={handleNext}>Siguiente</Button>
-            </Grid>
-          ) : (
-            <Grid item>
-              <Button variant="contained" type="submit" startIcon={<SaveIcon />}>Guardar</Button>
-            </Grid>
-          )}
-        </Grid>
-        
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={() => setOpenSnackbar(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
-            {mensajeSnackbar}
-          </Alert>
-        </Snackbar>
-      </ParentCard>
+           <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
+            <ParentCard >
+      <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
+      </StyledTabs>
+      <Box sx={{ width: '100%', mb: 2 }}>
+        <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
+      </Box>
+      <Box mt={3}>{renderTabContent()}</Box>
+      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
+        {activeTab > 0 && (
+          <Grid item>
+            <Button variant="contained" onClick={handleBack}>Volver</Button>
+          </Grid>
+        )}
+        {activeTab < 3 ? (
+          <Grid item>
+            <Button variant="contained" onClick={handleNext}>Siguiente</Button>
+          </Grid>
+        ) : (
+          <Grid item>
+            <Button variant="contained" type="submit" startIcon={<SaveIcon />}>Guardar</Button>
+          </Grid>
+        )}
+      </Grid>
+      
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
+          {mensajeSnackbar}
+        </Alert>
+      </Snackbar>
+          </ParentCard>
     </form>
+
   );
 };
 
