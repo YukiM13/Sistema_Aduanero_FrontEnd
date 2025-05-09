@@ -122,17 +122,76 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
       if (activeTab === 0) {
         try {
           values.usua_UsuarioCreacion = 1;
-          values.peju_FechaCreacion= new Date().toISOString();
+          values.peju_FechaCreacion = new Date().toISOString();
           const response = await axios.post(`${apiUrl}/api/PersonaJuridica/Insertar`, values, {
-            headers: { 'XApiKey': apiKey }, 
+            headers: { 'XApiKey': apiKey },
           });
-          const returnedId = response.data; 
+          const returnedId = response.data;
           alert(`Persona Jurídica creada con ID: ${returnedId}`);
-          console.log('Persona Jurídica creada:', response.data);
           setPersonaJuridicaId(returnedId); // Save the returned ID for subsequent steps
           setActiveTab((prev) => prev + 1); // Move to the next tab
         } catch (error) {
           console.error('Error al insertar los datos de Persona Jurídica:', error);
+        }
+      } else if (activeTab === 1) {
+        try {
+          const data = {
+            peju_Id: personaJuridicaId, // Use the previously returned ID
+            ciud_Id: values.ciud_Id,
+            colo_Id: values.colo_Id,
+            alde_Id: values.alde_Id,
+            peju_PuntoReferencia: values.peju_PuntoReferencia,
+            peju_NumeroLocalApart: values.peju_NumeroLocalApart,
+            usua_UsuarioCreacion: 1,
+            peju_FechaCreacion: new Date().toISOString(),
+          };
+          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
+            headers: { 'XApiKey': apiKey },
+          });
+          alert('Ubicación de la empresa guardada correctamente.');
+          setActiveTab((prev) => prev + 1); // Move to the next tab
+        } catch (error) {
+          console.error('Error al insertar la ubicación de la empresa:', error);
+        }
+      } else if (activeTab === 2) {
+        try {
+          const data = {
+            peju_Id: personaJuridicaId, // Use the previously returned ID
+            peju_CiudadIdRepresentante: values.peju_CiudadIdRepresentante,
+            peju_ColoniaRepresentante: values.peju_ColoniaRepresentante,
+            peju_AldeaIdRepresentante: values.peju_AldeaIdRepresentante,
+            peju_NumeroLocalRepresentante: values.peju_NumeroLocalRepresentante,
+            peju_PuntoReferenciaRepresentante: values.peju_PuntoReferenciaRepresentante,
+            usua_UsuarioCreacion: 1,
+            peju_FechaCreacion: new Date().toISOString(),
+          };
+          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap3`, data, {
+            headers: { 'XApiKey': apiKey },
+          });
+          alert('Ubicación del representante guardada correctamente.');
+          setActiveTab((prev) => prev + 1); // Move to the next tab
+        } catch (error) {
+          console.error('Error al insertar la ubicación del representante:', error);
+        }
+      } else if (activeTab === 3) {
+        try {
+          const data = {
+            peju_Id: personaJuridicaId, // Use the previously returned ID
+            peju_TelefonoEmpresa: values.peju_TelefonoEmpresa,
+            peju_TelefonoFijoRepresentanteLegal: values.peju_TelefonoFijoRepresentanteLegal,
+            peju_TelefonoRepresentanteLegal: values.peju_TelefonoRepresentanteLegal,
+            peju_CorreoElectronico: values.peju_CorreoElectronico,
+            peju_CorreoElectronicoAlternativo: values.peju_CorreoElectronicoAlternativo,
+            usua_UsuarioCreacion: 1,
+            peju_FechaCreacion: new Date().toISOString(),
+          };
+          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap4`, data, {
+            headers: { 'XApiKey': apiKey },
+          });
+          alert('Contacto guardado correctamente.');
+          if (onGuardar) onGuardar(); // Call the callback if provided
+        } catch (error) {
+          console.error('Error al insertar el contacto:', error);
         }
       }
     },
