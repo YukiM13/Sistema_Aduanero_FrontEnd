@@ -32,7 +32,7 @@ export const Profile = () => {
           </Box>
           <Box sx={{ ml: 'auto' }}>
             <Tooltip title="Logout" placement="top">
-              <IconButton color="primary" component={Link} to="/auth/login" aria-label="logout" size="small">
+              <IconButton color="primary" component={Link} to="/auth/login" aria-label="logout" size="small" onClick={() => localStorage.clear()}>
                 <IconPower size="15" />
               </IconButton>
             </Tooltip>

@@ -105,6 +105,9 @@ const Profile = () => {
                 color="primary"
                 component={Link}
                 fullWidth
+                onClick={() => {
+                  localStorage.clear();
+                }}
               >
                 Cerrar sesión
               </Button>
