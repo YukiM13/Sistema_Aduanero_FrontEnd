@@ -29,25 +29,40 @@ import { Stack } from '@mui/system';
 import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
-    prov_decl_Nombre_Raso: yup.string().required('La razón social del proveedor es requerida'),
-    prov_decl_Direccion_Exacta: yup.string().required('La dirección es requerida'),
-    prov_ciud_Id: yup.string().required('La declaración de mercancia es necesaria'),
-    prov_decl_Correo_Electronico: yup.date().required('El destino de aduana es requerido'),
-    prov_decl_Telefono: yup.number().required('El regimen aduanero es requerido'),
-    prov_decl_Fax: yup.string().required('El nombre o razón social es requerido'),
-    prov_RTN: yup.string().required('El RTN es requerido'),
-    coco_Id: yup.string().required('El número de registro es requerido'),
-    pvde_Condicion_Otra: yup.string().required('La dirección exacta es requerida'),
-    ciud_inte_decl_Nombre_Rasod: yup.number().required('El pais de destino es requerido').moreThan(0,'La ciudad es requerida'),
-    inte_decl_Direccion_Exacta: yup.string().required('El correo del declarante es requerido'),
-    inte_ciud_Id: yup.string().required('El teléfono de desembarque es requerido'),
-    inte_decl_Correo_Electronico: yup.string().required('El fax es requerido'),
-    inte_decl_Telefono: yup.string().required('El fax es requerido'),
-    inte_decl_Fax: yup.string().required('El fax es requerido'),
-    inte_RTN: yup.string().required('El fax es requerido'),
-    tite_Id: yup.string().required('El fax es requerido'),
-    inte_Tipo_Otro: yup.string().required('El fax es requerido')
+  declarantesInte_ViewModel: yup.object({
+    decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerido'),
+    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida'),
+    ciud_Id: yup.number()
+    .required('La ciudad es requerida')
+    .moreThan(0, 'Debe seleccionar una ciudad válida'),
+    decl_Correo_Electronico: yup.string().required('El correo electrónico es requerido'),
+    decl_Telefono: yup.string().required('El teléfono es requerido'),
+    decl_Fax: yup.string().required('El fax es requerido'),
+    decl_NumeroIdentificacion: yup.string().required('El RTN es requerido'),
     
+  }),
+  declarantesProv_ViewModel: yup.object({
+    decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerida'),
+    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida'),
+    ciud_Id: yup.number()
+    .required('La ciudad es requerida')
+    .moreThan(0, 'Debe seleccionar una ciudad válida'),
+    decl_Telefono: yup.string().required('El teléfono es requerido'),
+    decl_Fax: yup.string().required('El fax es requerido'),
+    decl_Correo_Electronico: yup.string().required('El correo electrónico es requerido'),
+    decl_NumeroIdentificacion: yup.string().required('El RTN del proveedor es requerido'),
+  }),
+  proveedoresDeclaracionViewModel: yup.object({
+    coco_Id: yup.number().required('La condición comercial es requerida'),
+    pvde_Condicion_Otra: yup.string().required('La condición es requerida')
+    
+  }),
+  intermediarioViewModel: yup.object({
+    inte_Tipo_Otro: yup.string().required('El nivel comercial es requerido'),
+    tite_Id: yup.number()
+      .required('El nivel comercial es requerido')
+      .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
+  }),
 });
 
 const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
