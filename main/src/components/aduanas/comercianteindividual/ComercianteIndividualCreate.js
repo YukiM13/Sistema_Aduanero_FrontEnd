@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 import { 
   Snackbar, 
   Alert, 
@@ -80,6 +82,9 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [provincias, setProvincias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+  
 
 const [snackbarType, setSnackbarType] = useState('success');
 
@@ -298,14 +303,17 @@ const handleSaveTap1 = async () => {
     // Verificar si la respuesta tiene la estructura esperada
     if (response.data && response.data.success === true) {
       // Extraer ID del comerciante individual del messageStatus (formato: "29.162")
-      let coinId = null;
-      if (response.data.data && response.data.data.messageStatus) {
-        // Extraer el número antes del punto
-        const idParts = response.data.data.messageStatus.split('.');
-        if (idParts.length > 0) {
-          coinId = parseInt(idParts[0]);
-        }
-      }
+     let coinId = null;
+if (response.data.data && response.data.data.messageStatus) {
+  const idParts = response.data.data.messageStatus.split('.');
+  if (idParts.length > 1) {
+    coinId = parseInt(idParts[0]);
+    const persId = parseInt(idParts[1]);
+    formik.setFieldValue('coin_Id', coinId);
+    formik.setFieldValue('pers_Id', persId);
+  }
+}
+
 
       if (coinId) {
         // Guardar el ID para usarlo en los siguientes tabs
@@ -590,6 +598,57 @@ const handleSaveTap4 = async () => {
   }
 };
 
+const eliminarComerciante = async () => {
+  const { coin_Id, pers_Id } = formik.values;
+
+  if (!coin_Id || !pers_Id) {
+    showErrorMessage('No se encontró el ID del comerciante o de la persona.');
+    return;
+  }
+
+  const confirmar = window.confirm('¿Estás seguro que deseas cancelar y eliminar este registro?');
+  if (!confirmar) return;
+
+  try {
+    const response = await axios.post(
+      `${apiUrl}/api/ComercianteIndividual/Eliminar?coin_Id=${coin_Id}&pers_Id=${pers_Id}`,
+      null,
+      { headers: { 'XApiKey': apiKey } }
+    );
+
+    console.log('Respuesta del servidor al eliminar:', response.data);
+
+    const success = response.data?.success === true && response.data?.data?.messageStatus === "1";
+
+    if (success) {
+      showSuccessMessage('Comerciante eliminado exitosamente.');
+
+      // Reiniciar formulario y estado
+      formik.resetForm();
+      setTabIndex(0);
+      setImageInputs([
+        {
+          id: Date.now(),
+          file: null,
+          preview: null,
+          tipoDocumento: '',
+          numeroReferencia: ''
+        }
+      ]);
+    } else {
+      const mensaje = response.data?.message || 'Respuesta inesperada del servidor.';
+      showErrorMessage('Error al eliminar: ' + mensaje);
+    }
+  } catch (error) {
+    console.error('Error en la eliminación:', error);
+    showErrorMessage('Error inesperado al eliminar comerciante.');
+  }
+};
+
+
+
+
+
 
   const handleImageChange = (index, event) => {
   const file = event.target.files[0];
@@ -643,105 +702,105 @@ const uploadImage = async (file) => {
 // Función para guardar todos los documentos
 const handleSaveDocuments = async () => {
   try {
-    // Validar que formik.values.coin_Id exista
     if (!formik.values.coin_Id) {
       showErrorMessage('No se ha encontrado el ID del comerciante. Por favor, complete los pasos anteriores.');
       return false;
     }
 
-    // Validar que al menos haya un documento con todos los campos completos
-    const validDocuments = imageInputs.filter(input => 
+    const validDocuments = imageInputs.filter(input =>
       input.file && input.tipoDocumento && input.numeroReferencia
     );
-    
+
     if (validDocuments.length === 0) {
       showErrorMessage('Debe agregar al menos un documento con todos los campos completos');
       return false;
     }
-    
-    // Mostrar loader
-    setLoading(true);
-    
-    // Primero subir las imágenes y obtener las URLs
+
+    setIsLoading(true);
+
     const documentPromises = validDocuments.map(async (input) => {
       try {
-        // Crear FormData para subir la imagen
         const formData = new FormData();
         formData.append('file', input.file);
-        
-        // Aquí implementa la lógica para subir la imagen a tu servidor
-        // Esta parte depende de tu backend y cómo manejas las subidas de archivos
-        const uploadResponse = await axios.post(`${apiUrl}/api/Upload/SubirArchivo`, formData, {
-          headers: { 
-            'XApiKey': apiKey,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        
-        // Verificar respuesta y obtener URL
-        if (uploadResponse.data && uploadResponse.data.data) {
-          const imageUrl = uploadResponse.data.data;
-          
-          // Retornar el objeto con los datos del documento
-          return {
-            doco_TipoDocumento: input.tipoDocumento,
-            doco_Numero_O_Referencia: input.numeroReferencia,
-            doco_URLImagen: imageUrl
-          };
-        } else {
-          throw new Error('La respuesta del servidor no contiene la URL de la imagen');
-        }
+        formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+
+        const cloudinaryResponse = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          formData
+        );
+
+        const imageUrl = cloudinaryResponse.data.secure_url;
+
+        return {
+          doco_TipoDocumento: input.tipoDocumento,
+          doco_Numero_O_Referencia: input.numeroReferencia,
+          doco_URLImagen: imageUrl
+        };
       } catch (error) {
-        console.error('Error al subir imagen:', error);
-        throw new Error(`Error al subir imagen: ${error.message || 'Error desconocido'}`);
+        console.error('Error al subir imagen a Cloudinary:', error);
+        throw new Error('Error al subir imagen a Cloudinary');
       }
     });
-    
-    try {
-      // Esperar a que todas las imágenes se suban
-      const documentosData = await Promise.all(documentPromises);
-      
-      // Preparar el objeto JSON para el SP
-      const jsonData = {
-        documentos: documentosData
-      };
-      
-      // Llamar a la API para insertar los documentos
-      const response = await axios.post(
-        `${apiUrl}/api/DocumentosContratos/InsertarDocuComerciante`, 
-        {
-          coin_Id: formik.values.coin_Id,
-          doco_URLImagen: JSON.stringify(jsonData),
-          usua_UsuarioCreacion: 1, // Usar el mismo usuario que en otros tabs
-          doco_FechaCreacion: new Date().toISOString()
-        },
-        {
-          headers: { 'XApiKey': apiKey }
-        }
-      );
-      
-      // Verificar si la operación fue exitosa
-      if (response.data === 1) {
-        showSuccessMessage('Documentos guardados correctamente');
-        if (onGuardadoExitoso) onGuardadoExitoso();
-        return true;
-      } else {
-        showErrorMessage('Error al guardar los documentos: ' + (response.data || 'Respuesta inválida'));
-        return false;
+
+    const documentosData = await Promise.all(documentPromises);
+
+    const jsonData = {
+      documentos: documentosData
+    };
+
+    const response = await axios.post(
+      `${apiUrl}/api/DocumentosContratos/InsertarDocuComerciante`,
+      {
+        coin_Id: formik.values.coin_Id,
+        doco_URLImagen: JSON.stringify(jsonData),
+        usua_UsuarioCreacion: 1,
+        doco_FechaCreacion: new Date().toISOString()
+      },
+      {
+        headers: { 'XApiKey': apiKey }
       }
-    } catch (error) {
-      console.error('Error al guardar documentos:', error);
-      showErrorMessage(`Error al guardar documentos: ${error.message || 'Error desconocido'}`);
-      return false;
-    }
+    );
+
+    // Manejo robusto de la respuesta
+   if (response.data === 1) {
+  showSuccessMessage('¡Comerciante registrado con éxito! Puede agregar otro o salir.');
+} else if (typeof response.data === 'object' && response.data?.MessageStatus) {
+  if (response.data.MessageStatus === '1') {
+    showSuccessMessage('¡Comerciante registrado con éxito! Puede agregar otro o salir.');
+  } else {
+    showSuccessMessage('Documentos guardados (algunos con advertencias del servidor)');
+  }
+} else if (typeof response.data === 'object' && response.data?.Resultado) {
+  showSuccessMessage('Documentos guardados (con advertencias SQL)');
+}
+
+    // ✅ Reiniciar formulario y volver al tab 0
+    formik.resetForm();
+    setTabIndex(0);
+    setImageInputs([
+      {
+        id: Date.now(),
+        file: null,
+        preview: null,
+        tipoDocumento: '',
+        numeroReferencia: ''
+      }
+    ]);
+
+   setOpenDialog(true);
+return true;
+
   } catch (error) {
-    console.error('Error general en handleSaveDocuments:', error);
-    showErrorMessage(`Error: ${error.message || 'Error desconocido'}`);
+    console.error('Error en handleSaveDocuments:', error);
+    showErrorMessage(`Error al guardar documentos: ${error.message || 'Error desconocido'}`);
     return false;
   } finally {
-    setLoading(false); // Ocultar loader
+    setIsLoading(false);
   }
 };
+
+
+
 
 // Actualiza tu componente para agregar el estado de isLoading si no existe:
 const [isLoading, setIsLoading] = useState(false);
@@ -1479,18 +1538,19 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
             <FormControl fullWidth margin="dense" size="small">
               <InputLabel id={`tipo-doc-${index}`}>Tipo Documento</InputLabel>
               <Select
-                labelId={`tipo-doc-${index}`}
-                value={input.tipoDocumento || ''}
-                onChange={(e) => handleInputChange(index, 'tipoDocumento', e.target.value)}
-                label="Tipo Documento"
-                size="small"
-              >
-                <MenuItem value="">Seleccionar</MenuItem>
-                <MenuItem value="DOC1">DNI-CI</MenuItem>
-                <MenuItem value="DOC2">RNT-CI</MenuItem>
-                <MenuItem value="DOC3">DECL-CI</MenuItem>
-                {/* Añadir más opciones según necesites */}
-              </Select>
+  labelId={`tipo-doc-${index}`}
+  value={input.tipoDocumento || ''}
+  onChange={(e) => handleInputChange(index, 'tipoDocumento', e.target.value)}
+  label="Tipo Documento"
+  size="small"
+>
+  <MenuItem value="">Seleccionar</MenuItem>
+  <MenuItem value="DNI-CI">DNI CI Comerciante Individual</MenuItem>
+  <MenuItem value="RTN-CI">RTN CI Comerciante Individual</MenuItem>
+  <MenuItem value="DNI-CI">Declaración CI</MenuItem>
+
+</Select>
+
             </FormControl>
 
             {/* Número de referencia */}
@@ -1629,16 +1689,14 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     >
       {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Guardar'}
     </Button>
-    <Button
-      variant="outlined"
-      color="secondary"
-      onClick={onCancelar}
-      startIcon={<CancelIcon />}
-      style={{ marginLeft: '10px' }}
-      disabled={isLoading} // Deshabilitar mientras está cargando
-    >
-      Cancelar
-    </Button>
+   <Button 
+  variant="outlined" 
+  color="error" 
+  onClick={eliminarComerciante}
+>
+  Cancelar
+</Button>
+
   </>  
 )}
   </div>
@@ -1667,6 +1725,37 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
       </form>
 
       
+<Dialog
+  open={openDialog}
+  onClose={() => setOpenDialog(false)}
+>
+  <DialogTitle>¿Deseas ingresar otro comerciante?</DialogTitle>
+  <DialogActions>
+    <Button onClick={() => {
+      setOpenDialog(false);
+      formik.resetForm();
+      setTabIndex(0);
+      setImageInputs([{
+        id: Date.now(),
+        file: null,
+        preview: null,
+        tipoDocumento: '',
+        numeroReferencia: ''
+      }]);
+    }} color="primary" variant="contained">
+      Sí, agregar otro
+    </Button>
+    <Button onClick={() => {
+  setOpenDialog(false);
+  navigate('/dashboards/ecommerce');
+}} color="secondary" variant="outlined">
+  No, salir
+</Button>
+
+  </DialogActions>
+</Dialog>
+
+
     </div>
   );
 };
