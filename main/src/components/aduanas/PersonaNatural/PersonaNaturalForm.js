@@ -4,6 +4,8 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../shared/ParentCard';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PersonaNatural from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
@@ -763,6 +765,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+                       <Breadcrumb title="Persona Natural" description="this is Form Wizard page" />
+                  <ParentCard >
       <StyledTabs 
         value={activeTab} 
         centered
@@ -839,6 +843,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
           </Grid>
         )}
       </Grid>
+      </ParentCard>
+      
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}

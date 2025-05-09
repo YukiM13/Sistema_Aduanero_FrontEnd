@@ -3,6 +3,8 @@ import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography } from '@mui
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../shared/ParentCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
@@ -779,7 +781,10 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   };
 
   return (
+
     <form onSubmit={formik.handleSubmit}>
+           <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
+            <ParentCard >
       <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
         <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
         <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
@@ -817,7 +822,9 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           {mensajeSnackbar}
         </Alert>
       </Snackbar>
+          </ParentCard>
     </form>
+
   );
 };
 
