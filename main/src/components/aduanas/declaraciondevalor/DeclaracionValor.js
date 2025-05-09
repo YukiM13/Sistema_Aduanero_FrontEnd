@@ -118,6 +118,7 @@ const DeclaracionValor = () => {
   };
 
   const handleReset = () => {
+    localStorage.removeItem('devaId');
     setActiveStep(0);
   };
   return (

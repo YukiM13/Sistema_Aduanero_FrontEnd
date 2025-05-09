@@ -10,16 +10,18 @@ import {
   MenuItem,
   Typography,
   FormControlLabel,
-    Autocomplete,
-    TextField,
+  FormControl,
+  FormHelperText,
+  Autocomplete,
+  TextField,
   Alert,
   Snackbar,
   InputAdornment, IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -33,10 +35,12 @@ import { useTheme } from '@mui/material/styles';
 
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
+import CustomRadio from 'src/components/forms/theme-elements/CustomRadio';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import ParentCard from 'src/components/shared/ParentCard';
 import { Stack } from '@mui/system';
 import Deva from 'src/models/devaModel';
+import { truncate } from 'lodash';
 
 const validationSchema = yup.object({
   declaraciones_ValorViewModel: yup.object({
@@ -69,6 +73,7 @@ const validationSchema = yup.object({
     .required('La moneda es requerida')
     .moreThan(0, 'Debe seleccionar una moneda válida'),
     mone_Otra: yup.string().required('La moneda es requerida'),
+    deva_PagoEfectuado: yup.boolean().required('El pago efectuado es requerido'),
     deva_ConversionDolares: yup.number().required('La conversión de dolares es requerida')
   })
 });
@@ -236,39 +241,44 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               })
               .then(response => {
                 const rawData = response.data.data;
-          
+
                 const data = Array.isArray(rawData)
                   ? rawData[0]
-                  : rawData[0] !== undefined
-                  ? rawData[0]
                   : rawData;
-              
+
                 if (data && typeof data === 'object') {
-                  const camposUtiles = Object.entries(data).filter(([key, value]) => {
-                    return key !== 'deva_Id' && value !== null && value !== undefined && value !== '';
-                  });
-              
-                  const esSoloPreinsert = camposUtiles.length === 0;
-              
-                  if (esSoloPreinsert) {
-               
-                    setInitialValues({...Deva });
-                  } else {
-          
-                    Object.keys(data).forEach(key => {
-                      if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
-                        Deva[key] = data[key];
-                      }
-                    });
-              
-                    setInitialValues({ ...Deva });
-                  }
-              
-                  console.log("DEVA RELLENA O VACÍA:", Deva);
+                  // Creamos una nueva estructura basada en tus esquemas Yup
+                  const mappedValues = {
+                    declaraciones_ValorViewModel: {
+                      pais_EntregaId: data.pais_EntregaId ?? 0,
+                      pais_ExportacionId: data.pais_ExportacionId ?? 0,
+                      deva_LugarEntrega: data.deva_LugarEntrega ?? '',
+                      inco_Id: data.deva_DeclaracionMercancia ?? 0,
+                      inco_Version: data.inco_Version ?? '',
+                      deva_NumeroContrato: data.deva_NumeroContrato ?? '',
+                      deva_FechaContrato: data.deva_FechaContrato
+                      ? new Date(data.deva_FechaContrato).toISOString().split('T')[0]
+                      : '',
+                      foen_Id: data.foen_Id ?? 0,
+                      deva_FormaEnvioOtra: data.deva_FormaEnvioOtra ?? '',
+                      fopa_Id: data.fopa_Id ?? 0,
+                      deva_FormaPagoOtra: data.deva_FormaPagoOtra ?? '',
+                      emba_Id: data.emba_Id ?? 0,
+                      deva_FechaExportacion: data.deva_FechaExportacion
+                      ? new Date(data.deva_FechaExportacion).toISOString().split('T')[0]
+                      : '',
+                      mone_Id: data.mone_Id ?? 0,
+                      mone_Otra: data.mone_Otra ?? '',
+                      deva_ConversionDolares: data.deva_ConversionDolares ?? 0
+                    }
+                  };
+
+                  setInitialValues(mappedValues);
+                  console.log("Valores seteados:", mappedValues);
                 }
               })
               .catch(error => {
-                console.error('Error al obtener los datos del país:', error);
+                console.error('Error al obtener los datos de la deva:', error);
               });
             }
           }, []); 
@@ -286,6 +296,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   
                     console.log("Enviando valores:", values);
                     values.declaraciones_ValorViewModel.deva_Id =  parseInt(localStorage.getItem('devaId'));
+                    if(values.declaraciones_ValorViewModel.deva_PagoEfectuado == 'true'){
+                      values.declaraciones_ValorViewModel.deva_PagoEfectuado = true;
+                    }
+                    else{
+                      values.declaraciones_ValorViewModel.deva_PagoEfectuado = false;
+                    }
                     
                     let todosExitosos = true;
                     console.log("Valores finales que se están enviando:", values);
@@ -315,6 +331,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               useImperativeHandle(ref, () => ({
                 async submit() {
                   const errors = await formik.validateForm();
+                  console.log("Valor actual de pais_EntregaId:", formik.values.declaraciones_ValorViewModel.pais_EntregaId, "tipo:", typeof formik.values.declaraciones_ValorViewModel.pais_EntregaId);
+                  console.log("Valores actuales del formulario:", formik.values);
+                  console.log(errors);
                   if (Object.keys(errors).length === 0) {
                     try {
                       await formik.submitForm(); // Espera a que termine el submit real
@@ -354,8 +373,8 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   formik.values.declaraciones_ValorViewModel.pais_ExportacionId) {
                   const paisEntrega = paises.find(p => p.pais_Id === formik.values.declaraciones_ValorViewModel.pais_EntregaId);
                   const paisExportacion = paises.find(p => p.pais_Id === formik.values.declaraciones_ValorViewModel.pais_ExportacionId);
-                  setSelectedPaisEntrega(paisEntrega || null );
-                  setSelectedPaisExportacion(paisExportacion || null);
+                  setSelectedPaisEntrega(paisEntrega);
+                  setSelectedPaisExportacion(paisExportacion);
                 }
                 if (incoterms.length > 0 &&
                   formik.values.declaraciones_ValorViewModel &&
@@ -394,13 +413,13 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 formaPago,
                 embarque,
                 monedas,
-                formik.values.declaraciones_ValorViewModel.pais_EntregaId,
-                formik.values.declaraciones_ValorViewModel.pais_ExportacionId,
-                formik.values.declaraciones_ValorViewModel.inco_Id,
-                formik.values.declaraciones_ValorViewModel.foen_Id,
-                formik.values.declaraciones_ValorViewModel.fopa_Id,
-                formik.values.declaraciones_ValorViewModel.emba_Id,
-                formik.values.declaraciones_ValorViewModel.mone_Id,
+                formik.values.declaraciones_ValorViewModel?.pais_EntregaId,
+                formik.values.declaraciones_ValorViewModel?.pais_ExportacionId,
+                formik.values.declaraciones_ValorViewModel?.inco_Id,
+                formik.values.declaraciones_ValorViewModel?.foen_Id,
+                formik.values.declaraciones_ValorViewModel?.fopa_Id,
+                formik.values.declaraciones_ValorViewModel?.emba_Id,
+                formik.values.declaraciones_ValorViewModel?.mone_Id,
               ]);
         
     return (
@@ -437,7 +456,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedPaisEntrega(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('declaraciones_ValorViewModel.pais_EntregaId', newValue.pais_EntregaId);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_EntregaId', newValue.pais_Id);
                                 } else {
                                 formik.setFieldValue('declaraciones_ValorViewModel.pais_EntregaId', 0);
                                 
@@ -453,7 +472,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.declaraciones_ValorViewModel?.pais_EntregaId	}
+                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.pais_Id	}
                         />
                     </Grid>
 
@@ -573,19 +592,40 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
-                        <CustomFormLabel>Pago efectuado</CustomFormLabel>
-                        <CustomTextField
-                            fullWidth
-                            id="declaraciones_ValorViewModel.deva_PagoEfectuado"
-                            name="declaraciones_ValorViewModel.deva_PagoEfectuado"
-                            type="text"
-                            value={formik.values.declaraciones_ValorViewModel?.deva_PagoEfectuado}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado)}
-                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado}
-                        />
-                    </Grid>
+                   
+                   <CustomFormLabel>Pago efectuado</CustomFormLabel>
+             
+                   <FormControl
+                sx={{ width: '100%' }}
+                error={formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado)}
+                >
+                <Box>
+                    <FormControlLabel
+                    checked={formik.values.declaraciones_ValorViewModel?.deva_PagoEfectuado === 'true'}
+                    value="true"
+                    label="Sí"
+                    name="declaraciones_ValorViewModel.deva_PagoEfectuado"
+                    control={<CustomRadio />}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    />
+                    <FormControlLabel
+                    checked={formik.values.declaraciones_ValorViewModel?.deva_PagoEfectuado === 'false'}
+                    value="false"
+                    label="No"
+                    name="declaraciones_ValorViewModel.deva_PagoEfectuado"
+                    control={<CustomRadio />}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    />
+                </Box>
+
+                {formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado && (
+                    <FormHelperText>{formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado}</FormHelperText>
+                )}
+                </FormControl>
+             
+                </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Forma de pago</CustomFormLabel>
@@ -665,7 +705,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedPaisExportacion(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('declaraciones_ValorViewModel.pais_ExportacionId', newValue.pais_ExportacionId);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_ExportacionId', newValue.pais_Id);
                                 } else {
                                 formik.setFieldValue('declaraciones_ValorViewModel.pais_ExportacionId', 0);
                                 

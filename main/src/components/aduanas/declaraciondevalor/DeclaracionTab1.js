@@ -230,7 +230,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       }
                     }
                     else{
-                      values.declaraciones_ValorViewModel.deva_Id = parseInt(localStorage.getItem('devaId'));
+                      values.declaraciones_ValorViewModel.deva_Id = Number(localStorage.getItem('devaId'));
                       values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
                       values.declarantesImpo_ViewModel.usua_UsuarioModificacion = 1;
                       values.importadoresViewModel.usua_UsuarioModificacion = 1;
@@ -254,10 +254,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         setOpenSnackbar(true);
                       }
                     }
-                      
-                  
-             
-                  
                   } catch (error) {
                     console.error('Error al insertar:', error);
                   }
