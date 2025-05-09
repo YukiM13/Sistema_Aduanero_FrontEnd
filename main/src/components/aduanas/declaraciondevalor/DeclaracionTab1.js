@@ -209,32 +209,24 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   
                     console.log("Enviando valores:", values);
                     
-                    let todosExitosos = true;
-                    if(localStorage.getItem('devaId')){
-                      const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
-                        headers: { 'XApiKey': apiKey },
-                        'Content-Type': 'application/json'
-                      });
-                 
-                      if (response.data.data.messageStatus == '0') {
-                            todosExitosos = false;
-                      
-                      }
-                      if (todosExitosos) {
-                        if (onGuardadoExitoso) onGuardadoExitoso();
-                        localStorage.setItem('devaId', response.data.data.messageStatus)
-                      } else {
-                        setOpenSnackbar(true);
-                      }
+                    const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
+                      headers: { 'XApiKey': apiKey },
+                      'Content-Type': 'application/json'
+                    });
+                
+                    const resultado = response.data.data;
+                
+                    if (resultado.messageStatus && resultado.messageStatus !== '0') {
+                      localStorage.setItem('devaId', resultado.messageStatus);
+                      console.log("devaId guardado en localStorage:", resultado.messageStatus);
+                
+                      if (onGuardadoExitoso) onGuardadoExitoso(); // Notifica al padre
+                    } else {
+                      setOpenSnackbar(true);
                     }
-                    else{
-                      
-                    }
-                   
-             
-                  
                   } catch (error) {
                     console.error('Error al insertar:', error);
+                    setOpenSnackbar(true);
                   }
                 },
               });
