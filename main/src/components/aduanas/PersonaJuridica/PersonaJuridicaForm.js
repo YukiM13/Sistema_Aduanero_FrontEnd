@@ -94,7 +94,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
   const [personaJuridicaId, setPersonaJuridicaId] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-const [codigoVerificacion, setCodigoVerificacion] = useState('');
+  const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
   const [correoVerificado, setCorreoVerificado] = useState(false);
@@ -106,7 +106,8 @@ const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
-const enviarCodigoVerificacion = (correoElectronico) => {
+  
+  const enviarCodigoVerificacion = (correoElectronico) => {
     setVerificarCorreoDeshabilitado(true);
     const generarCodigoAleatorio = () => {
       return Math.floor(1000000 + Math.random() * 9000000).toString();
@@ -193,6 +194,7 @@ const enviarCodigoVerificacion = (correoElectronico) => {
   const handleCodigoChangeAlt = (e) => {
     setCodigoIngresadoAlt(e.target.value);
   };
+  
   const formik = useFormik({
     initialValues: {
       pers_Nombre: '',
@@ -672,66 +674,103 @@ const enviarCodigoVerificacion = (correoElectronico) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_CorreoElectronico && Boolean(formik.errors.peju_CorreoElectronico)}
                 helperText={formik.touched.peju_CorreoElectronico && formik.errors.peju_CorreoElectronico}
+                disabled={correoVerificado}
+                sx={correoVerificado ? { bgcolor: '#f5f5f5' } : {}}
               />
-              <Button variant="contained" sx={{ mt: 1 }} startIcon={<CheckCircleRounded />}  onClick={() => enviarCodigoVerificacion(formik.values.peju_CorreoElectronico)}>
-                Verificar correo
-              </Button>
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                <Button 
+                  variant="contained" 
+                  type="button" 
+                  startIcon={<CheckCircleRounded />}
+                  onClick={() => enviarCodigoVerificacion(formik.values.peju_CorreoElectronico)}
+                  disabled={correoVerificado || verificarCorreoDeshabilitado}
+                >
+                  {correoVerificado ? "Correo Verificado" : "Verificar correo"}
+                </Button>
+                {correoVerificado && (
+                  <CheckCircleRounded color="success" />
+                )}
+              </Box>
+              {mostrarInputCodigo && !correoVerificado && (
+                <Box sx={{ mt: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                      <CustomTextField
+                        fullWidth
+                        label="Código de verificación"
+                        value={codigoIngresado}
+                        onChange={handleCodigoChange}
+                        placeholder="Ingrese el código"
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Button 
+                        variant="contained" 
+                        onClick={verificarCodigo}
+                        sx={{ height: '100%' }}
+                      >
+                        Verificar
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-    <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
-    <CustomTextField
-      fullWidth
-      id="peju_CorreoElectronicoAlternativo"
-      name="peju_CorreoElectronicoAlternativo"
-      value={formik.values.peju_CorreoElectronicoAlternativo}
-      onChange={formik.handleChange}
-      onBlur={formik.handleBlur}
-      error={formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)}
-      helperText={formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo}
-      disabled={correoAlternativoVerificado}
-      sx={correoAlternativoVerificado ? { bgcolor: '#f5f5f5' } : {}}
-    />
-    {formik.values.peju_CorreoElectronicoAlternativo && (
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
-        <Button 
-          variant="contained" 
-          type="button" 
-          startIcon={<CheckCircleRounded />}
-          onClick={() => enviarCodigoVerificacionAlt(formik.values.peju_CorreoElectronicoAlternativo)}
-          disabled={correoAlternativoVerificado}
-        >
-          {correoAlternativoVerificado ? "Correo Alternativo Verificado" : "Verificar correo alternativo"}
-        </Button>
-        {correoAlternativoVerificado && (
-          <CheckCircleRounded color="success" />
-        )}
-      </Box>
-    )}
-    {mostrarInputCodigoAlt && !correoAlternativoVerificado && (
-      <Box sx={{ mt: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={8}>
-            <CustomTextField
-              fullWidth
-              label="Código de verificación"
-              value={codigoIngresadoAlt}
-              onChange={handleCodigoChangeAlt}
-              placeholder="Ingrese el código"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Button 
-              variant="contained" 
-              onClick={verificarCodigoAlt}
-              sx={{ height: '100%' }}
-            >
-              Verificar
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-    )}
-  </Grid>
+              <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="peju_CorreoElectronicoAlternativo"
+                name="peju_CorreoElectronicoAlternativo"
+                value={formik.values.peju_CorreoElectronicoAlternativo}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)}
+                helperText={formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo}
+                disabled={correoAlternativoVerificado}
+                sx={correoAlternativoVerificado ? { bgcolor: '#f5f5f5' } : {}}
+              />
+              {formik.values.peju_CorreoElectronicoAlternativo && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                  <Button 
+                    variant="contained" 
+                    type="button" 
+                    startIcon={<CheckCircleRounded />}
+                    onClick={() => enviarCodigoVerificacionAlt(formik.values.peju_CorreoElectronicoAlternativo)}
+                    disabled={correoAlternativoVerificado}
+                  >
+                    {correoAlternativoVerificado ? "Correo Alternativo Verificado" : "Verificar correo alternativo"}
+                  </Button>
+                  {correoAlternativoVerificado && (
+                    <CheckCircleRounded color="success" />
+                  )}
+                </Box>
+              )}
+              {mostrarInputCodigoAlt && !correoAlternativoVerificado && (
+                <Box sx={{ mt: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                      <CustomTextField
+                        fullWidth
+                        label="Código de verificación"
+                        value={codigoIngresadoAlt}
+                        onChange={handleCodigoChangeAlt}
+                        placeholder="Ingrese el código"
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Button 
+                        variant="contained" 
+                        onClick={verificarCodigoAlt}
+                        sx={{ height: '100%' }}
+                      >
+                        Verificar
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+            </Grid>
           </Grid>
         );
       default:
@@ -767,6 +806,17 @@ const enviarCodigoVerificacion = (correoElectronico) => {
           </Grid>
         )}
       </Grid>
+      
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
+          {mensajeSnackbar}
+        </Alert>
+      </Snackbar>
     </form>
   );
 };
