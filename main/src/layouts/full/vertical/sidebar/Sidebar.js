@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { useMediaQuery, Box, Drawer, useTheme } from '@mui/material';
 import SidebarItems from './SidebarItems';
 import Logo from '../../shared/logo/Logo';
@@ -5,8 +6,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { hoverSidebar, toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
 import { Profile } from './SidebarProfile/Profile';
+import { generarMenu } from './MenuItems';
 
 const Sidebar = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const customizer = useSelector((state) => state.customizer);
   const dispatch = useDispatch();
@@ -26,6 +31,20 @@ const Sidebar = () => {
     dispatch(hoverSidebar(false));
   };
 
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const items = await generarMenu();
+      setMenuItems(items);
+      setLoading(false);
+    };
+
+    fetchMenu();
+  }, []);
+
+  if (loading) {
+    return <div>Cargando menú...</div>;
+  }
+
   if (lgUp) {
     return (
       <Box
@@ -37,9 +56,6 @@ const Sidebar = () => {
           }),
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
         <Drawer
           anchor="left"
           open
@@ -56,28 +72,19 @@ const Sidebar = () => {
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
           <Box
             sx={{
               backgroundColor: '#003859',
               color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
               height: '100%',
-              borderRadius:'0px 20px 20px 0px'
+              borderRadius: '0px 20px 20px 0px',
             }}
           >
-            {/* ------------------------------------------- */}
-            {/* Logo */}
-            {/* ------------------------------------------- */}
             <Box px={3}>
               <Logo />
             </Box>
             <Scrollbar sx={{ height: 'calc(100% - 190px)' }}>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
-              <SidebarItems />
+              <SidebarItems items={menuItems} />
             </Scrollbar>
             <Profile />
           </Box>
@@ -105,16 +112,10 @@ const Sidebar = () => {
         },
       }}
     >
-      {/* ------------------------------------------- */}
-      {/* Logo */}
-      {/* ------------------------------------------- */}
       <Box px={2}>
         <Logo />
       </Box>
-      {/* ------------------------------------------- */}
-      {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
-      <SidebarItems />
+      <SidebarItems items={menuItems} />
     </Drawer>
   );
 };

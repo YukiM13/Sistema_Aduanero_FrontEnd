@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   Box,
   Typography,
@@ -43,6 +43,13 @@ const obtenerPantallasPermitidas = async (roleId, apiUrl, apiKey) => {
 };
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
+  useEffect(() => {
+    const localStorageData = localStorage.getItem('DataUsuario');
+    if (localStorageData) {
+      window.location.href = '/dashboards/modern';
+    }
+  }, []);
+
   const [alertMessage, setAlertMessage] = React.useState('');
   const [alertSeverity, setAlertSeverity] = React.useState('error');
   const [openSnackbar, setOpenSnackbar] = React.useState(false);

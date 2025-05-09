@@ -55,11 +55,11 @@ const Menuitems = [
     id: uniqueId(),
     title: 'eCommerce',
     icon: IconShoppingCart,
-    href: '/dashboards/ecommerce',
+    href: '/dashboards/modern',
   }
 ];
 
-const generarMenu = async () => {
+export const generarMenu = async () => {
   let nombresDePantalla = [];
   
   if (!esAdmin && roleId) {
@@ -324,16 +324,6 @@ const generarMenu = async () => {
       });
     }
     
-    if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
-      aduana.children.push({
-        id: uniqueId(),
-        title: 'Ducas',
-        icon: IconPoint,
-        href: '/ducas/list',
-        chipColor: 'secondary',
-      });
-    }
-    
     if (esAdmin || nombresDePantalla.includes('Formas de Pago')) {
       aduana.children.push({
         id: uniqueId(),
@@ -358,16 +348,6 @@ const generarMenu = async () => {
         title: 'Niveles Comerciales',
         icon: IconPoint,
         href: '/niveles-comerciales/list',
-        chipColor: 'secondary',
-      });
-    }
-    
-    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
-      aduana.children.push({
-        id: uniqueId(),
-        title: 'Declaracion de Valor',
-        icon: IconPoint,
-        href: '/declaracionValor/list',
         chipColor: 'secondary',
       });
     }
@@ -489,18 +469,48 @@ const generarMenu = async () => {
         href: '/ordenCompra',
         chipColor: 'secondary',
       });
-      
-      produccion.children.push({
-        id: uniqueId(),
-        title: 'Orden Compra Detalle',
-        icon: IconPoint,
-        href: '/ordenCompraDetalle/list',
-        chipColor: 'secondary',
-      });
     }
     
     if (produccion.children.length > 0) {
       Menuitems.push(produccion);
+    }
+  }
+
+  if (esAdmin || 
+    nombresDePantalla.some(nombre => [
+      'Impresion Declaracion de Valor', 'Impresion Duca'
+    ].includes(nombre))) {
+    
+    const impresion = {
+      id: uniqueId(),
+      title: 'Reportes',
+      icon: IconFileText,
+      href: '/apps/blog/',
+      children: []
+    };
+
+    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Declaracion de Valor',
+        icon: IconPoint,
+        href: '/declaracionValor/list',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Duca',
+        icon: IconPoint,
+        href: '/ducas/list',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (impresion.children.length > 0) {
+      Menuitems.push(impresion);
     }
   }
   
@@ -514,10 +524,10 @@ const generarMenu = async () => {
     });
   }
   
-  if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
+  if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
-      title: 'Duca',
+      title: 'Ducas',
       icon: IconFileCertificate,
       href: '/duca',
       chipColor: 'secondary',
@@ -526,7 +536,5 @@ const generarMenu = async () => {
   
   return Menuitems;
 };
-
-generarMenu();
 
 export default Menuitems;
