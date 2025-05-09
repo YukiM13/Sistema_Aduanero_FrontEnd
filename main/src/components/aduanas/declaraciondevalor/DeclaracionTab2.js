@@ -135,7 +135,7 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             const devaIdString = localStorage.getItem('devaId');
             if (devaIdString !== null) {
               const deva_Id = parseInt(devaIdString);
-              axios.get(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, null , {
+              axios.get(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, {
                 headers: {
                   'XApiKey': apiKey
                 }
@@ -167,8 +167,6 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       }
                     });
               
-                    const fechaFormateada = new Date(Deva.declaraciones_ValorViewModel.deva_FechaAceptacion).toISOString().split('T')[0];
-                    Deva.declaraciones_ValorViewModel.deva_FechaAceptacion = fechaFormateada;
               
                     
               

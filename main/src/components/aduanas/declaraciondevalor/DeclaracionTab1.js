@@ -42,16 +42,11 @@ const validationSchema = yup.object({
     impo_NumRegistro: yup.string().required('El número de registro es requerido'),
     ciud_Id: yup.number()
       .required('La ciudad es requerida')
-      .moreThan(0, 'Debe seleccionar una ciudad válida')
-  }),
-  declarantesProv_ViewModel: yup.object({
-    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida')
-  }),
-  declarantesInte_ViewModel: yup.object({
+      .moreThan(0, 'Debe seleccionar una ciudad válida'),
+    decl_Direccion_Exacta: yup.string().required('La dirección exacta es requerida'),
     decl_Correo_Electronico: yup.string().required('El correo del declarante es requerido'),
     decl_Telefono: yup.string().required('El teléfono es requerido'),
     decl_Fax: yup.string().required('El fax es requerido'),
-    
   }),
   importadoresViewModel: yup.object({
     impo_NivelComercial_Otro: yup.string().required('El nivel comercial es requerido'),
@@ -491,14 +486,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Dirección exacta</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesProv_ViewModel.decl_Direccion_Exacta"
-                            name="declarantesProv_ViewModel.decl_Direccion_Exacta"
+                            id="declarantesImpo_ViewModel.decl_Direccion_Exacta"
+                            name="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             type="text"
-                            value={formik.values.declarantesProv_ViewModel?.decl_Direccion_Exacta}
+                            value={formik.values.declarantesImpo_ViewModel?.decl_Direccion_Exacta}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesProv_ViewModel?.decl_Direccion_Exacta && Boolean(formik.errors.declarantesProv_ViewModel?.decl_Direccion_Exacta)}
-                            helperText={formik.touched.declarantesProv_ViewModel?.decl_Direccion_Exacta && formik.errors.declarantesProv_ViewModel?.decl_Direccion_Exacta}
+                            error={formik.touched.declarantesImpo_ViewModel?.decl_Direccion_Exacta && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Direccion_Exacta)}
+                            helperText={formik.touched.declarantesImpo_ViewModel?.decl_Direccion_Exacta && formik.errors.declarantesImpo_ViewModel?.decl_Direccion_Exacta}
                         />
                     </Grid>
 
@@ -536,14 +531,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Correo electrónico</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="declarantesInte_ViewModel.decl_Correo_Electronico"
-                            name="declarantesInte_ViewModel.decl_Correo_Electronico"
+                            id="declarantesImpo_ViewModel.decl_Correo_Electronico"
+                            name="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             type="text"
-                            value={formik.values.declarantesInte_ViewModel?.decl_Correo_Electronico}
+                            value={formik.values.declarantesImpo_ViewModel?.decl_Correo_Electronico}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.declarantesInte_ViewModel?.decl_Correo_Electronico && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Correo_Electronico)}
-                            helperText={formik.touched.declarantesInte_ViewModel?.decl_Correo_Electronico && formik.errors.declarantesInte_ViewModel?.decl_Correo_Electronico}
+                            error={formik.touched.declarantesImpo_ViewModel?.decl_Correo_Electronico && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Correo_Electronico)}
+                            helperText={formik.touched.declarantesImpo_ViewModel?.decl_Correo_Electronico && formik.errors.declarantesImpo_ViewModel?.decl_Correo_Electronico}
                         />
                     </Grid>
 
@@ -552,14 +547,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Teléfono</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="declarantesInte_ViewModel.decl_Telefono"
-                        name="declarantesInte_ViewModel.decl_Telefono"
+                        id="declarantesImpo_ViewModel.decl_Telefono"
+                        name="declarantesImpo_ViewModel.decl_Telefono"
                         type="text"
-                        value={formik.values.declarantesInte_ViewModel?.decl_Telefono}
+                        value={formik.values.declarantesImpo_ViewModel?.decl_Telefono}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.declarantesInte_ViewModel?.decl_Telefono && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Telefono)}
-                        helperText={formik.touched.declarantesInte_ViewModel?.decl_Telefono && formik.errors.declarantesInte_ViewModel?.decl_Telefono}
+                        error={formik.touched.declarantesImpo_ViewModel?.decl_Telefono && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Telefono)}
+                        helperText={formik.touched.declarantesImpo_ViewModel?.decl_Telefono && formik.errors.declarantesImpo_ViewModel?.decl_Telefono}
                     />
                     
             
@@ -569,14 +564,14 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fax</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="declarantesInte_ViewModel.decl_Fax"
-                        name="declarantesInte_ViewModel.decl_Fax"
+                        id="declarantesImpo_ViewModel.decl_Fax"
+                        name="declarantesImpo_ViewModel.decl_Fax"
                         type="text"
-                        value={formik.values.declarantesInte_ViewModel?.decl_Fax}
+                        value={formik.values.declarantesImpo_ViewModel?.decl_Fax}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.declarantesInte_ViewModel?.decl_Fax && Boolean(formik.errors.declarantesInte_ViewModel?.decl_Fax)}
-                        helperText={formik.touched.declarantesInte_ViewModel?.decl_Fax && formik.errors.declarantesInte_ViewModel?.decl_Fax}
+                        error={formik.touched.declarantesImpo_ViewModel?.decl_Fax && Boolean(formik.errors.declarantesImpo_ViewModel?.decl_Fax)}
+                        helperText={formik.touched.declarantesImpo_ViewModel?.decl_Fax && formik.errors.declarantesImpo_ViewModel?.decl_Fax}
                     />
                     
             

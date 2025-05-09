@@ -39,30 +39,44 @@ import { Stack } from '@mui/system';
 import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
-    prov_decl_Nombre_Raso: yup.number().required('La aduana de ingreso es requerida'),
-    prov_decl_Direccion_Exacta: yup.number().required('El La aduana de despacho es requerida'),
-    prov_ciud_Id: yup.string().required('La declaración de mercancia es necesaria'),
-    prov_decl_Correo_Electronico: yup.date().required('El destino de aduana es requerido'),
-    prov_decl_Telefono: yup.number().required('El regimen aduanero es requerido'),
-    prov_decl_Fax: yup.string().required('El nombre o razón social es requerido'),
-    prov_RTN: yup.string().required('El RTN es requerido'),
-    coco_Id: yup.string().required('El número de registro es requerido'),
-    pvde_Condicion_Otra: yup.string().required('La dirección exacta es requerida'),
-    ciud_inte_decl_Nombre_Rasod: yup.number().required('El pais de destino es requerido').moreThan(0,'La ciudad es requerida'),
-    inte_decl_Direccion_Exacta: yup.string().required('El correo del declarante es requerido'),
-    inte_ciud_Id: yup.string().required('El teléfono de desembarque es requerido'),
-    inte_decl_Correo_Electronico: yup.string().required('El fax es requerido'),
-    inte_decl_Telefono: yup.string().required('El fax es requerido'),
-    inte_decl_Fax: yup.string().required('El fax es requerido'),
-    inte_RTN: yup.string().required('El fax es requerido'),
-    tite_Id: yup.string().required('El fax es requerido'),
-    inte_Tipo_Otro: yup.string().required('El fax es requerido')
-    
+  declaraciones_ValorViewModel: yup.object({
+    deva_LugarEntrega: yup.string().required('El lugar de entrega es requerido'),
+    pais_EntregaId: yup.number()
+    .required('El pais es requerido')
+    .moreThan(0, 'Debe seleccionar una ciudad válida'),
+    inco_Id: yup.number()
+    .required('El incoterm es requerido')
+    .moreThan(0, 'Debe seleccionar un incoterm válida'),
+    inco_Version: yup.string().required('La versión de incoterm es requerida'),
+    deva_NumeroContrato: yup.string().required('El número de contrato es requerido'),
+    deva_FechaContrato: yup.date().required('La fecha de contrato es requerida'),
+    foen_Id: yup.number()
+    .required('La forma de envio es requerida')
+    .moreThan(0, 'Debe seleccionar una forma de envio válida'),
+    deva_FormaEnvioOtra: yup.string().required('El otra forma de envio es requerida'),
+    fopa_Id: yup.number()
+    .required('La forma de envio es requerida')
+    .moreThan(0, 'Debe seleccionar una forma de envio válida'),
+    deva_FormaPagoOtra: yup.string().required('El otra forma de pago es requerida'),
+    emba_Id: yup.number()
+    .required('El embarque es requerido')
+    .moreThan(0, 'Debe seleccionar una forma de envio válida'),
+    pais_ExportacionId: yup.number()
+    .required('El pais de exportacion es requerido')
+    .moreThan(0, 'Debe seleccionar un pais de exportación válido'),
+    deva_FechaExportacion: yup.date().required('La fecha de exportación es requerida'),
+    mone_Id: yup.number()
+    .required('La moneda es requerida')
+    .moreThan(0, 'Debe seleccionar una moneda válida'),
+    mone_Otra: yup.string().required('La moneda es requerida'),
+    deva_ConversionDolares: yup.number().required('La conversión de dolares es requerida')
+  })
 });
 
 const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [initialValues, setInitialValues] = useState(Deva);
         const [open, setOpen] = React.useState(false);
+        const [openSnackbar, setOpenSnackbar] = useState(false); 
         const theme = useTheme();
         const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
         const [codigoEmbarque, setCodigoEmbarque] = useState('');
@@ -117,27 +131,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         const [formasEnvio, setFormasEnvio] = useState([]);
         const [selectedFormaEnvio, setSelectedFormaEnvio] = useState(null);
 
-        //Ciudades
-        const [ciudades, setCiudades] = useState([]);
-        const [selectedCiudad, setSelectedCiudad] = useState(null);
-
-        //Aduanas
-        const [aduanas, setAduanas] = useState([]);
-        
-        //Regimen Aduanero
-        const [regimenAduanero, setRegimenAduanero] = useState([]);
-        const [selectedRegimenAduanero, setSelectedRegimenAduanero] = useState(null);
-
-        //Niveles Comerciales
-        const [nivelComercial, setNivelComercial] = useState(null);
-        const [selectedNivelComercial, setSelectedNivelComercial] = useState(null);
-
         //Paises
-        const [paises, setPaises] = useState(false);
+        const [paises, setPaises] = useState([]);
         const [selectedPaisEntrega, setSelectedPaisEntrega] = useState(null);
         const [selectedPaisExportacion, setSelectedPaisExportacion] = useState(null);
 
-        const [openSnackbar, setOpenSnackbar] = useState(false); 
+        
 
         // Variables de entorno
         const apiUrl = process.env.REACT_APP_API_URL;
@@ -208,71 +207,6 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           });
       } 
 
-        //Endpoint para obtener las ciudades
-        const listarCiudades = () => {
-        axios.get(`${apiUrl}/api/Ciudades/Listar`, {
-            headers: {
-                'XApiKey': apiKey
-            }
-        })
-        .then(response => {
-            setCiudades(response.data.data);
-            console.log("Ciudades encontradas con éxito", response.data.data)
-        })
-        .catch(error => {
-            console.error('Error al obtener los datos de las ciudades:', error);
-        });
-        } 
-
-
-        //Endpoint para obtener las aduanas
-        const listarAduanas = () => {
-          axios.get(`${apiUrl}/api/Aduanas/Listar`, {
-              headers: {
-                  'XApiKey': apiKey
-              }
-        
-          })
-          .then(response => {
-            setAduanas(response.data.data);
-              console.log("React E10", response.data.data)
-          })
-          .catch(error => {
-              console.error('Error al obtener los datos del país:', error);
-          });
-        } 
-
-        //Endpoint para obtener los regimenes aduaneros
-        const listarRegimenAduaneros = () => {
-        axios.get(`${apiUrl}/api/RegimenAduanero/Listar`, {
-            headers: {
-                'XApiKey': apiKey
-            }
-          })
-          .then(response => {
-            setRegimenAduanero(response.data.data);
-              console.log("React E10", response.data.data)
-          })
-          .catch(error => {
-              console.error('Error al obtener los datos del país:', error);
-          });
-        } 
-
-        //Endpoint para obtener los niveles comerciales
-        const listarNivelesComerciales = () => {
-          axios.get(`${apiUrl}/api/NivelesComerciales/Listar`, {
-              headers: {
-                  'XApiKey': apiKey
-              }
-          })
-          .then(response => {
-            setNivelComercial(response.data.data);
-              console.log("React E10", response.data.data)
-          })
-          .catch(error => {
-              console.error('Error al obtener los datos de los niveles comerciales:', error);
-          });
-        } 
 
         //Endpoint para obtener los incoterms
         const listarIncoterms = () => {
@@ -292,10 +226,10 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
 
       
         useEffect(() => {
-            const devaIdString = localStorage.getItem('deva_Id');
+            const devaIdString = localStorage.getItem('devaId');
             if (devaIdString !== null) {
               const deva_Id = parseInt(devaIdString);
-              axios.post(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, null , {
+              axios.get(`${apiUrl}/api/Declaracion_Valor/Listar_ByDevaId?id=${deva_Id}`, {
                 headers: {
                   'XApiKey': apiKey
                 }
@@ -327,11 +261,6 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       }
                     });
               
-                    const fechaFormateada = new Date(Deva.deva_FechaAceptacion).toISOString().split('T')[0];
-                    Deva.deva_FechaAceptacion = fechaFormateada;
-              
-                    
-              
                     setInitialValues({ ...Deva });
                   }
               
@@ -351,13 +280,16 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 validationSchema,
                 onSubmit: async(values) => {
                   try {
-                    values.usua_UsuarioCreacion = 1;
+                    values.declaraciones_ValorViewModel.usua_UsuarioCreacion = 1;
+                    values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
+                    values.declaraciones_ValorViewModel.deva_FechaCreacion = new Date().toISOString();
                   
                     console.log("Enviando valores:", values);
-                    values.deva_Id =  parseInt(localStorage.getItem('deva_Id'));
+                    values.declaraciones_ValorViewModel.deva_Id =  parseInt(localStorage.getItem('devaId'));
                     
                     let todosExitosos = true;
-                    const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
+                    console.log("Valores finales que se están enviando:", values);
+                    const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab3`, values, {
                       headers: { 'XApiKey': apiKey },
                       'Content-Type': 'application/json'
                     });
@@ -404,11 +336,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 },
               }));
               useEffect(() => {
-                listarCiudades();
                 listarPaises();
-                listarAduanas();
-                listarNivelesComerciales();
-                listarRegimenAduaneros();
                 listarIncoterms();
                 listarFormasEnvio();
                 listarFormasPago();
@@ -420,15 +348,60 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               }, [formik.errors, formik.submitCount]);
 
               useEffect(() => {
-                if (ciudades.length > 0) {
-                  const ciudad = ciudades.find(p => p.ciud_Id === formik.values.ciud_Id);
-                  setSelectedCiudad(ciudad );
+                if (paises.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.pais_EntregaId &&
+                  formik.values.declaraciones_ValorViewModel.pais_ExportacionId) {
+                  const paisEntrega = paises.find(p => p.pais_Id === formik.values.declaraciones_ValorViewModel.pais_EntregaId);
+                  const paisExportacion = paises.find(p => p.pais_Id === formik.values.declaraciones_ValorViewModel.pais_ExportacionId);
+                  setSelectedPaisEntrega(paisEntrega || null );
+                  setSelectedPaisExportacion(paisExportacion || null);
                 }
-                if (regimenAduanero.length > 0) {
-                  const regimen = regimenAduanero.find(r => r.regi_Id === formik.values.regi_Id);
-                  setSelectedRegimenAduanero(regimen);
+                if (incoterms.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.inco_Id) {
+                  const incoterm = incoterms.find(r => r.inco_Id === formik.values.declaraciones_ValorViewModel.inco_Id);
+                  setSelectedIncoterms(incoterm);
                 }
-              },[ciudades, formik.values.ciud_Id, nivelComercial, formik.values.nico_Id], aduanas, formik.values.deva_AduanaIngresoId, formik.values.deva_AduanaDespachoId, regimenAduanero, formik.values.regi_Id);
+                if (formasEnvio.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.foen_Id) {
+                  const formasDeEnvio = formasEnvio.find(r => r.foen_Id === formik.values.declaraciones_ValorViewModel.foen_Id);
+                  setSelectedFormaEnvio(formasDeEnvio);
+                }
+                if (formaPago.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.fopa_Id) {
+                  const formaDePago = formaPago.find(r => r.fopa_Id === formik.values.declaraciones_ValorViewModel.fopa_Id);
+                  setSelectedFormaPago(formaDePago);
+                }
+                if (embarque.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.emba_Id) {
+                  const embarq = embarque.find(r => r.emba_Id === formik.values.declaraciones_ValorViewModel.emba_Id);
+                  setSelectedEmbarque(embarq);
+                }
+                if (monedas.length > 0 &&
+                  formik.values.declaraciones_ValorViewModel &&
+                  formik.values.declaraciones_ValorViewModel.mone_Id) {
+                  const mone = monedas.find(r => r.mone_Id === formik.values.declaraciones_ValorViewModel.mone_Id);
+                  setSelectedMoneda(mone);
+                }
+              },[
+                paises,
+                incoterms,
+                formasEnvio,
+                formaPago,
+                embarque,
+                monedas,
+                formik.values.declaraciones_ValorViewModel.pais_EntregaId,
+                formik.values.declaraciones_ValorViewModel.pais_ExportacionId,
+                formik.values.declaraciones_ValorViewModel.inco_Id,
+                formik.values.declaraciones_ValorViewModel.foen_Id,
+                formik.values.declaraciones_ValorViewModel.fopa_Id,
+                formik.values.declaraciones_ValorViewModel.emba_Id,
+                formik.values.declaraciones_ValorViewModel.mone_Id,
+              ]);
         
     return (
         <div>
@@ -444,14 +417,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Lugar entrega</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="deva_LugarEntrega"
-                            name="deva_LugarEntrega"
+                            id="declaraciones_ValorViewModel.deva_LugarEntrega"
+                            name="declaraciones_ValorViewModel.deva_LugarEntrega"
                             type="text"
-                            value={formik.values.deva_LugarEntrega}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_LugarEntrega}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_LugarEntrega && Boolean(formik.errors.deva_LugarEntrega)}
-                            helperText={formik.touched.deva_LugarEntrega && formik.errors.deva_LugarEntrega}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_LugarEntrega && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_LugarEntrega)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_LugarEntrega && formik.errors.declaraciones_ValorViewModel?.deva_LugarEntrega}
                         />
                     </Grid>
 
@@ -464,9 +437,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedPaisEntrega(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('deva_AduanaDespachoId', newValue.deva_AduanaDespachoId);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_EntregaId', newValue.pais_EntregaId);
                                 } else {
-                                formik.setFieldValue('deva_AduanaDespachoId', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_EntregaId', 0);
                                 
                                 }
                             }}
@@ -474,13 +447,13 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 <TextField 
                                 {...params} 
                                 variant="outlined" 
-                                placeholder="Seleccione la aduana de despacho"
-                                error={formik.touched.pais_EntregaId	 && Boolean(formik.errors.pais_EntregaId	)}
-                                helperText={formik.touched.pais_EntregaId	 && formik.errors.pais_EntregaId	}
+                                placeholder="Seleccione el pais de entrega"
+                                error={formik.touched.declaraciones_ValorViewModel?.pais_EntregaId	 && Boolean(formik.errors.declaraciones_ValorViewModel?.pais_EntregaId)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.pais_EntregaId	 && formik.errors.declaraciones_ValorViewModel?.pais_EntregaId	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.pais_EntregaId	}
+                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.declaraciones_ValorViewModel?.pais_EntregaId	}
                         />
                     </Grid>
 
@@ -493,9 +466,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedIncoterms(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('inco_Id', newValue.inco_Id);
+                                formik.setFieldValue('declaraciones_ValorViewModel.inco_Id', newValue.inco_Id);
                                 } else {
-                                formik.setFieldValue('inco_Id', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.inco_Id', 0);
                                 }
                             }}
                             renderInput={(params) => (
@@ -503,26 +476,26 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione un incoterm"
-                                error={formik.touched.inco_Id	 && Boolean(formik.errors.inco_Id	)}
-                                helperText={formik.touched.inco_Id	 && formik.errors.inco_Id	}
+                                error={formik.touched.declaraciones_ValorViewModel?.inco_Id	 && Boolean(formik.errors.declaraciones_ValorViewModel?.inco_Id	)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.inco_Id	 && formik.errors.declaraciones_ValorViewModel?.inco_Id	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.inco_Id === value?.inco_Id	}
+                            isOptionEqualToValue={(option, value) => option.inco_Id === value?.declaraciones_ValorViewModel?.inco_Id	}
                         />
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Versión</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="inco_Version"
-                            name="inco_Version"
+                            id="declaraciones_ValorViewModel.inco_Version"
+                            name="declaraciones_ValorViewModel.inco_Version"
                             type="text"
-                            value={formik.values.inco_Version}
+                            value={formik.values.declaraciones_ValorViewModel?.inco_Version}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.inco_Version && Boolean(formik.errors.inco_Version)}
-                            helperText={formik.touched.inco_Version && formik.errors.inco_Version}
+                            error={formik.touched.declaraciones_ValorViewModel?.inco_Version && Boolean(formik.errors.declaraciones_ValorViewModel?.inco_Version)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.inco_Version && formik.errors.declaraciones_ValorViewModel?.inco_Version}
                         />
                     </Grid>
 
@@ -530,14 +503,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Numero de Contrato</CustomFormLabel>
                     <CustomTextField
                             fullWidth
-                            id="deva_NumeroContrato"
-                            name="deva_NumeroContrato"
+                            id="declaraciones_ValorViewModel.deva_NumeroContrato"
+                            name="declaraciones_ValorViewModel.deva_NumeroContrato"
                             type="text"
-                            value={formik.values.deva_NumeroContrato}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_NumeroContrato}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_NumeroContrato && Boolean(formik.errors.deva_NumeroContrato)}
-                            helperText={formik.touched.deva_NumeroContrato && formik.errors.deva_NumeroContrato}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_NumeroContrato && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_NumeroContrato)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_NumeroContrato && formik.errors.declaraciones_ValorViewModel?.deva_NumeroContrato}
                         />
                     </Grid>
 
@@ -545,14 +518,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Fecha de contrato</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="deva_FechaContrato"
-                            name="deva_FechaContrato"
+                            id="declaraciones_ValorViewModel.deva_FechaContrato"
+                            name="declaraciones_ValorViewModel.deva_FechaContrato"
                             type="date"
-                            value={formik.values.deva_FechaContrato}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_FechaContrato}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FechaContrato && Boolean(formik.errors.deva_FechaContrato)}
-                            helperText={formik.touched.deva_FechaContrato && formik.errors.deva_FechaContrato}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_FechaContrato && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_FechaContrato)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_FechaContrato && formik.errors.declaraciones_ValorViewModel?.deva_FechaContrato}
                         />
                     </Grid>
 
@@ -565,9 +538,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedFormaEnvio(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('foen_Id', newValue.foen_Id);
+                                formik.setFieldValue('declaraciones_ValorViewModel.foen_Id', newValue.foen_Id);
                                 } else {
-                                formik.setFieldValue('foen_Id', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.foen_Id', 0);
                                 }
                             }}
                             renderInput={(params) => (
@@ -575,12 +548,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione una forma de envio"
-                                error={formik.touched.foen_Id	 && Boolean(formik.errors.foen_Id	)}
-                                helperText={formik.touched.foen_Id	 && formik.errors.foen_Id	}
+                                error={formik.touched.declaraciones_ValorViewModel?.foen_Id	 && Boolean(formik.errors.declaraciones_ValorViewModel?.foen_Id	)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.foen_Id	 && formik.errors.declaraciones_ValorViewModel?.foen_Id	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.foen_Id === value?.foen_Id	}
+                            isOptionEqualToValue={(option, value) => option.foen_Id === value?.declaraciones_ValorViewModel?.foen_Id	}
                         />
                     </Grid>
 
@@ -588,14 +561,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Otra forma de envio (Especifique)</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="deva_FormaEnvioOtra"
-                            name="deva_FormaEnvioOtra"
+                            id="declaraciones_ValorViewModel.deva_FormaEnvioOtra"
+                            name="declaraciones_ValorViewModel.deva_FormaEnvioOtra"
                             type="text"
-                            value={formik.values.deva_FormaEnvioOtra}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_FormaEnvioOtra}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FormaEnvioOtra && Boolean(formik.errors.deva_FormaEnvioOtra)}
-                            helperText={formik.touched.deva_FormaEnvioOtra && formik.errors.deva_FormaEnvioOtra}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_FormaEnvioOtra && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_FormaEnvioOtra)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_FormaEnvioOtra && formik.errors.declaraciones_ValorViewModel?.deva_FormaEnvioOtra}
                         />
                     </Grid>
 
@@ -603,14 +576,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Pago efectuado</CustomFormLabel>
                         <CustomTextField
                             fullWidth
-                            id="deva_PagoEfectuado"
-                            name="deva_PagoEfectuado"
+                            id="declaraciones_ValorViewModel.deva_PagoEfectuado"
+                            name="declaraciones_ValorViewModel.deva_PagoEfectuado"
                             type="text"
-                            value={formik.values.deva_PagoEfectuado}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_PagoEfectuado}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_PagoEfectuado && Boolean(formik.errors.deva_PagoEfectuado)}
-                            helperText={formik.touched.deva_PagoEfectuado && formik.errors.deva_PagoEfectuado}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_PagoEfectuado && formik.errors.declaraciones_ValorViewModel?.deva_PagoEfectuado}
                         />
                     </Grid>
 
@@ -623,9 +596,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedFormaPago(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('fopa_Id', newValue.fopa_Id);
+                                formik.setFieldValue('declaraciones_ValorViewModel.fopa_Id', newValue.fopa_Id);
                                 } else {
-                                formik.setFieldValue('fopa_Id', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.fopa_Id', 0);
                                 }
                             }}
                             renderInput={(params) => (
@@ -633,12 +606,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione una forma de pago"
-                                error={formik.touched.fopa_Id	 && Boolean(formik.errors.fopa_Id	)}
-                                helperText={formik.touched.fopa_Id	 && formik.errors.fopa_Id	}
+                                error={formik.touched.declaraciones_ValorViewModel?.fopa_Id	 && Boolean(formik.errors.declaraciones_ValorViewModel?.fopa_Id	)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.fopa_Id	 && formik.errors.declaraciones_ValorViewModel?.fopa_Id	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.foen_Id === value?.foen_Id	}
+                            isOptionEqualToValue={(option, value) => option.foen_Id === value?.declaraciones_ValorViewModel?.fopa_Id	}
                         />
                     </Grid>
                     <Grid item lg={4} md={12} sm={12}>
@@ -646,14 +619,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             <CustomFormLabel>Otra forma de pago (Especifique)</CustomFormLabel>
                             <CustomTextField
                             fullWidth
-                            id="deva_FormaPagoOtra"
-                            name="deva_FormaPagoOtra"
+                            id="declaraciones_ValorViewModel.deva_FormaPagoOtra"
+                            name="declaraciones_ValorViewModel.deva_FormaPagoOtra"
                             type="text"
-                            value={formik.values.deva_FormaPagoOtra}
+                            value={formik.values.declaraciones_ValorViewModel?.deva_FormaPagoOtra}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.deva_FormaPagoOtra && Boolean(formik.errors.deva_FormaPagoOtra)}
-                            helperText={formik.touched.deva_FormaPagoOtra && formik.errors.deva_FormaPagoOtra}
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_FormaPagoOtra && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_FormaPagoOtra)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_FormaPagoOtra && formik.errors.declaraciones_ValorViewModel?.deva_FormaPagoOtra}
                         />
                     
                     </Grid>
@@ -663,14 +636,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                    
                                     <CustomTextField
                                     fullWidth
-                                    id="emba_Id"
-                                    name="emba_Id"
+                                    id="declaraciones_ValorViewModel.emba_Id"
+                                    name="declaraciones_ValorViewModel.emba_Id"
                                     type="text"
-                                    value={formik.values.emba_Id}
+                                    value={formik.values.declaraciones_ValorViewModel?.emba_Id}
                                     disabled
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.emba_Id && Boolean(formik.errors.emba_Id)}
-                                    helperText={formik.touched.emba_Id && formik.errors.emba_Id}
+                                    error={formik.touched.declaraciones_ValorViewModel?.emba_Id && Boolean(formik.errors.declaraciones_ValorViewModel?.emba_Id)}
+                                    helperText={formik.touched.declaraciones_ValorViewModel?.emba_Id && formik.errors.declaraciones_ValorViewModel?.emba_Id}
                                     InputProps={{
                                       endAdornment: (
                                         <InputAdornment position="end">
@@ -692,9 +665,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedPaisExportacion(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('pais_ExportacionId', newValue.pais_ExportacionId);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_ExportacionId', newValue.pais_ExportacionId);
                                 } else {
-                                formik.setFieldValue('pais_ExportacionId', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.pais_ExportacionId', 0);
                                 
                                 }
                             }}
@@ -703,12 +676,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione el pais de exportacion"
-                                error={formik.touched.pais_ExportacionId	 && Boolean(formik.errors.pais_ExportacionId	)}
-                                helperText={formik.touched.pais_ExportacionId	 && formik.errors.pais_ExportacionId	}
+                                error={formik.touched.declaraciones_ValorViewModel?.pais_ExportacionId	 && Boolean(formik.errors.declaraciones_ValorViewModel?.pais_ExportacionId	)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.pais_ExportacionId && formik.errors.declaraciones_ValorViewModel?.pais_ExportacionId	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.pais_ExportacionId	}
+                            isOptionEqualToValue={(option, value) => option.pais_Id === value?.declaraciones_ValorViewModel?.pais_ExportacionId	}
                         />
                     </Grid>
 
@@ -716,14 +689,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fecha de exportación</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="deva_FechaExportacion"
-                        name="deva_FechaExportacion"
+                        id="declaraciones_ValorViewModel.deva_FechaExportacion"
+                        name="declaraciones_ValorViewModel.deva_FechaExportacion"
                         type="date"
-                        value={formik.values.deva_FechaExportacion}
+                        value={formik.values.declaraciones_ValorViewModel?.deva_FechaExportacion}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.deva_FechaExportacion && Boolean(formik.errors.deva_FechaExportacion)}
-                        helperText={formik.touched.deva_FechaExportacion && formik.errors.deva_FechaExportacion}
+                        error={formik.touched.declaraciones_ValorViewModel?.deva_FechaExportacion && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_FechaExportacion)}
+                        helperText={formik.touched.declaraciones_ValorViewModel?.deva_FechaExportacion && formik.errors.declaraciones_ValorViewModel?.deva_FechaExportacion}
                     />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
@@ -735,9 +708,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             onChange={(event, newValue) => {
                                 setSelectedMoneda(newValue);
                                 if (newValue) {
-                                formik.setFieldValue('mone_Id', newValue.mone_Id);
+                                formik.setFieldValue('declaraciones_ValorViewModel.mone_Id', newValue.mone_Id);
                                 } else {
-                                formik.setFieldValue('mone_Id', 0);
+                                formik.setFieldValue('declaraciones_ValorViewModel.mone_Id', 0);
                                 
                                 }
                             }}
@@ -746,26 +719,26 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 {...params} 
                                 variant="outlined" 
                                 placeholder="Seleccione la moneda"
-                                error={formik.touched.mone_Id	 && Boolean(formik.errors.mone_Id	)}
-                                helperText={formik.touched.mone_Id	 && formik.errors.mone_Id	}
+                                error={formik.touched.declaraciones_ValorViewModel?.mone_Id	 && Boolean(formik.errors.declaraciones_ValorViewModel?.mone_Id	)}
+                                helperText={formik.touched.declaraciones_ValorViewModel?.mone_Id	 && formik.errors.declaraciones_ValorViewModel?.mone_Id	}
                                 />
                             )}
                             noOptionsText="No hay paises disponibles"
-                            isOptionEqualToValue={(option, value) => option.mone_Id === value?.mone_Id	}
+                            isOptionEqualToValue={(option, value) => option.mone_Id === value?.declaraciones_ValorViewModel?.mone_Id	}
                         />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Otra moneda (Especifique)</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="mone_Otra"
-                        name="mone_Otra"
+                        id="declaraciones_ValorViewModel.mone_Otra"
+                        name="declaraciones_ValorViewModel.mone_Otra"
                         type="text"
-                        value={formik.values.mone_Otra}
+                        value={formik.values.declaraciones_ValorViewModel?.mone_Otra}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.mone_Otra && Boolean(formik.errors.mone_Otra)}
-                        helperText={formik.touched.mone_Otra && formik.errors.mone_Otra}
+                        error={formik.touched.declaraciones_ValorViewModel?.mone_Otra && Boolean(formik.errors.declaraciones_ValorViewModel?.mone_Otra)}
+                        helperText={formik.touched.declaraciones_ValorViewModel?.mone_Otra && formik.errors.declaraciones_ValorViewModel?.mone_Otra}
                     />
                 </Grid>
                 <Grid item lg={4} md={12} sm={12}>
@@ -773,14 +746,14 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Tipo de cambio de moneda extranjera a dólares USD</CustomFormLabel>
                     <CustomTextField
                         fullWidth
-                        id="deva_ConversionDolares"
-                        name="deva_ConversionDolares"
+                        id="declaraciones_ValorViewModel.deva_ConversionDolares"
+                        name="declaraciones_ValorViewModel.deva_ConversionDolares"
                         type="text"
-                        value={formik.values.deva_ConversionDolares}
+                        value={formik.values.declaraciones_ValorViewModel?.deva_ConversionDolares}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.deva_ConversionDolares && Boolean(formik.errors.deva_ConversionDolares)}
-                        helperText={formik.touched.deva_ConversionDolares && formik.errors.deva_ConversionDolares}
+                        error={formik.touched.declaraciones_ValorViewModel?.deva_ConversionDolares && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_ConversionDolares)}
+                        helperText={formik.touched.declaraciones_ValorViewModel?.deva_ConversionDolares && formik.errors.declaraciones_ValorViewModel?.deva_ConversionDolares}
                     />
                 </Grid>
             </Grid>
@@ -840,9 +813,9 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                 onChange={(event, newValue) => {
                                     setSelectedEmbarque(newValue);
                                     if (newValue) {
-                                    formik.setFieldValue('emba_Id', newValue.emba_Id );
+                                    formik.setFieldValue('declaraciones_ValorViewModel.emba_Id', newValue.emba_Id );
                                     } else {
-                                    formik.setFieldValue('emba_Id', 0);
+                                    formik.setFieldValue('declaraciones_ValorViewModel.emba_Id', 0);
                                     
                                     }
                                 }}
@@ -851,12 +824,12 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                     {...params} 
                                     variant="outlined" 
                                     placeholder="Seleccione un lugar de embarque"
-                                    error={formik.touched.emba_Id && Boolean(formik.errors.emba_Id)}
-                                    helperText={formik.touched.emba_Id && formik.errors.emba_Id}
+                                    error={formik.touched.declaraciones_ValorViewModel?.emba_Id && Boolean(formik.errors.declaraciones_ValorViewModel?.emba_Id)}
+                                    helperText={formik.touched.declaraciones_ValorViewModel?.emba_Id && formik.errors.declaraciones_ValorViewModel?.emba_Id}
                                     />
                                 )}
                                 noOptionsText="No hay lugares de embarque disponibles"
-                                isOptionEqualToValue={(option, value) => option.emba_Id === value?.emba_Id}
+                                isOptionEqualToValue={(option, value) => option.emba_Id === value?.declaraciones_ValorViewModel?.emba_Id}
                               />
                       </Grid>
                   </Grid>
