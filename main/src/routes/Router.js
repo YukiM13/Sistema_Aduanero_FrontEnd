@@ -135,6 +135,7 @@ const Colonias = Loadable(lazy(() => import('../components/general/colonias/Colo
 
 // Acceso
 const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
+const Roles = Loadable(lazy(() => import('../components/acceso/roles/rolesList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -306,6 +307,8 @@ const Router = [
 
 
       { path: '/provincias/create', element: <ProvinciaCrear  /> },
+      { path: '/roles/list', element: <Roles  /> },
+
 
 
 
