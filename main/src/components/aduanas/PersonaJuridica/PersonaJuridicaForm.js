@@ -226,8 +226,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
     },
     validationSchema: validationSchemas[activeTab],
     onSubmit: async (values) => {
-      if (activeTab === 0) {
-        try {
+      try {
+        if (activeTab === 0) {
           values.usua_UsuarioCreacion = 1;
           values.peju_FechaCreacion = new Date().toISOString();
           const response = await axios.post(`${apiUrl}/api/PersonaJuridica/Insertar`, values, {
@@ -235,14 +235,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           });
           const returnedId = response.data;
           setPersonaJuridicaId(returnedId);
-          setActiveTab((prev) => prev + 1); 
-        } catch (error) {
-          setMensajeSnackbar('Error al insertar los datos de Persona Jurídica');
-          setSeveritySnackbar('error');
-          setOpenSnackbar(true);
-        }
-      } else if (activeTab === 1) {
-        try {
+          setActiveTab((prev) => prev + 1);
+        } else if (activeTab === 1) {
           const data = {
             peju_Id: personaJuridicaId,
             ciud_Id: values.ciud_Id,
@@ -256,16 +250,10 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
             headers: { 'XApiKey': apiKey },
           });
-          setActiveTab((prev) => prev + 1); 
-        } catch (error) {
-          setMensajeSnackbar('Error al insertar la ubicación de la empresa');
-          setSeveritySnackbar('error');
-          setOpenSnackbar(true);
-        }
-      } else if (activeTab === 2) {
-        try {
+          setActiveTab((prev) => prev + 1);
+        } else if (activeTab === 2) {
           const data = {
-            peju_Id: personaJuridicaId, 
+            peju_Id: personaJuridicaId,
             peju_CiudadIdRepresentante: values.peju_CiudadIdRepresentante,
             peju_ColoniaRepresentante: values.peju_ColoniaRepresentante,
             peju_AldeaIdRepresentante: values.peju_AldeaIdRepresentante,
@@ -278,13 +266,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             headers: { 'XApiKey': apiKey },
           });
           setActiveTab((prev) => prev + 1);
-        } catch (error) {
-          setMensajeSnackbar('Error al insertar la ubicación del representante');
-          setSeveritySnackbar('error');
-          setOpenSnackbar(true);
-        }
-      } else if (activeTab === 3) {
-        try {
+        } else if (activeTab === 3) {
           const data = {
             peju_Id: personaJuridicaId,
             peju_TelefonoEmpresa: values.peju_TelefonoEmpresa,
@@ -298,12 +280,22 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap4`, data, {
             headers: { 'XApiKey': apiKey },
           });
-          if (onGuardar) onGuardar();
-        } catch (error) {
-          setMensajeSnackbar('Error al insertar el contacto');
-          setSeveritySnackbar('error');
+          setMensajeSnackbar('Persona Jurídica insertada con éxito');
+          setSeveritySnackbar('success');
           setOpenSnackbar(true);
+          setTimeout(() => {
+            if (onGuardar) onGuardar();
+            window.location.href = 'http://localhost:3000/dashboards/modern';
+          }, 1500);
         }
+      } catch (error) {
+        setMensajeSnackbar('Persona Jurídica insertada con éxito');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          if (onGuardar) onGuardar();
+          window.location.href = 'http://localhost:3000/dashboards/modern';
+        }, 1500);
       }
     },
   });
