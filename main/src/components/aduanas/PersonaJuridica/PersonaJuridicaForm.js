@@ -128,8 +128,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           });
           const returnedId = response.data;
           alert(`Persona Jurídica creada con ID: ${returnedId}`);
-          setPersonaJuridicaId(returnedId); // Save the returned ID for subsequent steps
-          setActiveTab((prev) => prev + 1); // Move to the next tab
+          setPersonaJuridicaId(returnedId);
+          setActiveTab((prev) => prev + 1); 
         } catch (error) {
           console.error('Error al insertar los datos de Persona Jurídica:', error);
         }
@@ -145,18 +145,19 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             usua_UsuarioCreacion: 1,
             peju_FechaCreacion: new Date().toISOString(),
           };
+          console.log('Data to be sent:', data); // Log the data being sent
+          console.log(activeTab); // Log the active tab
           await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
             headers: { 'XApiKey': apiKey },
           });
-          alert('Ubicación de la empresa guardada correctamente.');
-          setActiveTab((prev) => prev + 1); // Move to the next tab
+          setActiveTab((prev) => prev + 1); 
         } catch (error) {
           console.error('Error al insertar la ubicación de la empresa:', error);
         }
       } else if (activeTab === 2) {
         try {
           const data = {
-            peju_Id: personaJuridicaId, // Use the previously returned ID
+            peju_Id: personaJuridicaId, 
             peju_CiudadIdRepresentante: values.peju_CiudadIdRepresentante,
             peju_ColoniaRepresentante: values.peju_ColoniaRepresentante,
             peju_AldeaIdRepresentante: values.peju_AldeaIdRepresentante,
@@ -224,7 +225,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
         .then((response) => setColonias(response.data.data || []))
         .catch((error) => console.error('Error al obtener colonias:', error));
 
-      axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?alde_Id=${value}`, { headers: { 'XApiKey': apiKey } })
+      axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?ciud_Id=${value}`, { headers: { 'XApiKey': apiKey } })
         .then((response) => setAldeas(response.data.data || []))
         .catch((error) => console.error('Error al obtener aldeas:', error));
     }
