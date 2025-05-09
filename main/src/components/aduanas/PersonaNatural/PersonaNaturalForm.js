@@ -8,6 +8,9 @@ import PersonaNatural from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import emailjs from 'emailjs-com';
+import { CheckCircleRounded } from '@mui/icons-material';
+
 
 // Validation schema
 const validationSchema = yup.object({
@@ -28,6 +31,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
+
+ 
   useEffect(() => {
     axios
       .get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
@@ -51,7 +56,29 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         console.error('Error al obtener las personas:', error);
       });
   }, [apiUrl, apiKey]);
+  
+ const enviarCodigoVerificacion = (pena_CorreoElectronico) => {
+      // Generar código aleatorio de 7 dígitos
+      console.log("Correo electrónico:", pena_CorreoElectronico);
+      const generarCodigoAleatorio = () => {
+          return Math.floor(1000000 + Math.random() * 9000000).toString();
+      };
 
+      const codigo = generarCodigoAleatorio();
+      console.log("Código generado:", codigo);
+      // Enviar correo con EmailJS
+      emailjs.send('service_5x68ulj', 'template_lwiowkp', {
+          email: pena_CorreoElectronico,
+          codigo: codigo // Código generado dinámicamente
+      }, 'mnyq6v-rJ4eMaYUOb') // Public Key
+      .then((response) => {
+          console.log('Correo enviado:', response.text);
+          alert('Código de verificación enviado correctamente.');
+      })
+      .catch((error) => {
+          console.error('Error al enviar correo:', error);
+      });
+  };
   const formik = useFormik({
     initialValues: {
       ...PersonaNatural,
@@ -258,11 +285,16 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 error={formik.touched.pena_CorreoElectronico && Boolean(formik.errors.pena_CorreoElectronico)}
                 helperText={formik.touched.pena_CorreoElectronico && formik.errors.pena_CorreoElectronico}
               />
-              <Grid item>
-                <Button variant="contained" type="submit" startIcon={<check />}>
-                  Verificar correo
+             <Grid item>
+                <Button 
+                    variant="contained" 
+                    type="button" 
+                    startIcon={<CheckCircleRounded />} 
+                    onClick={() => enviarCodigoVerificacion(formik.values.pena_CorreoElectronico)}
+                >
+                    Verificar correo
                 </Button>
-              </Grid>
+            </Grid>
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_CorreoAlternativo">Correo Alternativo</CustomFormLabel>
