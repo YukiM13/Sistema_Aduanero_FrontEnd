@@ -166,10 +166,6 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         Deva[key] = data[key];
                       }
                     });
-              
-              
-                    
-              
                     setInitialValues({ ...Deva });
                   }
               

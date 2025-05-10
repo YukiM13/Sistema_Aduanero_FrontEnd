@@ -249,6 +249,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 if (data && typeof data === 'object') {
                   // Creamos una nueva estructura basada en tus esquemas Yup
                   const mappedValues = {
+                    ...Deva,
                     declaraciones_ValorViewModel: {
                       pais_EntregaId: data.pais_EntregaId ?? 0,
                       pais_ExportacionId: data.pais_ExportacionId ?? 0,
@@ -290,25 +291,29 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 validationSchema,
                 onSubmit: async(values) => {
                   try {
-                    values.declaraciones_ValorViewModel.usua_UsuarioCreacion = 1;
-                    values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
-                    values.declaraciones_ValorViewModel.deva_FechaCreacion = new Date().toISOString();
-                  
-                    console.log("Enviando valores:", values);
-                    values.declaraciones_ValorViewModel.deva_Id =  parseInt(localStorage.getItem('devaId'));
-                    if(values.declaraciones_ValorViewModel.deva_PagoEfectuado == 'true'){
-                      values.declaraciones_ValorViewModel.deva_PagoEfectuado = true;
-                    }
-                    else{
-                      values.declaraciones_ValorViewModel.deva_PagoEfectuado = false;
-                    }
+
+                     // Asegúrate de que todos los submodelos del objeto Deva estén incluidos
+                    const dataToSubmit = {
+                      ...values, // Esto ya debería contener todos los submodelos si los manejaste correctamente al cargar
+                      declaraciones_ValorViewModel: {
+                        ...values.declaraciones_ValorViewModel,
+                        usua_UsuarioCreacion: 1,
+                        usua_UsuarioModificacion: 1,
+                        deva_FechaCreacion: new Date().toISOString(),
+                        deva_Id: parseInt(localStorage.getItem('devaId')),
+                        deva_PagoEfectuado: Boolean(values.declaraciones_ValorViewModel.deva_PagoEfectuado)
+                      }
+                    };
+                    
+                    console.log("Enviando valores completos:", dataToSubmit);
+                    const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab3`, dataToSubmit, {
+                      headers: { 
+                        'XApiKey': apiKey,
+                        'Content-Type': 'application/json'
+                      }
+                    });
                     
                     let todosExitosos = true;
-                    console.log("Valores finales que se están enviando:", values);
-                    const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab3`, values, {
-                      headers: { 'XApiKey': apiKey },
-                      'Content-Type': 'application/json'
-                    });
                
                   if (response.data.data.messageStatus !== '1') {
                         todosExitosos = false;
