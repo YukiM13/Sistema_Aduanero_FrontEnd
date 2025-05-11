@@ -291,21 +291,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 validationSchema,
                 onSubmit: async(values) => {
                   try {
-
-                     // Asegúrate de que todos los submodelos del objeto Deva estén incluidos
+                    // Extrae los valores del objeto anidado
+                    const { declaraciones_ValorViewModel } = values;
+                    
+                    // Prepara el objeto para enviar al API en el formato correcto (sin anidamiento)
                     const dataToSubmit = {
-                      ...values, // Esto ya debería contener todos los submodelos si los manejaste correctamente al cargar
-                      declaraciones_ValorViewModel: {
-                        ...values.declaraciones_ValorViewModel,
-                        usua_UsuarioCreacion: 1,
-                        usua_UsuarioModificacion: 1,
-                        deva_FechaCreacion: new Date().toISOString(),
-                        deva_Id: parseInt(localStorage.getItem('devaId')),
-                        deva_PagoEfectuado: Boolean(values.declaraciones_ValorViewModel.deva_PagoEfectuado)
-                      }
+                      ...declaraciones_ValorViewModel,
+                      usua_UsuarioCreacion: 1,
+                      usua_UsuarioModificacion: 1,
+                      deva_FechaCreacion: new Date().toISOString(),
+                      deva_Id: parseInt(localStorage.getItem('devaId')),
+                      deva_PagoEfectuado: Boolean(declaraciones_ValorViewModel.deva_PagoEfectuado)
                     };
                     
-                    console.log("Enviando valores completos:", dataToSubmit);
+                    console.log("Enviando valores al API:", dataToSubmit);
+                    
                     const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab3`, dataToSubmit, {
                       headers: { 
                         'XApiKey': apiKey,
@@ -314,20 +314,19 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     });
                     
                     let todosExitosos = true;
-               
-                  if (response.data.data.messageStatus !== '1') {
-                        todosExitosos = false;
-                  
-                  }
-                  if (todosExitosos) {
-                    if (onGuardadoExitoso) onGuardadoExitoso();
-                  } else {
-                    setOpenSnackbar(true);
-                  }
-             
-                  
+                    
+                    if (response.data.data.messageStatus !== '1') {
+                      todosExitosos = false;
+                    }
+                    
+                    if (todosExitosos) {
+                      if (onGuardadoExitoso) onGuardadoExitoso();
+                    } else {
+                      setOpenSnackbar(true);
+                    }
                   } catch (error) {
                     console.error('Error al insertar:', error);
+                    setOpenSnackbar(true);
                   }
                 },
               });
