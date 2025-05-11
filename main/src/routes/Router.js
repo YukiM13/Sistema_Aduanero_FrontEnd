@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PersonaJuridica from 'src/models/PersonaJuridicaModel';
+// import OrdenCompraDetallesCreateComponent from '../components/ordenCompraDetalle/OrdenCompraDetalleCreate';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -140,10 +141,11 @@ const Categorias  = Loadable(lazy(() => import('../components/produccion/categor
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
-const OrdenCompra =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
-const OrdenCompraDetalle =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
+const OrdenCompraList =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
+const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraCrear')));
+const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
-
+const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -291,10 +293,11 @@ const Router = [
       { path: '/usuarios/list', element: <Usuarios  /> },
       { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
       { path: '/duca', element: <Duca  /> },
-
-      { path: '/ordenCompra', element: <OrdenCompra  /> },
-      { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalle  /> },
-      { path: '/ordenCompraDetalle/create', element: <OrdenCompraDetalleCrear  /> },
+      { path: '/ordenCompra', element: <OrdenCompraList  /> },
+      { path: '/ordenCompra/create', element: <OrdenCompraCrear  /> },
+      { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalleList  /> },
+      { path: '/ordenCompraDetalle/create/:orco_Id', element: <OrdenCompraDetalleCrear   /> },
+      { path: '/ordenCompraDetalle/edit/:orco_Id', element: <OrdenCompraDetalleEditar  /> },
       { path: '/ciudades/create', element: <CiudadCrear  /> },
       { path: '/ciudades/edit', element: <CiudadEditar  /> },
 

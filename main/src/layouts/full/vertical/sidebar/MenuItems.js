@@ -285,18 +285,18 @@ const Menuitems = [
 
       {
         id: uniqueId(),
-        title: 'Orden Compra',
+        title: 'Orden de Compra',
         icon: IconPoint,
         chipColor: 'secondary',
         href: '/ordenCompra',
       },
-      {
-        id: uniqueId(),
-        title: 'Orden Compra Detalle',
-        icon: IconPoint,
-        chipColor: 'secondary',
-        href: '/ordenCompraDetalle/list',
-      },
+      // {
+      //   id: uniqueId(),
+      //   title: 'Orden Compra Detalle',
+      //   icon: IconPoint,
+      //   chipColor: 'secondary',
+      //   href: '/ordenCompraDetalle/list',
+      // },
      
 
     ],

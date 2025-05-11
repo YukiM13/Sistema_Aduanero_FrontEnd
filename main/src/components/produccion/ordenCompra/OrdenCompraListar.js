@@ -9,12 +9,19 @@ import {
   DialogContent, DialogActions, DialogContentText,
   Snackbar, Alert
 } from '@mui/material';
+import '../ordenCompra/ordenCompraDataGrid.css';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import OrdenesComprasDetalle from '../ordenCompraDetalle/OrdenCompraDetalleList';
+
 import { useNavigate } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import OrdenCompraCreate from './OrdenCompraCrear';
-// import OrdenesComprasEdit from './OrdenesComprasEdit';
+import OrdenCompraComponent from './OrdenCompraCrear';
+import OrdenCompraDetallesCreateComponent from '../ordenCompraDetalle/OrdenCompraDetalleCreate';
+
+import OrdenCompraEditComponent from './OrdenCompraEditar';
 // import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
 
 import AddIcon from '@mui/icons-material/Add';
@@ -28,7 +35,20 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
+import { Collapse} from '@mui/material';
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
+// // ...
+// const [expandedRow, setExpandedRow] = useState(null); // nuevo estado
+
+// const toggleExpandRow = (id) => {
+//   setExpandedRow((prev) => (prev === id ? null : id));
+// };
+
 const OrdenesCompras = () => {
+  const [collapseAbiertoId, setCollapseAbiertoId] = useState(null);
+
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
   const [ordenCompraEditando, setOrdenCompraEditando] = useState(null);
@@ -36,6 +56,7 @@ const OrdenesCompras = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
+  const [showCollapse, setShowCollapse] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
@@ -74,10 +95,28 @@ const OrdenesCompras = () => {
   const abrirMenu = (evento, ordenCompra) => {
     setPosicionMenu(evento.currentTarget);
     setOrdenCompraSeleccionada(ordenCompra);
+    console.log(ordenCompra);
     setMenuAbierto(true);
   };
 
   const cerrarMenu = () => setMenuAbierto(false);
+
+  const handleAgregarClick = () => {
+    setShowCollapse(true);
+  };
+
+  const [alerta, setAlerta] = useState(null);
+  const handleGuardadoExitoso = () => {
+    setAlerta({ tipo: 'success', mensaje: 'Detalle guardado correctamente.' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setCollapseAbiertoId(null);
+    console.log('Guardado exitoso');
+  };
+
+  const handleCancelar = () => {
+    setShowCollapse(false);
+    console.log('Cancelar'); 
+  };
 
   const handleEditar = () => {
     if (ordenCompraSeleccionada) {
@@ -121,7 +160,7 @@ const OrdenesCompras = () => {
     ordenCompra.orco_FechaEmision.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_FechaLimite.toString().includes(searchQuery.trim()) ||
     ordenCompra.fopa_Descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_Materiales.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ordenCompra.orco_Materiales.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.code_EspecificacionEmbalaje.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ordenCompra.orco_EstadoOrdenCompra.toString().includes(searchQuery.trim()) ||
     ordenCompra.orco_DireccionEntrega.toString().includes(searchQuery.trim()) ||
@@ -129,12 +168,13 @@ const OrdenesCompras = () => {
   );
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div>
+      
       <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
-      <ParentCard>
+      <ParentCard sx={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}>
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
@@ -156,20 +196,27 @@ const OrdenesCompras = () => {
                 }}
               />
             </Stack>
-            <TableContainer component={Paper}>
+
+            {alerta && (
+              <Alert severity={alerta.tipo} onClose={() => setAlerta(null)}>
+                {alerta.mensaje}
+              </Alert>
+            )}
+            <TableContainer component={Paper} sx={{ width: '100%', overflowX: 'auto' }}>
                 <Table>
                     <TableHead>
-                        <TableRow>
+                        <TableRow> 
+                            <TableCell><Typography variant="h6"></Typography></TableCell>
                             <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Cliente</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Código</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Fecha Emisión</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Fecha Límite</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Método de Pago</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Materiales</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Embalaje</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Estado</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Dirección de entrega</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Cliente</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Código</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Fecha Emisión</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Fecha Límite</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Método de Pago</Typography></TableCell>
+                            <TableCell align='center' sx={{ minWidth: 70 }}><Typography variant="h6">Materiales</Typography></TableCell>
+                            <TableCell align='center' sx={{ minWidth: 120 }}><Typography variant="h6">Embalaje</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Estado</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Dirección de Entrega</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
@@ -177,39 +224,75 @@ const OrdenesCompras = () => {
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
                 ).map((ordenCompra) => (
-                    <TableRow key={ordenCompra.orco_Id}>
-                        <TableCell align="center">
-                        <IconButton onClick={(e) => abrirMenu(e, ordenCompra)}>
-                            <SettingsIcon sx={{ color: '#2196F3', fontSize: '20px' }} />
-                        </IconButton>
-                        </TableCell>
-                        {/* <TableCell>{ordenCompra.orco_Id}</TableCell> */}
-                        <TableCell>{ordenCompra.clie_Nombre_O_Razon_Social}</TableCell>
-                        <TableCell>{ordenCompra.orco_Codigo}</TableCell>
-                        <TableCell>{ordenCompra.orco_FechaEmision}</TableCell>
-                        <TableCell>{ordenCompra.orco_FechaLimite}</TableCell>
-                        <TableCell>{ordenCompra.fopa_Descripcion}</TableCell>
-                        <TableCell>{ordenCompra.orco_Materiales}</TableCell>
-                        <TableCell>{ordenCompra.code_EspecificacionEmbalaje}</TableCell>
-                        <TableCell>{ordenCompra.orco_EstadoOrdenCompra}</TableCell>
-                        <TableCell>{ordenCompra.orco_DireccionEntrega}</TableCell>
-                        <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          disabled={!ordenCompra.orco_Id}
-                          onClick={() => navigate(`/ordenCompraDetalle/list/${ordenCompra.orco_Id}`)}
-                          >
-                          Ver detalle
-                        </Button>
-                        </TableCell>
-                    </TableRow>
+                  <React.Fragment key={ordenCompra.orco_Id}>
+                  <TableRow align="center">
+                  <TableCell>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() =>
+                          setCollapseAbiertoId(
+                            collapseAbiertoId === ordenCompra.orco_Id ? null : ordenCompra.orco_Id
+                          )
+                        }
+                        > 
+                        {collapseAbiertoId === ordenCompra.orco_Id ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton onClick={(e) => abrirMenu(e, ordenCompra)}>
+                        <SettingsIcon sx={{ color: '#7521f3', fontSize: '20px' }} />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align='center'>{ordenCompra.clie_Nombre_O_Razon_Social}</TableCell>
+                    <TableCell align='center'>{ordenCompra.orco_Codigo}</TableCell>
+                    <TableCell align='center'>{ordenCompra.orco_FechaEmision}</TableCell>
+                    <TableCell align='center'>{ordenCompra.orco_FechaLimite}</TableCell>
+                    <TableCell align='center'>{ordenCompra.fopa_Descripcion}</TableCell>
+                    <TableCell align='center'>
+                      {ordenCompra.orco_Materiales === true
+                        ? 'Sí'
+                        : ordenCompra.orco_Materiales === false
+                        ? 'No'
+                        : '—'}
+                    </TableCell>
+                    <TableCell align='center'>{ordenCompra.tiem_Descripcion ?? '—'}</TableCell>
+                    <TableCell align='center'>{ordenCompra.orco_EstadoOrdenCompra}</TableCell>
+                    <TableCell align='center' sx={{ minWidth: 250, whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                      {ordenCompra.orco_DireccionEntrega ?? '—'}
+                    </TableCell>
+
+                  </TableRow>
+
+                  {collapseAbiertoId === ordenCompra.orco_Id && (
+                  <TableRow>
+                    <TableCell colSpan={11} sx={{ paddingBottom: 0, paddingTop: 0 }}>
+                      <Collapse in={true} timeout="auto" unmountOnExit>
+                      {ordenCompra?.orco_Id > 0 && (
+                        <OrdenCompraDetallesCreateComponent 
+                        ordenCompraId={ordenCompra.orco_Id} 
+                        onGuardadoExitoso={handleGuardadoExitoso}
+                        onCancelar={handleCancelar}
+                        />
+                      )}
+
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
                 ))}
-                  {emptyRows > 0 && (
+                  
+                {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={3} />
                     </TableRow>
                   )}
+
                 </TableBody>
                     <Menu anchorEl={posicionMenu} open={menuAbierto} onClose={cerrarMenu}>
                         <MenuItem onClick={handleEditar}>
@@ -254,8 +337,10 @@ const OrdenesCompras = () => {
         )}
 
         {modo === 'crear' && (
-          <OrdenCompraCreate
-            onCancelar={() => setModo('listar')}
+          <OrdenCompraComponent
+            onCancelar={() => {
+              setModo('listar');
+            }}
             onGuardadoExitoso={() => {
               setModo('listar');
               cargarOrdenesCompras();
@@ -264,28 +349,33 @@ const OrdenesCompras = () => {
           />
         )}
 
-        {/* {modo === 'editar' && (
-          <OrdenesComprasEdit
-            ordenCompraInicial={ordenCompraEditando}
+        { modo === 'editar' && (
+          <OrdenCompraEditComponent
+            ordenCompra = {ordenCompraSeleccionada}
+            // ordenCompraInicial={ordenCompraEditando}
             onCancelar={() => {
               setModo('listar');
-              setProvinciaEditando(null);
+              setOrdenCompraEditando(null);
             }}
             onGuardadoExitoso={() => {
               setModo('listar');
-              setProvinciaEditando(null);
+              setOrdenCompraEditando(null);
               cargarOrdenesCompras();
               mostrarAlerta('actualizado');
             }}
           />
         )}
 
-        {modo === 'detalle' && (
-          <OrdenesComprasDetails
-            ordenCompra={ordenCompraSeleccionada}
-            onCancelar={() => setModo('listar')}
-          />
-        )} */}
+        { modo === 'detalle' && (
+          <>
+            <Button onClick={() => setModo('listar')}>
+              Regresar
+            </Button>
+            <OrdenesComprasDetalle
+              orco_Id = {ordenCompraSeleccionada.orco_Id}
+            />
+          </>
+        )}
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -307,6 +397,7 @@ const OrdenesCompras = () => {
                 open={openSnackbar}
                 autoHideDuration={3000}
                 onClose={() => setOpenSnackbar(false)}
+                message="¡Detalle guardado exitosamente!"
             >
             <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
             </Snackbar>
