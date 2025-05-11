@@ -1,9 +1,11 @@
 import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PersonaJuridica from 'src/models/PersonaJuridicaModel';
 // import OrdenCompraDetallesCreateComponent from '../components/ordenCompraDetalle/OrdenCompraDetalleCreate';
+import { es } from 'date-fns/locale';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -100,9 +102,11 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+
+
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
@@ -134,6 +138,7 @@ const Colonias = Loadable(lazy(() => import('../components/general/colonias/Colo
 
 // Acceso
 const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
+const Roles = Loadable(lazy(() => import('../components/acceso/roles/rolesList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -176,6 +181,58 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
+
+const localStorageData = localStorage.getItem('PantallasPermitidas');
+const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : null;
+const localStorageDatas = localStorage.getItem('DataUsuario');
+const parsedData = localStorageDatas ? JSON.parse(localStorageDatas) : null;
+const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
+
+const todasLasRutas = [
+  { path: '/dashboards/modern', element: <ModernDash/> },
+  { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
+  { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
+  { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
+  { path: '/cargos/list', element: <Cargo/>, pantalla:'Cargos'  },
+  { path: '/colonias/list', element: <Colonias/>, pantalla:'Colonias' },
+  { path: '/ciudades/list', element: <Ciudad/>, pantalla:'Ciudades' },
+  { path: '/estadosciviles/list', element: <EstadosCivilesList/>, pantalla:'Estados Civiles' },
+  { path: '/empleado/list', element: <Empleado/>, pantalla:'Empleados' },
+  { path: '/oficinas/list', element: <Oficinas/>, pantalla:'Oficinas' },
+  { path: '/oficioProfesiones/list', element: <OficioProfesiones/>, pantalla:'Oficio Profesiones' },
+  { path: '/formasenvio/list', element: <FormasEnvio/>, pantalla:'Formas de Envio' },
+  { path: '/moneda/list', element: <Moneda/>, pantalla:'Monedas' },
+  { path: '/paises/list', element: <Pais/>, pantalla:'Paises' },
+  { path: '/provincias/list', element: <Provincia/>, pantalla:'Provincias' },
+  { path: '/proveedores/list', element: <Proveedor/>, pantalla:'Proveedores' },
+  { path: '/unidadesmedidas/list', element: <UnidadesMedidas/>, pantalla:'Unidades de Medida' },
+  { path: '/aduanas/list', element: <Aduana/>, pantalla:'Aduanas' },
+  { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
+  { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
+  { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+  { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
+  { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
+  { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
+  { path: '/niveles-comerciales/list', element: <NivelComercial/>, pantalla:'Niveles Comerciales' },
+  { path: '/marcas/list', element: <Marcas/>, pantalla:'Marcas' },
+  { path: '/modotransporte/list', element: <ModoTransporte/>, pantalla:'Modo Transporte' },
+  { path: '/tiposidentificacion/list', element: <TiposIdentificacion/>, pantalla:'Tipos de Identificacion' },
+  { path: '/tipointermediario/list', element: <TipoIntermediario/>, pantalla:'Tipo Intermediario' },
+  { path: '/categorias/list', element: <Categorias/>, pantalla:'Categorias' },
+  { path: '/marcasmaquinas/list', element: <MarcasMaquinas/>, pantalla:'Marcas Maquinas' },
+  { path: '/tipoembalaje/list', element: <TipoEmbalaje/>, pantalla:'Tipo Embalaje' },
+  { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
+  { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
+  { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
+  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Declaracion de Valor' },
+  { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
+  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Impresion Declaracion de Valor' },
+  { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
+]
+
+const rutasFiltradas = todasLasRutas.filter((ruta) =>
+  esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
+);
 
 const Router = [
   {
@@ -310,6 +367,10 @@ const Router = [
 
 
       { path: '*', element: <Navigate to="/auth/404" /> },
+      ...rutasFiltradas.map((ruta) => ({
+        ...ruta,
+        element: <PrivateRoute>{ruta.element}</PrivateRoute>, // Envuelve las rutas protegidas con PrivateRoute
+      })),
     ],
   },
   {
@@ -318,13 +379,8 @@ const Router = [
     children: [
       { path: '/auth/404', element: <Error /> },
       { path: '/auth/login', element: <Login /> },
-      { path: '/auth/login2', element: <Login2 /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/register2', element: <Register2 /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
-      { path: '/auth/forgot-password2', element: <ForgotPassword2 /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },
-      { path: '/auth/two-steps2', element: <TwoSteps2 /> },
       { path: '/auth/maintenance', element: <Maintenance /> },
       { path: '/landingpage', element: <Landingpage /> },
       { path: '*', element: <Navigate to="/auth/404" /> },

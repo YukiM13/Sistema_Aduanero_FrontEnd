@@ -288,6 +288,7 @@ const listarProvinciasPorPais = (paisId) => {
                    
                    <CustomFormLabel>Telefono</CustomFormLabel>
                    <ReactIntlTelInput
+                   style={{ width: '100%' }}
                     containerClassName="intl-tel-input custom-intl-input"
                     inputClassName="form-control"
                     preferredCountries={['us','hn']}
