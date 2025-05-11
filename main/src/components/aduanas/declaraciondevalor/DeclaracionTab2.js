@@ -288,6 +288,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Nombre o razón social</CustomFormLabel>
                         <CustomTextField
                                 fullWidth
+                                variant="outlined"
+                                sx={{
+                                  backgroundColor: '#fafafa',
+                                  '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                      borderColor: '#aaa',
+                                    },
+                                    '&:hover fieldset': {
+                                      borderColor: '#000',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                      borderColor: '#1976d2',
+                                    },
+                                  },
+                                }}
                                 id="declarantesProv_ViewModel.decl_Nombre_Raso"
                                 name="declarantesProv_ViewModel.decl_Nombre_Raso"
                                 type="text"
@@ -303,6 +318,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Dirección</CustomFormLabel>
                       <CustomTextField
                                   fullWidth
+                                  variant="outlined"
+                                  sx={{
+                                    backgroundColor: '#fafafa',
+                                    '& .MuiOutlinedInput-root': {
+                                      '& fieldset': {
+                                        borderColor: '#aaa',
+                                      },
+                                      '&:hover fieldset': {
+                                        borderColor: '#000',
+                                      },
+                                      '&.Mui-focused fieldset': {
+                                        borderColor: '#1976d2',
+                                      },
+                                    },
+                                  }}
                                   id="declarantesProv_ViewModel.decl_Direccion_Exacta"
                                   name="declarantesProv_ViewModel.decl_Direccion_Exacta"
                                   type="text"
@@ -317,6 +347,22 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}> {/* Esto es como el div con class col-md-6 */}
                         <CustomFormLabel>Ciudad</CustomFormLabel>
                         <Autocomplete
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            backgroundColor: '#fafafa',
+                            '& .MuiOutlinedInput-root': {
+                              '& fieldset': {
+                                borderColor: '#aaa',
+                              },
+                              '&:hover fieldset': {
+                                borderColor: '#000',
+                              },
+                              '&.Mui-focused fieldset': {
+                                borderColor: '#1976d2',
+                              },
+                            },
+                          }}
                           options={ciudades}
                           getOptionLabel={(option) => option.ciud_Nombre || ''}
                           value={selectedCiudad}
@@ -346,6 +392,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       <CustomFormLabel>Correo electrónico</CustomFormLabel>
                       <CustomTextField
                                   fullWidth
+                                  variant="outlined"
+                                  sx={{
+                                    backgroundColor: '#fafafa',
+                                    '& .MuiOutlinedInput-root': {
+                                      '& fieldset': {
+                                        borderColor: '#aaa',
+                                      },
+                                      '&:hover fieldset': {
+                                        borderColor: '#000',
+                                      },
+                                      '&.Mui-focused fieldset': {
+                                        borderColor: '#1976d2',
+                                      },
+                                    },
+                                  }}
                                   id="declarantesProv_ViewModel.decl_Correo_Electronico"
                                   name="declarantesProv_ViewModel.decl_Correo_Electronico"
                                   type="text"
@@ -361,6 +422,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Teléfono</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesProv_ViewModel.decl_Telefono"
                             name="declarantesProv_ViewModel.decl_Telefono"
                             type="text"
@@ -376,6 +452,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Fax</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesProv_ViewModel.decl_Fax"
                             name="declarantesProv_ViewModel.decl_Fax"
                             type="text"
@@ -391,6 +482,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>RTN</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesProv_ViewModel.decl_NumeroIdentificacion"
                             name="declarantesProv_ViewModel.decl_NumeroIdentificacion"
                             type="text"
@@ -405,6 +511,22 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Condición comercial</CustomFormLabel>
                         <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={condicionComercial}
                             getOptionLabel={(option) => option.coco_Descripcion || ''}
                             value={selectedCondicionComercial}
@@ -435,6 +557,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Otra Condición</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="proveedoresDeclaracionViewModel.pvde_Condicion_Otra"
                             name="proveedoresDeclaracionViewModel.pvde_Condicion_Otra"
                             type="text"
@@ -459,6 +596,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Nombre o razón social</CustomFormLabel>
                         <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declarantesInte_ViewModel.decl_Nombre_Raso"
                         name="declarantesInte_ViewModel.decl_Nombre_Raso"
                         type="text"
@@ -474,6 +626,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Dirección</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesInte_ViewModel.decl_Direccion_Exacta"
                             name="declarantesInte_ViewModel.decl_Direccion_Exacta"
                             type="text"
@@ -487,6 +654,22 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Ciudad</CustomFormLabel>
                         <Autocomplete
+                        fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                           options={ciudades}
                           getOptionLabel={(option) => option.ciud_Nombre || ''}
                           value={selectedCiudadIntermediario}
@@ -517,6 +700,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Correo electrónico</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declarantesInte_ViewModel.decl_Correo_Electronico"
                         name="declarantesInte_ViewModel.decl_Correo_Electronico"
                         type="text"
@@ -531,6 +729,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Teléfono</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declarantesInte_ViewModel.decl_Telefono"
                         name="declarantesInte_ViewModel.decl_Telefono"
                         type="text"
@@ -545,6 +758,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fax</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declarantesInte_ViewModel.decl_Fax"
                         name="declarantesInte_ViewModel.decl_Fax"
                         type="text"
@@ -559,6 +787,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>RTN del intermediario</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declarantesInte_ViewModel.decl_NumeroIdentificacion"
                         name="declarantesInte_ViewModel.decl_NumeroIdentificacion"
                         type="text"
@@ -573,6 +816,22 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                     <CustomFormLabel>Tipo intermediario</CustomFormLabel>
                     <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={tipoIntermediario}
                             getOptionLabel={(option) => option.tite_Descripcion || ''}
                             value={selectedTipoIntermediario}
@@ -606,6 +865,21 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Otro tipo de intermediario</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="intermediarioViewModel.inte_Tipo_Otro"
                         name="intermediarioViewModel.inte_Tipo_Otro"
                         type="text"

@@ -375,34 +375,66 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Aduana de ingreso</CustomFormLabel>
                         <Autocomplete
-                                options={aduanas}
-                                getOptionLabel={(option) => option.adua_Nombre || ''}
-                                value={selectAduanaIngreso}
-                                onChange={(event, newValue) => {
-                                    setSelectedAduanaIngreso(newValue);
-                                    if (newValue) {
-                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', newValue.adua_Id);
-                                    } else {
-                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', 0);
-                                    }
-                                }}
-                                renderInput={(params) => (
-                                    <TextField 
-                                    {...params} 
-                                    variant="outlined" 
-                                    placeholder="Seleccione una aduana"
-                                    error={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId)}
-                                    helperText={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
-                                    />
-                                )}
-                                noOptionsText="No hay aduanas disponibles"
-                                isOptionEqualToValue={(option, value) => option.adua_Id === value?.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
+                        options={aduanas}
+                        getOptionLabel={(option) => option.adua_Nombre || ''}
+                        value={selectAduanaIngreso}
+                        onChange={(event, newValue) => {
+                            setSelectedAduanaIngreso(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', newValue.adua_Id);
+                            } else {
+                            formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', 0);
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione una aduana"
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
+                            />
+                        )}
+                        noOptionsText="No hay aduanas disponibles"
+                        isOptionEqualToValue={(option, value) => option.adua_Id === value?.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
                         />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Aduana de despacho</CustomFormLabel>
                     <Autocomplete
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: '#fafafa',
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: '#aaa',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#000',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1976d2',
+                        },
+                      },
+                    }}
                     options={aduanas}
                     getOptionLabel={(option) => option.adua_Nombre || ''}
                     value={selectAduanaDespacho}
@@ -440,6 +472,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             <CustomFormLabel>Declaración de mercancia</CustomFormLabel>
                             <CustomTextField
                                 fullWidth
+                                variant="outlined"
+                                sx={{
+                                  backgroundColor: '#fafafa',
+                                  '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                      borderColor: '#aaa',
+                                    },
+                                    '&:hover fieldset': {
+                                      borderColor: '#000',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                      borderColor: '#1976d2',
+                                    },
+                                  },
+                                }}
                                 id="declaraciones_ValorViewModel.deva_DeclaracionMercancia"
                                 name="declaraciones_ValorViewModel.deva_DeclaracionMercancia"
                                 type="text"
@@ -454,6 +501,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Fecha de aceptación</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_FechaAceptacion"
                             name="declaraciones_ValorViewModel.deva_FechaAceptacion"
                             type="date"
@@ -468,6 +530,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Regimen Aduanero</CustomFormLabel>
                     <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={regimenAduanero}
                             getOptionLabel={(option) => option.regi_Descripcion || ''}
                             value={selectedRegimenAduanero}
@@ -499,6 +577,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Nombre o razón social</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Nombre_Raso"
                             name="declarantesImpo_ViewModel.decl_Nombre_Raso"
                             type="text"
@@ -514,6 +607,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Registro Tributario (RTN)</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="importadoresViewModel.impo_RTN"
                             name="importadoresViewModel.impo_RTN"
                             type="text"
@@ -529,6 +637,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Número de registro</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="importadoresViewModel.impo_NumRegistro"
                             name="importadoresViewModel.impo_NumRegistro"
                             type="text"
@@ -544,6 +667,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Dirección exacta</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             name="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             type="text"
@@ -559,6 +697,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                             <CustomFormLabel>Ciudad</CustomFormLabel>
                             <Autocomplete
+                              fullWidth
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: '#fafafa',
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    borderColor: '#aaa',
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: '#000',
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: '#1976d2',
+                                  },
+                                },
+                              }}
                               options={ciudades}
                               getOptionLabel={(option) => option.ciud_Nombre || ''}
                               value={selectedCiudad}
@@ -589,6 +743,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Correo electrónico</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             name="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             type="text"
@@ -605,6 +774,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Teléfono</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="declarantesImpo_ViewModel.decl_Telefono"
                         name="declarantesImpo_ViewModel.decl_Telefono"
                         type="text"
@@ -622,6 +806,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fax</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="declarantesImpo_ViewModel.decl_Fax"
                         name="declarantesImpo_ViewModel.decl_Fax"
                         type="text"
@@ -639,6 +838,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                     <CustomFormLabel>Nivel comercial</CustomFormLabel>
                     <Autocomplete
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: '#fafafa',
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: '#aaa',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#000',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1976d2',
+                        },
+                      },
+                    }}
                     options={nivelComercial}
                     getOptionLabel={(option) => option.nico_Descripcion || ''}
                     value={selectedNivelComercial}
@@ -670,6 +885,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Otro nivel comercial</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="importadoresViewModel.impo_NivelComercial_Otro"
                         name="importadoresViewModel.impo_NivelComercial_Otro"
                         type="text"
@@ -697,11 +927,8 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             >
             No puede haber campos vacios.
             </Alert>
-        </Snackbar>                  
-
-     
+        </Snackbar>   
         </div>
-
     );
 });
 

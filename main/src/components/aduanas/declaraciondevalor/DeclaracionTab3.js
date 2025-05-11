@@ -440,6 +440,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Lugar entrega</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_LugarEntrega"
                             name="declaraciones_ValorViewModel.deva_LugarEntrega"
                             type="text"
@@ -454,6 +469,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Pais de entrega</CustomFormLabel>
                     <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={paises}
                             getOptionLabel={(option) => option.pais_Nombre || ''}
                             value={selectedPaisEntrega}
@@ -483,6 +514,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}> {/* Esto es como el div con class col-md-6 */}
                             <CustomFormLabel>Incoterm</CustomFormLabel>
                             <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={incoterms}
                             getOptionLabel={(option) => option.inco_Descripcion || ''}
                             value={selectedIncoterms}
@@ -511,6 +558,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Versión</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.inco_Version"
                             name="declaraciones_ValorViewModel.inco_Version"
                             type="text"
@@ -526,6 +588,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Numero de Contrato</CustomFormLabel>
                     <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_NumeroContrato"
                             name="declaraciones_ValorViewModel.deva_NumeroContrato"
                             type="text"
@@ -541,6 +618,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Fecha de contrato</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_FechaContrato"
                             name="declaraciones_ValorViewModel.deva_FechaContrato"
                             type="date"
@@ -555,6 +647,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Forma de envío</CustomFormLabel>
                         <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={formasEnvio}
                             getOptionLabel={(option) => option.foen_Descripcion || ''}
                             value={selectedFormaEnvio}
@@ -584,6 +692,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Otra forma de envio (Especifique)</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_FormaEnvioOtra"
                             name="declaraciones_ValorViewModel.deva_FormaEnvioOtra"
                             type="text"
@@ -634,6 +757,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Forma de pago</CustomFormLabel>
                         <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={formaPago}
                             getOptionLabel={(option) => option.fopa_Descripcion || ''}
                             value={selectedFormaPago}
@@ -663,6 +802,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             <CustomFormLabel>Otra forma de pago (Especifique)</CustomFormLabel>
                             <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_FormaPagoOtra"
                             name="declaraciones_ValorViewModel.deva_FormaPagoOtra"
                             type="text"
@@ -680,6 +834,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                                    
                                     <CustomTextField
                                     fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                                     id="declaraciones_ValorViewModel.emba_Id"
                                     name="declaraciones_ValorViewModel.emba_Id"
                                     type="text"
@@ -703,6 +872,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Pais de exportacion</CustomFormLabel>
                         <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={paises}
                             getOptionLabel={(option) => option.pais_Nombre || ''}
                             value={selectedPaisExportacion}
@@ -733,6 +918,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fecha de exportación</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="declaraciones_ValorViewModel.deva_FechaExportacion"
                         name="declaraciones_ValorViewModel.deva_FechaExportacion"
                         type="date"
@@ -746,6 +946,22 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Moneda en que se realizó la transacción</CustomFormLabel>
                     <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={monedas}
                             getOptionLabel={(option) => option.mone_Codigo +' - ' +option.mone_Descripcion || ''}
                             value={selectedMoneda}
@@ -775,6 +991,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Otra moneda (Especifique)</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declaraciones_ValorViewModel.mone_Otra"
                         name="declaraciones_ValorViewModel.mone_Otra"
                         type="text"
@@ -790,6 +1021,21 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Tipo de cambio de moneda extranjera a dólares USD</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                         id="declaraciones_ValorViewModel.deva_ConversionDolares"
                         name="declaraciones_ValorViewModel.deva_ConversionDolares"
                         type="text"
