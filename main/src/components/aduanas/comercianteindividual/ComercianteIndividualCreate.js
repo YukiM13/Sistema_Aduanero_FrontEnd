@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Fade from '@mui/material/Fade';
 import { Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { useFormik } from 'formik';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PersonIcon from '@mui/icons-material/Person';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import DescriptionIcon from '@mui/icons-material/Description';
 import * as yup from 'yup';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
@@ -92,6 +98,7 @@ const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
 const [correoVerificado, setCorreoVerificado] = useState(false);
 const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
 const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
 
 const resetearFormulario = () => {
   formik.resetForm();
@@ -1016,40 +1023,56 @@ const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div>
-      <Tabs
+     <Tabs
   value={tabIndex}
   onChange={(e, newValue) => {
-    // Evitar que el usuario haga clic para saltar tabs
-    // Solo permitimos cambiar tab si es el mismo (click duplicado)
+    // Solo permitir clic en el mismo tab (puedes mejorar esto según el progreso del formulario)
     if (newValue === tabIndex) return;
   }}
-  textColor="primary"
-  indicatorColor="primary"
   variant="scrollable"
   scrollButtons="auto"
   sx={{
     mb: 2,
+    borderRadius: 2,
+    backgroundColor: '#f9f9f9',
+    padding: '10px',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
     '& .MuiTab-root': {
-      fontWeight: 'bold',
+      fontWeight: 600,
       textTransform: 'none',
-      borderRadius: 1,
+      borderRadius: 2,
+      mx: 1,
+      px: 2,
+      py: 1,
     },
-    '& .Mui-selected': {
-      backgroundColor: '#1976d2',
-      color: 'white',
-    },
+  '& .Mui-selected': {
+  backgroundColor: 'white',
+  color: '#1976d2',
+  fontWeight: 'bold',
+  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
+  border: '1px solid #1976d2',
+},
+
+
+
     '& .MuiTabs-indicator': {
-      height: '4px',
-      borderRadius: '4px',
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: '#1976d2',
     },
   }}
 >
-  <Tab label="Datos Personales" />
-  <Tab label="Localización" />
-  <Tab label="Representante" />
-  <Tab label="Contacto" />
-  <Tab label="Documentos" />
+  <Tab icon={<AccountCircleIcon />} iconPosition="start" label="Datos Personales" />
+  <Tab icon={<LocationOnIcon />} iconPosition="start" label="Localización" />
+  <Tab icon={<PersonIcon />} iconPosition="start" label="Representante" />
+  <Tab icon={<ContactPhoneIcon />} iconPosition="start" label="Contacto" />
+  <Tab 
+    icon={<DescriptionIcon />} 
+    iconPosition="start" 
+    label="Documentos" 
+  />
 </Tabs>
+
 
 
       <form onSubmit={formik.handleSubmit}>
@@ -1057,6 +1080,7 @@ const [isLoading, setIsLoading] = useState(false);
           {/* Datos Personales */}
           {tabIndex === 0 && (
             <Grid container spacing={3}>
+              
               <Grid item lg={6}>
                 <CustomFormLabel>RTN</CustomFormLabel>
                 <InputMask
@@ -1734,90 +1758,82 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
 )}
         </Box>
        
-       <Box mt={3} display="flex" justifyContent="space-between">
-  <div>
-    {tabIndex > 0 && (
+      <Box
+  mt={4}
+  display="flex"
+  justifyContent="space-between"
+  alignItems="center"
+  flexWrap="wrap"
+  gap={2}
+>
+  {tabIndex > 0 && (
+    <Button
+      variant="outlined"
+      color="primary"
+      size="medium"
+      onClick={() => setTabIndex(tabIndex - 1)}
+      sx={{ borderRadius: 2, fontWeight: 500 }}
+    >
+      ← Anterior
+    </Button>
+  )}
+
+  <Box display="flex" gap={2}>
+    {tabIndex < 4 && (
       <Button
-        variant="outlined"
+        variant="contained"
         color="primary"
-        onClick={() => setTabIndex(tabIndex - 1)}
+        size="medium"
+        onClick={async () => {
+          let success = false;
+
+          if (tabIndex === 0) success = await handleSaveTap1();
+          else if (tabIndex === 1) success = await handleSaveTap2();
+          else if (tabIndex === 2) success = await handleSaveTap3();
+          else if (tabIndex === 3) {
+            success = await handleSaveTap4();
+            if (success && !correoVerificado) {
+              showErrorMessage('Debe verificar su correo electrónico antes de continuar.');
+              return;
+            }
+          }
+
+          if (success) setTabIndex(tabIndex + 1);
+        }}
+        sx={{ borderRadius: 2, fontWeight: 600 }}
       >
-        Anterior
+        Siguiente →
       </Button>
     )}
-  </div>
-  
-  <div>
-    {tabIndex < 4 && (
-      
-<Button
-  variant="contained"
-  color="primary"
-  onClick={async () => {
-    let success = false;
-    
-    // Manejo diferente según el tab actual
-    if (tabIndex === 0) {
-      // Tab 1: Guardar datos personales
-      success = await handleSaveTap1();
-    } else if (tabIndex === 1) {
-      // Tab 2: Guardar dirección
-      success = await handleSaveTap2();
-    } else if (tabIndex === 2) {
-      // Tab 3: Guardar dirección del representante
-      success = await handleSaveTap3();
-    } else if (tabIndex === 3) {
-  // Tab 4: Guardar información de contacto
-  success = await handleSaveTap4();
 
-  // Si la validación fue exitosa, pero el correo no ha sido verificado
-  if (success && !correoVerificado) {
-    showErrorMessage('Debe verificar su correo electrónico antes de continuar.');
-    return;
-  }
-}
- else {
-      // Para los demás tabs (por ahora simplemente avanzar)
-      success = true;
-    }
-    
-    // Solo avanzar al siguiente tab si la operación fue exitosa
-    if (success) {
-      setTabIndex(tabIndex + 1);
-    }
-  }}
->
-  Siguiente
-</Button>
-    
-     
+    {tabIndex === 4 && (
+      <>
+        <Button
+          type="button"
+          variant="contained"
+          color="success"
+          startIcon={<SaveIcon />}
+          onClick={handleSaveDocuments}
+          disabled={isLoading}
+          sx={{ borderRadius: 2, fontWeight: 600 }}
+        >
+          {isLoading ? <CircularProgress size={20} color="inherit" /> : 'Guardar'}
+        </Button>
+
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => setOpenCancelDialog(true)}
+          startIcon={<CancelIcon />}
+          sx={{ borderRadius: 2, fontWeight: 500 }}
+        >
+          Cancelar
+        </Button>
+      </>
     )}
-   {tabIndex === 4 && (
-  <>
-    <Button
-      type="button" // Cambiado de "submit" a "button" para evitar envío automático del formulario
-      variant="contained"
-      color="primary"
-      startIcon={<SaveIcon />}
-      onClick={handleSaveDocuments}
-      disabled={isLoading} // Deshabilitar mientras está cargando
-    >
-      {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Guardar'}
-    </Button>
-   <Button 
-  variant="outlined" 
-  color="error" 
-  onClick={() => setOpenCancelDialog(true)}
->
-  Cancelar
-</Button>
-
-
-
-  </>  
-)}
-  </div>
+  </Box>
 </Box>
+
 
 <Snackbar 
   open={openSnackbar} 
