@@ -7,11 +7,15 @@ import {
   Button,
   Typography,
   FormControlLabel,
+  Divider,
   Snackbar,
+  Chip,
   Alert,
+  Paper
 } from '@mui/material';
 import PageContainer from 'src/components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
@@ -21,6 +25,7 @@ import { Stack } from '@mui/system';
 import Tab1 from './DeclaracionTab1';
 import Tab2 from './DeclaracionTab2';
 import Tab3 from './DeclaracionTab3';
+import Logo from 'src/assets/images/logos/LOGO.svg';
 
 const steps = ['Información del importador', 'Informacion del proveedor e intermediario', 'Transacción'];
 
@@ -118,12 +123,120 @@ const DeclaracionValor = () => {
   };
 
   const handleReset = () => {
+    localStorage.removeItem('devaId');
     setActiveStep(0);
   };
   return (
     <PageContainer>
-      <Breadcrumb title="Declaración de valor" description="Haz tu declaración de valor" />
-      <ParentCard title='Declaración de valor'>
+      
+        <Paper
+          elevation={6}
+          sx={{
+            padding: 4,
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            maxWidth: '100%',
+            margin: 'auto',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            border: '1px solid #ccc',
+          }}
+        >
+        <Box
+  sx={{
+    background: 'linear-gradient(to bottom,rgb(4, 61, 114),rgb(17, 102, 172))',
+    color: '#fff',
+    p: 4,
+    mb: 4,
+    borderRadius: '12px',
+    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+    textAlign: 'center',
+    position: 'relative'
+  }}
+>
+  <Chip
+  label="Uso Oficial"
+  icon={<VerifiedIcon sx={{ color: '#fff', fontSize: '16px' }} />}
+  sx={{
+    position: 'absolute',
+    top: 12,
+    left: 16,
+    fontSize: '11px',
+    fontWeight: 'bold',
+    backgroundColor: '#daeefb', // Rojo oscuro elegante
+    color: 'navy',
+    fontWeight: 'bold',
+    borderRadius: '4px',
+    px: 1.5,
+    py: 0.5,
+    boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+    '& .MuiChip-icon': {
+      marginLeft: 0,
+      marginRight: '4px',
+    }
+  }}
+/>
+
+  <img
+    src={Logo}
+    alt="Logo Institucional"
+    style={{ height: '50px', marginBottom: '1rem' }}
+  />
+
+  <Typography
+    variant="h4"
+    sx={{
+      fontWeight: 'bold',
+      mb: 1,
+      letterSpacing: 1
+    }}
+  >
+    Dirección General de Aduanas
+  </Typography>
+
+
+  <Divider
+      sx={{
+        width: '30%',
+        mx: 'auto',
+        borderColor: '#bbdefb',
+        borderBottomWidth: '2px',
+        my: 1,
+      }}
+    />
+
+  <Typography
+    variant="h6"
+    sx={{
+      color: '#e3f2fd',
+      mb: 1,
+      fontStyle: 'italic'
+    }}
+  >
+    Formulario de Declaración de Valor en Aduana
+  </Typography>
+
+  <Typography
+    variant="body2"
+    sx={{ color: '#bbdefb', mb: 2 }}
+  >
+    Conforme al Acuerdo de Valor del GATT – Artículo 17
+  </Typography>
+
+  <Box
+    sx={{
+      position: 'absolute',
+      bottom: 8,
+      right: 16,
+      fontSize: '12px',
+      color: '#bbdefb',
+      textAlign: 'right'
+    }}
+  >
+    <Typography variant="body2">Código del Formulario: DVA-001</Typography>
+    <Typography variant="body2">Revisión: 03 | Vigencia: 2025</Typography>
+  </Box>
+</Box>
+
         <Box width="100%">
           <Stepper activeStep={activeStep}>
             {steps.map((label, index) => {
@@ -181,7 +294,7 @@ const DeclaracionValor = () => {
             </>
           )}
         </Box>
-      </ParentCard>
+      </Paper>
     </PageContainer>
   );
 };

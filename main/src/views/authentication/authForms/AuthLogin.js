@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -7,6 +7,7 @@ import {
   Divider,
   Snackbar,
   Alert,
+  InputAdornment,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,6 +16,8 @@ import CustomTextField from '../../../components/forms/theme-elements/CustomText
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import AuthSocialButtons from './AuthSocialButtons';
 import axios from 'axios';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
 
 const validationSchema = yup.object({
   usua_Nombre: yup.string().required('El Usuario es requerido'),
@@ -31,7 +34,7 @@ const obtenerPantallasPermitidas = async (roleId, apiUrl, apiKey) => {
     );
 
     if (response.data?.success && Array.isArray(response.data?.data)) {
-      return response.data.data.map(item => item.pant_Nombre);
+      return response.data.data.map((item) => item.pant_Nombre);
     } else {
       console.error('Error al obtener pantallas:', response.data);
       return [];
@@ -73,18 +76,25 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
           const usuario = response.data.data;
           localStorage.setItem('DataUsuario', JSON.stringify(usuario));
 
-          const pantallasPermitidas = await obtenerPantallasPermitidas(usuario.role_Id, apiUrl, apiKey);
+          const pantallasPermitidas = await obtenerPantallasPermitidas(
+            usuario.role_Id,
+            apiUrl,
+            apiKey
+          );
           localStorage.setItem('PantallasPermitidas', JSON.stringify(pantallasPermitidas));
-          
+
           window.location.href = '/dashboards/modern';
         } else {
-          setAlertMessage(response.data.message || 'Error desconocido.');
-          setAlertSeverity('error');
-          setOpenSnackbar(true);
+          formik.setErrors({
+            usua_Nombre: 'El usuario o contraseña son incorrectos',
+            usua_Contrasenia: 'El usuario o contraseña son incorrectos',
+          });
         }
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        setAlertMessage('Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
+        setAlertMessage(
+          'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.'
+        );
         setAlertSeverity('error');
         setOpenSnackbar(true);
       }
@@ -117,7 +127,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         Inicia sesión para continuar
       </Typography>
 
-      <form onSubmit={formik.handleSubmit} noValidate autoComplete="off" style={{ marginTop: '6px', px: 3 }}>
+      <form
+        onSubmit={formik.handleSubmit}
+        noValidate
+        autoComplete="off"
+        style={{ marginTop: '6px', px: 3 }}
+      >
         <Stack spacing={1}>
           <Box>
             <CustomFormLabel htmlFor="usua_Nombre">Usuario</CustomFormLabel>
@@ -131,6 +146,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Nombre && Boolean(formik.errors.usua_Nombre)}
               helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Box>
           <Box>
@@ -146,6 +168,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Contrasenia && Boolean(formik.errors.usua_Contrasenia)}
               helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Box>
         </Stack>

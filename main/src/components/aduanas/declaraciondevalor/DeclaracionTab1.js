@@ -137,7 +137,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           });
         } 
 
-        useEffect(() => {
+          useEffect(() => {
             const devaIdString = localStorage.getItem('devaId');
             if (devaIdString !== null) {
               const deva_Id = parseInt(devaIdString);
@@ -146,27 +146,28 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   'XApiKey': apiKey
                 }
               })
-             .then(response => {
+              .then(response => {
                 const rawData = response.data.data;
-
-                const data = Array.isArray(rawData)
-                  ? rawData[0]
-                  : rawData;
+                const data = Array.isArray(rawData) ? rawData[0] : rawData;
 
                 if (data && typeof data === 'object') {
-                  // Creamos una nueva estructura basada en tus esquemas Yup
+                  // Preservar estructura completa del modelo Deva
                   const mappedValues = {
+                    ...Deva, // Mantener la estructura base completa
                     declaraciones_ValorViewModel: {
-                      deva_AduanaIngresoId: data.deva_AduanaIngresoId ?? '',
-                      deva_AduanaDespachoId: data.deva_AduanaDespachoId ?? '',
+                      ...Deva.declaraciones_ValorViewModel, // Preservar todos los campos
+                      deva_Id: deva_Id,
+                      deva_AduanaIngresoId: data.deva_AduanaIngresoId ?? 0,
+                      deva_AduanaDespachoId: data.deva_AduanaDespachoId ?? 0,
                       deva_DeclaracionMercancia: data.deva_DeclaracionMercancia ?? '',
                       deva_FechaAceptacion: data.deva_FechaAceptacion
                         ? new Date(data.deva_FechaAceptacion).toISOString().split('T')[0]
                         : '',
-                      regi_Id: data.regi_Id ?? '',
-
+                      regi_Id: data.regi_Id ?? 0,
+                      // Otros campos...
                     },
                     declarantesImpo_ViewModel: {
+                      ...Deva.declarantesImpo_ViewModel, // Preservar todos los campos
                       decl_Nombre_Raso: data.impo_Nombre_Raso ?? '',
                       ciud_Id: data.impo_ciudId ?? 0,
                       decl_Direccion_Exacta: data.impo_Direccion_Exacta ?? '',
@@ -175,12 +176,13 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       decl_Fax: data.impo_Fax ?? '',
                     },
                     importadoresViewModel: {
+                      ...Deva.importadoresViewModel, // Preservar todos los campos
                       impo_NivelComercial_Otro: data.impo_NivelComercial_Otro ?? '',
                       nico_Id: data.nico_Id ?? 0,
-                       impo_RTN: data.impo_RTN ?? '',
+                      impo_RTN: data.impo_RTN ?? '',
                       impo_NumRegistro: data.impo_NumRegistro ?? '',
-                      
                     }
+                    // Los demás submodelos se mantienen con los valores por defecto de Deva
                   };
 
                   setInitialValues(mappedValues);
@@ -190,79 +192,97 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               .catch(error => {
                 console.error('Error al obtener los datos de la deva:', error);
               });
+            } else {
+              // Si no hay devaId, inicializar con el modelo Deva vacío
+              setInitialValues(Deva);
             }
-          }, []); 
-        
+          }, []);
 
-        const formik = useFormik({
-                enableReinitialize: true,
-                initialValues: initialValues,
-                validationSchema,
-                onSubmit: async(values) => {
-                  try {
-                    values.declaraciones_ValorViewModel.usua_UsuarioCreacion = 1;
-                    values.declarantesImpo_ViewModel.usua_UsuarioCreacion = 1;
-                    values.importadoresViewModel.usua_UsuarioCreacion = 1;
-                 
-                    values.declaraciones_ValorViewModel.deva_FechaCreacion = new Date().toISOString();
-                  
-                    console.log("Enviando valores:", values);
-                    
-                    let todosExitosos = true;
-                    if(localStorage.getItem('devaId'))
-                    {
-                     
-                      const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, values, {
-                        headers: { 'XApiKey': apiKey },
-                        'Content-Type': 'application/json'
-                      });
-                 
-                      if (response.data.data.messageStatus === '0') { 
-                            todosExitosos = false;
-                      
-                      }
-                      if (todosExitosos) {
-                        localStorage.setItem('devaId', response.data.data.messageStatus)
-                        if (onGuardadoExitoso) onGuardadoExitoso();
-                        
-                      } else {
-                        setOpenSnackbar(true);
-                      }
-                    }
-                    else{
-                      values.declaraciones_ValorViewModel.deva_Id = parseInt(localStorage.getItem('devaId'));
-                      values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
-                      values.declarantesImpo_ViewModel.usua_UsuarioModificacion = 1;
-                      values.importadoresViewModel.usua_UsuarioModificacion = 1;
-                  
-                      values.declaraciones_ValorViewModel.deva_FechaModificacion = new Date().toISOString();
-                    
-                      console.log("Enviando valores:", values);
-                       const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/EditarTab1`, values, {
-                        headers: { 'XApiKey': apiKey },
-                        'Content-Type': 'application/json'
-                      });
-                 
-                      if (response.data.data.messageStatus === '0') { 
-                            todosExitosos = false;
-                      
-                      }
-                      if (todosExitosos) {
-                        if (onGuardadoExitoso) onGuardadoExitoso();
-                        
-                      } else {
-                        setOpenSnackbar(true);
-                      }
-                    }
-                      
-                  
-             
-                  
-                  } catch (error) {
-                    console.error('Error al insertar:', error);
+          // Corrección para el onSubmit
+          const formik = useFormik({
+            enableReinitialize: true,
+            initialValues: initialValues,
+            validationSchema,
+            onSubmit: async(values) => {
+              try {
+                let todosExitosos = true;
+                
+                // Preparar datos comunes
+                const dataToSubmit = {
+                  ...values, // Mantiene toda la estructura
+                  declaraciones_ValorViewModel: {
+                    ...values.declaraciones_ValorViewModel,
+                    usua_UsuarioCreacion: 1,
+                    usua_UsuarioModificacion: 1,
+                    deva_FechaCreacion: new Date().toISOString(),
+                    deva_FechaModificacion: new Date().toISOString()
+                  },
+                  declarantesImpo_ViewModel: {
+                    ...values.declarantesImpo_ViewModel,
+                    usua_UsuarioCreacion: 1,
+                    usua_UsuarioModificacion: 1
+                  },
+                  importadoresViewModel: {
+                    ...values.importadoresViewModel,
+                    usua_UsuarioCreacion: 1,
+                    usua_UsuarioModificacion: 1
                   }
-                },
-              });
+                };
+                
+                const devaIdString = localStorage.getItem('devaId');
+                
+                // CORREGIDO: Si NO hay devaId, insertar nuevo
+                if (!devaIdString) {
+                  console.log("Insertando nuevo registro:", dataToSubmit);
+                  
+                  const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, dataToSubmit, {
+                    headers: { 
+                      'XApiKey': apiKey,
+                      'Content-Type': 'application/json'
+                    }
+                  });
+                  
+                  // Verificar si la operación fue exitosa
+                  if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
+                    // Guardar el nuevo ID
+                    localStorage.setItem('devaId', response.data.data.messageStatus);
+                    if (onGuardadoExitoso) onGuardadoExitoso();
+                  } else {
+                    todosExitosos = false;
+                    setOpenSnackbar(true);
+                  }
+                } 
+                // Si hay devaId, actualizar registro existente
+                else {
+                  const deva_Id = parseInt(devaIdString);
+                  dataToSubmit.declaraciones_ValorViewModel.deva_Id = deva_Id;
+                  
+                  console.log("Actualizando registro existente:", dataToSubmit);
+                  
+                  const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/EditarTab1`, dataToSubmit, {
+                    headers: { 
+                      'XApiKey': apiKey,
+                      'Content-Type': 'application/json' 
+                    }
+                  });
+                  
+                  // Verificar si la operación fue exitosa
+                  if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
+                    if (onGuardadoExitoso) onGuardadoExitoso();
+                  } else {
+                    todosExitosos = false;
+                    setOpenSnackbar(true);
+                  }
+                }
+                
+                return todosExitosos;
+              } catch (error) {
+                console.error('Error al procesar la solicitud:', error);
+                setOpenSnackbar(true);
+                return false;
+              }
+            },
+          });
             
               // Expone el método 'submit' al padre
               useImperativeHandle(ref, () => ({
@@ -355,34 +375,66 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                         <CustomFormLabel>Aduana de ingreso</CustomFormLabel>
                         <Autocomplete
-                                options={aduanas}
-                                getOptionLabel={(option) => option.adua_Nombre || ''}
-                                value={selectAduanaIngreso}
-                                onChange={(event, newValue) => {
-                                    setSelectedAduanaIngreso(newValue);
-                                    if (newValue) {
-                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', newValue.adua_Id);
-                                    } else {
-                                    formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', 0);
-                                    }
-                                }}
-                                renderInput={(params) => (
-                                    <TextField 
-                                    {...params} 
-                                    variant="outlined" 
-                                    placeholder="Seleccione una aduana"
-                                    error={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId)}
-                                    helperText={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
-                                    />
-                                )}
-                                noOptionsText="No hay aduanas disponibles"
-                                isOptionEqualToValue={(option, value) => option.adua_Id === value?.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
+                        options={aduanas}
+                        getOptionLabel={(option) => option.adua_Nombre || ''}
+                        value={selectAduanaIngreso}
+                        onChange={(event, newValue) => {
+                            setSelectedAduanaIngreso(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', newValue.adua_Id);
+                            } else {
+                            formik.setFieldValue('declaraciones_ValorViewModel.deva_AduanaIngresoId', 0);
+                            }
+                        }}
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione una aduana"
+                            error={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && Boolean(formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId)}
+                            helperText={formik.touched.declaraciones_ValorViewModel?.deva_AduanaIngresoId && formik.errors.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
+                            />
+                        )}
+                        noOptionsText="No hay aduanas disponibles"
+                        isOptionEqualToValue={(option, value) => option.adua_Id === value?.declaraciones_ValorViewModel?.deva_AduanaIngresoId}
                         />
                     </Grid>
 
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Aduana de despacho</CustomFormLabel>
                     <Autocomplete
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: '#fafafa',
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: '#aaa',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#000',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1976d2',
+                        },
+                      },
+                    }}
                     options={aduanas}
                     getOptionLabel={(option) => option.adua_Nombre || ''}
                     value={selectAduanaDespacho}
@@ -420,6 +472,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             <CustomFormLabel>Declaración de mercancia</CustomFormLabel>
                             <CustomTextField
                                 fullWidth
+                                variant="outlined"
+                                sx={{
+                                  backgroundColor: '#fafafa',
+                                  '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                      borderColor: '#aaa',
+                                    },
+                                    '&:hover fieldset': {
+                                      borderColor: '#000',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                      borderColor: '#1976d2',
+                                    },
+                                  },
+                                }}
                                 id="declaraciones_ValorViewModel.deva_DeclaracionMercancia"
                                 name="declaraciones_ValorViewModel.deva_DeclaracionMercancia"
                                 type="text"
@@ -434,6 +501,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Fecha de aceptación</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declaraciones_ValorViewModel.deva_FechaAceptacion"
                             name="declaraciones_ValorViewModel.deva_FechaAceptacion"
                             type="date"
@@ -448,6 +530,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <Grid item lg={4} md={12} sm={12}>
                     <CustomFormLabel>Regimen Aduanero</CustomFormLabel>
                     <Autocomplete
+                            fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             options={regimenAduanero}
                             getOptionLabel={(option) => option.regi_Descripcion || ''}
                             value={selectedRegimenAduanero}
@@ -479,6 +577,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Nombre o razón social</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Nombre_Raso"
                             name="declarantesImpo_ViewModel.decl_Nombre_Raso"
                             type="text"
@@ -494,6 +607,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Registro Tributario (RTN)</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="importadoresViewModel.impo_RTN"
                             name="importadoresViewModel.impo_RTN"
                             type="text"
@@ -509,6 +637,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Número de registro</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="importadoresViewModel.impo_NumRegistro"
                             name="importadoresViewModel.impo_NumRegistro"
                             type="text"
@@ -524,6 +667,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Dirección exacta</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             name="declarantesImpo_ViewModel.decl_Direccion_Exacta"
                             type="text"
@@ -539,6 +697,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                             <CustomFormLabel>Ciudad</CustomFormLabel>
                             <Autocomplete
+                              fullWidth
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: '#fafafa',
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    borderColor: '#aaa',
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: '#000',
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: '#1976d2',
+                                  },
+                                },
+                              }}
                               options={ciudades}
                               getOptionLabel={(option) => option.ciud_Nombre || ''}
                               value={selectedCiudad}
@@ -569,6 +743,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         <CustomFormLabel>Correo electrónico</CustomFormLabel>
                         <CustomTextField
                             fullWidth
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: '#fafafa',
+                              '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                  borderColor: '#aaa',
+                                },
+                                '&:hover fieldset': {
+                                  borderColor: '#000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                  borderColor: '#1976d2',
+                                },
+                              },
+                            }}
                             id="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             name="declarantesImpo_ViewModel.decl_Correo_Electronico"
                             type="text"
@@ -585,6 +774,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Teléfono</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="declarantesImpo_ViewModel.decl_Telefono"
                         name="declarantesImpo_ViewModel.decl_Telefono"
                         type="text"
@@ -602,6 +806,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Fax</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="declarantesImpo_ViewModel.decl_Fax"
                         name="declarantesImpo_ViewModel.decl_Fax"
                         type="text"
@@ -619,6 +838,22 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     
                     <CustomFormLabel>Nivel comercial</CustomFormLabel>
                     <Autocomplete
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: '#fafafa',
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: '#aaa',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#000',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#1976d2',
+                        },
+                      },
+                    }}
                     options={nivelComercial}
                     getOptionLabel={(option) => option.nico_Descripcion || ''}
                     value={selectedNivelComercial}
@@ -650,6 +885,21 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     <CustomFormLabel>Otro nivel comercial</CustomFormLabel>
                     <CustomTextField
                         fullWidth
+                        variant="outlined"
+                        sx={{
+                          backgroundColor: '#fafafa',
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#aaa',
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#000',
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#1976d2',
+                            },
+                          },
+                        }}
                         id="importadoresViewModel.impo_NivelComercial_Otro"
                         name="importadoresViewModel.impo_NivelComercial_Otro"
                         type="text"
@@ -677,11 +927,8 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             >
             No puede haber campos vacios.
             </Alert>
-        </Snackbar>                  
-
-     
+        </Snackbar>   
         </div>
-
     );
 });
 
