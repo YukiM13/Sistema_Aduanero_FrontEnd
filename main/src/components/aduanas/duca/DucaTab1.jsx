@@ -13,6 +13,7 @@ import {
   } from '@mui/material';
   import  'src/layouts/config/StylePhone.css';
   import 'react-intl-tel-input/dist/main.css';
+  
 
 
 
@@ -145,9 +146,10 @@ const itemPorDuca =  itemDevaPorDucaModel;
         },
       }));
       useEffect(() => {
-        const cargarDevas = async () => {
-            const localDevas = localStorage.getItem('devaDuca');
-            listarDevas();
+        listarDevas();
+        const cargarDevas =  () => {
+            const localDevas = localStorage.getItem('devaDuca') ;
+            
             console.log(localStorage.getItem('Devas'));
             if (localDevas && localStorage.getItem('Devas')) {
              const parsedLocal = JSON.parse(localDevas);
@@ -166,9 +168,12 @@ const itemPorDuca =  itemDevaPorDucaModel;
               setDeva(parsedLocal);
              formik.setFieldValue('seleccionados', parsedLocal);
             }
-            else {
+            else if (localStorage.getItem('Devas')) {
               const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
              setDeva(devasDesdeApi);
+            }
+            else {
+              setDeva([]);
             }
            };
           
