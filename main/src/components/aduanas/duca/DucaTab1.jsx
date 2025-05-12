@@ -145,9 +145,10 @@ const itemPorDuca =  itemDevaPorDucaModel;
         },
       }));
       useEffect(() => {
-        const cargarDevas = async () => {
+        listarDevas();
+        const cargarDevas =  () => {
             const localDevas = localStorage.getItem('devaDuca');
-            listarDevas();
+            
             console.log(localStorage.getItem('Devas'));
             if (localDevas && localStorage.getItem('Devas')) {
              const parsedLocal = JSON.parse(localDevas);
