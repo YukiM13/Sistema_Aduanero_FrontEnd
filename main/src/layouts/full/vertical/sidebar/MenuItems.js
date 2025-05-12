@@ -470,6 +470,16 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+
+    if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
+      produccion.children.push({
+        id: uniqueId(),
+        title: 'Pedido Orden',
+        icon: IconPoint,
+        href: '/pedidoOrden',
+        chipColor: 'secondary',
+      });
+    }
     
     if (produccion.children.length > 0) {
       Menuitems.push(produccion);

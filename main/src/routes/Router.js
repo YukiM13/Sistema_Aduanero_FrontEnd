@@ -151,6 +151,9 @@ const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/or
 const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
 const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
+
+const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
+
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -230,9 +233,9 @@ const todasLasRutas = [
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
 ]
 
-const rutasFiltradas = todasLasRutas.filter((ruta) =>
-  esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
-);
+// const rutasFiltradas = todasLasRutas.filter((ruta) =>
+//   esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
+// );
 
 const Router = [
   {
@@ -360,17 +363,17 @@ const Router = [
 
       { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
 
-
+      { path: '/pedidoOrden', element: <PedidoOrdenList  /> },
       { path: '/provincias/create', element: <ProvinciaCrear  /> },
 
 
 
 
       { path: '*', element: <Navigate to="/auth/404" /> },
-      ...rutasFiltradas.map((ruta) => ({
-        ...ruta,
-        element: <PrivateRoute>{ruta.element}</PrivateRoute>, // Envuelve las rutas protegidas con PrivateRoute
-      })),
+      // ...rutasFiltradas.map((ruta) => ({
+      //   ...ruta,
+      //   element: <PrivateRoute>{ruta.element}</PrivateRoute>, // Envuelve las rutas protegidas con PrivateRoute
+      // })),
     ],
   },
   {

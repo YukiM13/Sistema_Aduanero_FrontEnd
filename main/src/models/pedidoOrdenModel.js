@@ -6,7 +6,7 @@ const PedidoOrdenModel ={
       prov_Id: 0,
       prov_NombreCompania: '',
       peor_finalizacion: true,
-      ciud_Id: 288,
+      ciud_Id: 0,
       ciud_Nombre: '',
       duca_No_Duca: '',
       peor_Impuestos: 0,
@@ -18,7 +18,7 @@ const PedidoOrdenModel ={
       usua_UsuarioModificacion: 0,
       peor_FechaModificacion: new Date(),
       peor_Estado: true,
-      //  duca_Id: 0,
+      duca_Id: 0,
     //   pais_Id": 248,
     //   pais_Codigo": "HN",
     //   pais_Nombre": "HONDURAS",
@@ -44,16 +44,16 @@ const PedidoOrdenModel ={
 
 
     /* Detalle */
-    prod_Id: 1,
-    pedi_Id: 2,
-    mate_Id: 57,
-    prod_Cantidad: 11,
-    prod_Precio: 230,
+    prod_Id: 0,
+    pedi_Id: 0,
+    mate_Id: 0,
+    prod_Cantidad: 0,
+    prod_Precio: 0,
     mate_Descripcion: '',
     usuarioCreacionNombre: '',
     prod_FechaCreacion: new Date(),
-    usuarioModificacionNombre: null,
-    prod_FechaModificacion: null,
+    usuarioModificacionNombre: '',
+    prod_FechaModificacion: new Date(),
     prod_Estado: true
     // item_Id": null
   }
