@@ -127,6 +127,8 @@ const DucaCreateComponent = () => {
     const handleReset = () => {
       localStorage.removeItem('ducaId'); 
       localStorage.removeItem('edit');
+      localStorage.removeItem('devaDuca');
+      localStorage.removeItem('Devas');
       setActiveStep(0);
     };
      useEffect(() => {
@@ -185,7 +187,7 @@ const DucaCreateComponent = () => {
                 <Button
                   onClick={handleNext}
                   variant="contained"
-                  disabled={activeStep === 0 && deva.length ===0}
+                  disabled={activeStep === 0 && deva.length ===0 && !localStorage.getItem('devaDuca')}
                   color={activeStep === steps.length - 1 ? 'success' : 'primary'}
                   endIcon={
                     activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />

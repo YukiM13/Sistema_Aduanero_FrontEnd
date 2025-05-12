@@ -31,6 +31,7 @@
     "formik": "^2.2.9",
     "framer-motion": "^8.5.2",
     "html2canvas": "^1.4.1",
+    "html2pdf": "^0.0.11",
     "html2pdf.js": "^0.10.3",
     "i18next": "^22.0.6",
     "intl-tel-input": "^25.3.1",
