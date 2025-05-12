@@ -257,14 +257,17 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                   });
                   if (response.status !== 200 || response.data.data.messageStatus !== '1') {
                     todosExitosos = false;
+                    console.log(response.data.data);
                     throw new Error('Error');
                   }
                   
                   // Verificar si la operación fue exitosa
                   if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
+                    console.log(response.data.data);
                     if (onGuardadoExitoso) onGuardadoExitoso();
                     console.log("Se actualizó el registro con éxito");
                   } else {
+                    console.log(response.data.data);
                     console.log("Error al actualizar el registro");
                     todosExitosos = false;
                     setOpenSnackbar(true);
