@@ -9,7 +9,8 @@ import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
+
 import { Snackbar, Alert } from '@mui/material';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -402,7 +403,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>RTN</CustomFormLabel>
-              <CustomTextFields
+              <CustomTextField
                 fullWidth
                 id="pers_RTN"
                 name="pers_RTN"
