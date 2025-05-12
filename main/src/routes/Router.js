@@ -181,7 +181,7 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
-const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : null;
+const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
 const localStorageDatas = localStorage.getItem('DataUsuario');
 const parsedData = localStorageDatas ? JSON.parse(localStorageDatas) : null;
 const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
