@@ -314,6 +314,18 @@ export const generarMenu = async () => {
       });
     }
     
+     if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
+// Planificacion PO pendiente
+      aduana.children.push({
+        id: uniqueId(),
+        title: 'Planificacion PO',
+        icon: IconPoint,
+        href: '/PlanificacionPO',
+        chipColor: 'secondary',
+      });
+          }
+  // Planificacion PO pendiente
+
     if (esAdmin || nombresDePantalla.includes('Concepto de Pago')) {
       aduana.children.push({
         id: uniqueId(),

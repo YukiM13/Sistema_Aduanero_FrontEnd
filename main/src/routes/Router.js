@@ -102,7 +102,7 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
-
+const PlanificacionPO = Loadable(lazy(() => import('../components/aduanas/PlanificacionPO/PlanificacionPO-pdf')));
 
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
@@ -210,6 +210,7 @@ const todasLasRutas = [
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
   { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
