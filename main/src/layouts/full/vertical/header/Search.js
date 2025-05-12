@@ -90,7 +90,7 @@ const Search = () => {
                   <Box key={menu.title ? menu.id : menu.subheader}>
                     {menu.title && !menu.children ? (
                       <>
-                        {menu.title === 'eCommerce' && (
+                        {menu.title === 'Inicio' && (
                           <>
                             <Typography variant="h5" sx={{ py: 1, display: 'flex', alignItems: 'center' }}>
                               <InputAdornment position="start">
