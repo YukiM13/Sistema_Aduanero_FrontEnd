@@ -1596,7 +1596,10 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   />
 </Grid>
 <Grid item lg={6} md={12} sm={12}>
-  <CustomFormLabel>Correo Electrónico <Box component="span" color="red">*</Box></CustomFormLabel>
+  <CustomFormLabel>
+    Correo Electrónico <Box component="span" color="red">*</Box>
+  </CustomFormLabel>
+
   <Box display="flex" gap={1} alignItems="center" mb={1}>
     <CustomTextField
       fullWidth
@@ -1611,17 +1614,37 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
       disabled={correoVerificado}
       sx={{ flex: 1 }}
     />
+
     <Button
-  variant="contained"
-  type="button"
-  onClick={enviarCodigoVerificacion}
-  disabled={correoVerificado || verificarCorreoDeshabilitado}
-  color={correoVerificado ? "success" : "primary"}
-  startIcon={correoVerificado ? <CheckCircleIcon /> : null}
->
-  {correoVerificado ? "Verificado" : "Verificar"}
-</Button>
+      variant="contained"
+      type="button"
+      onClick={enviarCodigoVerificacion}
+      disabled={correoVerificado || verificarCorreoDeshabilitado}
+      color={correoVerificado ? "success" : "primary"}
+      startIcon={correoVerificado ? <CheckCircleIcon /> : null}
+    >
+      {correoVerificado ? "Verificado" : "Verificar"}
+    </Button>
   </Box>
+
+  {/* Mostrar opción para corregir correo si ya desactivaste el botón y aún no está verificado */}
+  {!correoVerificado && verificarCorreoDeshabilitado && (
+    <Box mb={1}>
+      <Button
+        variant="text"
+        color="secondary"
+        size="small"
+        onClick={() => {
+          setVerificarCorreoDeshabilitado(false);
+          setMostrarInputCodigo(false);
+          setCodigoIngresado('');
+          formik.setFieldTouched('coin_CorreoElectronico', false);
+        }}
+      >
+        ¿Ingresaste mal el correo?
+      </Button>
+    </Box>
+  )}
 
   {mostrarInputCodigo && !correoVerificado && (
     <Box mt={1}>
@@ -1636,7 +1659,7 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
           />
         </Grid>
         <Grid item xs={4}>
-          <Button 
+          <Button
             fullWidth
             variant="outlined"
             onClick={verificarCodigo}
@@ -1648,6 +1671,7 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     </Box>
   )}
 </Grid>
+
 
 
               <Grid item lg={6}>
@@ -1699,7 +1723,6 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   <MenuItem value="">Seleccionar</MenuItem>
   <MenuItem value="DNI-CI">DNI CI Comerciante Individual</MenuItem>
   <MenuItem value="RTN-CI">RTN CI Comerciante Individual</MenuItem>
-  <MenuItem value="DNI-CI">Declaración CI</MenuItem>
 
 </Select>
 
