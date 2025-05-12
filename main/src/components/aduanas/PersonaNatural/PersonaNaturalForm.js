@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography } from '@mui/material';
-import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import CancelIcon from '@mui/icons-material/Cancel';
 import PersonaNatural from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { Snackbar, Alert } from '@mui/material'; 
 
