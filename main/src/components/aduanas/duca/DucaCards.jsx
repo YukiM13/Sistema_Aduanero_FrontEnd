@@ -8,8 +8,10 @@ TextField,InputAdornment,TablePagination,Paper, Grid,  CardContent,
   Stack,
   Tooltip,
   Skeleton,
-    Fab,
+    Fab,Box
 } from '@mui/material';
+
+import {IconArrowsDiff, IconUser } from '@tabler/icons';
 import SearchIcon from '@mui/icons-material/Search';
 import BlankCard from '../../shared/BlankCard';
 
@@ -81,39 +83,44 @@ const DucaCards = () => {
                     {filteredData
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((duca) => (
-                        <Grid item xs={12} sm={12} lg={4} key={duca.duca_Id}>
-                    <BlankCard>
-                        <Typography component={Link} to="/">
-                        {isLoading ? (
-                            <Skeleton variant="square" animation="wave" width="100%" height={27}></Skeleton>
-                        ) : (
-                            <img src={img1} alt="img" width="100%" height="60px"/>
-                        )}
-                        </Typography>
-                        <Tooltip title="Add To Cart">
-                        <Fab
-                            size="small"
-                            color="primary"
-                            sx={{ bottom: '75px', right: '15px', position: 'absolute' }}
-                        >
-                           
-                        </Fab>
-                        </Tooltip>
-                        <CardContent sx={{ p: 3, pt: 2 }} minHeight="10vh">
-                        <Typography variant="h6">{duca.duca_No_Duca}</Typography>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" mt={1}>
-                            <Stack direction="row" alignItems="center">
-                            <Typography variant="h6">${duca.duca_No_Correlativo_Referencia}</Typography>
-                            <Typography color="textSecondary" ml={1} sx={{ textDecoration: 'line-through' }}>
-                                ${duca.duca_No_Correlativo_Referencia}
+                       <Grid item xs={12} sm={12} lg={4} key={duca.duca_Id}>
+                        <BlankCard>
+                            <Box sx={{ position: 'relative' }}>
+                            <Typography component={Link} to="/">
+                                {isLoading ? (
+                                <Skeleton variant="square" animation="wave" width="100%" height={60} />
+                                ) : (
+                                <img src={img1} alt="img" width="100%" height="60px" />
+                                )}
                             </Typography>
-                            </Stack>
-                          
-                        </Stack>
-   
-                        </CardContent>
-                    </BlankCard>
-                    </Grid>
+
+                            {/* Tooltip justo debajo de la imagen */}
+                            <Tooltip title="Add To Cart">
+                                <Fab
+                                size="small"
+                                color="primary"
+                                sx={{
+                                    top: '50px', right: '15px', position: 'absolute' ,  transform: 'translateX(-50%)',
+                                    zIndex: 1,
+                                }}
+                                >
+                                {/* icono opcional aquí */}
+                                </Fab>
+                            </Tooltip>
+
+                            <CardContent sx={{ p: 3, pt: 4 }}>
+                                <Typography variant="h6">{duca.duca_No_Duca}</Typography>
+                                <IconUser size="16" /> {duca.duca_NombreSocial_Declarante} <br />
+                                {duca.nombre_Aduana_Registro} <IconArrowsDiff size="16" /> {duca.nombre_Aduana_Destino}
+                                <Stack direction="row" alignItems="center" justifyContent="space-between" mt={1}>
+                                <Stack direction="row" alignItems="center">
+                                    <Typography variant="h6">{duca.duca_No_Correlativo_Referencia}</Typography>
+                                </Stack>
+                                </Stack>
+                            </CardContent>
+                            </Box>
+                        </BlankCard>
+                        </Grid>
                     ))}
                     {emptyRows > 0 && (
                         <div style={{ height: 53 * emptyRows }}>
