@@ -36,7 +36,7 @@ import 'src/layouts/config/StylePhone.css';
 import ReactIntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import InputMask from 'react-input-mask';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 
 
 const validationSchema = yup.object({
