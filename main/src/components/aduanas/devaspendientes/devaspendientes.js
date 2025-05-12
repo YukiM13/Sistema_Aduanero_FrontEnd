@@ -94,14 +94,16 @@ return(
   <TableHead>
     <TableRow>
       <TableCell>ID</TableCell> 
-      <TableCell>Nombre</TableCell>
+      <TableCell>Aduana Ingreso</TableCell>
+      <TableCell>Aduana Despacho</TableCell>
     </TableRow>
   </TableHead>
   <TableBody>
     {Devaspendientes.map((item) => (
       <TableRow key={item.deva_Id}>
-        <TableCell>{item.id}</TableCell>
-        <TableCell>{item.nombre}</TableCell>
+        <TableCell>{item.deva_Id}</TableCell>
+        <TableCell>{item.adua_IngresoNombre}</TableCell>
+        <TableCell>{item.adua_DespachoNombre}</TableCell>
       </TableRow>
     ))}
   </TableBody>
