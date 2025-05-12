@@ -284,6 +284,30 @@ const showErrorMessage = (message) => {
   }, [tabIndex]);
 
 
+const eliminarSilenciosamente = async () => {
+  const { coin_Id, pers_Id } = formik.values;
+
+  if (!coin_Id || !pers_Id) return;
+
+  try {
+    await axios.post(
+      `${apiUrl}/api/ComercianteIndividual/Eliminar?coin_Id=${coin_Id}&pers_Id=${pers_Id}`,
+      null,
+      { headers: { 'XApiKey': apiKey } }
+    );
+
+    // ✅ Solo quitamos los IDs para evitar errores al volver a guardar
+    formik.setFieldValue('coin_Id', 0);
+    formik.setFieldValue('pers_Id', 0);
+  } catch (error) {
+    console.error('Error silencioso al eliminar comerciante:', error);
+    // No mostramos mensaje
+  }
+};
+
+
+
+
   const handleDocumentFieldChange = (index, field, value) => {
   const updatedInputs = [...imageInputs];
   updatedInputs[index][field] = value;
@@ -423,27 +447,27 @@ if (response.data.data && response.data.data.messageStatus) {
 //Guardar en en 2do tap
 const handleSaveTap2 = async () => {
   try {
-    // Validar solamente los campos del segundo tab
-    const tabErrors = {};
-    ['ciud_Id', 'colo_Id', 'coin_NumeroLocalApart', 'coin_PuntoReferencia'].forEach(field => {
-      try {
-        // Validar cada campo individualmente (excepto alde_Id que puede ser null)
-        if (validationSchema.fields[field]) {
-          validationSchema.fields[field].validateSync(formik.values[field]);
-        }
-      } catch (err) {
-        tabErrors[field] = err.message;
-      }
-    });
-    
-    // Si hay errores, mostrarlos y detener el proceso
-    if (Object.keys(tabErrors).length > 0) {
-      // Establecer los errores en Formik
-      formik.setErrors({...formik.errors, ...tabErrors});
-      // Tocar los campos para que se muestren los errores
-      Object.keys(tabErrors).forEach(field => formik.setFieldTouched(field, true));
-      
-      showErrorMessage('Por favor completa todos los campos requeridos');
+    const errors = await formik.validateForm();
+
+    const tab2Fields = [
+      'pais_Id',
+      'pvin_Id',
+      'ciud_Id',
+      'alde_Id',
+      'colo_Id',
+      'coin_NumeroLocalApart',
+      'coin_PuntoReferencia'
+    ];
+
+    const tabErrors = Object.entries(errors).filter(([key]) =>
+      tab2Fields.includes(key)
+    );
+
+    if (tabErrors.length > 0) {
+      const newErrors = Object.fromEntries(tabErrors);
+      formik.setErrors({ ...formik.errors, ...newErrors });
+      tab2Fields.forEach(field => formik.setFieldTouched(field, true));
+      showErrorMessage('Por favor completa todos los campos requeridos de localización.');
       return false;
     }
 
@@ -457,31 +481,28 @@ const handleSaveTap2 = async () => {
     const tap2Data = {
       coin_Id: formik.values.coin_Id,
       ciud_Id: formik.values.ciud_Id,
-      alde_Id: formik.values.alde_Id || 0, // Si no hay aldea, enviar 0 como indica el SP
+      alde_Id: formik.values.alde_Id || 0,
       colo_Id: formik.values.colo_Id,
       coin_NumeroLocalApart: formik.values.coin_NumeroLocalApart,
       coin_PuntoReferencia: formik.values.coin_PuntoReferencia,
-      usua_UsuarioModificacion: 1, // Ajusta según tu sistema de usuarios
+      usua_UsuarioModificacion: 1,
       coin_FechaModificacion: new Date().toISOString()
     };
 
-    // Mostrar datos a enviar para debug
     console.log('Datos a enviar (Tab 2):', tap2Data);
 
-    // Enviar datos al API
-    const response = await axios.post(`${apiUrl}/api/ComercianteIndividual/InsertarTap2`, tap2Data, {
-      headers: { 'XApiKey': apiKey }
-    });
+    const response = await axios.post(
+      `${apiUrl}/api/ComercianteIndividual/InsertarTap2`,
+      tap2Data,
+      { headers: { 'XApiKey': apiKey } }
+    );
 
-    // Verificar la respuesta
     console.log('Respuesta del servidor (Tab 2):', response.data);
-    
-    // Verificar si la respuesta tiene la estructura esperada
+
     if (response.data && response.data.success === true) {
       showSuccessMessage('Dirección guardada correctamente');
       return true;
     } else {
-      // Si la respuesta contiene un mensaje de error específico
       if (response.data && response.data.message) {
         showErrorMessage(response.data.message);
       } else {
@@ -491,22 +512,21 @@ const handleSaveTap2 = async () => {
     }
   } catch (error) {
     console.error('Error al guardar datos del tab 2:', error);
-    
+
     let errorMessage = 'Error al guardar los datos de dirección';
-    
+
     if (error.response) {
-      // Error del servidor con respuesta
       console.error('Respuesta de error del servidor:', error.response.data);
       errorMessage = error.response.data?.message || `Error ${error.response.status}: ${error.response.statusText}`;
     } else if (error.request) {
-      // Error de red (no se recibió respuesta)
       errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
     }
-    
+
     showErrorMessage(errorMessage);
     return false;
   }
 };
+
 
 // Guardar en 3er tap
 const handleSaveTap3 = async () => {
@@ -1767,16 +1787,23 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   gap={2}
 >
   {tabIndex > 0 && (
-    <Button
-      variant="outlined"
-      color="primary"
-      size="medium"
-      onClick={() => setTabIndex(tabIndex - 1)}
-      sx={{ borderRadius: 2, fontWeight: 500 }}
-    >
-      ← Anterior
-    </Button>
-  )}
+  <Button
+  variant="outlined"
+  color="primary"
+  size="medium"
+  onClick={async () => {
+    if (tabIndex === 1 && formik.values.coin_Id && formik.values.pers_Id) {
+      await eliminarSilenciosamente();
+    }
+    setTabIndex(tabIndex - 1);
+  }}
+  sx={{ borderRadius: 2, fontWeight: 500 }}
+>
+  ← Anterior
+</Button>
+
+)}
+
 
   <Box display="flex" gap={2}>
     {tabIndex < 4 && (
@@ -1860,32 +1887,43 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
       
 <Dialog
   open={openDialog}
-  onClose={() => setOpenDialog(false)}
+  onClose={(event, reason) => {
+    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+      setOpenDialog(false);
+    }
+  }}
 >
-  <DialogTitle>¿Deseas ingresar otro comerciante?</DialogTitle>
+  <DialogTitle>¿Deseas agregar otro comerciante?</DialogTitle>
   <DialogActions>
-    <Button onClick={() => {
-  setOpenDialog(false);
-  resetearFormulario();
-}} color="primary" variant="contained">
-  Sí, agregar otro
+   <Button
+  onClick={() => {
+    resetearFormulario();
+    setOpenDialog(false);
+  }}
+  color="primary"
+  variant="contained"
+>
+  Sí
 </Button>
 
-    <Button onClick={() => {
-  setOpenDialog(false);
-  resetearFormulario();
-  navigate('/dashboards/ecommerce');
-}} color="secondary" variant="outlined">
-  No, salir
-</Button>
-
-
+    <Button
+      onClick={() => setOpenDialog(false)}
+      color="secondary"
+      variant="outlined"
+    >
+      No
+    </Button>
   </DialogActions>
 </Dialog>
 
+
 <Dialog
   open={openCancelDialog}
-  onClose={() => setOpenCancelDialog(false)}
+  onClose={(event, reason) => {
+    if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+      setOpenCancelDialog(false);
+    }
+  }}
 >
   <DialogTitle>¿Estás seguro que deseas cancelar este registro?</DialogTitle>
   <DialogActions>
@@ -1908,6 +1946,7 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     </Button>
   </DialogActions>
 </Dialog>
+
 
 
 
