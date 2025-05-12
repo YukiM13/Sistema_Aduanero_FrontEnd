@@ -102,10 +102,11 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
 
 
 
-const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
@@ -186,13 +187,14 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
-const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : null;
+const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
 const localStorageDatas = localStorage.getItem('DataUsuario');
 const parsedData = localStorageDatas ? JSON.parse(localStorageDatas) : null;
 const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
 
 const todasLasRutas = [
   { path: '/dashboards/modern', element: <ModernDash/> },
+
   { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
   { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
   { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
@@ -226,11 +228,13 @@ const todasLasRutas = [
   { path: '/tipoembalaje/list', element: <TipoEmbalaje/>, pantalla:'Tipo Embalaje' },
   { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
   { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
-  { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
-  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Declaracion de Valor' },
+  { path: '/ordenCompra', element: <OrdenCompra/>, pantalla:'Orden Compra' },
+  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
-  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Impresion Declaracion de Valor' },
+  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
+  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
 ]
 
 // const rutasFiltradas = todasLasRutas.filter((ruta) =>
@@ -243,137 +247,11 @@ const Router = [
     element: <FullLayout />,
     children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
-      { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
-      { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
-      { path: '/apps/chats', element: <Chats /> },
-      { path: '/apps/notes', element: <Notes /> },
-      { path: '/apps/calendar', element: <Calendar /> },
-      { path: '/apps/email', element: <Email /> },
-      { path: '/apps/tickets', element: <Tickets /> },
-      { path: '/apps/contacts', element: <Contacts /> },
-      { path: '/apps/ecommerce/shop', element: <Ecommerce /> },
-      { path: '/apps/blog/posts', element: <Blog /> },
-      { path: '/apps/blog/detail/:id', element: <BlogDetail /> },
-      { path: '/apps/ecommerce/eco-product-list', element: <EcomProductList /> },
-      { path: '/apps/ecommerce/eco-checkout', element: <EcomProductCheckout /> },
-      { path: '/apps/ecommerce/detail/:id', element: <EcommerceDetail /> },
-      { path: '/apps/followers', element: <Followers /> },
-      { path: '/apps/friends', element: <Friends /> },
-      { path: '/apps/gallery', element: <Gallery /> },
-      { path: '/user-profile', element: <UserProfile /> },
-      { path: '/pages/casl', element: <RollbaseCASL /> },
-      { path: '/pages/treeview', element: <Treeview /> },
-      { path: '/pages/pricing', element: <Pricing /> },
-      { path: '/pages/account-settings', element: <AccountSetting /> },
-      { path: '/pages/faq', element: <Faq /> },
-      { path: '/forms/form-elements/autocomplete', element: <MuiAutoComplete /> },
-      { path: '/forms/form-elements/button', element: <MuiButton /> },
-      { path: '/forms/form-elements/checkbox', element: <MuiCheckbox /> },
-      { path: '/forms/form-elements/radio', element: <MuiRadio /> },
-      { path: '/forms/form-elements/slider', element: <MuiSlider /> },
-      { path: '/forms/form-elements/date-time', element: <MuiDateTime /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/quill-editor', element: <QuillEditor /> },
-      { path: '/forms/form-layouts', element: <FormLayouts /> },
-      { path: '/forms/form-horizontal', element: <FormHorizontal /> },
-      { path: '/forms/form-vertical', element: <FormVertical /> },
-      { path: '/forms/form-custom', element: <FormCustom /> },
-      { path: '/forms/form-wizard', element: <FormWizard /> },
-      { path: '/forms/form-validation', element: <FormValidation /> },
-      { path: '/tables/basic', element: <BasicTable /> },
-      { path: '/tables/collapsible', element: <CollapsibleTable /> },
-      { path: '/tables/enhanced', element: <EnhancedTable /> },
-      { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
-      { path: '/tables/pagination', element: <PaginationTable /> },
-      { path: '/tables/search', element: <SearchTable /> },
-      { path: '/charts/line-chart', element: <LineChart /> },
-      { path: '/charts/gredient-chart', element: <GredientChart /> },
-      { path: '/charts/doughnut-pie-chart', element: <DoughnutChart /> },
-      { path: '/charts/area-chart', element: <AreaChart /> },
-      { path: '/charts/column-chart', element: <ColumnChart /> },
-      { path: '/charts/candlestick-chart', element: <CandlestickChart /> },
-      { path: '/charts/radialbar-chart', element: <RadialbarChart /> },
-      { path: '/ui-components/alert', element: <MuiAlert /> },
-      { path: '/ui-components/accordion', element: <MuiAccordion /> },
-      { path: '/ui-components/avatar', element: <MuiAvatar /> },
-      { path: '/ui-components/chip', element: <MuiChip /> },
-      { path: '/ui-components/dialog', element: <MuiDialog /> },
-      { path: '/ui-components/list', element: <MuiList /> },
-      { path: '/ui-components/popover', element: <MuiPopover /> },
-      { path: '/ui-components/rating', element: <MuiRating /> },
-      { path: '/ui-components/tabs', element: <MuiTabs /> },
-      { path: '/ui-components/tooltip', element: <MuiTooltip /> },
-      { path: '/ui-components/transfer-list', element: <MuiTransferList /> },
-      { path: '/ui-components/typography', element: <MuiTypography /> },
-      { path: '/widgets/cards', element: <WidgetCards /> },
-      { path: '/widgets/banners', element: <WidgetBanners /> },
-      { path: '/widgets/charts', element: <WidgetCharts /> },
-      { path: '/personas/list', element: <Persona  /> },
-      { path: '/tallas/list', element: <Tallas  /> },
-      { path: '/aduanas/list', element: <Aduana  /> },
-      { path: '/aldeas/list', element: <Aldea  /> },
-      { path: '/ciudades/list', element: <Ciudad  /> },
-      {path: '/cargos/list', element: <Cargo  /> },
-      { path: '/colonias/list', element: <Colonias  /> },
-      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-      { path: '/formasdepago/list', element: <FormasPago  /> },
-      { path: '/declaracionValor/list', element: <DeclaracionValor  /> },
-
-      { path: '/paises/list', element: <Pais  /> },
-      { path: '/provincias/list', element: <Provincia  /> },
-      { path: '/ciudades/list', element: <Ciudad  /> },
-      {path: '/cargos/list', element: <Cargo  /> },
-      { path: '/categorias/list', element: <Categorias /> },
-      { path: '/subCategorias/list', element: <SubCategorias /> },
-      { path: '/oficinas/list', element: <Oficinas /> },
-      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
-      { path: '/marcas/list', element: <Marcas  /> },
-      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
-      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
-      { path: '/modotransporte/list', element: <ModoTransporte  /> },
-      { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
-       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
-       {path: '/formasenvio/list', element: <FormasEnvio  /> },
-       { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
-       { path: '/proveedores/list', element: <Proveedor  /> },
-      { path: '/ciudades/list', element: <Ciudad  /> },
-      { path: '/cargos/list', element: <Cargo  /> },
-      { path: '/PersonaNatural/list', element: <PersonaNatural  /> },
-      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
-      { path: '/empleado/list', element: <Empleado  /> },
-      { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
-      { path: '/moneda/list', element: <Moneda  /> },
-      { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
-      { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural  /> },
-      { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222  /> },
-      { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
-      { path: '/formasenvio/create', element: <FormasEnvioCreate  /> },
-      { path: '/usuarios/list', element: <Usuarios  /> },
-      { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate  /> },
-      { path: '/duca', element: <Duca  /> },
-      { path: '/ordenCompra', element: <OrdenCompraList  /> },
-      { path: '/ordenCompra/create', element: <OrdenCompraCrear  /> },
-      { path: '/ordenCompraDetalle/list/:id', element: <OrdenCompraDetalleList  /> },
-      { path: '/ordenCompraDetalle/create/:orco_Id', element: <OrdenCompraDetalleCrear   /> },
-      { path: '/ordenCompraDetalle/edit/:orco_Id', element: <OrdenCompraDetalleEditar  /> },
-      { path: '/ciudades/create', element: <CiudadCrear  /> },
-      { path: '/ciudades/edit', element: <CiudadEditar  /> },
-
-      { path: '/declaracion-de-valor', element: <DeclaracionDeValor  /> },
-
-      { path: '/pedidoOrden', element: <PedidoOrdenList  /> },
-      { path: '/provincias/create', element: <ProvinciaCrear  /> },
-
-
-
-
-      { path: '*', element: <Navigate to="/auth/404" /> },
-      // ...rutasFiltradas.map((ruta) => ({
-      //   ...ruta,
-      //   element: <PrivateRoute>{ruta.element}</PrivateRoute>, // Envuelve las rutas protegidas con PrivateRoute
-      // })),
+        { path: '/user-profile', element: <UserProfile /> },
+      ...rutasFiltradas.map((ruta) => ({
+        ...ruta,
+        element: <PrivateRoute>{ruta.element}</PrivateRoute>,
+      })),
     ],
   },
   {
@@ -381,6 +259,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '/auth/404', element: <Error /> },
+        { path: '/user-profile', element: <UserProfile /> },
       { path: '/auth/login', element: <Login /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },
