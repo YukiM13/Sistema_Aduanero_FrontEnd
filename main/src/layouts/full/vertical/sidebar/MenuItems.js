@@ -3,12 +3,12 @@ import axios from 'axios';
 import {
   IconPoint,
   IconUser,
-  IconShoppingCart,
   IconWorld,
   IconBuildingFactory2,
   IconPackgeExport,
   IconFileText,
   IconFileCertificate,
+  IconHome,
 } from '@tabler/icons';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -53,8 +53,8 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'eCommerce',
-    icon: IconShoppingCart,
+    title: 'Inicio',
+    icon: IconHome,
     href: '/dashboards/modern',
   }
 ];
@@ -492,7 +492,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'Declaracion de Valor',
+        title: 'I. Declaracion de Valor',
         icon: IconPoint,
         href: '/declaracionValor/list',
         chipColor: 'secondary',
@@ -502,7 +502,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'Duca',
+        title: 'I. Duca',
         icon: IconPoint,
         href: '/ducas/list',
         chipColor: 'secondary',
