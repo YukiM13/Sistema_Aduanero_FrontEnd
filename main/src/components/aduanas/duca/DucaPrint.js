@@ -176,7 +176,10 @@ const generatePDF = async () => {
       // Ensure the second page uses the same dimensions
       doc.addImage(imgData2, 'JPEG', 10, 10, pdfWidth, pdfHeight);
 
-      // Save the PDF
+      // Get the PDF as a Blob
+        const pdfBlob = doc.output('blob');
+        
+    //   // Save the PDF
        doc.save("Duca.pdf");
     });
   });
