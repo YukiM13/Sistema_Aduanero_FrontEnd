@@ -85,10 +85,8 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
         })
         .then(response => {
             setCiudades(response.data.data);
-            console.log("Ciudades encontradas con éxito", response.data.data)
         })
         .catch(error => {
-            console.error('Error al obtener los datos de las ciudades:', error);
         });
         } 
 
@@ -100,7 +98,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           })
           .then(response => {
             setAduanas(response.data.data);
-              console.log("React E10", response.data.data)
           })
           .catch(error => {
               console.error('Error al obtener los datos del país:', error);
@@ -115,7 +112,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           })
           .then(response => {
             setRegimenAduanero(response.data.data);
-              console.log("React E10", response.data.data)
           })
           .catch(error => {
               console.error('Error al obtener los datos del país:', error);
@@ -130,7 +126,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
           })
           .then(response => {
             setNivelComercial(response.data.data);
-              console.log("React E10", response.data.data)
           })
           .catch(error => {
               console.error('Error al obtener los datos de los niveles comerciales:', error);
@@ -151,7 +146,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 const data = Array.isArray(rawData) ? rawData[0] : rawData;
 
                 if (data && typeof data === 'object') {
-                  // Preservar estructura completa del modelo Deva
                   const mappedValues = {
                     ...Deva, // Mantener la estructura base completa
                     declaraciones_ValorViewModel: {
@@ -231,7 +225,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 
                 const devaIdString = localStorage.getItem('devaId');
                 
-                // CORREGIDO: Si NO hay devaId, insertar nuevo
                 if (!devaIdString) {
                   console.log("Insertando nuevo registro:", dataToSubmit);
                   
@@ -242,9 +235,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     }
                   });
                   
-                  // Verificar si la operación fue exitosa
                   if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
-                    // Guardar el nuevo ID
                     localStorage.setItem('devaId', response.data.data.messageStatus);
                     if (onGuardadoExitoso) onGuardadoExitoso();
                   } else {
@@ -252,7 +243,6 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     setOpenSnackbar(true);
                   }
                 } 
-                // Si hay devaId, actualizar registro existente
                 else {
                   const deva_Id = parseInt(devaIdString);
                   dataToSubmit.declaraciones_ValorViewModel.deva_Id = deva_Id;
@@ -265,13 +255,20 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                       'Content-Type': 'application/json' 
                     }
                   });
+                  if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+                    todosExitosos = false;
+                    throw new Error('Error');
+                  }
                   
                   // Verificar si la operación fue exitosa
                   if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
                     if (onGuardadoExitoso) onGuardadoExitoso();
+                    console.log("Se actualizó el registro con éxito");
                   } else {
+                    console.log("Error al actualizar el registro");
                     todosExitosos = false;
                     setOpenSnackbar(true);
+                    throw new Error('Error');
                   }
                 }
                 
@@ -279,6 +276,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               } catch (error) {
                 console.error('Error al procesar la solicitud:', error);
                 setOpenSnackbar(true);
+                throw new Error('Error');
                 return false;
               }
             },
