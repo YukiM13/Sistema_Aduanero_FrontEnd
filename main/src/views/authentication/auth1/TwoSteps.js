@@ -12,6 +12,8 @@ import axios from 'axios';
 const TwoSteps = () => {
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -19,15 +21,27 @@ const TwoSteps = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  const handleVerifyCode = async () => {
+  const handleVerifyCode = () => {
+    setIsVerifying(true);
     const storedCode = localStorage.getItem('ForgotPasswordCode');
-    const username = localStorage.getItem('ForgotPasswordUser');
 
-    if (code !== storedCode) {
-      setAlertConfig({ severity: 'error', message: 'El código ingresado es incorrecto.' });
+    setTimeout(() => {
+      if (code !== storedCode) {
+        setAlertConfig({ severity: 'error', message: 'El código ingresado es incorrecto.' });
+        setOpenSnackbar(true);
+        setIsVerifying(false);
+        return;
+      }
+
+      setAlertConfig({ severity: 'success', message: 'Código verificado correctamente.' });
       setOpenSnackbar(true);
-      return;
-    }
+      setIsCodeVerified(true);
+      setIsVerifying(false);
+    }, 2000);
+  };
+
+  const handleChangePassword = async () => {
+    const username = localStorage.getItem('ForgotPasswordUser');
 
     if (!newPassword.trim()) {
       setAlertConfig({ severity: 'error', message: 'La nueva contraseña es requerida.' });
@@ -143,36 +157,52 @@ const TwoSteps = () => {
                 <img src={img} alt="logo" width={180} style={{ marginTop: '8px' }} />
               </Box>
               <Box mt={4}>
-                <CustomFormLabel htmlFor="code">Código de Seguridad</CustomFormLabel>
-                <CustomTextField
-                  id="code"
-                  variant="outlined"
-                  fullWidth
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                />
-                <CustomFormLabel htmlFor="newPassword" sx={{ mt: 3 }}>
-                  Nueva Contraseña
-                </CustomFormLabel>
-                <CustomTextField
-                  id="newPassword"
-                  type="password"
-                  variant="outlined"
-                  fullWidth
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="large"
-                  fullWidth
-                  sx={{ mt: 3 }}
-                  onClick={handleVerifyCode}
-                  disabled={isRedirecting}
-                >
-                  {isRedirecting ? 'Redirigiendo...' : 'Restablecer Contraseña'}
-                </Button>
+                {!isCodeVerified ? (
+                  <>
+                    <CustomFormLabel htmlFor="code">Código de Seguridad</CustomFormLabel>
+                    <CustomTextField
+                      id="code"
+                      variant="outlined"
+                      fullWidth
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                    />
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      sx={{ mt: 3 }}
+                      onClick={handleVerifyCode}
+                      disabled={isVerifying}
+                    >
+                      {isVerifying ? 'Verificando...' : 'Verificar Código'}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <CustomFormLabel htmlFor="newPassword">Nueva Contraseña</CustomFormLabel>
+                    <CustomTextField
+                      id="newPassword"
+                      type="password"
+                      variant="outlined"
+                      fullWidth
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      sx={{ mt: 3 }}
+                      onClick={handleChangePassword}
+                      disabled={isRedirecting}
+                    >
+                      {isRedirecting ? 'Redirigiendo...' : 'Restablecer Contraseña'}
+                    </Button>
+                  </>
+                )}
               </Box>
               <Stack justifyContent="space-around" direction="row" alignItems="center" my={2}>
                 <Typography
