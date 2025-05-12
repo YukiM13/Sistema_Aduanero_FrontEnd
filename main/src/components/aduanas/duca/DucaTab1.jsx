@@ -13,11 +13,12 @@ import {
   } from '@mui/material';
   import  'src/layouts/config/StylePhone.css';
   import 'react-intl-tel-input/dist/main.css';
+  
 
 
 
 const validationSchema = yup.object({
-    seleccionados: yup.number().required('La declaracion de valores es requerida').moreThan(0,'Debe seleccionar al menos una declaracion de valores'),
+    seleccionados: yup.array().required('La declaracion de valores es requerida'),
     
   
 });
@@ -41,8 +42,9 @@ const itemPorDuca =  itemDevaPorDucaModel;
 
     })
     .then(response => {
-        setDeva(response.data.data);
-        console.log("React E10", response.data.data)
+        
+        console.log("Devas", response.data.data)
+        localStorage.setItem('Devas',JSON.stringify(response.data.data));
     })
     .catch(error => {
         console.error('Error al obtener los datos del país:', error);
@@ -71,15 +73,27 @@ const itemPorDuca =  itemDevaPorDucaModel;
                 console.log("ID de la DUCA:", ducaId);
                 localStorage.setItem('ducaId', ducaId);
               }
-          
+              if(localStorage.getItem('devaDuca'))
+              {
+                  axios.post(`${apiUrl}/api/ItemsDEVAxDUCA/LiberarDevasPorDucaId?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`,null, {
+                    headers: {
+                      'XApiKey': apiKey
+                    } 
+                  })
+                  .then(response => {
+                    console.log(response.data.data)
+                  })
+                  
+              }
               itemPorDuca.usua_UsuarioCreacion = 1;
-              itemPorDuca.duca_Id = Number(localStorage.getItem('ducaId'));
+              itemPorDuca.duca_Id = parseInt(localStorage.getItem('ducaId'));
           
               let todosExitosos = true;
-          
+              localStorage.setItem('devaDuca', JSON.stringify(values.seleccionados))
+              console.log('arreglo en localstorage', localStorage.getItem('devaDuca'));
               for (let item of values.seleccionados) {
-                itemPorDuca.deva_Id = item;
-          
+                itemPorDuca.deva_Id = item.deva_Id;
+                
                 const response = await axios.post(`${apiUrl}/api/ItemsDEVAxDUCA/Insertar`, itemPorDuca, {
                   headers: {
                     'XApiKey': apiKey
@@ -94,6 +108,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
               }
           
               if (todosExitosos) {
+                localStorage.removeItem('Devas');
                 if (onGuardadoExitoso) onGuardadoExitoso();
               } else {
                 setOpenSnackbar(true);
@@ -132,22 +147,56 @@ const itemPorDuca =  itemDevaPorDucaModel;
       }));
       useEffect(() => {
         listarDevas();
+        const cargarDevas =  () => {
+            const localDevas = localStorage.getItem('devaDuca') ;
+            
+            console.log(localStorage.getItem('Devas'));
+            if (localDevas && localStorage.getItem('Devas')) {
+             const parsedLocal = JSON.parse(localDevas);
+             const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
+            console.log(devasDesdeApi);
+             const nuevos = devasDesdeApi.filter(apiDeva =>
+              !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
+             );
+          
+             const combinado = [...parsedLocal, ...nuevos];
+             setDeva(combinado);
+             formik.setFieldValue('seleccionados', parsedLocal);
+            } else if(localDevas)
+            {
+              const parsedLocal = JSON.parse(localDevas);
+              setDeva(parsedLocal);
+             formik.setFieldValue('seleccionados', parsedLocal);
+            }
+            else if (localStorage.getItem('Devas')) {
+              const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
+             setDeva(devasDesdeApi);
+            }
+            else {
+              setDeva([]);
+            }
+           };
+          
+          cargarDevas();
         if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
           setOpenSnackbar(true);
         }
         
+        
       }, [formik.errors, formik.submitCount]);
+      
       
     
 
-    const handleSeleccion = (id) => {
-        const current = formik.values.seleccionados;
-        const updated = current.includes(id)
-          ? current.filter((i) => i !== id)
-          : [...current, id];
-      
-        formik.setFieldValue('seleccionados', updated);
-    }
+      const handleSeleccion = (item) => {
+         const current = formik.values.seleccionados;
+         const exists = current.some(i => i.deva_Id === item.deva_Id);
+         const updated = exists
+          ? current.filter(i => i.deva_Id !== item.deva_Id)
+          : [...current, item];
+        
+         formik.setFieldValue('seleccionados', updated);
+        };
     useEffect(() => {
         console.log("IDs seleccionados:", formik.values.seleccionados);
       }, [formik.values.seleccionados]);
@@ -175,10 +224,10 @@ const itemPorDuca =  itemDevaPorDucaModel;
             deva.map((fila) => (
               <TableRow key={fila.deva_Id}>
                 <TableCell>
-                  <Checkbox
-                    checked={formik.values.seleccionados.includes(fila.deva_Id)}
-                    onChange={() => handleSeleccion(fila.deva_Id)}
-                  />
+                <Checkbox
+                checked={formik.values.seleccionados.some((i) => i.deva_Id === fila.deva_Id)}
+                onChange={() => handleSeleccion(fila)}
+                />
                 </TableCell>
                 <TableCell>{fila.regi_Codigo}</TableCell>
                 <TableCell>{fila.pais_Nombre}</TableCell>

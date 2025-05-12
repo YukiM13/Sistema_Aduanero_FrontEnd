@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -7,6 +7,7 @@ import {
   Divider,
   Snackbar,
   Alert,
+  InputAdornment,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -15,14 +16,42 @@ import CustomTextField from '../../../components/forms/theme-elements/CustomText
 import CustomFormLabel from '../../../components/forms/theme-elements/CustomFormLabel';
 import AuthSocialButtons from './AuthSocialButtons';
 import axios from 'axios';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
 
 const validationSchema = yup.object({
   usua_Nombre: yup.string().required('El Usuario es requerido'),
   usua_Contrasenia: yup.string().required('La Contraseña es requerida'),
 });
 
+const obtenerPantallasPermitidas = async (roleId, apiUrl, apiKey) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/api/RolesPorPantallas/DibujarMenu?role_Id=${roleId}`,
+      {
+        headers: { XApiKey: apiKey },
+      }
+    );
+
+    if (response.data?.success && Array.isArray(response.data?.data)) {
+      return response.data.data.map((item) => item.pant_Nombre);
+    } else {
+      console.error('Error al obtener pantallas:', response.data);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error en la petición:', error);
+    return [];
+  }
+};
+
 const AuthLogin = ({ title, subtitle, subtext }) => {
-  localStorage.removeItem('DataUsuario');
+  useEffect(() => {
+    const localStorageData = localStorage.getItem('DataUsuario');
+    if (localStorageData) {
+      window.location.href = '/dashboards/modern';
+    }
+  }, []);
 
   const [alertMessage, setAlertMessage] = React.useState('');
   const [alertSeverity, setAlertSeverity] = React.useState('error');
@@ -37,58 +66,73 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       usua_Contrasenia: '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      axios
-        .post(`${apiUrl}/api/Usuarios/Login`, values, {
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(`${apiUrl}/api/Usuarios/Login`, values, {
           headers: { XApiKey: apiKey },
-        })
-        .then((response) => {
-          if (response.status === 200 && response.data.success) {
-            localStorage.setItem('DataUsuario', JSON.stringify(response.data.data));
-            window.location.href = '/dashboards/modern';
-          } else {
-            setAlertMessage(response.data.message || 'Error desconocido.');
-            setAlertSeverity('error');
-            setOpenSnackbar(true);
-          }
-        })
-        .catch((error) => {
-          console.error('Error al iniciar sesión:', error);
-          setAlertMessage('Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
-          setAlertSeverity('error');
-          setOpenSnackbar(true);
         });
+
+        if (response.status === 200 && response.data.success) {
+          const usuario = response.data.data;
+          localStorage.setItem('DataUsuario', JSON.stringify(usuario));
+
+          const pantallasPermitidas = await obtenerPantallasPermitidas(
+            usuario.role_Id,
+            apiUrl,
+            apiKey
+          );
+          localStorage.setItem('PantallasPermitidas', JSON.stringify(pantallasPermitidas));
+
+          window.location.href = '/dashboards/modern';
+        } else {
+          formik.setErrors({
+            usua_Nombre: 'El usuario o contraseña son incorrectos',
+            usua_Contrasenia: 'El usuario o contraseña son incorrectos',
+          });
+        }
+      } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        setAlertMessage(
+          'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.'
+        );
+        setAlertSeverity('error');
+        setOpenSnackbar(true);
+      }
     },
   });
 
   return (
     <>
-      {title ? (
+      {title && (
         <Typography fontWeight="700" variant="h3" mb={1}>
           {title}
         </Typography>
-      ) : null}
+      )}
 
       {subtext}
 
       <AuthSocialButtons title="Sign in with" />
+
       <Box>
         <Divider>
-          <Typography
-            component="span"
-            color="textSecondary"
-            variant="h6"
-            fontWeight="400"
-            position="relative"
-          >
-          </Typography>
+          <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" />
         </Divider>
       </Box>
-      <Typography variant="h6" gutterBottom sx={{ color: '#003857', mt:5, textAlign:'center'  }}>
+
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: '#003857', mt: 5, textAlign: 'center' }}
+      >
         Inicia sesión para continuar
       </Typography>
 
-      <form onSubmit={formik.handleSubmit} noValidate autoComplete="off" style={{ marginTop: '6px', px: 3 }}>
+      <form
+        onSubmit={formik.handleSubmit}
+        noValidate
+        autoComplete="off"
+        style={{ marginTop: '6px', px: 3 }}
+      >
         <Stack spacing={1}>
           <Box>
             <CustomFormLabel htmlFor="usua_Nombre">Usuario</CustomFormLabel>
@@ -102,6 +146,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Nombre && Boolean(formik.errors.usua_Nombre)}
               helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Box>
           <Box>
@@ -117,11 +168,18 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Contrasenia && Boolean(formik.errors.usua_Contrasenia)}
               helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
           </Box>
         </Stack>
         <Box mt={3}>
-          <Button color='primary' variant="contained" size="large" fullWidth type="submit">
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
             Iniciar sesión
           </Button>
         </Box>
@@ -130,10 +188,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             component={Link}
             to="/auth/forgot-password"
             fontWeight="500"
-            sx={{
-              textDecoration: 'none',
-              color: 'primary.main',
-            }}
+            sx={{ textDecoration: 'none', color: 'primary.main' }}
           >
             ¿Olvidaste tu contraseña?
           </Typography>

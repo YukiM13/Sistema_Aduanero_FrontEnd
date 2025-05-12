@@ -8,7 +8,9 @@ const PersonaNatural = {
     pena_CorreoElectronico: '',
     pena_CorreoAlternativo: '',
     pena_RTN: '',
-    ArchivoRTN: null, // Aquí se guardará el archivo correctamente
+    ArchivoRTN: null,
+    ArchivoDNI: null, 
+    ArchivoNumeroRecibo: null,
     pena_DNI: '',
     pena_ArchivoDNI: null,
     pena_NumeroRecibo: '',
