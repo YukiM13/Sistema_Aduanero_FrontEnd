@@ -68,22 +68,11 @@ const notifications = [
 const profile = [
   {
     href: '/user-profile',
-    title: 'My Profile',
-    subtitle: 'Account Settings',
+    title: 'Mi Perfil',
+    subtitle: 'Información del usuario',
     icon: icon1,
   },
-  {
-    href: '/apps/email',
-    title: 'My Inbox',
-    subtitle: 'Messages & Emails',
-    icon: icon2,
-  },
-  {
-    href: '/apps/notes',
-    title: 'My Tasks',
-    subtitle: 'To-do and Daily Tasks',
-    icon: icon3,
-  },
+  
 ];
 
 // apps dropdown

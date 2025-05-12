@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { Snackbar, Alert, Grid, Button, MenuItem } from '@mui/material';
+import { Snackbar, Alert, Grid, Button, MenuItem, Switch, FormControlLabel } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
@@ -14,12 +14,12 @@ const validationSchema = yup.object({
     usua_Contrasenia: yup.string().required('La contraseña es requerida'),
     empl_Id: yup.number().required('El empleado es requerido').moreThan(0, 'Debe seleccionar un empleado'),
     usua_Image: yup.mixed().required('La imagen es requerida')
-        .test('fileFormat', 'Formato de imagen no soportado (jpg, jpeg, png)', (value) => {
-            if (value) {
-                return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
-            }
-            return true;
-        }),
+    .test('fileFormat', 'Formato de imagen no soportado (jpg, jpeg, png)', (value) => {
+        if (value) {
+            return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
+        }
+        return true;
+    }),
     role_Id: yup.number().required('El rol es requerido').moreThan(0, 'Debe seleccionar un rol'),
 });
 
@@ -34,27 +34,49 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
     const cloudinaryUploadPreset = process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
     const listarEmpleados = () => {
-        axios.get(`${apiUrl}/api/Empleados/Listar?empl_EsAduana=true`, {
-            headers: { 'XApiKey': apiKey }
-        })
-            .then(response => {
-                if (response.data && Array.isArray(response.data.data)) {
-                    setEmpleados(response.data.data);
-                }
+        Promise.all([
+            axios.get(`${apiUrl}/api/Empleados/Listar?empl_EsAduana=true`, {
+                headers: { 'XApiKey': apiKey }
+            }),
+            axios.get(`${apiUrl}/api/Empleados/Listar?empl_EsAduana=false`, {
+                headers: { 'XApiKey': apiKey }
+            })
+        ])
+            .then(([responseTrue, responseFalse]) => {
+                const empleadosCombinados = [
+                    ...responseTrue.data.data,
+                    ...responseFalse.data.data
+                ];
+                setEmpleados(empleadosCombinados.sort((a, b) => {
+                    const nombreA = `${a.empl_Nombres} ${a.empl_Apellidos}`.toLowerCase();
+                    const nombreB = `${b.empl_Nombres} ${b.empl_Apellidos}`.toLowerCase();
+                    return nombreA.localeCompare(nombreB);
+                }));
             })
             .catch(error => {
                 console.error('Error al obtener los empleados:', error);
             });
     };
-
+    
     const listarRoles = () => {
-        axios.get(`${apiUrl}/api/Roles/Listar?role_Aduana=true`, {
-            headers: { 'XApiKey': apiKey }
-        })
-            .then(response => {
-                if (response.data && Array.isArray(response.data.data)) {
-                    setRoles(response.data.data);
-                }
+        Promise.all([
+            axios.get(`${apiUrl}/api/Roles/Listar?role_Aduana=true`, {
+                headers: { 'XApiKey': apiKey }
+            }),
+            axios.get(`${apiUrl}/api/Roles/Listar?role_Aduana=false`, {
+                headers: { 'XApiKey': apiKey }
+            })
+        ])
+            .then(([responseTrue, responseFalse]) => {
+                const rolesCombinados = [
+                    ...responseTrue.data.data,
+                    ...responseFalse.data.data
+                ];
+                setRoles(rolesCombinados.sort((a, b) => {
+                    const nombreA = a.role_Descripcion.toLowerCase();
+                    const nombreB = b.role_Descripcion.toLowerCase();
+                    return nombreA.localeCompare(nombreB);
+                }));
             })
             .catch(error => {
                 console.error('Error al obtener los roles:', error);
@@ -86,7 +108,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                     const formData = new FormData();
                     formData.append('file', values.usua_Image);
                     formData.append('upload_preset', cloudinaryUploadPreset);
-
+                    
                     const cloudinaryResponse = await axios.post(
                         `https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/image/upload`,
                         formData
@@ -111,7 +133,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                 });
 
                 if (onGuardadoExitoso) onGuardadoExitoso();
-
+            
             } catch (error) {
                 console.error('Error al insertar el usuario:', error);
             }
@@ -144,22 +166,22 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                 <Grid container spacing={3} mb={3}>
                     <Grid item lg={12} md={12} sm={12} mx={'auto'}>
                         <CustomFormLabel htmlFor="usua_Image">Imagen</CustomFormLabel>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                {!previewImage ? (
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                        sx={{
-                                            width: '70px',
-                                            height: '70px',
-                                            borderRadius: '50%',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            padding: 0,
-                                        }}
-                                    >
-                                    <AddIcon sx={{ fontSize: '30px' }} /> {/* Ajuste del tamaño del ícono */}
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            {!previewImage ? (
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    sx={{
+                                        width: '70px',
+                                        height: '70px',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        padding: 0,
+                                    }}
+                                >
+                                    <AddIcon sx={{ fontSize: '30px' }} />
                                     <input
                                         type="file"
                                         id="usua_Image"
@@ -168,9 +190,9 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                                         onBlur={formik.handleBlur}
                                         hidden
                                     />
-                                    </Button>
-                                ) : (
-                                    <div style={{ position: 'relative' }}>
+                                </Button>
+                            ) : (
+                                <div style={{ position: 'relative' }}>
                                     <img
                                         src={previewImage}
                                         alt="Vista previa"
@@ -180,7 +202,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                                             borderRadius: '50%',
                                             border: '1px solid',
                                             objectFit: 'cover',
-                                        }}
+                                        }}  
                                     />
                                     <Button
                                         variant="contained"
@@ -201,11 +223,11 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                                             padding: 0,
                                         }}
                                     >
-                                    ✕
+                                        ✕
                                     </Button>
-                                    </div>
-                                )}
-                            </div>
+                                </div>
+                            )}
+                        </div>
                         {formik.touched.usua_Image && formik.errors.usua_Image && (
                             <div style={{ color: 'red', textAlign: 'center', marginTop: '5px' }}>{formik.errors.usua_Image}</div>
                         )}
@@ -224,7 +246,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                             helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
                         />
                     </Grid>
-
+                    
                     <Grid item lg={6} md={12} sm={12}>
                         <CustomFormLabel htmlFor="usua_Contrasenia">Contraseña</CustomFormLabel>
                         <CustomTextField
@@ -239,7 +261,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                             helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
                         />
                     </Grid>
-
+                    
                     <Grid item lg={6} md={12} sm={12}>
                         <CustomFormLabel htmlFor="empl_Id">Empleado</CustomFormLabel>
                         <CustomTextField
@@ -283,6 +305,19 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                             ))}
                         </CustomTextField>
                     </Grid>
+
+                    <Grid item lg={6} md={12} sm={12}>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={formik.values.usua_EsAdmin}
+                                    onChange={(event) => formik.setFieldValue('usua_EsAdmin', event.target.checked)}
+                                    color="primary"
+                                />
+                            }
+                            label="¿Es Administrador?"
+                        />
+                    </Grid>
                 </Grid>
 
                 <Grid container justifyContent="flex-end" spacing={2} mt={2}>
@@ -310,7 +345,7 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                 </Alert>
             </Snackbar>
         </div>
-    );
+    );  
 };
 
 export default UsuariosCreateComponent;

@@ -2,15 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyC2N9FblV61KYK7Co3_1mMhR1-jHQEJKvA",
-    authDomain: "pdfgenerados-ea968.firebaseapp.com",
-    projectId: "pdfgenerados-ea968",
-    storageBucket: "pdfgenerados-ea968.firebasestorage.app",
-    messagingSenderId: "668819054693",
-    appId: "1:668819054693:web:f82f228d5501510850e68c",
-    measurementId: "G-477J9B859S"
-  };
-
+  apiKey: "AIzaSyCmvPUryTr5_aEgKSgWbDjMsLGJsvLU2WU",
+  authDomain: "fir-upload-pdf-d2c3f.firebaseapp.com",
+  projectId: "fir-upload-pdf-d2c3f",
+  storageBucket: "fir-upload-pdf-d2c3f.firebasestorage.app",
+  messagingSenderId: "652300289827",
+  appId: "1:652300289827:web:8447244bfc88f850cd6e96"
+};
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 

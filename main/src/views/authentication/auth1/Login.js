@@ -6,8 +6,8 @@ import img from 'src/assets/images/logos/LOGOAZUL.svg';
 import AuthLogin from '../authForms/AuthLogin';
 
 const Login = () => (
-  <PageContainer title="Login" description="this is Login page">
-    <Grid container spacing={0} sx={{ overflowX: 'hidden' }}>
+  <PageContainer title="Inicio Sesion" description="this is Login page">
+    <Grid container sx={{ overflowX: 'hidden' }}>
       <Grid
         item
         xs={12}

@@ -32,7 +32,6 @@ const DucaCreateComponent = () => {
     const ducaTab2Ref = React.useRef();
     const ducaTab3Ref = React.useRef();
     const ducaTab4Ref = React.useRef();
-
     const isStepSkipped = (step) => skipped.has(step);
   
     const handleNext = async() => {
@@ -104,7 +103,7 @@ const DucaCreateComponent = () => {
       switch (step) {
         case 0:
           return (
-            <DucaTab1Component ref={ducaTab1Ref}/>
+            <DucaTab1Component    ref={ducaTab1Ref}/>
           );
         case 1:
           return (
@@ -127,7 +126,10 @@ const DucaCreateComponent = () => {
     const handleReset = () => {
       localStorage.removeItem('ducaId'); 
       localStorage.removeItem('edit');
+      localStorage.removeItem('devaDuca');
+      localStorage.removeItem('Devas');
       setActiveStep(0);
+
     };
      useEffect(() => {
             listarDevas();
@@ -185,7 +187,7 @@ const DucaCreateComponent = () => {
                 <Button
                   onClick={handleNext}
                   variant="contained"
-                  disabled={activeStep === 0 && deva.length ===0}
+                  disabled={activeStep === 0 && deva.length ===0 && !localStorage.getItem('devaDuca')}
                   color={activeStep === steps.length - 1 ? 'success' : 'primary'}
                   endIcon={
                     activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />

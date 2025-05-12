@@ -110,7 +110,7 @@ const UsuariosComponent = () => {
             .catch(() => mostrarAlerta('errorEliminar'));
     };
 
-    const activar = (usuario) => {
+    const activar = (usuario) => {        
         axios.post(`${apiUrl}/api/Usuarios/Activar`, usuario, {
             headers: { 'XApiKey': apiKey }
         })
