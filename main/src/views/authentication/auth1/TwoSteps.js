@@ -10,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const TwoSteps = () => {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(['', '', '', '', '', '']);
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -21,12 +22,37 @@ const TwoSteps = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
+  const handleCodeChange = (value, index) => {
+    const newCode = [...code];
+    const input = value.slice(0, 6);
+
+    if (input.length === 6) {
+      setCode(input.split(''));
+      document.getElementById(`code-input-5`).focus();
+      return;
+    }
+
+    newCode[index] = value.slice(-1);
+    setCode(newCode);
+
+    if (value && index < 5) {
+      document.getElementById(`code-input-${index + 1}`).focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !code[index] && index > 0) {
+      document.getElementById(`code-input-${index - 1}`).focus();
+    }
+  };
+
   const handleVerifyCode = () => {
     setIsVerifying(true);
     const storedCode = localStorage.getItem('ForgotPasswordCode');
+    const enteredCode = code.join('');
 
     setTimeout(() => {
-      if (code !== storedCode) {
+      if (enteredCode !== storedCode) {
         setAlertConfig({ severity: 'error', message: 'El código ingresado es incorrecto.' });
         setOpenSnackbar(true);
         setIsVerifying(false);
@@ -43,8 +69,14 @@ const TwoSteps = () => {
   const handleChangePassword = async () => {
     const username = localStorage.getItem('ForgotPasswordUser');
 
-    if (!newPassword.trim()) {
-      setAlertConfig({ severity: 'error', message: 'La nueva contraseña es requerida.' });
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      setAlertConfig({ severity: 'error', message: 'Ambos campos de contraseña son requeridos.' });
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setAlertConfig({ severity: 'error', message: 'Las contraseñas no coinciden.' });
       setOpenSnackbar(true);
       return;
     }
@@ -159,14 +191,23 @@ const TwoSteps = () => {
               <Box mt={4}>
                 {!isCodeVerified ? (
                   <>
-                    <CustomFormLabel htmlFor="code">Código de Seguridad</CustomFormLabel>
-                    <CustomTextField
-                      id="code"
-                      variant="outlined"
-                      fullWidth
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                    />
+                    <CustomFormLabel>Código de Seguridad</CustomFormLabel>
+                    <Stack direction="row" spacing={1} justifyContent="center">
+                      {code.map((digit, index) => (
+                        <CustomTextField
+                          key={index}
+                          id={`code-input-${index}`}
+                          value={digit}
+                          onChange={(e) => handleCodeChange(e.target.value.toUpperCase(), index)}
+                          onKeyDown={(e) => handleKeyDown(e, index)}
+                          inputProps={{
+                            maxLength: 1,
+                            style: { textAlign: 'center', fontSize: '1.5rem' },
+                          }}
+                          sx={{ width: '3rem' }}
+                        />
+                      ))}
+                    </Stack>
                     <Button
                       color="primary"
                       variant="contained"
@@ -189,6 +230,17 @@ const TwoSteps = () => {
                       fullWidth
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <CustomFormLabel htmlFor="confirmPassword" sx={{ mt: 2 }}>
+                      Confirmar Contraseña
+                    </CustomFormLabel>
+                    <CustomTextField
+                      id="confirmPassword"
+                      type="password"
+                      variant="outlined"
+                      fullWidth
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                     <Button
                       color="primary"
