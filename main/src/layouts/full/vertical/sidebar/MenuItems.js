@@ -464,9 +464,19 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Orden Compra')) {
       produccion.children.push({
         id: uniqueId(),
-        title: 'Orden Compra',
+        title: 'Orden de Compra',
         icon: IconPoint,
         href: '/ordenCompra',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
+      produccion.children.push({
+        id: uniqueId(),
+        title: 'Pedido Orden',
+        icon: IconPoint,
+        href: '/pedidoOrden',
         chipColor: 'secondary',
       });
     }
