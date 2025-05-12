@@ -1906,13 +1906,17 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   Sí
 </Button>
 
-    <Button
-      onClick={() => setOpenDialog(false)}
-      color="secondary"
-      variant="outlined"
-    >
-      No
-    </Button>
+   <Button
+  onClick={() => {
+    setOpenDialog(false);
+    navigate('/dashboards/modern');
+  }}
+  color="secondary"
+  variant="outlined"
+>
+  No
+</Button>
+
   </DialogActions>
 </Dialog>
 
