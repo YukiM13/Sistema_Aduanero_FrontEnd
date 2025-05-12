@@ -8,6 +8,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { AlignHorizontalRight, Margin, PrintSharp } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 
+import html2pdf from "html2pdf.js";
+
 import { storage } from '../../../layouts/config/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import QRCode from 'qrcode';
@@ -102,6 +104,7 @@ import { duration } from "@mui/material";
   });
 };
 
+
 // const generatePDF = () => {
 //   const doc = new jsPDF({
 //     orientation: 'portrait',
@@ -138,7 +141,7 @@ import { duration } from "@mui/material";
 // };
 
 
-const generatePDF = () => {
+const generatePDF = async () => {
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -154,30 +157,130 @@ const generatePDF = () => {
 
   // Render the first page (html-content)
   html2canvas(element, {
-    scale: 2,
+    scale: 3,
     useCORS: true,
     logging: false
   }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    doc.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+    const imgData = canvas.toDataURL('image/jpeg');
+    doc.addImage(imgData, 'JPEG', 10, 10, pdfWidth, pdfHeight);
 
     // Add a new page for the second element (html-reverso)
     doc.addPage();
     html2canvas(reverso, {
-      scale: 2,
+      scale: 3,
       useCORS: true,
       logging: false
-    }).then(canvas2 => {
-      const imgData2 = canvas2.toDataURL('image/png');
+    }).then(async canvas2 => {
+      const imgData2 = canvas2.toDataURL('image/jpeg');
 
       // Ensure the second page uses the same dimensions
-      doc.addImage(imgData2, 'PNG', 10, 10, pdfWidth, pdfHeight);
+      doc.addImage(imgData2, 'JPEG', 10, 10, pdfWidth, pdfHeight);
 
       // Save the PDF
-      doc.save("DUCA-document.pdf");
+       doc.save("Duca.pdf");
     });
   });
+
+
 };
+
+
+
+const generarPDF = () => {
+  // Get the elements by their IDs
+  const firstPageElement = document.getElementById("html-content");
+  const secondPageElement = document.getElementById("html-reverso");
+
+  // Define options for html2pdf
+  const options = {
+    margin: 0, // No margins
+    filename: "DUCA-document.pdf",
+    image: { type: "jpeg", quality: 1 }, // High-quality images
+    html2canvas: {
+      scale: 2, // Higher scale for better resolution
+      useCORS: true, // Allow cross-origin images
+      logging: false,
+    },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  };
+
+  // Create a new jsPDF instance
+  const pdf = new html2pdf().set(options);
+
+  // Render the first page
+  pdf.from(firstPageElement).toPdf().get("pdf").then((doc) => {
+    // Add a new page for the second element
+    doc.addPage();
+    return html2pdf()
+      .set({ html2canvas: { scale: 2 } }) // Ensure consistent scaling
+      .from(secondPageElement)
+      .toContainer()
+      .toCanvas()
+      .toPdf()
+      .get("pdf");
+  }).then((doc) => {
+    // Save the PDF with both pages
+    doc.save();
+  }).catch((error) => {
+    console.error("Error generating PDF:", error);
+  });
+};
+
+
+
+//  const convertToPdf = async () => {
+
+//        const opt = {
+//          margin: 1,
+//          filename: 'temporal.pdf',
+//          image: { type: 'jpeg', quality: 0.98 },
+//          html2canvas: { scale: 2 },
+//          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+//        };
+   
+//        const nombreArchivo = `documentos/Duca-${Date.now()}.pdf`;
+//        const archivoRef = ref(storage, nombreArchivo);
+     
+//        // 1. Generar primer PDF (sin QR)
+//        const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+     
+//        // 2. Subir a Firebase
+//        await uploadBytes(archivoRef, pdfBlobSinQR);
+     
+//        // 3. Obtener la URL del archivo subido
+//        const urlDescarga = await getDownloadURL(archivoRef);
+     
+//        // 4. Generar el QR con esa URL
+//        const qrDataUrl = await QRCode.toDataURL(urlDescarga);
+     
+//        // 5. Insertar el QR en el DOM
+//        const qrContainer = document.getElementById("qr");
+//        const img = document.createElement("img");
+//        img.src = qrDataUrl;
+//        img.width = 100;
+//        img.style.width = "100%";
+//       img.style.height = "100%";
+//       img.style.objectFit = "contain";
+//        qrContainer.innerHTML = '';
+//        qrContainer.appendChild(img);
+     
+//        // 6. Generar el PDF nuevamente, ahora con el QR
+//        const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+     
+//        // 7. Subir el nuevo PDF (sobrescribiendo el anterior o como otro archivo)
+//        await uploadBytes(archivoRef, pdfBlobConQR);
+//        setTimeout(async () => {
+//         const nuevaUrlDescarga = await getDownloadURL(archivoRef);
+//         const printWindow = window.open(nuevaUrlDescarga, '_blank');
+//         if (printWindow) {
+//           printWindow.onload = () => {
+//             printWindow.print();
+//           };
+//         } else {
+//           alert("Por favor permite las ventanas emergentes en tu navegador.");
+//         }
+//       }, 1000); // Ajusta el tiempo si aún no carga
+//     }
 
 
 const DucaPrintComponent = ({Duca, onCancelar }) => {
@@ -223,12 +326,17 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                 <Grid item xs={12} sx={{ border: '1px solid #000', padding: '10px', paddingBottom: '0px', paddingTop: '0% ' }}>
                     
                 <Grid container padding={0} >
-                    <Grid item xs={11} sx={{paddingTop: '2%'}}>
+                    <Grid item xs={10} sx={{paddingTop: '2%'}}>
                     <p className="text-center" style={{marginTop: "2px"}}><strong>DECLARACIÓN ÚNICA CENTROAMERICANA (DUCA)
                     <br/> -- IMPRESA --</strong></p>
                     </Grid>
                     <Grid item xs={1}>
                         <img src={DucaLogo} alt="DUCA Logo" width={"100%"} />
+                    </Grid>
+
+                    {/* qr */}
+                    <Grid item id='imagenqr' xs={1}>
+                        <p className="text-center">qr</p>
                     </Grid>
                 </Grid>
 
@@ -1407,6 +1515,8 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                     <Grid item xs={1}>
                         <img src={DucaLogo} alt="DUCA Logo" width={"100%"} />
                     </Grid>
+
+                    
                 </Grid>
 
 
