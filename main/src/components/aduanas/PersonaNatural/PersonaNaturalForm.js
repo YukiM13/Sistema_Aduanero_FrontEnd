@@ -435,7 +435,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     
     formik.handleSubmit(e);
   };
-  const handlePhoneChange = (e) => {
+  const handlenumeros = (e) => {
     const { name, value } = e.target;
     const numericValue = value.replace(/\D/g, '');
     formik.setFieldValue(name, numericValue);
@@ -529,9 +529,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_TelefonoFijo"
                 name="pena_TelefonoFijo"
                 value={formik.values.pena_TelefonoFijo}
-                onChange={handlePhoneChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -541,11 +540,10 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_TelefonoCelular"
                 name="pena_TelefonoCelular"
                 value={formik.values.pena_TelefonoCelular}
-                onChange={handlePhoneChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
                 helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -666,10 +664,11 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_RTN"
                 name="pena_RTN"
                 value={formik.values.pena_RTN}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_RTN && Boolean(formik.errors.pena_RTN)}
                 helperText={formik.touched.pena_RTN && formik.errors.pena_RTN}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -695,7 +694,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 id="pena_DNI"
                 name="pena_DNI"
                 value={formik.values.pena_DNI}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pena_DNI && Boolean(formik.errors.pena_DNI)}
                 helperText={formik.touched.pena_DNI && formik.errors.pena_DNI}

@@ -56,7 +56,7 @@ const TabWrapper = styled('div')({
 const validationSchemas = [
   yup.object({
     pers_Nombre: yup.string().required('El nombre es requerido'),
-    pers_RTN: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El RTN es requerido'),
+    pers_RTN: yup.string().required('El RTN es requerido'),
     escv_Id: yup.number().required('El estado civil es requerido').moreThan(0, 'Debe seleccionar un estado civil'),
     ofic_Id: yup.number().required('La oficina es requerida').moreThan(0, 'Debe seleccionar una oficina'),
     ofpr_Id: yup.number().required('El oficio o profesión es requerido').moreThan(0, 'Debe seleccionar un oficio o profesión'),
@@ -139,7 +139,11 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
       setOpenSnackbar(true);
     });
   };
-
+  const handlenumeros = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, '');
+    formik.setFieldValue(name, numericValue);
+  };
   const verificarCodigo = () => {
     if (codigoIngresado === codigoVerificacion) {
       setCorreoVerificado(true);
@@ -398,15 +402,16 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>RTN</CustomFormLabel>
-              <CustomTextField
+              <CustomTextFields
                 fullWidth
                 id="pers_RTN"
                 name="pers_RTN"
                 value={formik.values.pers_RTN}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.pers_RTN && Boolean(formik.errors.pers_RTN)}
                 helperText={formik.touched.pers_RTN && formik.errors.pers_RTN}
+                inputProps={{ inputMode: 'text', pattern: '[0-9]*' }}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -556,7 +561,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_NumeroLocalApart"
                 name="peju_NumeroLocalApart"
                 value={formik.values.peju_NumeroLocalApart}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_NumeroLocalApart && Boolean(formik.errors.peju_NumeroLocalApart)}
                 helperText={formik.touched.peju_NumeroLocalApart && formik.errors.peju_NumeroLocalApart}
@@ -574,7 +579,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_NumeroLocalRepresentante"
                 name="peju_NumeroLocalRepresentante"
                 value={formik.values.peju_NumeroLocalRepresentante}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_NumeroLocalRepresentante && Boolean(formik.errors.peju_NumeroLocalRepresentante)}
                 helperText={formik.touched.peju_NumeroLocalRepresentante && formik.errors.peju_NumeroLocalRepresentante}
@@ -667,7 +672,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_TelefonoEmpresa"
                 name="peju_TelefonoEmpresa"
                 value={formik.values.peju_TelefonoEmpresa}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_TelefonoEmpresa && Boolean(formik.errors.peju_TelefonoEmpresa)}
                 helperText={formik.touched.peju_TelefonoEmpresa && formik.errors.peju_TelefonoEmpresa}
@@ -680,7 +685,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_TelefonoFijoRepresentanteLegal"
                 name="peju_TelefonoFijoRepresentanteLegal"
                 value={formik.values.peju_TelefonoFijoRepresentanteLegal}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_TelefonoFijoRepresentanteLegal && Boolean(formik.errors.peju_TelefonoFijoRepresentanteLegal)}
                 helperText={formik.touched.peju_TelefonoFijoRepresentanteLegal && formik.errors.peju_TelefonoFijoRepresentanteLegal}
@@ -693,7 +698,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 id="peju_TelefonoRepresentanteLegal"
                 name="peju_TelefonoRepresentanteLegal"
                 value={formik.values.peju_TelefonoRepresentanteLegal}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_TelefonoRepresentanteLegal && Boolean(formik.errors.peju_TelefonoRepresentanteLegal)}
                 helperText={formik.touched.peju_TelefonoRepresentanteLegal && formik.errors.peju_TelefonoRepresentanteLegal}
