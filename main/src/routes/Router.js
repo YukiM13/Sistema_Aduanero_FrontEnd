@@ -101,6 +101,7 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
+const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
 
 
 
@@ -227,6 +228,7 @@ const todasLasRutas = [
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
+  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
