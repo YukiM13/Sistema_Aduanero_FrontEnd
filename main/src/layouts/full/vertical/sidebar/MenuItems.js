@@ -533,6 +533,15 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
+  if (esAdmin || nombresDePantalla.includes('devaspendientes')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Devas Pendientes',
+      icon: IconFileCertificate,
+      href: '/devaspendientes/list',
+      chipColor: 'secondary',
+    });
+  }
   
   return Menuitems;
 };
