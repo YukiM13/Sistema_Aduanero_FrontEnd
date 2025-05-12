@@ -8,6 +8,10 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { AlignHorizontalRight, Margin, PrintSharp } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 
+import { storage } from '../../../layouts/config/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import QRCode from 'qrcode';
+
 import DucaLogo from "../../../assets/images/imagenes/DUCALOGO.png";
 import { duration } from "@mui/material";
 
