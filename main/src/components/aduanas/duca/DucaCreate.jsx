@@ -26,7 +26,7 @@ import ArrowBackIcon   from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import Logo from 'src/assets/images/logos/LOGO.svg';
 const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', 'Declarante, Transportista y Conductor', 'Mercancia y Documentos de soporte'];
-const DucaCreateComponent = () => {
+const DucaCreateComponent = ({onCancelar}) => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
     const [openSnackbar, setOpenSnackbar] = React.useState(false); 
@@ -36,7 +36,10 @@ const DucaCreateComponent = () => {
     const ducaTab3Ref = React.useRef();
     const ducaTab4Ref = React.useRef();
     const isStepSkipped = (step) => skipped.has(step);
-  
+  const localStorageData = localStorage.getItem('DataUsuario');
+    const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+     
+    const admin = parsedData ? parsedData.usua_EsAdmin : false;
     const handleNext = async() => {
        if (activeStep === 0 && ducaTab1Ref.current) {
           const exito = await ducaTab1Ref.current.submit();
@@ -286,11 +289,12 @@ const DucaCreateComponent = () => {
                 <Button
                   color="inherit"
                   variant="contained"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
+                  disabled={!admin && activeStep === 0}
+                  onClick={admin ? onCancelar : handleBack}
                   startIcon={<ArrowBackIcon />}
                 >
-                  Atrás
+                  {admin ? 'Cancelar' : 'Atrás'}
+                 
                 </Button>
 
                 <Button
