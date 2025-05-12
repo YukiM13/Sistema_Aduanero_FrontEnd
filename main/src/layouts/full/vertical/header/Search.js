@@ -14,12 +14,13 @@ import {
 import { IconSearch, IconX } from '@tabler/icons';
 import Menuitems from '../sidebar/MenuItems';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Search = () => {
   // drawer top
   const [showDrawer2, setShowDrawer2] = useState(false);
   const [search, setSerach] = useState('');
+  const location = useLocation();
 
   const handleDrawerClose2 = () => {
     setShowDrawer2(false);
@@ -32,7 +33,9 @@ const Search = () => {
       );
     return rotr;
   };
+
   const searchData = filterRoutes(Menuitems, search);
+
   return (
     <>
       <IconButton
@@ -58,7 +61,7 @@ const Search = () => {
           <Stack direction="row" spacing={2} alignItems="center">
             <CustomTextField
               id="tb-search"
-              placeholder="Search here"
+              placeholder="Buscar..."
               fullWidth
               onChange={(e) => setSerach(e.target.value)}
               inputProps={{ 'aria-label': 'Search here' }}
@@ -71,7 +74,7 @@ const Search = () => {
         <Divider />
         <Box p={2} sx={{ maxHeight: '60vh', overflow: 'auto' }}>
           <Typography variant="h5" p={1}>
-            Quick Page Links
+            Paginas
           </Typography>
           <Box>
             <List component="nav">
@@ -79,11 +82,19 @@ const Search = () => {
                 return (
                   <Box key={menu.title ? menu.id : menu.subheader}>
                     {menu.title && !menu.children ? (
-                      <ListItemButton sx={{ py: 0.5, px: 1 }} to={menu.href} component={Link}>
+                      <ListItemButton
+                        sx={{
+                          py: 0.5,
+                          px: 1,
+                          backgroundColor: location.pathname === menu.href ? 'primary.light' : 'inherit',
+                          color: location.pathname === menu.href ? 'primary.main' : 'inherit',
+                        }}
+                        to={menu.href}
+                        component={Link}
+                      >
                         <ListItemText
                           primary={menu.title}
-                          secondary={menu.href}
-                          sx={{ my: 0, py: 0.5 }}
+                          sx={{ my: 0, py: 1 }}
                         />
                       </ListItemButton>
                     ) : (
@@ -94,15 +105,19 @@ const Search = () => {
                         {menu.children.map((child) => {
                           return (
                             <ListItemButton
-                              sx={{ py: 0.5, px: 1 }}
+                              sx={{
+                                py: 0.5,
+                                px: 1,
+                                backgroundColor: location.pathname === child.href ? 'primary.light' : 'inherit',
+                                color: location.pathname === child.href ? 'primary.main' : 'inherit',
+                              }}
                               to={child.href}
                               component={Link}
                               key={child.title ? child.id : menu.subheader}
                             >
                               <ListItemText
                                 primary={child.title}
-                                secondary={child.href}
-                                sx={{ my: 0, py: 0.5 }}
+                                sx={{ my: 0, py: 1 }}
                               />
                             </ListItemButton>
                           );

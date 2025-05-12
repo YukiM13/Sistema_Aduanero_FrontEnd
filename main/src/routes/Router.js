@@ -181,7 +181,7 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
-const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : null;
+const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
 const localStorageDatas = localStorage.getItem('DataUsuario');
 const parsedData = localStorageDatas ? JSON.parse(localStorageDatas) : null;
 const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
@@ -222,9 +222,9 @@ const todasLasRutas = [
   { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
   { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
   { path: '/ordenCompra', element: <OrdenCompra/>, pantalla:'Orden Compra' },
-  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Declaracion de Valor' },
+  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
-  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Impresion Declaracion de Valor' },
+  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
 ]
 
@@ -240,7 +240,7 @@ const Router = [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
       ...rutasFiltradas.map((ruta) => ({
         ...ruta,
-        element: <PrivateRoute>{ruta.element}</PrivateRoute>, // Envuelve las rutas protegidas con PrivateRoute
+        element: <PrivateRoute>{ruta.element}</PrivateRoute>,
       })),
     ],
   },
