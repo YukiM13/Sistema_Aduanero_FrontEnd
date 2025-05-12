@@ -32,7 +32,6 @@ const DucaCreateComponent = () => {
     const ducaTab2Ref = React.useRef();
     const ducaTab3Ref = React.useRef();
     const ducaTab4Ref = React.useRef();
-
     const isStepSkipped = (step) => skipped.has(step);
   
     const handleNext = async() => {
@@ -104,7 +103,7 @@ const DucaCreateComponent = () => {
       switch (step) {
         case 0:
           return (
-            <DucaTab1Component ref={ducaTab1Ref}/>
+            <DucaTab1Component    ref={ducaTab1Ref}/>
           );
         case 1:
           return (
@@ -130,6 +129,7 @@ const DucaCreateComponent = () => {
       localStorage.removeItem('devaDuca');
       localStorage.removeItem('Devas');
       setActiveStep(0);
+
     };
      useEffect(() => {
             listarDevas();
