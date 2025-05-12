@@ -3,25 +3,17 @@ import {
   Grid,
   Box,
   Typography,
-  Button,
+
   Avatar,
   Stack,
   CardMedia,
   styled,
-  Fab,
   Skeleton,
 } from '@mui/material';
+import { IconBriefcase, IconMail } from '@tabler/icons';
 import profilecover from 'src/assets/images/backgrounds/profilebg.jpg';
 import userimg from 'src/assets/images/profile/user-1.jpg';
-import {
-  IconBrandDribbble,
-  IconBrandFacebook,
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconFileDescription,
-  IconUserCheck,
-  IconUserCircle,
-} from '@tabler/icons';
+
 import ProfileTab from './ProfileTab';
 import BlankCard from '../../../shared/BlankCard';
 
@@ -37,7 +29,13 @@ const ProfileBanner = () => {
     margin: '0 auto',
   }));
   const [isLoading, setLoading] = React.useState(true);
-
+  const localStorageData = localStorage.getItem('DataUsuario');
+  const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+  const userName = parsedData ? parsedData.usua_Nombre : 'Usuario';
+  const userNombreCompleto = parsedData ? parsedData.emplNombreCompleto : 'Nombre Completo';
+  const userImage = parsedData ? parsedData.usua_Image : 'Imagen';
+  const userEmail = parsedData ? parsedData.empl_CorreoElectronico : 'Correo';
+  const userRole = parsedData ? parsedData.role_Descripcion : 'Rol';
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -72,39 +70,7 @@ const ProfileBanner = () => {
             }}
           >
             <Stack direction="row" textAlign="center" justifyContent="center" gap={6} m={3}>
-              <Box>
-                <Typography color="text.secondary">
-                  <IconFileDescription width="20" />
-                </Typography>
-                <Typography variant="h4" fontWeight="600">
-                  938
-                </Typography>
-                <Typography color="textSecondary" variant="h6" fontWeight={400}>
-                  Posts
-                </Typography>
-              </Box>
-              <Box>
-                <Typography color="text.secondary">
-                  <IconUserCircle width="20" />
-                </Typography>
-                <Typography variant="h4" fontWeight="600">
-                  3,586
-                </Typography>
-                <Typography color="textSecondary" variant="h6" fontWeight={400}>
-                  Followers
-                </Typography>
-              </Box>
-              <Box>
-                <Typography color="text.secondary">
-                  <IconUserCheck width="20" />
-                </Typography>
-                <Typography variant="h4" fontWeight="600">
-                  2,659
-                </Typography>
-                <Typography color="textSecondary" variant="h6" fontWeight={400}>
-                  Following
-                </Typography>
-              </Box>
+              
             </Stack>
           </Grid>
           {/* about profile */}
@@ -133,7 +99,7 @@ const ProfileBanner = () => {
               <Box>
                 <ProfileImage>
                   <Avatar
-                    src={userimg}
+                    src={userImage || userimg}
                     alt={userimg}
                     sx={{
                       borderRadius: '50%',
@@ -145,11 +111,21 @@ const ProfileBanner = () => {
                 </ProfileImage>
                 <Box mt={1}>
                   <Typography fontWeight={600} variant="h5">
-                    Mathew Anderson
+                    {userName}
                   </Typography>
                   <Typography color="textSecondary" variant="h6" fontWeight={400}>
-                    Designer
+                    {userNombreCompleto}
                   </Typography>
+                  
+                  <Typography color="textSecondary" variant="h6" fontWeight={400}>
+                    <IconBriefcase size="21" /> {userRole}</Typography>
+                   
+                  <Typography color="textSecondary" variant="h6" fontWeight={400}>
+                    <IconMail size="21" /> {userEmail}
+                    </Typography>
+                   <Typography color="textSecondary" variant="h6" fontWeight={400}>
+                      ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ
+                    </Typography>
                 </Box>
               </Box>
             </Box>
@@ -169,26 +145,12 @@ const ProfileBanner = () => {
             }}
           >
             <Stack direction={'row'} gap={2} alignItems="center" justifyContent="center" my={2}>
-              <Fab size="small" color="primary" sx={{ backgroundColor: '#1877F2' }}>
-                <IconBrandFacebook size="16" />
-              </Fab>
-              <Fab size="small" color="primary" sx={{ backgroundColor: '#1DA1F2' }}>
-                <IconBrandTwitter size="18" />
-              </Fab>
-              <Fab size="small" color="error" sx={{ backgroundColor: '#EA4C89' }}>
-                <IconBrandDribbble size="18" />
-              </Fab>
-              <Fab size="small" color="error" sx={{ backgroundColor: '#CD201F' }}>
-                <IconBrandYoutube size="18" />
-              </Fab>
-              <Button color="primary" variant="contained">
-                Add To Story
-              </Button>
+              
             </Stack>
           </Grid>
         </Grid>
         {/**TabbingPart**/}
-        <ProfileTab />
+
       </BlankCard>
     </>
   );

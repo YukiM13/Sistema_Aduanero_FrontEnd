@@ -6,7 +6,7 @@ import { IconMail } from '@tabler/icons';
 import { Stack } from '@mui/system';
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 import Scrollbar from 'src/components/custom-scroll/Scrollbar';
-
+import * as dropdownData from './data';
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleClick2 = (event) => {
@@ -86,7 +86,59 @@ const Profile = () => {
                 </Typography>
               </Box>
             </Stack>
-            <Divider />
+             <Divider />
+            {dropdownData.profile.map((profile) => (
+              <Box key={profile.title}>
+                <Box sx={{ py: 2, px: 0 }} className="hover-text-primary">
+                  <Link to={profile.href}>
+                    <Stack direction="row" spacing={2}>
+                      <Box
+                        width="45px"
+                        height="45px"
+                        bgcolor="primary.light"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Avatar
+                          src={profile.icon}
+                          alt={profile.icon}
+                          sx={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 0,
+                          }}
+                        />
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="subtitle2"
+                          fontWeight={600}
+                          color="textPrimary"
+                          className="text-hover"
+                          noWrap
+                          sx={{
+                            width: '240px',
+                          }}
+                        >
+                          {profile.title}
+                        </Typography>
+                        <Typography
+                          color="textSecondary"
+                          variant="subtitle2"
+                          sx={{
+                            width: '240px',
+                          }}
+                          noWrap
+                        >
+                          {profile.subtitle}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Link>
+                </Box>
+              </Box>
+            ))}
             <Box mt={2}>
               <Box bgcolor="primary.light" p={3} mb={3} overflow="hidden" position="relative">
                 <Box display="flex" justifyContent="space-between">
