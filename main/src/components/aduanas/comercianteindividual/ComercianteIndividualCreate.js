@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Dialog, DialogActions, DialogTitle } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { 
   Snackbar, 
@@ -29,6 +30,7 @@ import 'src/layouts/config/StylePhone.css';
 import ReactIntlTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import InputMask from 'react-input-mask';
+import emailjs from 'emailjs-com';
 
 
 const validationSchema = yup.object({
@@ -84,6 +86,32 @@ const ComercianteIndividualCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [setError] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
+  const [codigoVerificacion, setCodigoVerificacion] = useState('');
+const [codigoIngresado, setCodigoIngresado] = useState('');
+const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
+const [correoVerificado, setCorreoVerificado] = useState(false);
+const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
+const [openCancelDialog, setOpenCancelDialog] = useState(false);
+
+const resetearFormulario = () => {
+  formik.resetForm();
+  formik.setFieldValue('coin_CorreoElectronico', '');
+
+  setTabIndex(0);
+  setImageInputs([{
+    id: Date.now(),
+    file: null,
+    preview: null,
+    tipoDocumento: '',
+    numeroReferencia: ''
+  }]);
+
+  setCorreoVerificado(false);
+  setMostrarInputCodigo(false);
+  setCodigoIngresado('');
+  setVerificarCorreoDeshabilitado(false);
+};
+
   
 
 const [snackbarType, setSnackbarType] = useState('success');
@@ -227,6 +255,7 @@ const showErrorMessage = (message) => {
         setOficioProfesion(oficioProfesionRes.data.data || []);
         setColonias(coloniasRes.data.data || []);
         
+        
         // Ordenar países alfabéticamente
         const paisesData = paisesRes.data.data || [];
         setPaises(paisesData.sort((a, b) => a.pais_Nombre.localeCompare(b.pais_Nombre)));
@@ -253,6 +282,44 @@ const showErrorMessage = (message) => {
   updatedInputs[index][field] = value;
   setImageInputs(updatedInputs);
 };
+
+
+const enviarCodigoVerificacion = () => {
+  const correo = formik.values.coin_CorreoElectronico;
+  if (!correo) {
+    showErrorMessage('Debe ingresar un correo electrónico antes de verificarlo.');
+    return;
+  }
+
+  setVerificarCorreoDeshabilitado(true);
+
+  const codigo = Math.floor(100000 + Math.random() * 900000).toString(); // 6 dígitos
+  setCodigoVerificacion(codigo);
+
+  emailjs.send(
+    'service_5x68ulj',
+    'template_lwiowkp',
+    { email: correo, codigo },
+    'mnyq6v-rJ4eMaYUOb'
+  ).then(() => {
+    showSuccessMessage('Código de verificación enviado correctamente.');
+    setMostrarInputCodigo(true);
+  }).catch(() => {
+    showErrorMessage('Error al enviar el código de verificación.');
+    setVerificarCorreoDeshabilitado(false);
+  });
+};
+
+const verificarCodigo = () => {
+  if (codigoIngresado === codigoVerificacion) {
+    setCorreoVerificado(true);
+    showSuccessMessage('Correo electrónico verificado correctamente.');
+  } else {
+    showErrorMessage('El código ingresado no es válido.');
+  }
+};
+
+
 
 // Guardar en 1er tap
 const handleSaveTap1 = async () => {
@@ -606,9 +673,6 @@ const eliminarComerciante = async () => {
     return;
   }
 
-  const confirmar = window.confirm('¿Estás seguro que deseas cancelar y eliminar este registro?');
-  if (!confirmar) return;
-
   try {
     const response = await axios.post(
       `${apiUrl}/api/ComercianteIndividual/Eliminar?coin_Id=${coin_Id}&pers_Id=${pers_Id}`,
@@ -619,23 +683,11 @@ const eliminarComerciante = async () => {
     console.log('Respuesta del servidor al eliminar:', response.data);
 
     const success = response.data?.success === true && response.data?.data?.messageStatus === "1";
-
-    if (success) {
-      showSuccessMessage('Comerciante eliminado exitosamente.');
-
-      // Reiniciar formulario y estado
-      formik.resetForm();
-      setTabIndex(0);
-      setImageInputs([
-        {
-          id: Date.now(),
-          file: null,
-          preview: null,
-          tipoDocumento: '',
-          numeroReferencia: ''
-        }
-      ]);
-    } else {
+if (success) {
+  showSuccessMessage('Registro Cancelado.');
+  resetearFormulario();
+}
+ else {
       const mensaje = response.data?.message || 'Respuesta inesperada del servidor.';
       showErrorMessage('Error al eliminar: ' + mensaje);
     }
@@ -644,10 +696,6 @@ const eliminarComerciante = async () => {
     showErrorMessage('Error inesperado al eliminar comerciante.');
   }
 };
-
-
-
-
 
 
   const handleImageChange = (index, event) => {
@@ -798,7 +846,6 @@ return true;
     setIsLoading(false);
   }
 };
-
 
 
 
@@ -969,13 +1016,41 @@ const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div>
-      <Tabs value={tabIndex} onChange={(e, newValue) => setTabIndex(newValue)} textColor="primary" indicatorColor="primary">
-        <Tab label="Datos Personales" />
-        <Tab label="Localización" />
-        <Tab label="Representante" />
-        <Tab label="Contacto" />
-        <Tab label="Documentos" />
-      </Tabs>
+      <Tabs
+  value={tabIndex}
+  onChange={(e, newValue) => {
+    // Evitar que el usuario haga clic para saltar tabs
+    // Solo permitimos cambiar tab si es el mismo (click duplicado)
+    if (newValue === tabIndex) return;
+  }}
+  textColor="primary"
+  indicatorColor="primary"
+  variant="scrollable"
+  scrollButtons="auto"
+  sx={{
+    mb: 2,
+    '& .MuiTab-root': {
+      fontWeight: 'bold',
+      textTransform: 'none',
+      borderRadius: 1,
+    },
+    '& .Mui-selected': {
+      backgroundColor: '#1976d2',
+      color: 'white',
+    },
+    '& .MuiTabs-indicator': {
+      height: '4px',
+      borderRadius: '4px',
+    },
+  }}
+>
+  <Tab label="Datos Personales" />
+  <Tab label="Localización" />
+  <Tab label="Representante" />
+  <Tab label="Contacto" />
+  <Tab label="Documentos" />
+</Tabs>
+
 
       <form onSubmit={formik.handleSubmit}>
         <Box mt={2}>
@@ -1476,27 +1551,60 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     }
   />
 </Grid>
-
-                <Grid item lg={6}>
-  <Box display="flex" alignItems="center">
-    <CustomFormLabel>Correo Electrónico</CustomFormLabel>
-    <Box component="span" color="red" ml={0.5}>
-      *
-    </Box>
+<Grid item lg={6} md={12} sm={12}>
+  <CustomFormLabel>Correo Electrónico <Box component="span" color="red">*</Box></CustomFormLabel>
+  <Box display="flex" gap={1} alignItems="center" mb={1}>
+    <CustomTextField
+      fullWidth
+      id="coin_CorreoElectronico"
+      name="coin_CorreoElectronico"
+      placeholder="ejemplo@correo.com"
+      value={formik.values.coin_CorreoElectronico}
+      onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
+      error={formik.touched.coin_CorreoElectronico && Boolean(formik.errors.coin_CorreoElectronico)}
+      helperText={formik.touched.coin_CorreoElectronico && formik.errors.coin_CorreoElectronico}
+      disabled={correoVerificado}
+      sx={{ flex: 1 }}
+    />
+    <Button
+  variant="contained"
+  type="button"
+  onClick={enviarCodigoVerificacion}
+  disabled={correoVerificado || verificarCorreoDeshabilitado}
+  color={correoVerificado ? "success" : "primary"}
+  startIcon={correoVerificado ? <CheckCircleIcon /> : null}
+>
+  {correoVerificado ? "Verificado" : "Verificar"}
+</Button>
   </Box>
 
-  <CustomTextField
-    fullWidth
-    id="coin_CorreoElectronico"
-    placeholder="ejemploCorreo@ejemplo.com"
-    name="coin_CorreoElectronico"
-    value={formik.values.coin_CorreoElectronico}
-    onChange={formik.handleChange}
-    onBlur={formik.handleBlur}
-    error={formik.touched.coin_CorreoElectronico && Boolean(formik.errors.coin_CorreoElectronico)}
-    helperText={formik.touched.coin_CorreoElectronico && formik.errors.coin_CorreoElectronico}
-  />
+  {mostrarInputCodigo && !correoVerificado && (
+    <Box mt={1}>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={8}>
+          <CustomTextField
+            fullWidth
+            label="Código de verificación"
+            value={codigoIngresado}
+            onChange={(e) => setCodigoIngresado(e.target.value)}
+            placeholder="Ingrese el código"
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Button 
+            fullWidth
+            variant="outlined"
+            onClick={verificarCodigo}
+          >
+            Verificar Código
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
+  )}
 </Grid>
+
 
               <Grid item lg={6}>
   <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
@@ -1659,9 +1767,16 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
       // Tab 3: Guardar dirección del representante
       success = await handleSaveTap3();
     } else if (tabIndex === 3) {
-      // Tab 4: Guardar información de contacto
-      success = await handleSaveTap4();
-    } else {
+  // Tab 4: Guardar información de contacto
+  success = await handleSaveTap4();
+
+  // Si la validación fue exitosa, pero el correo no ha sido verificado
+  if (success && !correoVerificado) {
+    showErrorMessage('Debe verificar su correo electrónico antes de continuar.');
+    return;
+  }
+}
+ else {
       // Para los demás tabs (por ahora simplemente avanzar)
       success = true;
     }
@@ -1692,10 +1807,12 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
    <Button 
   variant="outlined" 
   color="error" 
-  onClick={eliminarComerciante}
+  onClick={() => setOpenCancelDialog(true)}
 >
   Cancelar
 </Button>
+
+
 
   </>  
 )}
@@ -1732,28 +1849,50 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
   <DialogTitle>¿Deseas ingresar otro comerciante?</DialogTitle>
   <DialogActions>
     <Button onClick={() => {
-      setOpenDialog(false);
-      formik.resetForm();
-      setTabIndex(0);
-      setImageInputs([{
-        id: Date.now(),
-        file: null,
-        preview: null,
-        tipoDocumento: '',
-        numeroReferencia: ''
-      }]);
-    }} color="primary" variant="contained">
-      Sí, agregar otro
-    </Button>
+  setOpenDialog(false);
+  resetearFormulario();
+}} color="primary" variant="contained">
+  Sí, agregar otro
+</Button>
+
     <Button onClick={() => {
   setOpenDialog(false);
+  resetearFormulario();
   navigate('/dashboards/ecommerce');
 }} color="secondary" variant="outlined">
   No, salir
 </Button>
 
+
   </DialogActions>
 </Dialog>
+
+<Dialog
+  open={openCancelDialog}
+  onClose={() => setOpenCancelDialog(false)}
+>
+  <DialogTitle>¿Estás seguro que deseas cancelar este registro?</DialogTitle>
+  <DialogActions>
+    <Button
+      onClick={async () => {
+        setOpenCancelDialog(false);
+        await eliminarComerciante();
+      }}
+      color="error"
+      variant="contained"
+    >
+      Sí, cancelar
+    </Button>
+    <Button
+      onClick={() => setOpenCancelDialog(false)}
+      color="primary"
+      variant="outlined"
+    >
+      No, continuar
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
 
     </div>
