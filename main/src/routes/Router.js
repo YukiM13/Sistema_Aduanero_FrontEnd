@@ -104,7 +104,7 @@ const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/ti
 
 
 
-const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));

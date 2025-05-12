@@ -147,7 +147,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
       useEffect(() => {
         listarDevas();
         const cargarDevas =  () => {
-            const localDevas = localStorage.getItem('devaDuca');
+            const localDevas = localStorage.getItem('devaDuca') ;
             
             console.log(localStorage.getItem('Devas'));
             if (localDevas && localStorage.getItem('Devas')) {
@@ -167,9 +167,12 @@ const itemPorDuca =  itemDevaPorDucaModel;
               setDeva(parsedLocal);
              formik.setFieldValue('seleccionados', parsedLocal);
             }
-            else {
+            else if (localStorage.getItem('Devas')) {
               const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
              setDeva(devasDesdeApi);
+            }
+            else {
+              setDeva([]);
             }
            };
           
