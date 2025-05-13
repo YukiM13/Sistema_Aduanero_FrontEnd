@@ -519,11 +519,20 @@ export const generarMenu = async () => {
       id: uniqueId(),
       title: 'Declaración de valor',
       icon: IconFileText,
-      href: '/declaracion-de-valor',
+      href: '/declaracion-valor',
       chipColor: 'secondary',
     });
   }
   
+  if (esAdmin || nombresDePantalla.includes('Ducas')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Ducas',
+      icon: IconFileCertificate,
+      href: '/duca',
+      chipColor: 'secondary',
+    });
+  }
   if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
