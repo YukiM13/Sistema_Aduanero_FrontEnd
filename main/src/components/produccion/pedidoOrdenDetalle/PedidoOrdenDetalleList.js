@@ -14,8 +14,8 @@ import { useParams } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import OrdenCompraDetallesCreateComponent from './OrdenCompraDetalleCreate';
-import OrdenCompraDetalleEditComponent from './OrdenCompraDetalleEdit';
+import PedidoOrdenDetallesCreateComponent from './PedidoOrdenDetalleCreate';
+// import OrdenCompraDetalleEditComponent from './OrdenCompraDetalleEdit';
 // import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
 
 import AddIcon from '@mui/icons-material/Add';
@@ -29,13 +29,13 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
-const OrdenesComprasDetalle = ({orco_Id}) => {
+const PedidosOrdenesDetalle = ({peor_Id}) => {
   // const ordenCompraID = useParams().id;
 
-  const [ordenesCompras, setOrdenesCompras] = useState([]);
+  const [pedidosOrdenes, setPedidosOrdenes] = useState([]);
   const [modo, setModo] = useState('listar');
-  const [ordenCompraDetalleEditando, setOrdenCompraDetalleEditando] = useState(null);
-  const [ordenCompraDetalleSeleccionada, setOrdenCompraDetalleSeleccionada] = useState(null);
+  const [ordenCompraDetalleEditando, setPedidoOrdenDetalleEditando] = useState(null);
+  const [pedidoOrdenDetalleSeleccionada, setPedidoOrdenDetalleSeleccionada] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
@@ -58,39 +58,39 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
     }
   };
 
-  const cargarOrdenesCompras = () => {
-    console.log(orco_Id);
-    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${orco_Id}`, {
+  const cargarPedidosOrdenes = () => {
+    console.log(peor_Id);
+    axios.get(`${apiUrl}/api/PedidosOrdenDetalles/Listar?peor_Id=${peor_Id}`, {
         headers: { 'XApiKey': apiKey }
     })
     .then(response => {
       console.log("Respuesta:", response.data);
       if (response.data && Array.isArray(response.data.data)) {
-        setOrdenesCompras(response.data.data);
+        setPedidosOrdenes(response.data.data);
       }
     })
       .catch(() => mostrarAlerta('errorListar'));
   };
 
   useEffect(() => {
-    console.log(orco_Id);
-    if (orco_Id) {
-      cargarOrdenesCompras(orco_Id);
+    console.log(peor_Id);
+    if (peor_Id) {
+      cargarPedidosOrdenes(peor_Id);
     }
-  }, [orco_Id]);
+  }, [peor_Id]);
   
 
-  const abrirMenu = (evento, ordenCompraDetalle) => {
+  const abrirMenu = (evento, pedidoOrdenDetalle) => {
     setPosicionMenu(evento.currentTarget);
-    setOrdenCompraDetalleSeleccionada(ordenCompraDetalle);
+    setPedidoOrdenDetalleSeleccionada(pedidoOrdenDetalle);
     setMenuAbierto(true);
   };
 
   const cerrarMenu = () => setMenuAbierto(false);
 
   const handleEditar = () => {
-    if (ordenCompraDetalleSeleccionada) {
-        setOrdenCompraDetalleEditando(ordenCompraDetalleSeleccionada);
+    if (pedidoOrdenDetalleSeleccionada) {
+        setPedidoOrdenDetalleEditando(pedidoOrdenDetalleSeleccionada);
       setModo('editar');
     }
     cerrarMenu();
@@ -102,16 +102,16 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   };
 
   const handleEliminar = () => {
-    if (!ordenCompraDetalleSeleccionada) return;
-    const ordenCompraDetalleEliminar = {
-      orco_Id: ordenCompraDetalleSeleccionada.orco_Id,
-      orco_Estado: false
+    if (!pedidoOrdenDetalleSeleccionada) return;
+    const pedidoOrdenDetalleEliminar = {
+      peor_Id: pedidoOrdenDetalleSeleccionada.peor_Id,
+      prod_Estado: false
     };
-    axios.post(`${apiUrl}/api/OrdenCompraDetalles/Eliminar`, ordenCompraDetalleEliminar, {
+    axios.post(`${apiUrl}/api/PedidosOrdenDetalles/Eliminar`, pedidoOrdenDetalleEliminar, {
         headers: { 'XApiKey': apiKey }
     })
       .then(() => {
-        cargarOrdenesCompras();
+        cargarPedidosOrdenes();
         mostrarAlerta('eliminado');
       })
       .catch(() => mostrarAlerta('errorEliminar'));
@@ -126,20 +126,11 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
 
 
 
-  const filteredData = ordenesCompras.filter((ordenCompraDetalle) =>
-    ordenCompraDetalle.code_CantidadPrenda ||
-    ordenCompraDetalle.esti_Descripcion.includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.tall_Nombre.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.code_Sexo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.colr_Nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompraDetalle.proc_DescripcionComienza.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.proc_DescripcionActual.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.code_Unidad ||
-    ordenCompraDetalle.code_Valor ||
-    ordenCompraDetalle.code_Impuesto ||
-    ordenCompraDetalle.code_EspecificacionEmbalaje.toString().includes(searchQuery.trim()) ||
-    ordenCompraDetalle.code_FechaProcActual.toString().includes(searchQuery.trim())
-    // ordenCompraDetalle.orco_Id.toString().includes(searchQuery.trim())
+  const filteredData = pedidosOrdenes.filter((pedidoOrdenDetalle) =>
+    pedidoOrdenDetalle.mate_Id.toString().includes(searchQuery.toLowerCase()) ||
+    pedidoOrdenDetalle.prod_Cantidad.toString().includes(searchQuery.toLowerCase()) ||
+    pedidoOrdenDetalle.prod_Precio.toString().includes(searchQuery.trim())
+    // ordenCompraDetalle.peor_Id.toString().includes(searchQuery.trim())
   );
 
     /* SIIII */
@@ -152,8 +143,8 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   // console.log("ID de la orden:", id);
   return (
     <div>
-      {/* <Breadcrumb title="OrdenesCompras" subtitle="Listar" /> */}
-      {/* <ParentCard> */}
+      <Breadcrumb title="PedidosOrdenes" subtitle="Listar" /> 
+      <ParentCard>
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
@@ -180,46 +171,28 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
                     <TableHead>
                         <TableRow>
                             <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Orden de Compra ID</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Cantidad de Prendas</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Estilo</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Talla</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Sexo</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Color</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Proceso ID Inicio</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Proceso ID Actual</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Unidad</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Valor</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Impuesto</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Especificación de Embalaje</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Fecha Proceso Actual</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Pedido Orden ID</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Materiales</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Cantidad</Typography></TableCell>
+                            <TableCell><Typography variant="h6">Precio</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
                 {(rowsPerPage > 0
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
-                ).map((ordenCompraDetalle) => (
-                    <TableRow key={ordenCompraDetalle.orco_Id}>
+                ).map((pedidoOrdenDetalle) => (
+                    <TableRow key={pedidoOrdenDetalle.peor_Id}>
                         <TableCell align="center">
-                        <IconButton onClick={(e) => abrirMenu(e, ordenCompraDetalle)}>
+                        <IconButton onClick={(e) => abrirMenu(e, pedidoOrdenDetalle)}>
                             <SettingsIcon sx={{ color: '#2196F3', fontSize: '20px' }} />
                         </IconButton>
                         </TableCell>
-                        {/* <TableCell>{ordenCompraDetalle.orco_Id}</TableCell> */}
-                        <TableCell>{ordenCompraDetalle.orco_Id}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_CantidadPrenda}</TableCell>
-                        <TableCell>{ordenCompraDetalle.esti_Descripcion}</TableCell>
-                        <TableCell>{ordenCompraDetalle.tall_Nombre}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_Sexo}</TableCell>
-                        <TableCell>{ordenCompraDetalle.colr_Nombre}</TableCell>
-                        <TableCell>{ordenCompraDetalle.proc_DescripcionComienza}</TableCell>
-                        <TableCell>{ordenCompraDetalle.proc_DescripcionActual}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_Unidad}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_Valor}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_Impuesto}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_EspecificacionEmbalaje}</TableCell>
-                        <TableCell>{ordenCompraDetalle.code_FechaProcActual}</TableCell>
+                        {/* <TableCell>{ordenCompraDetalle.peor_Id}</TableCell> */}
+                        <TableCell>{pedidoOrdenDetalle.peor_Id}</TableCell>
+                        <TableCell>{pedidoOrdenDetalle.mate_Descripcion}</TableCell>
+                        <TableCell>{pedidoOrdenDetalle.prod_Cantidad}</TableCell>
+                        <TableCell>{pedidoOrdenDetalle.prod_Precio}</TableCell>
                     </TableRow>
                 ))}
                   {emptyRows > 0 && (
@@ -271,28 +244,28 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
         )}
 
         {modo === 'crear' && (
-          <OrdenCompraDetallesCreateComponent
+          <PedidoOrdenDetallesCreateComponent
             onCancelar={() => setModo('listar')}
             onGuardadoExitoso={() => {
               setModo('listar');
-              cargarOrdenesCompras();
+              cargarPedidosOrdenes();
               mostrarAlerta('guardado');
             }}
           />
         )}
 
-        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+        {/* {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
           <OrdenCompraDetalleEditComponent
-              ordenesComprasDetalles={ordenCompraDetalleSeleccionada}
+              ordenesComprasDetalles={pedidoOrdenDetalleSeleccionada}
               onCancelar={() => setModo('listar')} 
               onGuardadoExitoso={() => {
                   setModo('listar');
                   mostrarAlerta('actualizado')
                   // Recarga los datos después de guardar
-                  cargarOrdenesCompras();
+                  cargarPedidosOrdenes();
               }}>
           </OrdenCompraDetalleEditComponent>
-        )}
+        )} */}
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -301,7 +274,7 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                    ¿Está seguro que desea eliminar la ordenCompraDetalle "{ordenCompraDetalleSeleccionada?.orco_Codigo}"?
+                    ¿Está seguro que desea eliminar el pedido orden detalle "{pedidoOrdenDetalleSeleccionada?.peor_Codigo}"?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -317,9 +290,9 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
             >
             <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
             </Snackbar>
-        {/* </ParentCard> */}
+        </ParentCard>
     </div>
   );
 };
 
-export default OrdenesComprasDetalle;
+export default PedidosOrdenesDetalle;
