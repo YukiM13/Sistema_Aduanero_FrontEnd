@@ -338,7 +338,7 @@ export const generarMenu = async () => {
         id: uniqueId(),
         title: 'Comerciante Individual',
         icon: IconPoint,
-        href: '/comercianteindividual/create',
+        href: '/comercianteindividual/list',
       });
     }
     
