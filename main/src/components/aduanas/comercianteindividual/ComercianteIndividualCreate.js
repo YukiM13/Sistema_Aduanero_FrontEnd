@@ -283,6 +283,17 @@ const showErrorMessage = (message) => {
     formik.setFieldValue('tabIndex', tabIndex);
   }, [tabIndex]);
 
+  useEffect(() => {
+  if (!formik.values.coin_CorreoElectronico) return;
+
+  // Si ya se había verificado o iniciado proceso de verificación, reinicia
+  setCorreoVerificado(false);
+  setVerificarCorreoDeshabilitado(false);
+  setMostrarInputCodigo(false);
+  setCodigoIngresado('');
+}, [formik.values.coin_CorreoElectronico]);
+
+
 
 const eliminarSilenciosamente = async () => {
   const { coin_Id, pers_Id } = formik.values;
