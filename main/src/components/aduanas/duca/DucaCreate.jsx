@@ -290,10 +290,10 @@ const DucaCreateComponent = ({onCancelar}) => {
                   color="inherit"
                   variant="contained"
                   disabled={!admin && activeStep === 0}
-                  onClick={admin ? onCancelar : handleBack}
+                  onClick={admin && activeStep === 0 ? onCancelar : handleBack}
                   startIcon={<ArrowBackIcon />}
                 >
-                  {admin ? 'Cancelar' : 'Atrás'}
+                  {admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
                  
                 </Button>
 
