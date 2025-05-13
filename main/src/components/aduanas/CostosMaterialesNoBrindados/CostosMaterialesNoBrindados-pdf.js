@@ -10,7 +10,7 @@ import ParentCard from '../../../components/shared/ParentCard';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
-import PlanificacionPoModel from 'src/models/planificacionpomodel';
+import CostosMaterialesNoBrindadosModel from 'src/models/planificacionpomodel';
 import html2pdf from 'html2pdf.js';
 import { storage } from '../../../layouts/config/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -36,7 +36,7 @@ const PlanificacionPoPdf = () => {
         const apiKey = process.env.REACT_APP_API_KEY;
         
         try {
-            const response = await axios.post(`${apiUrl}/api/Reportes/PlanificacionPO`, values, {
+            const response = await axios.post(`${apiUrl}/api/Reportes/CostosMaterialesNoBrindados`, values, {
                 headers: {
                     'XApiKey': apiKey
                 }
@@ -168,7 +168,7 @@ const PlanificacionPoPdf = () => {
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
-                                            PLANIFICACIÓN PO <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                           CostosMaterialesNoBrindados <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
                                         </th>
                                         <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>

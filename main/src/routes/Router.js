@@ -89,7 +89,10 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
+
 const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/declaracion-valor/declaracion-valor-impresion')));
+const CostosMaterialesNoBrindados = Loadable(lazy(() => import('../components/aduanas/CostosMaterialesNoBrindados/CostosMaterialesNoBrindados-pdf')));
+
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
 const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
@@ -230,6 +233,7 @@ const todasLasRutas = [
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+    {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
