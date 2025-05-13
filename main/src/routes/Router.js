@@ -228,7 +228,7 @@ const todasLasRutas = [
   { path: '/tipoembalaje/list', element: <TipoEmbalaje/>, pantalla:'Tipo Embalaje' },
   { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
   { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
-  { path: '/ordenCompra', element: <OrdenCompra/>, pantalla:'Orden Compra' },
+  { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
   { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
@@ -237,9 +237,9 @@ const todasLasRutas = [
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
 ]
 
-// const rutasFiltradas = todasLasRutas.filter((ruta) =>
-//   esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
-// );
+const rutasFiltradas = todasLasRutas.filter((ruta) =>
+  esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
+);
 
 const Router = [
   {
