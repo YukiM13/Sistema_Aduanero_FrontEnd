@@ -9,26 +9,97 @@ TextField,InputAdornment,TablePagination, Grid,  CardContent,
   Stack,
   Tooltip,
   Skeleton,
-    Fab,Box,Button
+    Fab,Box,Button, Menu, MenuItem,
+  ListItemIcon, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions,
+  DialogContentText, Snackbar, Alert
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import SettingsIcon from '@mui/icons-material/Settings';
 import DucaCreateComponent from "./DucaCreate";
 import {IconArrowsDiff, IconUser } from '@tabler/icons';
 import SearchIcon from '@mui/icons-material/Search';
 import BlankCard from '../../shared/BlankCard';
 import ParentCard from "src/components/shared/ParentCard";
 import { Link } from "react-router-dom";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { alertMessages } from 'src/layouts/config/alertConfig';
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 const DucaCards = () => {
     const [ducas, setDucas] = useState([]);
-     const [page, setPage] = useState(0);//Define como la pagina actual
-          const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
-          const [searchQuery, setSearchQuery] = useState('');
-        const [isLoading, setLoading] = useState(true);
-         const [modo, setModo] = useState('listar');
+    const [page, setPage] = useState(0);//Define como la pagina actual
+    const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isLoading, setLoading] = useState(true);
+    const [menuAbierto, setMenuAbierto] = useState(false);
+    const [posicionMenu, setPosicionMenu] = useState(null);
+    const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
+    const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({
+        severity: '',
+        message: '',
+    });
+    const [modo, setModo] = useState('listar');
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
+    const mostrarAlerta = (tipo) => {
+        const config = alertMessages[tipo];
+        if (config) {
+          setAlertConfig(config);
+          setOpenSnackbar(true);
+        } else {
+          console.error('Tipo de alerta no encontrado:', tipo);
+        }
+      };
+     function DetalleOficina(persona) {
+      console.log('Detaie:', persona.duca_Id);
+      setModo('detalle');
+      cerrarMenu();
+    }
+    
+    function editarOficina(persona) {
+      console.log('Editar Oficina:', persona.duca_Id);
+      setModo('editar');
+      cerrarMenu();
+    }
+    const confirmarEliminar = (persona) =>{
+        setPersonaSeleccionada(persona);
+      setConfirmarEliminacion(true);
+      cerrarMenu();
+        
+      }
+      
+    const eliminar = (persona) => {
+        console.log('Eliminar Oficina:', persona.duca_Id);
+        axios.post(`${apiUrl}/api/Duca/FinalizarDuca?duca_Id = ${persona.duca_Id}`,null, {
+             headers: {
+                'XApiKey': apiKey,
+            },
+           
+        })
+         .then(
+        listarDucas(),
+        mostrarAlerta('eliminado')
+      )
+      .catch( mostrarAlerta('errorEliminar'));
+    }
+
+    function abrirMenu(evento, persona) {
+      //obtenemos la posicion donde deberia mostrarse el menu 
+      setPosicionMenu(evento.currentTarget);
+      //obtenemos la fila de info correspondiente 
+      setPersonaSeleccionada(persona);
+      //con setMenuAbierto(); definimos si el menu esta abierto  
+      setMenuAbierto(true);
+    }
+  
+    function cerrarMenu() {
+      setMenuAbierto(false);
+    }
     const listarDucas = () => {
         axios
             .get(`${apiUrl}/api/Duca/Listar`, {
@@ -107,16 +178,17 @@ const DucaCards = () => {
                                 </Typography>
 
                                 {/* Tooltip justo debajo de la imagen */}
-                                <Tooltip title="Add To Cart">
+                                <Tooltip title="Acciones">
                                     <Fab
                                     size="small"
                                     color="primary"
                                     sx={{
-                                        top: '50px', right: '15px', position: 'absolute' ,  transform: 'translateX(-50%)',
-                                        zIndex: 1,
+                                        top: '50px', right: '15px', position: 'absolute' 
+                                       
                                     }}
+                                    onClick={(e) => abrirMenu(e, duca)}
                                     >
-                                    {/* icono opcional aquí */}
+                                      <SettingsIcon size="16" />
                                     </Fab>
                                 </Tooltip>
 
@@ -149,6 +221,83 @@ const DucaCards = () => {
              />
             )}
             </ParentCard>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                <Alert
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={alertConfig.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {alertConfig.message}
+                </Alert>
+            </Snackbar>
+
+             <Menu
+                  //so, si 'menuAbierto' esta en true se muestra dado el caso q no pues se cierra 
+                    anchorEl={posicionMenu}
+                    open={menuAbierto}
+                    onClose={cerrarMenu}
+                  >
+                    <MenuItem onClick={() => editarOficina(personaSeleccionada)}>
+                      <ListItemIcon>
+                        <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
+                      </ListItemIcon>
+                      <ListItemText>Editar</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => DetalleOficina(personaSeleccionada)}>
+                      <ListItemIcon>
+                        <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
+                      </ListItemIcon>
+                      <ListItemText>Detalles</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => confirmarEliminar(personaSeleccionada)}>
+                                <ListItemIcon>
+                                  <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
+                                </ListItemIcon>
+                                <ListItemText>Eliminar</ListItemText>
+                    </MenuItem>
+                   
+                  </Menu>
+            
+                  <Dialog
+                    open={confirmarEliminacion}
+                    onClose={() => setConfirmarEliminacion(false)}
+                  >
+                    <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <WarningAmberIcon color="warning" />
+                      Confirmar eliminación
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        ¿Estás seguro que deseas eliminar a <strong>{personaSeleccionada?.pers_Nombre}</strong>?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => setConfirmarEliminacion(false)}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          eliminar(personaSeleccionada)
+                          setConfirmarEliminacion(false);
+                          setPersonaSeleccionada(null);
+                          
+                        }}
+                        variant="contained"
+                        color="error"
+                      >
+                        Eliminar
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
         </div>
     )
 }
