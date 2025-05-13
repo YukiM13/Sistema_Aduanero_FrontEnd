@@ -14,7 +14,7 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
 import PlanificacionPoModel from 'src/models/planificacionpomodel';
-import { values } from 'lodash';
+
 
 
 
@@ -22,7 +22,7 @@ const Devaspendientes = () => {
     const [Devaspendientes, setdevapedientes] = useState([]);
      const formik = useFormik({
         initialValues: {
-          ...PlanificacionPoModel, orco_id: 0
+          ...PlanificacionPoModel
         },
 
     });
@@ -30,10 +30,10 @@ const Devaspendientes = () => {
 const buscarplanificacionPO = () => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-        const orco_id = formik.values.orco_id;
-    
-
-   axios.get(`${apiUrl}/api/Reportes/PlanificacionPO/${values}`, {
+        
+        // Enviar todo el modelo aunque solo necesitemos orco_Id
+        // El modelo completo ya está en formik.values
+   axios.post(`${apiUrl}/api/Reportes/PlanificacionPO`, formik.values, {
             headers: {
                 'XApiKey': apiKey
             }
@@ -59,13 +59,13 @@ return(
           
             <CustomTextField
                 fullWidth
-                name="orco_id"
-                id="orco_id"
+                name="orco_Id"
+                id="orco_Id"
                 type="number"
-                value={formik.values.orco_id}
+                value={formik.values.orco_Id}
                 onChange={formik.handleChange}
-                error={formik.touched.orco_id && Boolean(formik.errors.orco_id)}
-                helperText={formik.touched.orco_id && formik.errors.orco_id}
+                error={formik.touched.orco_Id && Boolean(formik.errors.orco_Id)}
+                helperText={formik.touched.orco_Id && formik.errors.orco_Id}
             />
           </Grid>
            
