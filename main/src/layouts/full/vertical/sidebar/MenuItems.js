@@ -9,8 +9,7 @@ import {
   IconFileText,
   IconFileCertificate,
   IconHome,
-  IconFileCode,
-  IconFileDatabase
+  IconFileCode
 } from '@tabler/icons';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -402,7 +401,7 @@ export const generarMenu = async () => {
   if (esAdmin || 
       nombresDePantalla.some(nombre => [
         'Categorias', 'Marcas Maquinas', 'Tipo Embalaje', 
-        'Tallas', 'Sub Categorias', 'Orden Compra'
+        'Tallas', 'Sub Categorias', 'Orden Compra', 'Pedido Orden'
       ].includes(nombre))) {
     
     const produccion = {
@@ -469,6 +468,16 @@ export const generarMenu = async () => {
         title: 'Orden de Compra',
         icon: IconPoint,
         href: '/ordenCompra',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
+      produccion.children.push({
+        id: uniqueId(),
+        title: 'Pedido Orden',
+        icon: IconPoint,
+        href: '/pedidoOrden',
         chipColor: 'secondary',
       });
     }
@@ -542,16 +551,6 @@ export const generarMenu = async () => {
       title: 'Ducas',
       icon: IconFileCertificate,
       href: '/duca',
-      chipColor: 'secondary',
-    });
-  }
-
-  if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Pedido Orden',
-      icon: IconFileDatabase,
-      href: '/pedidoOrden',
       chipColor: 'secondary',
     });
   }

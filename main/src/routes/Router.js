@@ -194,7 +194,6 @@ const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
 
 const todasLasRutas = [
   { path: '/dashboards/modern', element: <ModernDash/> },
-
   { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
   { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
   { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
@@ -259,7 +258,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '/auth/404', element: <Error /> },
-        { path: '/user-profile', element: <UserProfile /> },
+      { path: '/user-profile', element: <UserProfile /> },
       { path: '/auth/login', element: <Login /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },
