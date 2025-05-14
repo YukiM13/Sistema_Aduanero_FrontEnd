@@ -31,7 +31,7 @@ const validationSchema = yup.object({
 });
 
    
-const OrdenCompraCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
+const OrdenCompraEditComponent = ({ ordenCompra, onCancelar, onGuardadoExitoso }) => {
 //   const [ordenCompraDetalles, setOrdenCompraDetalle] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [formasDePago, setFormasDePagos] = useState([]);
@@ -40,6 +40,12 @@ const OrdenCompraCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+
+  const formatearFecha = (fecha) => {
+    if (!fecha) return '';
+    const d = new Date(fecha);
+    return d.toISOString().split('T')[0]; // "2025-05-09"
+  };
 
   const listarClientes = () => {
         axios.get(`${apiUrl}/api/Clientes/Listar`, {
@@ -116,15 +122,19 @@ const OrdenCompraCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   const formik = useFormik({
         initialValues: {
           ...OrdenCompraModel,
+          ...ordenCompra,
+          orco_FechaEmision: formatearFecha(ordenCompra.orco_FechaEmision),
+          orco_FechaLimite: formatearFecha(ordenCompra.orco_FechaLimite),
         },
         validationSchema,
         onSubmit: (values) => {
             console.log("Enviando datos al backend:", values); 
 
           const datosParaEnviar = {
+            orco_Id: ordenCompra.orco_Id,
             orco_IdCliente: values.orco_IdCliente,
-            orco_FechaEmision: values.orco_FechaEmision,
-            orco_FechaLimite: values.orco_FechaLimite,
+            orco_FechaEmision: formatearFecha(values.orco_FechaEmision),
+            orco_FechaLimite: formatearFecha(values.orco_FechaLimite),
             orco_MetodoPago: values.orco_MetodoPago,
             orco_Materiales: values.orco_Materiales,
             orco_IdEmbalaje: values.orco_IdEmbalaje,
@@ -137,16 +147,15 @@ const OrdenCompraCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
 
           console.log("Datos que se enviarán al backend:", datosParaEnviar);
           
-          axios.post(`${apiUrl}/api/OrdenCompra/Insertar`, datosParaEnviar, {
+          axios.post(`${apiUrl}/api/OrdenCompra/Editar`, datosParaEnviar, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
             if (onGuardadoExitoso) onGuardadoExitoso();
           })
           .catch(error => {
-            console.error('Error al insertar el detalle de orden de compra:', error);
+            console.error('Error al editar el detalle de orden de compra:', error);
           });
-
         },
       });
 
@@ -395,4 +404,4 @@ const OrdenCompraCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   );
 };
 
-export default OrdenCompraCreateComponent;
+export default OrdenCompraEditComponent;
