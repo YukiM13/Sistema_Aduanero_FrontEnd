@@ -53,10 +53,12 @@ const validationSchema = yup.object({
     decl_NumeroIdentificacion: yup.string().required('El RTN del proveedor es requerido'),
   }),
   proveedoresDeclaracionViewModel: yup.object({
-    coco_Id: yup.number().required('La condición comercial es requerida')
+    coco_Id: yup.number().required('La condición comercial es requerida'),
+    pvde_Condicion_Otra: yup.string().required('La condición es requerida')
     
   }),
   intermediarioViewModel: yup.object({
+    inte_Tipo_Otro: yup.string().required('El nivel comercial es requerido'),
     tite_Id: yup.number()
       .required('El nivel comercial es requerido')
       .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
@@ -592,6 +594,8 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             value={formik.values.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            error={formik.touched.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra && Boolean(formik.errors.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra)}
+                            helperText={formik.touched.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra && formik.errors.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra}
                         />
                     </Grid>
 
@@ -898,6 +902,8 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         value={formik.values.intermediarioViewModel?.inte_Tipo_Otro}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        error={formik.touched.intermediarioViewModel?.inte_Tipo_Otro && Boolean(formik.errors.intermediarioViewModel?.inte_Tipo_Otro)}
+                        helperText={formik.touched.intermediarioViewModel?.inte_Tipo_Otro && formik.errors.intermediarioViewModel?.inte_Tipo_Otro}
                     />
                 </Grid>
             </Grid>
