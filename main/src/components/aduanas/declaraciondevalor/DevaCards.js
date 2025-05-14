@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import img1 from 'src/assets/images/blog/blog-img1.jpg';
-import logo from 'src/assets/images/logos/LOGO.svg';
+import logo from 'src/assets/images/logos/LOGUITO.svg';
 import {
 TextField,InputAdornment,TablePagination,Paper, Grid,  CardContent,
   Typography,
@@ -12,10 +12,12 @@ TextField,InputAdornment,TablePagination,Paper, Grid,  CardContent,
   Tooltip,
   Skeleton,
     Fab,
+    Button
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import BlankCard from '../../shared/BlankCard';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import { Link } from "react-router-dom";
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
@@ -85,8 +87,14 @@ const DevaCards = () => {
                     {filteredData
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((deva) => (
-                        <Grid item xs={12} sm={12} lg={3} key={deva.deva_Id}>
-                    <BlankCard>
+                        <Grid item xs={12} sm={12} lg={4} key={deva.deva_Id}>
+                    <BlankCard
+                    sx={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #e0e0e0',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.05)',
+                        borderRadius: '12px',
+                    }}>
                         {/* ENCABEZADO DE LA CARD */}
                         <Box
                         sx={{
@@ -112,55 +120,96 @@ const DevaCards = () => {
                             sx={{ height: '30px', mr: 2 }}
                         />
                         <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                            Declaración #{deva.deva_Id}
+                            DEVA #{deva.deva_Id}
                         </Typography>
                         </Box>
                         <CardContent
-                    sx={{
-                        backgroundColor: '#fdfdfd',
-                        p: 3,
-                        pt: 2,
-                        borderBottomLeftRadius: '12px',
-                        borderBottomRightRadius: '12px',
-                        border: '1px solid #e0e0e0',
-                        borderTop: 'none',
-                        fontFamily: 'Roboto, sans-serif',
-                        boxShadow: 'inset 0 0 5px rgba(0,0,0,0.05)',
-                    }}
-                    >
-                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
-                        Información de Ingreso
-                    </Typography>
+                        sx={{
+                            backgroundColor: '#fff',
+                            borderBottomLeftRadius: '12px',
+                            borderBottomRightRadius: '12px',
+                            borderTop: '1px solid #ccc',
+                            padding: '30px 32px',
+                            fontFamily: 'Georgia, serif',
+                            boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.05)',
+                            position: 'relative',
+                            overflow: 'hidden',
+                        }}
+                        >
+                        
 
-                    <Stack spacing={1.5}>
-                        <Box>
-                        <Typography variant="caption" color="textSecondary">
-                            Aduana de Ingreso:
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                            {deva.adua_IngresoNombre}
-                        </Typography>
+                        {/* Marca de agua */}
+                        <Box
+                            sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            fontSize: '100px',
+                            color: 'rgba(0, 0, 0, 0.05)',
+                            whiteSpace: 'nowrap',
+                            pointerEvents: 'none',
+                            userSelect: 'none',
+                            fontWeight: 'bold',
+                            fontStyle: 'italic',
+                            }}
+                        >
+                            FL
                         </Box>
 
-                        <Box>
-                        <Typography variant="caption" color="textSecondary">
-                            Aduana de Despacho:
-                        </Typography>
-                        <Typography variant="body1">
-                            {deva.adua_DespachoNombre}
-                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
+                        <Button variant="outlined" startIcon={<DownloadIcon />} size="small">
+                            Exportar PDF
+                        </Button>
                         </Box>
+                        {/* Encabezado del documento */}
+                        <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3, borderBottom: '1px solid #ccc', pb: 1 }}>
+                            Registro de Declaración de Valor
+                        </Typography>
 
-                        <Box>
-                        <Typography variant="caption" color="textSecondary">
-                            No. Correlativo de Referencia:
-                        </Typography>
-                        <Typography variant="body1">
-                            {deva.duca_No_Correlativo_Referencia}
-                        </Typography>
+                        
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                            <Typography variant="caption" sx={{ fontWeight: 500, color: '#555' }}>
+                                Aduana de Ingreso:
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2 }}>
+                                {deva.adua_IngresoNombre}
+                            </Typography>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6}>
+                            <Typography variant="caption" sx={{ fontWeight: 500, color: '#555' }}>
+                                Aduana de Despacho:
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2 }}>
+                                {deva.adua_DespachoNombre}
+                            </Typography>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                            <Typography  sx={{ fontWeight: 600, color: '#555' }}>
+                                Fecha de aceptación:
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 0 }}>
+                                {deva.deva_FechaAceptacion.toLocaleDateString("es-ES", {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric'
+                            })}
+                            </Typography>
+                            </Grid>
+
+                            {/* Puedes agregar más campos aquí si deseas */}
+                        </Grid>
+
+                        {/* Pie de página */}
+                        <Box sx={{ mt: 4, borderTop: '1px dashed #ccc', pt: 2 }}>
+                            <Typography variant="caption" color="text.secondary">
+                            Documento generado electrónicamente por Frontier Logistic – {deva.usua_FechaCreacion}
+                            </Typography>
                         </Box>
-                    </Stack>
-                    </CardContent>
+                        </CardContent>
                     </BlankCard>
                     </Grid>
                     ))}
