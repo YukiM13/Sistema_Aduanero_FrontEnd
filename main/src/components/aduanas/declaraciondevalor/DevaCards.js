@@ -103,7 +103,7 @@ const DevaCards = () => {
                         .reverse()
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((deva) => (
-                        <Grid item xs={12} sm={12} lg={4} key={deva.deva_Id}>
+                        <Grid item xs={12} sm={6} lg={4} key={deva.deva_Id}>
                     <BlankCard
                     sx={{
                         backgroundColor: '#fff',

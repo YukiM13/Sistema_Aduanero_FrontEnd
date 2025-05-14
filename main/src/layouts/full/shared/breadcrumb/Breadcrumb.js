@@ -3,7 +3,6 @@ import { Grid, Typography, Box, Breadcrumbs, Link } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import breadcrumbImg from 'src/assets/images/breadcrumb/breadcrumb.png';
 import { IconCircle } from '@tabler/icons';
-import breadcrumb from 'src/assets/images/logos/breadcrumb.svg';
 
 const Breadcrumb = ({ subtitle, items, title, children }) => (
   <Grid
