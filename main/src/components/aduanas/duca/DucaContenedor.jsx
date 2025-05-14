@@ -22,11 +22,11 @@ const DucaContenedor = () => {
     return (
         <>
             {mostarLista ? (
-              
+               <div>
            
                     <DucaCards />
               
-             
+                </div>
             ) : (
                  <DucaCreateComponent />
                 

@@ -12,8 +12,7 @@ import * as yup from 'yup';
 import emailjs from '@emailjs/browser';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { Snackbar, Alert } from '@mui/material'; 
-import ReactIntTelInput from 'react-intl-tel-input';
-import 'react-intl-tel-input/dist/main.css';
+
 
 
 const validationSchema = yup.object({
@@ -270,6 +269,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         const response = await axios.post(`${apiUrl}/api/PersonaNatural/Insertar`, formDataToSend, {
           headers: { 'XApiKey': apiKey }
         });
+
+        console.log('Formulario enviado con éxito:', response.data);
         
         setMensajeSnackbar('Persona insertada con éxito');
         setSeveritySnackbar('success');
@@ -520,52 +521,28 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
-            <CustomFormLabel htmlFor="pena_TelefonoFijo">Teléfono Fijo</CustomFormLabel>
-            <ReactIntTelInput
-              style={{ width: '100%' }}
-              containerClassName="intl-tel-input custom-intl-input"
-              inputClassName="form-control"
-              preferredCountries={['us', 'hn']}
-              initialCountry={'hn'}
-              value={formik.values.pena_TelefonoFijo}
-              onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                if (!number) {
-                  formik.setFieldValue('pena_TelefonoFijo', '');
-                } else {
-                  formik.setFieldValue('pena_TelefonoFijo', number);
-                }
-              }}
-            x
-            />
-            {formik.touched.pena_TelefonoFijo && formik.errors.pena_TelefonoFijo && (
-              <div style={{ color: 'red', fontSize: 12 }}>
-                {formik.errors.pena_TelefonoFijo}
-              </div>
-            )}
-          </Grid>
+              <CustomFormLabel htmlFor="pena_TelefonoFijo">Teléfono Fijo</CustomFormLabel>
+              <CustomTextField
+                fullWidth
+                id="pena_TelefonoFijo"
+                name="pena_TelefonoFijo"
+                value={formik.values.pena_TelefonoFijo}
+                onChange={handlenumeros}
+                onBlur={formik.handleBlur}
+              />
+            </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_TelefonoCelular">Teléfono Celular</CustomFormLabel>
-              <ReactIntTelInput
-                style={{ width: '100%' }}
-                containerClassName="intl-tel-input custom-intl-input"
-                inputClassName="form-control"
-                preferredCountries={['us', 'hn']}
-                initialCountry={'hn'}
+              <CustomTextField
+                fullWidth
+                id="pena_TelefonoCelular"
+                name="pena_TelefonoCelular"
                 value={formik.values.pena_TelefonoCelular}
-                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('pena_TelefonoCelular', '');
-                  } else {
-                    formik.setFieldValue('pena_TelefonoCelular', number);
-                  }
-                }}
-                onBlur={() => formik.setFieldTouched('pena_TelefonoCelular', true)}
+                onChange={handlenumeros}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
+                helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
               />
-              {formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular && (
-                <div style={{ color: 'red', fontSize: 12 }}>
-                  {formik.errors.pena_TelefonoCelular}
-                </div>
-              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_CorreoElectronico">Correo Electrónico</CustomFormLabel>
