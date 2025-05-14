@@ -10,6 +10,8 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import emailjs from '@emailjs/browser';
+import ReactIntTelInput from 'react-intl-tel-input';
+import 'react-intl-tel-input/dist/main.css';
 
 import { Snackbar, Alert } from '@mui/material';
 
@@ -67,19 +69,19 @@ const validationSchemas = [
     colo_Id: yup.number().required('La colonia es requerida').moreThan(0, 'Debe seleccionar una colonia'),
     alde_Id: yup.number().required('La aldea es requerida').moreThan(0, 'Debe seleccionar una aldea'),
     peju_PuntoReferencia: yup.string().required('El punto de referencia es requerido'),
-    peju_NumeroLocalApart: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El número telefónico es requerido'),
+    peju_NumeroLocalApart: yup.string().required('El número telefónico es requerido'),
   }),
   yup.object({
     peju_CiudadIdRepresentante: yup.number().required('La ciudad del representante es requerida').moreThan(0, 'Debe seleccionar una ciudad'),
     peju_ColoniaRepresentante: yup.number().required('La colonia del representante es requerida').moreThan(0, 'Debe seleccionar una colonia'),
     peju_AldeaIdRepresentante: yup.number().required('La aldea del representante es requerida').moreThan(0, 'Debe seleccionar una aldea'),
-    peju_NumeroLocalRepresentante: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El número telefónico del representante es requerido'),
+    peju_NumeroLocalRepresentante: yup.string().required('El número telefónico del representante es requerido'),
     peju_PuntoReferenciaRepresentante: yup.string().required('El punto de referencia del representante es requerido'),
   }),
   yup.object({
-    peju_TelefonoEmpresa: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El teléfono de la empresa es requerido'),
-    peju_TelefonoFijoRepresentanteLegal: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El teléfono fijo del representante legal es requerido'),
-    peju_TelefonoRepresentanteLegal: yup.string().matches(/^\d+$/, 'Solo se permiten números').required('El teléfono del representante legal es requerido'),
+    peju_TelefonoEmpresa: yup.string().required('El teléfono de la empresa es requerido'),
+    peju_TelefonoFijoRepresentanteLegal: yup.string().required('El teléfono fijo del representante legal es requerido'),
+    peju_TelefonoRepresentanteLegal: yup.string().required('El teléfono del representante legal es requerido'),
     peju_CorreoElectronico: yup.string().email('Formato de correo inválido').required('El correo electrónico es requerido'),
     peju_CorreoElectronicoAlternativo: yup.string().email('Formato de correo inválido'),
   }),
@@ -556,17 +558,28 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel>Numero telefonico de Referencia</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_NumeroLocalApart"
-                name="peju_NumeroLocalApart"
-                value={formik.values.peju_NumeroLocalApart}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_NumeroLocalApart && Boolean(formik.errors.peju_NumeroLocalApart)}
-                helperText={formik.touched.peju_NumeroLocalApart && formik.errors.peju_NumeroLocalApart}
-              />
+             <CustomFormLabel>Numero telefonico de Referencia</CustomFormLabel>
+            <ReactIntTelInput
+              style={{ width: '100%' }}
+              containerClassName="intl-tel-input custom-intl-input"
+              inputClassName="form-control"
+              preferredCountries={['us', 'hn']}
+              initialCountry={'hn'}
+              value={formik.values.peju_NumeroLocalApart}
+              onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                if (!number || number.length > 17) {
+                  formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17));
+                } else {
+                  formik.setFieldValue('peju_NumeroLocalApart', number);
+                }
+              }}
+              onBlur={() => formik.setFieldTouched('peju_NumeroLocalApart', true)}
+            />
+            {formik.touched.peju_NumeroLocalApart && formik.errors.peju_NumeroLocalApart && (
+              <div style={{ color: 'red', fontSize: 12 }}>
+                {formik.errors.peju_NumeroLocalApart}
+              </div>
+            )}
             </Grid>
           </Grid>
         );
@@ -575,16 +588,27 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Numero telefonico del Representante</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_NumeroLocalRepresentante"
-                name="peju_NumeroLocalRepresentante"
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
                 value={formik.values.peju_NumeroLocalRepresentante}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_NumeroLocalRepresentante && Boolean(formik.errors.peju_NumeroLocalRepresentante)}
-                helperText={formik.touched.peju_NumeroLocalRepresentante && formik.errors.peju_NumeroLocalRepresentante}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_NumeroLocalRepresentante', number.slice(0, 17));
+                  } else {
+                    formik.setFieldValue('peju_NumeroLocalRepresentante', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('peju_NumeroLocalRepresentante', true)}
               />
+              {formik.touched.peju_NumeroLocalRepresentante && formik.errors.peju_NumeroLocalRepresentante && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.peju_NumeroLocalRepresentante}
+                </div>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Ciudad del Representante</CustomFormLabel>
@@ -668,42 +692,75 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Teléfono Empresa</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_TelefonoEmpresa"
-                name="peju_TelefonoEmpresa"
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
                 value={formik.values.peju_TelefonoEmpresa}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_TelefonoEmpresa && Boolean(formik.errors.peju_TelefonoEmpresa)}
-                helperText={formik.touched.peju_TelefonoEmpresa && formik.errors.peju_TelefonoEmpresa}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoEmpresa', number.slice(0, 17)); // Limit to 17 characters
+                  } else {
+                    formik.setFieldValue('peju_TelefonoEmpresa', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('peju_TelefonoEmpresa', true)}
               />
+              {formik.touched.peju_TelefonoEmpresa && formik.errors.peju_TelefonoEmpresa && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.peju_TelefonoEmpresa}
+                </div>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Teléfono Fijo Representante Legal</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_TelefonoFijoRepresentanteLegal"
-                name="peju_TelefonoFijoRepresentanteLegal"
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
                 value={formik.values.peju_TelefonoFijoRepresentanteLegal}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_TelefonoFijoRepresentanteLegal && Boolean(formik.errors.peju_TelefonoFijoRepresentanteLegal)}
-                helperText={formik.touched.peju_TelefonoFijoRepresentanteLegal && formik.errors.peju_TelefonoFijoRepresentanteLegal}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
+                  } else {
+                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('peju_TelefonoFijoRepresentanteLegal', true)}
               />
+              {formik.touched.peju_TelefonoFijoRepresentanteLegal && formik.errors.peju_TelefonoFijoRepresentanteLegal && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.peju_TelefonoFijoRepresentanteLegal}
+                </div>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Teléfono Representante Legal</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="peju_TelefonoRepresentanteLegal"
-                name="peju_TelefonoRepresentanteLegal"
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
                 value={formik.values.peju_TelefonoRepresentanteLegal}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.peju_TelefonoRepresentanteLegal && Boolean(formik.errors.peju_TelefonoRepresentanteLegal)}
-                helperText={formik.touched.peju_TelefonoRepresentanteLegal && formik.errors.peju_TelefonoRepresentanteLegal}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
+                  } else {
+                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('peju_TelefonoRepresentanteLegal', true)}
               />
+              {formik.touched.peju_TelefonoRepresentanteLegal && formik.errors.peju_TelefonoRepresentanteLegal && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.peju_TelefonoRepresentanteLegal}
+                </div>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Correo Electrónico</CustomFormLabel>
