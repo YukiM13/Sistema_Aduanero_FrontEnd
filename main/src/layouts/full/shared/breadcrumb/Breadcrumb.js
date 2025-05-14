@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Typography, Box, Breadcrumbs, Link } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import breadcrumbImg from 'src/assets/images/breadcrumb/breadcrumb.png';
+import ImgBC from './ImgBC';
 import { IconCircle } from '@tabler/icons';
 
 const Breadcrumb = ({ subtitle, items, title, children }) => (
@@ -73,7 +73,9 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
         ) : (
           <>
             <Box sx={{ top: '0px', position: 'absolute' }}>
-              <img src={breadcrumbImg} alt={breadcrumbImg} width={'165px'} />
+              <Box sx={{ width: '200px' }}>
+                <ImgBC />
+              </Box>
             </Box>
           </>
         )}
