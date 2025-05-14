@@ -10,7 +10,7 @@ import ParentCard from '../../../components/shared/ParentCard';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
-import CostosMaterialesNoBrindadosModel from 'src/models/planificacionpomodel';
+import CostosMaterialesNoBrindadosModel from 'src/models/costosmaterialesnobrindadosmodel';
 import html2pdf from 'html2pdf.js';
 import { storage } from '../../../layouts/config/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -18,20 +18,21 @@ import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
 
-const PlanificacionPoPdf = () => {
-    const [planificacionData, setPlanificacionData] = useState(null);
+const CostosMaterialesNoBrindadosPdf = () => {
+    const [materialesData, setMaterialesData] = useState(null);
     const contenidoRef = useRef();
 
     const formik = useFormik({
         initialValues: {
-            orco_Id: ''
+            mate_FechaInicio: CostosMaterialesNoBrindadosModel.mate_FechaInicio.substring(0, 10),
+            mate_FechaLimite: CostosMaterialesNoBrindadosModel.mate_FechaLimite.substring(0, 10)
         },
         onSubmit: (values) => {
-            buscarplanificacionPO(values);
+            buscarCostosMaterialesNoBrindados(values);
         }
     });
 
-    const buscarplanificacionPO = async (values) => {
+    const buscarCostosMaterialesNoBrindados = async (values) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
         
@@ -43,7 +44,7 @@ const PlanificacionPoPdf = () => {
             });
             
             if (response.data && response.data.data) {
-                setPlanificacionData(response.data.data);
+                setMaterialesData(response.data.data);
                 console.log('Datos:', response.data.data);
             }
         } catch (error) {
@@ -69,7 +70,7 @@ const PlanificacionPoPdf = () => {
             }
         };
 
-        const nombreArchivo = `documentos/deva-${Date.now()}.pdf`;
+        const nombreArchivo = `documentos/materiales-no-brindados-${Date.now()}.pdf`;
         const archivoRef = ref(storage, nombreArchivo);
 
         // 1. Generar primer PDF (sin QR)
@@ -120,11 +121,22 @@ const PlanificacionPoPdf = () => {
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={2}>
-                                <CustomFormLabel>ID de Orden</CustomFormLabel>
+                                <CustomFormLabel>Fecha Inicio</CustomFormLabel>
                                 <CustomTextField
                                     fullWidth
-                                    name="orco_Id"
-                                    value={formik.values.orco_Id}
+                                    type="date"
+                                    name="mate_FechaInicio"
+                                    value={formik.values.mate_FechaInicio}
+                                    onChange={formik.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={2}>
+                                <CustomFormLabel>Fecha Fin</CustomFormLabel>
+                                <CustomTextField
+                                    fullWidth
+                                    type="date"
+                                    name="mate_FechaLimite"
+                                    value={formik.values.mate_FechaLimite}
                                     onChange={formik.handleChange}
                                 />
                             </Grid>
@@ -132,7 +144,7 @@ const PlanificacionPoPdf = () => {
                                 <Button 
                                     variant="outlined"
                                     type="submit"
-                                    startIcon={<Search />}
+                                    startIcon={<Search style={{ fontSize: '18px' }}/>}
                                 >
                                     Buscar
                                 </Button>
@@ -141,19 +153,19 @@ const PlanificacionPoPdf = () => {
                     </form>
                 </Grid>
 
-                {planificacionData && (
+                {materialesData && (
                     <Grid item xs={12}>
                         <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                             <Button
                                 variant="outlined"
-                                startIcon={<ArrowBackIcon />}
+                                startIcon={<ArrowBackIcon style={{ fontSize: '18px' }}/>}
                                 onClick={() => window.history.back()}
                             >
                                 Volver
                             </Button>
                             <Button
                                 variant="contained"
-                                startIcon={<DownloadIcon />}
+                                startIcon={<DownloadIcon style={{ fontSize: '18px' }}/>}
                                 onClick={convertToPdf}
                             >
                                 Descargar PDF
@@ -161,167 +173,64 @@ const PlanificacionPoPdf = () => {
                         </Stack>
 
                         <ParentCard>
-                            <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}> Previsualización Planificación PO </h5>
+                            <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}> Previsualización Costos de Materiales No Brindados </h5>
                             <div ref={contenidoRef} style={{ position: 'relative' }}>
                                 <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresion: {new Date().toLocaleString()} </p>
                                 <br />
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
-                                           CostosMaterialesNoBrindados <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                           REPORTE DE COSTOS DE MATERIALES NO BRINDADOS <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
                                         </th>
                                         <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DE LA ORDEN</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Orden ID:</th>
-                                        <td colSpan="2">{planificacionData[0].orco_Id}</td>
-                                        <th bgcolor="#f8f8f8">Cantidad Prenda:</th>
-                                        <td colSpan="2">{planificacionData[0].code_CantidadPrenda}</td>
-                                        <th bgcolor="#f8f8f8">Sexo:</th>
-                                        <td colSpan="2">{planificacionData[0].code_Sexo}</td>
+                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>PARÁMETROS DE BÚSQUEDA</th>
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Fecha Inicio:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].asor_FechaInicio).toLocaleDateString()}</td>
-                                        <th bgcolor="#f8f8f8">Fecha Límite:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].asor_FechaLimite).toLocaleDateString()}</td>
-                                        <th bgcolor="#f8f8f8">Material Inicio:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].mate_FechaInicio).toLocaleDateString()}</td>
-                                    </tr>
-
-
-                                    <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DEL CLIENTE</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Cliente:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Nombre_O_Razon_Social}</td>
-                                        <th bgcolor="#f8f8f8">RTN:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_RTN}</td>
-                                        <th bgcolor="#f8f8f8">ID:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Id}</td>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Nombre contacto:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Nombre_Contacto}</td>
-                                        <th bgcolor="#f8f8f8">Número Contacto:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Numero_Contacto}</td>
-                                        <th bgcolor="#f8f8f8">Correo:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Correo_Electronico}</td>
+                                        <td colSpan="3">{new Date(formik.values.mate_FechaInicio).toLocaleDateString()}</td>
+                                        <th bgcolor="#f8f8f8">Fecha Fin:</th>
+                                        <td colSpan="4">{new Date(formik.values.mate_FechaLimite).toLocaleDateString()}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>DETALLES DE PRODUCCIÓN</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Estilo:</th>
-                                        <td colSpan="2">{planificacionData[0].esti_Descripcion}</td>
-                                        <th bgcolor="#f8f8f8">Color:</th>
-                                        <td colSpan="2">{planificacionData[0].colr_Nombre}</td>
-                                        <th bgcolor="#f8f8f8">Talla:</th>
-                                        <td colSpan="2">{planificacionData[0].tall_Nombre}</td>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Proceso:</th>
-                                        <td colSpan="2">{planificacionData[0].proc_Descripcion}</td>
-                                        <th bgcolor="#f8f8f8">Empleado:</th>
-                                        <td colSpan="2">{planificacionData[0].empl_NombreCompleto}</td>
-                                        <th bgcolor="#f8f8f8">Cantidad:</th>
-                                        <td colSpan="2">{planificacionData[0].asor_Cantidad}</td>
-                                    </tr>
-
-                              
-                                  
-
-                                    <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>ESTADÍSTICAS</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Pedidos Terminados:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosTerminados}</td>
-                                        <th bgcolor="#f8f8f8">En Curso:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosCurso}</td>
-                                        <th bgcolor="#f8f8f8">Pendientes:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosPendientes}</td>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Cantidad Completada:</th>
-                                        <td colSpan="2">{planificacionData[0].cantidadCompletada}</td>
-                                        <th bgcolor="#f8f8f8">% Completado:</th>
-                                        <td colSpan="2">{planificacionData[0].procentajeCompletado}%</td>
-                                        <th bgcolor="#f8f8f8">Total Producción:</th>
-                                        <td colSpan="2">{planificacionData[0].totalProduccion}</td>
-                                    </tr>
-
-                                    <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DE MÁQUINA</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Máquina ID:</th>
-                                        <td colSpan="2">{planificacionData[0].maqu_Id}</td>
-                                        <th bgcolor="#f8f8f8">Serie:</th>
-                                        <td colSpan="2">{planificacionData[0].maqu_NumeroSerie}</td>
-                                        <th bgcolor="#f8f8f8">Marca:</th>
-                                        <td colSpan="2">{planificacionData[0].marq_Nombre}</td>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Días Activa:</th>
-                                        <td colSpan="2">{planificacionData[0].diasActiva}</td>
-                                        <th bgcolor="#f8f8f8">Días Inactiva:</th>
-                                        <td colSpan="2">{planificacionData[0].diasInactiva}</td>
-                                        <th bgcolor="#f8f8f8">Total Inactiva:</th>
-                                        <td colSpan="2">{planificacionData[0].diasTotalesInactiva}</td>
-                                    </tr>
-
-                                    <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>PROMEDIOS Y TOTALES</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Promedio Cantidad:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioCantidad}</td>
-                                        <th bgcolor="#f8f8f8">Promedio Daño:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioDanio}</td>
-                                        <th bgcolor="#f8f8f8">Promedio Producción:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioProduccion}</td>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Total Material:</th>
-                                        <td colSpan="2">{planificacionData[0].totalMaterial}</td>
-                                        <th bgcolor="#f8f8f8">Promedio Material:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioMaterial}</td>
-                                        <th bgcolor="#f8f8f8">% Material:</th>
-                                        <td colSpan="2">{planificacionData[0].porcentajeMaterial}%</td>
-                                    </tr>
-
-                                    <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>OBSERVACIONES</th>
-                                    </tr>
-                                    <tr>
-                                        <th bgcolor="#f8f8f8">Observaciones:</th>
-                                        <td colSpan="8">{planificacionData[0].mahi_Observaciones}</td>
+                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE MATERIALES NO BRINDADOS</th>
                                     </tr>
                                 </table>
-
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        top: '50%',
-                                        transform: 'translate(-50%, -50%)',
-                                        width: '100%',
-                                        height: 'auto',
-                                        opacity: 0.2,
-                                        pointerEvents: 'none',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transform: 'scale(2)'
-                                    }}
-                                >
-                                    <LogoAzul style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                
+                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
+                                    <thead>
+                                        <tr bgcolor="#eeeeee">
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>ID</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Descripción</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Número Serie</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Marca</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Precio Promedio</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Total Material</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Porcentaje</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {materialesData.map((item, index) => (
+                                            <tr key={index}>
+                                                <td style={{ border: "1px solid black", textAlign: 'center' }}>{item.maqu_Id}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.mate_Descripcion}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.maqu_NumeroSerie}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.marq_Nombre}</td>
+                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.precioPromedioMaterial?.toFixed(2)}</td>
+                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.totalMaterial?.toFixed(2)}</td>
+                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.porcentajeMaterial?.toFixed(2)}%</td>
+                                                <td style={{ border: "1px solid black" }}>{item.mahi_Observaciones}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                
+                                <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
+                                    <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
                                 </div>
                             </div>
                         </ParentCard>
@@ -332,4 +241,4 @@ const PlanificacionPoPdf = () => {
     );
 };
 
-export default PlanificacionPoPdf;
+export default CostosMaterialesNoBrindadosPdf;
