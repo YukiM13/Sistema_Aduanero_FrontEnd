@@ -21,7 +21,6 @@ import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons
 const CostosMaterialesNoBrindadosPdf = () => {
     const [materialesData, setMaterialesData] = useState(null);
     const contenidoRef = useRef();
-
     const formik = useFormik({
         initialValues: {
             mate_FechaInicio: CostosMaterialesNoBrindadosModel.mate_FechaInicio.substring(0, 10),
@@ -116,7 +115,7 @@ const CostosMaterialesNoBrindadosPdf = () => {
 
     return (
         <>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2} alignItems="center">
@@ -140,8 +139,10 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                     onChange={formik.handleChange}
                                 />
                             </Grid>
-                            <Grid item style={{ marginTop: '10px' }}>
-                                <Button 
+                            
+                          <Grid item style={{ marginTop: '5%'}}>
+                               <Button
+                                style={{width:'300px', height:'40px'}}
                                     variant="outlined"
                                     type="submit"
                                     startIcon={<Search style={{ fontSize: '18px' }}/>}
@@ -149,7 +150,10 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                     Buscar
                                 </Button>
                             </Grid>
+
                         </Grid>
+
+                     
                     </form>
                 </Grid>
 
@@ -185,9 +189,9 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                         <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
 
-                                    <tr bgcolor="#eeeeee">
+                                    {/* <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>PARÁMETROS DE BÚSQUEDA</th>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                         <th bgcolor="#f8f8f8">Fecha Inicio:</th>
                                         <td colSpan="3">{new Date(formik.values.mate_FechaInicio).toLocaleDateString()}</td>
@@ -228,7 +232,25 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                         ))}
                                     </tbody>
                                 </table>
-                                
+                                  <div
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        
+                                                        transform: 'translate(-50%, -50%)',
+                                                        width: '100%',
+                                                        height: 'auto',
+                                                        opacity: 0.2,
+                                                        pointerEvents: 'none',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        transform: 'scale(2)'
+                                                        
+                                                    }}
+                                                >
+                                                    <LogoAzul style={{maxWidth: '100%', maxHeight: '100%'}}/>2s
+                                                </div>
                                 <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
                                     <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
                                 </div>

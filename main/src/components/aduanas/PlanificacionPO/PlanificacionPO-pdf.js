@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { Grid } from '@mui/material';
 import {
@@ -20,6 +20,7 @@ import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons
 
 const PlanificacionPoPdf = () => {
     const [planificacionData, setPlanificacionData] = useState(null);
+    const [orcoData, setOrcoData] = useState(null);
     const contenidoRef = useRef();
 
     const formik = useFormik({
@@ -50,6 +51,28 @@ const PlanificacionPoPdf = () => {
             console.error('Error:', error);
         }
     };
+
+  const buscarOrcoId = async (values) => {
+        const apiUrl = process.env.REACT_APP_API_URL;
+        const apiKey = process.env.REACT_APP_API_KEY;
+        
+        try {
+            const response = await axios.get(`${apiUrl}/api/Graficas/ClientesProductivos`, {
+                headers: {
+                    'XApiKey': apiKey
+                }
+            });
+            
+            if (response.data && response.data.data) {
+                setOrcoData(response.data.data);
+                console.log('Datos:', response.data.data);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
 
     const convertToPdf = async () => {
         const opt = {
@@ -113,9 +136,13 @@ const PlanificacionPoPdf = () => {
         }, 1000); // Ajusta el tiempo si aún no carga
     };
 
+useEffect(() => {
+        buscarOrcoId()
+    }, []);
+
     return (
         <>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2} alignItems="center">
@@ -128,7 +155,7 @@ const PlanificacionPoPdf = () => {
                                     onChange={formik.handleChange}
                                 />
                             </Grid>
-                            <Grid item style={{ marginTop: '10px' }}>
+                            <Grid item style={{  marginTop: '5%'}}>
                                 <Button 
                                     variant="outlined"
                                     type="submit"
@@ -173,9 +200,9 @@ const PlanificacionPoPdf = () => {
                                         <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
 
-                                    <tr bgcolor="#eeeeee">
+                                    {/* <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DE LA ORDEN</th>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
                                         <th bgcolor="#f8f8f8">Orden ID:</th>
                                         <td colSpan="2">{planificacionData[0].orco_Id}</td>
@@ -233,9 +260,6 @@ const PlanificacionPoPdf = () => {
                                         <th bgcolor="#f8f8f8">Cantidad:</th>
                                         <td colSpan="2">{planificacionData[0].asor_Cantidad}</td>
                                     </tr>
-
-                              
-                                  
 
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>ESTADÍSTICAS</th>
@@ -331,5 +355,4 @@ const PlanificacionPoPdf = () => {
         </>
     );
 };
-
 export default PlanificacionPoPdf;
