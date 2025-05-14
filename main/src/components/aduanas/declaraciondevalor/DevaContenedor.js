@@ -1,9 +1,10 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import DucaCreateComponent from "./DucaCreate";
-import DucaCards from "./DucaCards";
+import DeclaracionValor from "./DeclaracionValor";
+import DevaCards from "./DevaCards";
+import Deva from "src/models/devaModel";
 
-const DucaContenedor = () => {
+const DevaContenedor = () => {
     const [mostarLista, setMostarLista] = useState([]);
     const localStorageData = localStorage.getItem('DataUsuario');
     const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
@@ -24,15 +25,15 @@ const DucaContenedor = () => {
             {mostarLista ? (
                <div>
            
-                    <DucaCards />
+                    <DevaCards />
               
                 </div>
             ) : (
-                 <DucaCreateComponent />
+                 <DeclaracionValor />
                 
             )}
         </>
     );
 }
 
-export default DucaContenedor;
+export default DevaContenedor;

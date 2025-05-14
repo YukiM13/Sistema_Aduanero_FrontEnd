@@ -8,13 +8,11 @@ import {
   Button,
   Alert,
   Snackbar,
-   Typography,
-    Divider,
-    Chip,
-    Paper
 
 } from '@mui/material';
 import PageContainer from '../../container/PageContainer';
+import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import ParentCard from '../../shared/ParentCard';
 import { Stack } from '@mui/system';
 import DucaTab2Component from './DucaTab2';
 import DucaTab1Component from './DucaTab1';
@@ -23,10 +21,9 @@ import DucaTab4Component from './DucaTab4';
 import CheckIcon from '@mui/icons-material/Check';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon   from '@mui/icons-material/ArrowBack'; 
-import VerifiedIcon from '@mui/icons-material/Verified';
-import Logo from 'src/assets/images/logos/LOGO.svg';
+
 const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', 'Declarante, Transportista y Conductor', 'Mercancia y Documentos de soporte'];
-const DucaCreateComponent = ({onCancelar}) => {
+const DucaCreateComponent = () => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
     const [openSnackbar, setOpenSnackbar] = React.useState(false); 
@@ -36,10 +33,7 @@ const DucaCreateComponent = ({onCancelar}) => {
     const ducaTab3Ref = React.useRef();
     const ducaTab4Ref = React.useRef();
     const isStepSkipped = (step) => skipped.has(step);
-  const localStorageData = localStorage.getItem('DataUsuario');
-    const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
-     
-    const admin = parsedData ? parsedData.usua_EsAdmin : false;
+  
     const handleNext = async() => {
        if (activeStep === 0 && ducaTab1Ref.current) {
           const exito = await ducaTab1Ref.current.submit();
@@ -145,114 +139,8 @@ const DucaCreateComponent = ({onCancelar}) => {
           
     return (
       <PageContainer>
-                  <Paper
-                    elevation={6}
-                    sx={{
-                      padding: 4,
-                      backgroundColor: '#fff',
-                      borderRadius: '8px',
-                      maxWidth: '100%',
-                      margin: 'auto',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      border: '1px solid #ccc',
-                    }}
-                  >
-                  <Box
-            sx={{
-              background: 'linear-gradient(to bottom,rgb(4, 61, 114),rgb(17, 102, 172))',
-              color: '#fff',
-              p: 4,
-              mb: 4,
-              borderRadius: '12px',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-              textAlign: 'center',
-              position: 'relative'
-            }}
-          >
-            <Chip
-            label="Uso Oficial"
-            icon={<VerifiedIcon sx={{ color: '#fff', fontSize: '16px' }} />}
-            sx={{
-              position: 'absolute',
-              top: 12,
-              left: 16,
-              fontSize: '11px',
-              fontWeight: 'bold',
-              backgroundColor: '#daeefb', // Rojo oscuro elegante
-              color: 'navy',
-  
-              borderRadius: '4px',
-              px: 1.5,
-              py: 0.5,
-              boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
-              '& .MuiChip-icon': {
-                marginLeft: 0,
-                marginRight: '4px',
-              }
-            }}
-          />
-
-            <img
-              src={Logo}
-              alt="Logo Institucional"
-              style={{ height: '50px', marginBottom: '1rem' }}
-            />
-
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 'bold',
-                mb: 1,
-                letterSpacing: 1
-              }}
-            >
-              Dirección General de Aduanas
-            </Typography>
-
-
-            <Divider
-                sx={{
-                  width: '30%',
-                  mx: 'auto',
-                  borderColor: '#bbdefb',
-                  borderBottomWidth: '2px',
-                  my: 1,
-                }}
-              />
-
-            <Typography
-              variant="h6"
-              sx={{
-                color: '#e3f2fd',
-                mb: 1,
-                fontStyle: 'italic'
-              }}
-            >
-              Formulario de Declaración Unica Centroamericana (DUCA)
-            </Typography>
-
-            <Typography
-              variant="body2"
-              sx={{ color: '#bbdefb', mb: 2 }}
-            >
-              Conforme al Acuerdo de Valor del GATT – Artículo 17
-            </Typography>
-
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: 8,
-                right: 16,
-                fontSize: '12px',
-                color: '#bbdefb',
-                textAlign: 'right'
-              }}
-            >
-              <Typography variant="body2">Código del Formulario: DUCA-001</Typography>
-              <Typography variant="body2">Revisión: 03 | Vigencia: 2025</Typography>
-            </Box>
-          </Box>
-    
+        <Breadcrumb title="DUCA" description="this is Form Wizard page" />
+        <ParentCard >
           <Box width="100%">
             <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
@@ -289,12 +177,11 @@ const DucaCreateComponent = ({onCancelar}) => {
                 <Button
                   color="inherit"
                   variant="contained"
-                  disabled={!admin && activeStep === 0}
-                  onClick={admin && activeStep === 0 ? onCancelar : handleBack}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
                   startIcon={<ArrowBackIcon />}
                 >
-                  {admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
-                 
+                  Atrás
                 </Button>
 
                 <Button
@@ -312,7 +199,7 @@ const DucaCreateComponent = ({onCancelar}) => {
               </>
             )}
           </Box>
-        </Paper>
+        </ParentCard>
          <Snackbar
                 open={openSnackbar}
                 autoHideDuration={3000} // Duración de la alerta

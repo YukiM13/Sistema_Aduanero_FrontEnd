@@ -57,12 +57,10 @@ const ForgotPassword = () => {
 
       } else {
         setAlertConfig({ severity: 'error', message: response.data.message || 'Usuario no encontrado.' });
-        setIsRedirecting(false);
         setOpenSnackbar(true);
       }
     } catch (error) {
       console.error('Error al enviar el código:', error);
-      setIsRedirecting(false);
       setAlertConfig({ severity: 'error', message: 'Error al enviar el código. Intente nuevamente.' });
       setOpenSnackbar(true);
     }
