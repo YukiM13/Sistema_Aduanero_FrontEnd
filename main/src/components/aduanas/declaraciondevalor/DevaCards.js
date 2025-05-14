@@ -96,6 +96,8 @@ const DevaCards = () => {
                             padding: '10px 16px',
                             borderTopLeftRadius: '12px',
                             borderTopRightRadius: '12px',
+                            borderBottomLeftRadius: '0px',
+                            borderBottomRightRadius: '0px',
                             backgroundColor: '#003c69',
                             backgroundImage: "https://www.transparenttextures.com/patterns/hixs-evolution.png",
                             backgroundSize: '12px 12px',
