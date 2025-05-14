@@ -9,19 +9,20 @@ import {
   DialogContent, DialogActions, DialogContentText,
   Snackbar, Alert
 } from '@mui/material';
-import '../ordenCompra/ordenCompraDataGrid.css';
+// import '../pedidoOrden/pedidoOrdenDataGrid.css';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import OrdenesComprasDetalle from '../ordenCompraDetalle/OrdenCompraDetalleList';
+import PedidosOrdenesDetalle from '../pedidoOrdenDetalle/PedidoOrdenDetalleList';
 
 import { useNavigate } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import OrdenCompraComponent from './OrdenCompraCrear';
-import OrdenCompraDetallesCreateComponent from '../ordenCompraDetalle/OrdenCompraDetalleCreate';
+// import pedidoOrdenModel from './pedidoOrdenModel';
+import PedidoOrdenCreateComponent from './PedidoOrdenCreate';
+import PedidoOrdenDetallesCreateComponent from '../pedidoOrdenDetalle/PedidoOrdenDetalleCreate';
 
-import OrdenCompraEditComponent from './OrdenCompraEditar';
+import PedidoOrdenEditComponent from './PedidoOrdenEdit';
 // import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
 
 import AddIcon from '@mui/icons-material/Add';
@@ -46,13 +47,13 @@ import { Collapse} from '@mui/material';
 //   setExpandedRow((prev) => (prev === id ? null : id));
 // };
 
-const OrdenesCompras = () => {
+const PedidosOrdenes = () => {
   const [collapseAbiertoId, setCollapseAbiertoId] = useState(null);
 
-  const [ordenesCompras, setOrdenesCompras] = useState([]);
+  const [pedidosOrdenes, setPedidosOrdenes] = useState([]);
   const [modo, setModo] = useState('listar');
-  const [ordenCompraEditando, setOrdenCompraEditando] = useState(null);
-  const [ordenCompraSeleccionada, setOrdenCompraSeleccionada] = useState(null);
+  const [pedidoOrdenEditando, setPedidoOrdenEditando] = useState(null);
+  const [pedidoOrdenSeleccionada, setPedidoOrdenSeleccionado] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
@@ -76,26 +77,26 @@ const OrdenesCompras = () => {
     }
   };
 
-  const cargarOrdenesCompras = () => {
-    axios.get(`${apiUrl}/api/OrdenCompra/Listar`, {
+  const cargarPedidosOrdenes = () => {
+    axios.get(`${apiUrl}/api/PedidosOrden/Listar`, {
       headers: { 'XApiKey': apiKey }
     })
       .then(response => {
         if (response.data && Array.isArray(response.data.data)) {
-          setOrdenesCompras(response.data.data);
+          setPedidosOrdenes(response.data.data);
         }
       })
       .catch(() => mostrarAlerta('errorListar'));
   };
 
   useEffect(() => {
-    cargarOrdenesCompras();
+    cargarPedidosOrdenes();
   }, []);
 
-  const abrirMenu = (evento, ordenCompra) => {
+  const abrirMenu = (evento, pedidoOrden) => {
     setPosicionMenu(evento.currentTarget);
-    setOrdenCompraSeleccionada(ordenCompra);
-    console.log(ordenCompra);
+    setPedidoOrdenSeleccionado(pedidoOrden);
+    console.log(pedidoOrden);
     setMenuAbierto(true);
   };
 
@@ -119,8 +120,8 @@ const OrdenesCompras = () => {
   };
 
   const handleEditar = () => {
-    if (ordenCompraSeleccionada) {
-        setOrdenCompraEditando(ordenCompraSeleccionada);
+    if (pedidoOrdenSeleccionada) {
+        setPedidoOrdenEditando(pedidoOrdenSeleccionada);
       setModo('editar');
     }
     cerrarMenu();
@@ -132,16 +133,16 @@ const OrdenesCompras = () => {
   };
 
   const handleEliminar = () => {
-    if (!ordenCompraSeleccionada) return;
-    const ordenCompraEliminar = {
-      orco_Id: ordenCompraSeleccionada.orco_Id,
-      orco_Estado: false
+    if (!pedidoOrdenSeleccionada) return;
+    const pedidoOrdenEliminar = {
+      peor_Id: pedidoOrdenSeleccionada.peor_Id,
+      peor_Estado: false
     };
-    axios.post(`${apiUrl}/api/OrdenCompra/Eliminar`, ordenCompraEliminar, {
+    axios.post(`${apiUrl}/api/PedidosOrden/Eliminar`, pedidoOrdenEliminar, {
         headers: { 'XApiKey': apiKey }
     })
     .then(() => {
-      cargarOrdenesCompras();
+      cargarPedidosOrdenes();
       mostrarAlerta('eliminado');
     })
     .catch(() => mostrarAlerta('errorEliminar'));
@@ -154,17 +155,16 @@ const OrdenesCompras = () => {
     setPage(0);
   };
 
-  const filteredData = ordenesCompras.filter((ordenCompra) =>
-    ordenCompra.clie_Nombre_O_Razon_Social.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_Codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_FechaEmision.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_FechaLimite.toString().includes(searchQuery.trim()) ||
-    ordenCompra.fopa_Descripcion.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_Materiales.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.code_EspecificacionEmbalaje.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ordenCompra.orco_EstadoOrdenCompra.toString().includes(searchQuery.trim()) ||
-    ordenCompra.orco_DireccionEntrega.toString().includes(searchQuery.trim()) ||
-    ordenCompra.orco_Id.toString().includes(searchQuery.trim())
+  const filteredData = pedidosOrdenes.filter((pedidoOrden) =>
+    pedidoOrden.peor_Codigo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.prov_Id.toString().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.duca_Id.toString().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.ciud_Id.toString().includes(searchQuery.trim()) ||
+    pedidoOrden.peor_DireccionExacta.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.peor_FechaEntrada.toString().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.peor_Obsevaciones.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    pedidoOrden.peor_Impuestos.includes(searchQuery.trim()) ||
+    pedidoOrden.peor_Id.toString().includes(searchQuery.trim())
   );
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
@@ -173,7 +173,7 @@ const OrdenesCompras = () => {
   return (
     <div>
       
-      <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
+      <Breadcrumb title="Pedidos Órdenes" subtitle="Listar" />
       <ParentCard sx={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}>
         {modo === 'listar' && (
           <>
@@ -208,23 +208,22 @@ const OrdenesCompras = () => {
                         <TableRow> 
                             <TableCell><Typography variant="h6"></Typography></TableCell>
                             <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Cliente</Typography></TableCell>
                             <TableCell align='center'><Typography variant="h6">Código</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Fecha Emisión</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Fecha Límite</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Método de Pago</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 70 }}><Typography variant="h6">Materiales</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 120 }}><Typography variant="h6">Embalaje</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Estado</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Dirección de Entrega</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Proveedor</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">DUCA</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Ciudad</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Dirección Exacta</Typography></TableCell>
+                            <TableCell align='center' sx={{ minWidth: 70 }}><Typography variant="h6">Fecha Entrada</Typography></TableCell>
+                            <TableCell align='center' sx={{ minWidth: 120 }}><Typography variant="h6">Observaciones</Typography></TableCell>
+                            <TableCell align='center'><Typography variant="h6">Impuestos</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
                 {(rowsPerPage > 0
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
-                ).map((ordenCompra) => (
-                  <React.Fragment key={ordenCompra.orco_Id}>
+                ).map((pedidoOrden) => (
+                  <React.Fragment key={pedidoOrden.peor_Id}>
                   <TableRow align="center">
                   <TableCell>
                       <IconButton
@@ -232,11 +231,11 @@ const OrdenesCompras = () => {
                         size="small"
                         onClick={() =>
                           setCollapseAbiertoId(
-                            collapseAbiertoId === ordenCompra.orco_Id ? null : ordenCompra.orco_Id
+                            collapseAbiertoId === pedidoOrden.peor_Id ? null : pedidoOrden.peor_Id
                           )
                         }
                         > 
-                        {collapseAbiertoId === ordenCompra.orco_Id ? (
+                        {collapseAbiertoId === pedidoOrden.peor_Id ? (
                           <KeyboardArrowUpIcon />
                         ) : (
                           <KeyboardArrowDownIcon />
@@ -244,37 +243,28 @@ const OrdenesCompras = () => {
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={(e) => abrirMenu(e, ordenCompra)}>
+                      <IconButton onClick={(e) => abrirMenu(e, pedidoOrden)}>
                         <SettingsIcon sx={{ color: '#7521f3', fontSize: '20px' }} />
                       </IconButton>
                     </TableCell>
-                    <TableCell align='center'>{ordenCompra.clie_Nombre_O_Razon_Social}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_Codigo}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_FechaEmision}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_FechaLimite}</TableCell>
-                    <TableCell align='center'>{ordenCompra.fopa_Descripcion}</TableCell>
-                    <TableCell align='center'>
-                      {ordenCompra.orco_Materiales === true
-                        ? 'Sí'
-                        : ordenCompra.orco_Materiales === false
-                        ? 'No'
-                        : '—'}
-                    </TableCell>
-                    <TableCell align='center'>{ordenCompra.tiem_Descripcion ?? '—'}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_EstadoOrdenCompra}</TableCell>
-                    <TableCell align='center' sx={{ minWidth: 250, whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                      {ordenCompra.orco_DireccionEntrega ?? '—'}
-                    </TableCell>
+                    <TableCell align='center'>{pedidoOrden.peor_Codigo}</TableCell>
+                    <TableCell align='center'>{pedidoOrden.prov_NombreCompania}</TableCell>
+                    <TableCell align='center'>{pedidoOrden.duca_No_Duca}</TableCell>
+                    <TableCell align='center'>{pedidoOrden.ciud_Nombre}</TableCell>
+                    <TableCell align='center' sx={{ minWidth: 250, whiteSpace: 'normal', wordBreak: 'break-word' }}>{pedidoOrden.peor_DireccionExacta}</TableCell>
+                    <TableCell align='center'>{pedidoOrden.peor_FechaEntrada ?? '—'}</TableCell>
+                    <TableCell align='center'>{pedidoOrden.peor_Obsevaciones}</TableCell>
+                    <TableCell align='center'> {pedidoOrden.peor_Impuestos ?? '—'}</TableCell>
 
                   </TableRow>
 
-                  {collapseAbiertoId === ordenCompra.orco_Id && (
+                  {collapseAbiertoId === pedidoOrden.peor_Id && (
                   <TableRow>
                     <TableCell colSpan={11} sx={{ paddingBottom: 0, paddingTop: 0 }}>
                       <Collapse in={true} timeout="auto" unmountOnExit>
-                      {ordenCompra?.orco_Id > 0 && (
-                        <OrdenCompraDetallesCreateComponent 
-                        ordenCompraId={ordenCompra.orco_Id} 
+                      {pedidoOrden?.peor_Id > 0 && (
+                        <PedidoOrdenDetallesCreateComponent 
+                        pedidoOrdenId={pedidoOrden.peor_Id} 
                         onGuardadoExitoso={handleGuardadoExitoso}
                         onCancelar={handleCancelar}
                         />
@@ -337,45 +327,45 @@ const OrdenesCompras = () => {
         )}
 
         {modo === 'crear' && (
-          <OrdenCompraComponent
+          <PedidoOrdenCreateComponent
             onCancelar={() => {
               setModo('listar');
             }}
             onGuardadoExitoso={() => {
               setModo('listar');
-              cargarOrdenesCompras();
+              cargarPedidosOrdenes();
               mostrarAlerta('guardado');
             }}
           />
         )}
 
         { modo === 'editar' && (
-          <OrdenCompraEditComponent
-            ordenCompra = {ordenCompraSeleccionada}
-            // ordenCompraInicial={ordenCompraEditando}
+          <PedidoOrdenEditComponent
+            pedidoOrden = {pedidoOrdenSeleccionada}
+            // pedidoOrdenInicial={pedidoOrdenEditando}
             onCancelar={() => {
               setModo('listar');
-              setOrdenCompraEditando(null);
+              setPedidoOrdenEditando(null);
             }}
             onGuardadoExitoso={() => {
               setModo('listar');
-              setOrdenCompraEditando(null);
-              cargarOrdenesCompras();
+              setPedidoOrdenEditando(null);
+              cargarPedidosOrdenes();
               mostrarAlerta('actualizado');
             }}
           />
-        )}
+        )} 
 
         { modo === 'detalle' && (
           <>
             <Button onClick={() => setModo('listar')}>
               Regresar
             </Button>
-            <OrdenesComprasDetalle
-              orco_Id = {ordenCompraSeleccionada.orco_Id}
+            <PedidosOrdenesDetalle
+              peor_Id = {pedidoOrdenSeleccionada.peor_Id}
             />
           </>
-        )}
+        )} 
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -384,7 +374,7 @@ const OrdenesCompras = () => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                    ¿Está seguro que desea eliminar la ordenCompra "{ordenCompraSeleccionada?.orco_Codigo}"?
+                    ¿Está seguro que desea eliminar la pedido orden "{pedidoOrdenSeleccionada?.peor_Codigo}"?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -406,4 +396,4 @@ const OrdenesCompras = () => {
   );
 };
 
-export default OrdenesCompras;
+export default PedidosOrdenes;
