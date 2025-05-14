@@ -122,7 +122,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       <Typography
         variant="h6"
         gutterBottom
-        sx={{ color: '#003857', mt: 5, textAlign: 'center' }}
+        sx={{ color: '#003857', mt: 3, textAlign: 'center' }}
       >
         Inicia sesión para continuar
       </Typography>
@@ -133,8 +133,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         autoComplete="off"
         style={{ marginTop: '6px', px: 3 }}
       >
-        <Stack spacing={1}>
-          <Box>
+        <Stack>
+          <Box mb={-1}>
             <CustomFormLabel htmlFor="usua_Nombre">Usuario</CustomFormLabel>
             <CustomTextField
               id="usua_Nombre"
@@ -146,6 +146,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Nombre && Boolean(formik.errors.usua_Nombre)}
               helperText={formik.touched.usua_Nombre && formik.errors.usua_Nombre}
+              placeholder="Nombre de usuario"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -168,6 +169,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.usua_Contrasenia && Boolean(formik.errors.usua_Contrasenia)}
               helperText={formik.touched.usua_Contrasenia && formik.errors.usua_Contrasenia}
+              placeholder="Contraseña"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -183,7 +185,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             Iniciar sesión
           </Button>
         </Box>
-        <Stack justifyContent="space-around" direction="row" alignItems="center" my={2}>
+        <Stack justifyContent="space-around" direction="row" alignItems="center" my={1.5}>
           <Typography
             component={Link}
             to="/auth/forgot-password"
@@ -193,6 +195,58 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             ¿Olvidaste tu contraseña?
           </Typography>
         </Stack>
+
+        <Box>
+          <Divider>
+            <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" />O entra como
+          </Divider>
+        </Box>
+
+        <Box mt={2}>
+          <Button
+            color="secondary"
+            size="large"
+            fullWidth
+            onClick={async () => {
+              try {
+                const response = await axios.post(
+                  `${apiUrl}/api/Usuarios/Login`,
+                  { usua_Nombre: 'AccesoP.', usua_Contrasenia: '123321123321' },
+                  {
+                    headers: { XApiKey: apiKey },
+                  }
+                );
+              
+                if (response.status === 200 && response.data.success) {
+                  const usuario = response.data.data;
+                  localStorage.setItem('DataUsuario', JSON.stringify(usuario));
+                
+                  const pantallasPermitidas = await obtenerPantallasPermitidas(
+                    usuario.role_Id,
+                    apiUrl,
+                    apiKey
+                  );
+                  localStorage.setItem('PantallasPermitidas', JSON.stringify(pantallasPermitidas));
+                
+                  window.location.href = '/dashboards/modern';
+                } else {
+                  setAlertMessage('El acceso público no está disponible en este momento.');
+                  setAlertSeverity('error');
+                  setOpenSnackbar(true);
+                }
+              } catch (error) {
+                console.error('Error en el acceso público:', error);
+                setAlertMessage(
+                  'Ocurrió un error al intentar acceder como público. Por favor, inténtelo de nuevo.'
+                );
+                setAlertSeverity('error');
+                setOpenSnackbar(true);
+              }
+            }}
+          >
+            Acceso Público
+          </Button>
+        </Box>
       </form>
 
       <Snackbar

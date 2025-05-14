@@ -53,12 +53,10 @@ const validationSchema = yup.object({
     decl_NumeroIdentificacion: yup.string().required('El RTN del proveedor es requerido'),
   }),
   proveedoresDeclaracionViewModel: yup.object({
-    coco_Id: yup.number().required('La condición comercial es requerida'),
-    pvde_Condicion_Otra: yup.string().required('La condición es requerida')
+    coco_Id: yup.number().required('La condición comercial es requerida')
     
   }),
   intermediarioViewModel: yup.object({
-    inte_Tipo_Otro: yup.string().required('El nivel comercial es requerido'),
     tite_Id: yup.number()
       .required('El nivel comercial es requerido')
       .moreThan(0, 'Debe seleccionar un nivel comercial válido'),
@@ -142,41 +140,57 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
               })
               .then(response => {
                 const rawData = response.data.data;
-          
-                const data = Array.isArray(rawData)
-                  ? rawData[0]
-                  : rawData[0] !== undefined
-                  ? rawData[0]
-                  : rawData;
-              
+                const data = Array.isArray(rawData) ? rawData[0] : rawData;
+
                 if (data && typeof data === 'object') {
-                  const camposUtiles = Object.entries(data).filter(([key, value]) => {
-                    return key !== 'deva_Id' && value !== null && value !== undefined && value !== '';
-                  });
-              
-                  const esSoloPreinsert = camposUtiles.length === 0;
-              
-                  if (esSoloPreinsert) {
-               
-                    setInitialValues({...Deva });
-                  } else {
-          
-                    Object.keys(data).forEach(key => {
-                      if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
-                        Deva[key] = data[key];
-                      }
-                    });
-                    setInitialValues({ ...Deva });
-                  }
-              
-                  console.log("DEVA RELLENA O VACÍA:", Deva);
+                  const mappedValues = {
+                    ...Deva, // Mantener la estructura base completa
+                    declarantesInte_ViewModel: {
+                      ...Deva.declarantesInte_ViewModel, // Preservar todos los campos
+                      deva_Id: deva_Id,
+                      decl_Nombre_Raso: data.impo_Nombre_Raso ?? '',
+                      ciud_Id: data.impo_ciudId ?? 0,
+                      decl_Direccion_Exacta: data.impo_Direccion_Exacta ?? '',
+                      decl_Correo_Electronico: data.impo_Correo_Electronico ?? '',
+                      decl_Telefono: data.impo_Telefono ?? '',
+                      decl_Fax: data.impo_Fax ?? '',
+                      decl_NumeroIdentificacion: data.decl_NumeroIdentificacion ?? '',
+                    },
+                    declarantesProv_ViewModel: {
+                      ...Deva.declarantesProv_ViewModel, // Preservar todos los campos
+                      decl_Nombre_Raso: data.impo_Nombre_Raso ?? '',
+                      decl_Direccion_Exacta: data.impo_Direccion_Exacta ?? '',
+                      decl_Correo_Electronico: data.impo_Correo_Electronico ?? '',
+                      decl_Telefono: data.impo_Telefono ?? '',
+                      decl_Fax: data.impo_Fax ?? '',
+                      decl_NumeroIdentificacion: data.decl_NumeroIdentificacion ?? '',
+                      ciud_Id: data.ciud_Id ?? '',
+                    },
+                    proveedoresDeclaracionViewModel: {
+                      ...Deva.proveedoresDeclaracionViewModel, // Preservar todos los campos
+                      pvde_Condicion_Otra: data.pvde_Condicion_Otra ?? '',
+                      coco_Id: data.coco_Id ?? 0
+                    },
+                    intermediariosViewModel: {
+                      ...Deva.intermediariosViewModel, // Preservar todos los campos
+                      inte_Tipo_Otro: data.inte_Tipo_Otro ?? '',
+                      tite_Id: data.tite_Id ?? 0
+                    }
+                    // Los demás submodelos se mantienen con los valores por defecto de Deva
+                  };
+
+                  setInitialValues(mappedValues);
+                  console.log("Valores seteados:", mappedValues);
                 }
               })
               .catch(error => {
-                console.error('Error al obtener los datos del país:', error);
+                console.error('Error al obtener los datos de la deva:', error);
               });
+            } else {
+              // Si no hay devaId, inicializar con el modelo Deva vacío
+              setInitialValues(Deva);
             }
-          }, []); 
+          }, []);
         
 
         const formik = useFormik({
@@ -578,8 +592,6 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                             value={formik.values.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra && Boolean(formik.errors.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra)}
-                            helperText={formik.touched.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra && formik.errors.proveedoresDeclaracionViewModel?.pvde_Condicion_Otra}
                         />
                     </Grid>
 
@@ -886,8 +898,6 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                         value={formik.values.intermediarioViewModel?.inte_Tipo_Otro}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.intermediarioViewModel?.inte_Tipo_Otro && Boolean(formik.errors.intermediarioViewModel?.inte_Tipo_Otro)}
-                        helperText={formik.touched.intermediarioViewModel?.inte_Tipo_Otro && formik.errors.intermediarioViewModel?.inte_Tipo_Otro}
                     />
                 </Grid>
             </Grid>
