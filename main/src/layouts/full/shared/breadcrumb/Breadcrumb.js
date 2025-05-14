@@ -61,6 +61,7 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
       </svg>
     </Box>
     <Grid item xs={12} sm={6} lg={8} mb={1}>
+      
       <Typography variant="h4" color={'white'}>{title}</Typography>
       <Typography color="white" variant="h6" fontWeight={400} mt={0.8} mb={0}>
       <Typography

@@ -20,6 +20,8 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DownloadIcon from '@mui/icons-material/Download';
 import { IconBuilding, IconCalendarEvent, IconFlag } from '@tabler/icons';
 import Breadcrumb from "src/layouts/full/shared/breadcrumb/Breadcrumb";
+import DeclaracionValorImpresionPdf from "../declaracion-valor/declaracion-valor-impresion-pdf";
+import DeclaracionValor from "./DeclaracionValor";
 
 import { Link } from "react-router-dom";
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
@@ -32,6 +34,8 @@ const DevaCards = () => {
           const [rowsPerPage, setRowsPerPage] = useState(10);//Cantidad de lineas a mostrar- Puse 10 pero puede variar xd
           const [searchQuery, setSearchQuery] = useState('');
         const [isLoading, setLoading] = useState(true);
+          const [selectedDeclaracion, setSelectedDeclaracion] = useState(null);
+          const [modoImpresion, setModoImpresion] = useState(false);
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
     const listarDevas = () => {
@@ -68,7 +72,15 @@ const DevaCards = () => {
       const emptyRows = rowsPerPage - Math.min(rowsPerPage, devas.length - page * rowsPerPage);
 
       
-      
+      const handlePrintClick = (declaracion) => {
+        setSelectedDeclaracion(declaracion);
+        setModoImpresion(true);
+        };
+
+    const handleVolver = () => {
+        setModoImpresion(false);
+        setSelectedDeclaracion(null);
+    };
     
       const filteredData = devas.filter((deva) =>
       deva.deva_Id.toString().includes(searchQuery.trim())
@@ -85,8 +97,9 @@ const DevaCards = () => {
      
     return(
         <div>  
-            <Breadcrumb title="Conceptos de pago" subtitle={ "Listar"} />
-            <ParentCard>
+            <Breadcrumb title="Declaración de valor" subtitle={modoImpresion ? "Impresión" : "Listar"} />
+            {!modoImpresion ? (
+            <ParentCard >
                 <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
                 startAdornment: (
@@ -96,9 +109,6 @@ const DevaCards = () => {
                     ),
                 }}/>
                 <Grid container spacing={3} mb={3}>  {/* Esto es como el div con class row */}
-                
-                
-       
                     {filteredData
                         .reverse()
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -183,7 +193,8 @@ const DevaCards = () => {
                         <Button
                         variant="outlined"
                         startIcon={<DownloadIcon />}
-                        size="small"
+                        size="small" 
+                        onClick={() => handlePrintClick(deva)}
                         sx={{
                             borderColor: '#1976D2',
                             color: '#1976D2',
@@ -258,6 +269,12 @@ const DevaCards = () => {
              </Grid>
              <TablePagination component="div" count={devas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
             </ParentCard>
+            ) : (
+                <DeclaracionValorImpresionPdf 
+                    declaracionValor={selectedDeclaracion} 
+                    onCancelar={handleVolver}
+                />
+            )}
         </div>
     )
 }
