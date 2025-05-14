@@ -1,4 +1,5 @@
-
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -17,11 +18,10 @@ import QRCode from 'qrcode';
 import DucaLogo from "../../../assets/images/imagenes/DUCALOGO.png";
 import { duration } from "@mui/material";
 
-// Default export is a4 paper, portrait, using millimeters for units
-// const doc = new jsPDF();
 
-// doc.text("Hello world!", 10, 10);
-// doc.save("a4.pdf");
+
+
+
 
 
 
@@ -178,6 +178,8 @@ const generatePDF = async () => {
 
       // Get the PDF as a Blob
         const pdfBlob = doc.output('blob');
+
+
         
     //   // Save the PDF
        doc.save("Duca.pdf");
@@ -187,6 +189,191 @@ const generatePDF = async () => {
 
 };
 
+// const generatePDFQR = async () => {
+//   const doc = new jsPDF({
+//     orientation: "portrait",
+//     unit: "mm",
+//     format: "a4",
+//   });
+
+//   const element = document.getElementById("html-content");
+//   const reverso = document.getElementById("html-reverso");
+
+//   // Define the fixed dimensions for the PDF
+//   const pdfWidth = 190; // Width in mm
+//   const pdfHeight = 270; // Height in mm
+
+//   // Render the first page (html-content)
+//   const canvas1 = await html2canvas(element, {
+//     scale: 3,
+//     useCORS: true,
+//     logging: false,
+//   });
+//   const imgData1 = canvas1.toDataURL("image/jpeg");
+//   doc.addImage(imgData1, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+//   // Add a new page for the second element (html-reverso)
+//   doc.addPage();
+//   const canvas2 = await html2canvas(reverso, {
+//     scale: 3,
+//     useCORS: true,
+//     logging: false,
+//   });
+//   const imgData2 = canvas2.toDataURL("image/jpeg");
+//   doc.addImage(imgData2, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+//   // Get the PDF as a Blob
+//   const pdfBlob = doc.output("blob");
+
+//   // Step 1: Upload the PDF Blob to Firebase
+//   const pdfFileName = `Duca-${Date.now()}.pdf`;
+//   const pdfRef = ref(storage, `documents/${pdfFileName}`);
+//   await uploadBytes(pdfRef, pdfBlob);
+//   const pdfUrl = await getDownloadURL(pdfRef);
+
+//   console.log("Uploaded PDF URL:", pdfUrl);
+
+//   // Step 2: Generate a QR Code with the Firebase URL
+//   const qrCodeDataUrl = await QRCode.toDataURL(pdfUrl);
+
+//   // Step 3: Replace the content of the Grid with id="imagenqr" with the QR code
+//   const qrContainer = document.getElementById("imagenqr");
+//   qrContainer.innerHTML = ""; // Clear existing content
+//   const qrImage = document.createElement("img");
+//   qrImage.src = qrCodeDataUrl;
+//   qrImage.style.width = "100%";
+//   qrImage.style.height = "100%";
+//   qrImage.style.objectFit = "contain";
+//   qrContainer.appendChild(qrImage);
+
+//   // Step 4: Regenerate the PDF with the QR code included
+//   const finalCanvas1 = await html2canvas(element, {
+//     scale: 3,
+//     useCORS: true,
+//     logging: false,
+//   });
+//   const finalImgData1 = finalCanvas1.toDataURL("image/jpeg");
+//   doc.addImage(finalImgData1, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+//   doc.addPage();
+//   const finalCanvas2 = await html2canvas(reverso, {
+//     scale: 3,
+//     useCORS: true,
+//     logging: false,
+//   });
+//   const finalImgData2 = finalCanvas2.toDataURL("image/jpeg");
+//   doc.addImage(finalImgData2, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+//   // Get the final PDF as a Blob
+//   const finalPdfBlob = doc.output("blob");
+
+//   // Step 5: Upload the final PDF with the QR code to Firebase
+//   const finalPdfFileName = `Duca-Final-${Date.now()}.pdf`;
+//   const finalPdfRef = ref(storage, `documents/${finalPdfFileName}`);
+//   await uploadBytes(finalPdfRef, finalPdfBlob);
+//   const finalPdfUrl = await getDownloadURL(finalPdfRef);
+
+
+
+// // Open the final PDF URL in a new tab
+// window.open(finalPdfUrl, "_blank");
+
+// //   console.log("Final Uploaded PDF URL:", finalPdfUrl);
+
+// //   doc.save("DUCA-QR.pdf");
+// };
+
+
+const generatePDFQR = async () => {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
+
+  const element = document.getElementById("html-content");
+  const reverso = document.getElementById("html-reverso");
+
+  // Define the fixed dimensions for the PDF
+  const pdfWidth = 190; // Width in mm
+  const pdfHeight = 270; // Height in mm
+
+  // Use a fixed file name for the PDF
+  const pdfFileName = "Duca.pdf";
+  const pdfRef = ref(storage, `documents/${pdfFileName}`);
+
+  // Step 1: Generate the initial PDF
+  const canvas1 = await html2canvas(element, {
+    scale: 3,
+    useCORS: true,
+    logging: false,
+  });
+  const imgData1 = canvas1.toDataURL("image/jpeg");
+  doc.addImage(imgData1, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+  doc.addPage();
+  const canvas2 = await html2canvas(reverso, {
+    scale: 3,
+    useCORS: true,
+    logging: false,
+  });
+  const imgData2 = canvas2.toDataURL("image/jpeg");
+  doc.addImage(imgData2, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+  const initialPdfBlob = doc.output("blob");
+
+  // Step 2: Upload the initial PDF to Firebase
+  await uploadBytes(pdfRef, initialPdfBlob);
+  const initialPdfUrl = await getDownloadURL(pdfRef);
+
+  console.log("Initial PDF URL:", initialPdfUrl);
+
+  // Step 3: Generate a QR Code with the Firebase URL
+  const qrCodeDataUrl = await QRCode.toDataURL(initialPdfUrl);
+
+  // Step 4: Replace the content of the Grid with id="imagenqr" with the QR code
+  const qrContainer = document.getElementById("imagenqr");
+  qrContainer.innerHTML = ""; // Clear existing content
+  const qrImage = document.createElement("img");
+  qrImage.src = qrCodeDataUrl;
+  qrImage.style.width = "100%";
+  qrImage.style.height = "100%";
+  qrImage.style.objectFit = "contain";
+  qrContainer.appendChild(qrImage);
+
+  // Step 5: Regenerate the PDF with the QR code included
+  const finalCanvas1 = await html2canvas(element, {
+    scale: 3,
+    useCORS: true,
+    logging: false,
+  });
+  const finalImgData1 = finalCanvas1.toDataURL("image/jpeg");
+  
+  doc.addImage(finalImgData1, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+  doc.addPage();
+  const finalCanvas2 = await html2canvas(reverso, {
+    scale: 3,
+    useCORS: true,
+    logging: false,
+  });
+  const finalImgData2 = finalCanvas2.toDataURL("image/jpeg");
+  doc.addImage(finalImgData2, "JPEG", 10, 10, pdfWidth, pdfHeight);
+
+  const finalPdfBlob = doc.output("blob");
+
+  // Step 6: Upload the final PDF with the QR code to Firebase
+  await uploadBytes(pdfRef, finalPdfBlob);
+  const finalPdfUrl = await getDownloadURL(pdfRef);
+
+  console.log("Final PDF with QR URL:", finalPdfUrl);
+
+  // Optional: Save the final PDF locally
+  doc.save("DUCA-QR.pdf");
+
+  // Return the final PDF URL for further use
+  return finalPdfUrl;
+};
 
 
 const generarPDF = () => {
@@ -287,6 +474,35 @@ const generarPDF = () => {
 
 
 const DucaPrintComponent = ({Duca, onCancelar }) => {
+    
+    const apiUrl = process.env.REACT_APP_API_URL;
+    const apiKey = process.env.REACT_APP_API_KEY;
+
+    const [generadas, setGeneradas] = useState([]);
+    const [generada, setGenerada] = useState();
+    
+
+    useEffect(() => {
+
+    axios.get(`${apiUrl}/api/Duca/GenerarDuca?duca_Id=${Duca.duca_Id}`, {
+      headers: { 'XApiKey': apiKey }
+    })
+    .then(response =>{ setGeneradas(response.data.data);
+
+        console.log("generadas?"+Duca.duca_Id, response.data.data);
+        
+        
+        response.data.data.forEach((item) => {
+            
+            setGenerada(item);
+            console.log('arf',item);
+            
+        });
+    })
+    .catch(error => console.error('Error al obtener las Ducas:', error));
+    
+
+    }, []);
 
     return (
 
@@ -295,7 +511,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
         <h1>DUCA Print</h1>
         {/* <button onClick={() => doc.save("duca.pdf")}>Download DUCA</button> */}
 
-        <Button variant="contained" color="secondary" onClick={generatePDF}
+        <Button variant="contained" color="secondary" onClick={generatePDFQR}
                             startIcon={<PrintSharp />}>
                                 Generar PDF
         </Button>
@@ -489,7 +705,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                         <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px", marginBottom: "0%", marginTop: "0%" }}>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.1 No. Identificacion</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.prov_NumeroIdentificacion : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.2 Tipo Identificacion</p>
@@ -498,15 +714,16 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.3 Pais Emision</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.4 Nombre o Razón Social</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.prov_Nombre_Raso : "---")}</strong></p>
                             </Grid>
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
-                            <p>4.5 Domicilio Fiscal</p>
+                            <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.5 Domicilio Fiscal</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             {/* // llenado para que tome dos */}
@@ -519,7 +736,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                         <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px" }}>
                         <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.1. No. Identificación</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.impo_NumRegistro : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.2. Tipo Identificación RTN</p>
@@ -528,7 +745,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.3. País Emisión</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.prov_NumeroIdentificacion : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.4. Nombre o Razón Social</p>
@@ -574,39 +791,36 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                               <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>1. No. Correlativo o Referencia</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_No_Correlativo_Referencia : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>2. No. de Duca</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_No_Duca : "---")}</strong></p>
                               </Grid>
                               <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} >
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}> 3. Fecha de Aceptación</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.deva_FechaAceptacion : "---")}</strong></p>
                               </Grid>
 
-                              <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
-                              <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>4.3 Pais Emision</p>
-                              <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
-                              </Grid>
+                              
                               <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>7. Aduana Registro / Inicio Tránsito</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_AduanaRegistro : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>8. Aduana de Salida</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.adua_SalidaNombre : "---")}</strong></p>
                               </Grid>
                               <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} >
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}> 9. Aduana de Ingreso</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.adua_IngresoNombre : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} >
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>10. Aduana Destino</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_AduanaDestino : "---")}</strong></p>
                               </Grid>
 
                           </Grid>
