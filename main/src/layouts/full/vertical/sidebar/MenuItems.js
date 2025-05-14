@@ -542,6 +542,15 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
+  if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Materiales por Orden de compra',
+      icon: IconFileCertificate,
+      href: '/materialesporpo',
+      chipColor: 'secondary',//esquema aduanas
+    });
+  }
   
   return Menuitems;
 };

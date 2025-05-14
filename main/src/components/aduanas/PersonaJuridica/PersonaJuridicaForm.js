@@ -749,7 +749,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 value={formik.values.peju_TelefonoRepresentanteLegal}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                   if (!number || number.length > 17) {
-                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
+                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_TelefonoRepresentanteLegal', number);
                   }
