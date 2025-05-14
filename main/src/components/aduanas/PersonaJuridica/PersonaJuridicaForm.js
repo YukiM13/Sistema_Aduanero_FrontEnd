@@ -568,7 +568,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
               value={formik.values.peju_NumeroLocalApart}
               onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                 if (!number || number.length > 17) {
-                  formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17)); // Limit to 17 characters
+                  formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17));
                 } else {
                   formik.setFieldValue('peju_NumeroLocalApart', number);
                 }
@@ -597,7 +597,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 value={formik.values.peju_NumeroLocalRepresentante}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                   if (!number || number.length > 17) {
-                    formik.setFieldValue('peju_NumeroLocalRepresentante', number.slice(0, 17)); // Limit to 17 characters
+                    formik.setFieldValue('peju_NumeroLocalRepresentante', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_NumeroLocalRepresentante', number);
                   }
