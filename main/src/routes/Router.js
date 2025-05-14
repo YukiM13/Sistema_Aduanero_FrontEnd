@@ -106,9 +106,10 @@ const materialesporPO = Loadable(lazy(() => import('../components/aduanas/materi
 
 
 
-const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaCreate')));
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const Declaracion = Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DevaContenedor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
 // General
@@ -190,6 +191,7 @@ const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
 
 const todasLasRutas = [
   { path: '/dashboards/modern', element: <ModernDash/> },
+
   { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
   { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
   { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
@@ -227,7 +229,9 @@ const todasLasRutas = [
   { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
+  { path: '/declaracion-valor', element: <Declaracion/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
+  { path: '/declaracion', element: <DeclaracionValor/>, pantalla:'Impresion Deva' },
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   {path: '/materialesporpo', element: <materialesporPO/>, pantalla:'Materiales por PO'},//esquema aduanas
 ]
@@ -242,6 +246,7 @@ const Router = [
     element: <FullLayout />,
     children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
+        { path: '/user-profile', element: <UserProfile /> },
       ...rutasFiltradas.map((ruta) => ({
         ...ruta,
         element: <PrivateRoute>{ruta.element}</PrivateRoute>,
@@ -253,6 +258,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '/auth/404', element: <Error /> },
+        { path: '/user-profile', element: <UserProfile /> },
       { path: '/auth/login', element: <Login /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },

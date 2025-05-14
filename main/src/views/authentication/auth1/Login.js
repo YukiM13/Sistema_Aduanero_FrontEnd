@@ -7,7 +7,7 @@ import AuthLogin from '../authForms/AuthLogin';
 
 const Login = () => (
   <PageContainer title="Inicio Sesion" description="this is Login page">
-    <Grid container spacing={0} sx={{ overflowX: 'hidden' }}>
+    <Grid container sx={{ overflowX: 'hidden' }}>
       <Grid
         item
         xs={12}
