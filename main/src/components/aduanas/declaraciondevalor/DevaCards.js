@@ -20,6 +20,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { Link } from "react-router-dom";
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import ParentCard from "src/components/shared/ParentCard";
 const DevaCards = () => {
     const [devas, setDevas] = useState([]);
      const [page, setPage] = useState(0);//Define como la pagina actual
@@ -68,7 +69,7 @@ const DevaCards = () => {
      
     return(
         <div>  
-            <Paper variant="outlined">
+            <ParentCard>
                 <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
                 startAdornment: (
@@ -77,14 +78,14 @@ const DevaCards = () => {
                     </InputAdornment>
                     ),
                 }}/>
-                <Grid container spacing={3} mb={3} component={Paper}>  {/* Esto es como el div con class row */}
+                <Grid container spacing={3} mb={3}>  {/* Esto es como el div con class row */}
                 
                 
        
                     {filteredData
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((deva) => (
-                        <Grid item xs={12} sm={12} lg={4} key={deva.deva_Id}>
+                        <Grid item xs={12} sm={12} lg={3} key={deva.deva_Id}>
                     <BlankCard>
                         {/* ENCABEZADO DE LA CARD */}
                         <Box
@@ -114,19 +115,52 @@ const DevaCards = () => {
                             Declaración #{deva.deva_Id}
                         </Typography>
                         </Box>
-                        <CardContent sx={{ p: 3, pt: 2 }} minHeight="10vh">
-                        <Typography variant="h6">{deva.adua_IngresoNombre}</Typography>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" mt={1}>
-                            <Stack direction="row" alignItems="center">
-                            <Typography variant="h6">${deva.adua_DespachoNombre}</Typography>
-                            <Typography color="textSecondary" ml={1} sx={{ textDecoration: 'line-through' }}>
-                                ${deva.duca_No_Correlativo_Referencia}
-                            </Typography>
-                            </Stack>
-                          
-                        </Stack>
-   
-                        </CardContent>
+                        <CardContent
+                    sx={{
+                        backgroundColor: '#fdfdfd',
+                        p: 3,
+                        pt: 2,
+                        borderBottomLeftRadius: '12px',
+                        borderBottomRightRadius: '12px',
+                        border: '1px solid #e0e0e0',
+                        borderTop: 'none',
+                        fontFamily: 'Roboto, sans-serif',
+                        boxShadow: 'inset 0 0 5px rgba(0,0,0,0.05)',
+                    }}
+                    >
+                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
+                        Información de Ingreso
+                    </Typography>
+
+                    <Stack spacing={1.5}>
+                        <Box>
+                        <Typography variant="caption" color="textSecondary">
+                            Aduana de Ingreso:
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                            {deva.adua_IngresoNombre}
+                        </Typography>
+                        </Box>
+
+                        <Box>
+                        <Typography variant="caption" color="textSecondary">
+                            Aduana de Despacho:
+                        </Typography>
+                        <Typography variant="body1">
+                            {deva.adua_DespachoNombre}
+                        </Typography>
+                        </Box>
+
+                        <Box>
+                        <Typography variant="caption" color="textSecondary">
+                            No. Correlativo de Referencia:
+                        </Typography>
+                        <Typography variant="body1">
+                            {deva.duca_No_Correlativo_Referencia}
+                        </Typography>
+                        </Box>
+                    </Stack>
+                    </CardContent>
                     </BlankCard>
                     </Grid>
                     ))}
@@ -137,7 +171,7 @@ const DevaCards = () => {
                     )}
              </Grid>
              <TablePagination component="div" count={devas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
-            </Paper>
+            </ParentCard>
         </div>
     )
 }
