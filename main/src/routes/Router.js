@@ -1,8 +1,11 @@
 import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
+import PrivateRoute from './PrivateRoute';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
-
+import PersonaJuridica from 'src/models/PersonaJuridicaModel';
+// import OrdenCompraDetallesCreateComponent from '../components/ordenCompraDetalle/OrdenCompraDetalleCreate';
+import { es } from 'date-fns/locale';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -36,8 +39,7 @@ const Gallery = Loadable(lazy(() => import('../views/apps/user-profile/Gallery')
 const RollbaseCASL = Loadable(lazy(() => import('../views/pages/rollbaseCASL/RollbaseCASL')));
 const Treeview = Loadable(lazy(() => import('../views/pages/treeview/Treeview')));
 const Pricing = Loadable(lazy(() => import('../views/pages/pricing/Pricing')));
-const AccountSetting = Loadable(
-  lazy(() => import('../views/pages/account-setting/AccountSetting')),
+const AccountSetting = Loadable(lazy(() => import('../views/pages/account-setting/AccountSetting')),
 );
 const Faq = Loadable(lazy(() => import('../views/pages/faq/Faq')));
 
@@ -88,7 +90,10 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
+const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/declaracion-valor/declaracion-valor-impresion')));
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
+const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
+const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
@@ -97,10 +102,19 @@ const Marcas = Loadable(lazy(() => import('../components/aduanas/marcas/MarcasLi
 const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipointermediario/tipointermediario')));
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
-const PersonaCrear =  Loadable(lazy(() => import('../components/aduanas/personas/PersonaCreate')));
+const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
+
+
+
+const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
+const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
+const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
+
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
+const ProvinciaCrear =  Loadable(lazy(() => import('../components/general/provincias/ProvinciasCreate')));
 const Ciudad = Loadable(lazy(() => import('../components/general/ciudades/CiudadList')));
 const Moneda = Loadable(lazy(() => import('../components/general/monedas/MonedasList')));
 const UnidadesMedidas  = Loadable(lazy(() => import('../components/general/unidadesmedidas/unidadesmedidas')));
@@ -111,11 +125,21 @@ const Empleado = Loadable(lazy(() => import('../components/general/empleados/Emp
 const Proveedor = Loadable(lazy(() => import('../components/general/proveedores/ProveedoresList')));
 const OficioProfesiones = Loadable(lazy(() => import('../components/general/oficioProfesion/OficioProfesionList')));
 const EstadosCivilesCreate = Loadable(lazy(() => import('../components/general/estadosciviles/EstadosCivilesCreate')));
+const CiudadCrear =  Loadable(lazy(() => import('../components/general/ciudades/CiudadCreate')));
+const CiudadEditar =  Loadable(lazy(() => import('../components/general/ciudades/CiudadEdit')));
+const FormasEnvioCreate = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioCreate')));
 
 const FormasEnvio = Loadable(lazy(() => import('../components/general/formasenvio/FormasEnvioList')));
 
+const Aldea = Loadable(lazy(() => import('../components/general/aldeas/AldeasList')));
+
+const Colonias = Loadable(lazy(() => import('../components/general/colonias/ColoniasList')));
+
+
 
 // Acceso
+const Usuarios = Loadable(lazy(() => import('../components/acceso/usuarios/UsuariosList')));
+const Roles = Loadable(lazy(() => import('../components/acceso/roles/rolesList')));
 
 // Produccion
 const TipoEmbalaje  = Loadable(lazy(() => import('../components/produccion/tipoembalaje/tipoembalaje')));
@@ -123,7 +147,13 @@ const Categorias  = Loadable(lazy(() => import('../components/produccion/categor
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
+const OrdenCompraList =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
+const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraCrear')));
+const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
+const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
+const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
 
+const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -156,117 +186,72 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
 
+const localStorageData = localStorage.getItem('PantallasPermitidas');
+const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
+const localStorageDatas = localStorage.getItem('DataUsuario');
+const parsedData = localStorageDatas ? JSON.parse(localStorageDatas) : null;
+const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
+
+const todasLasRutas = [
+  { path: '/dashboards/modern', element: <ModernDash/> },
+
+  { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
+  { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
+  { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
+  { path: '/cargos/list', element: <Cargo/>, pantalla:'Cargos'  },
+  { path: '/colonias/list', element: <Colonias/>, pantalla:'Colonias' },
+  { path: '/ciudades/list', element: <Ciudad/>, pantalla:'Ciudades' },
+  { path: '/estadosciviles/list', element: <EstadosCivilesList/>, pantalla:'Estados Civiles' },
+  { path: '/empleado/list', element: <Empleado/>, pantalla:'Empleados' },
+  { path: '/oficinas/list', element: <Oficinas/>, pantalla:'Oficinas' },
+  { path: '/oficioProfesiones/list', element: <OficioProfesiones/>, pantalla:'Oficio Profesiones' },
+  { path: '/formasenvio/list', element: <FormasEnvio/>, pantalla:'Formas de Envio' },
+  { path: '/moneda/list', element: <Moneda/>, pantalla:'Monedas' },
+  { path: '/paises/list', element: <Pais/>, pantalla:'Paises' },
+  { path: '/provincias/list', element: <Provincia/>, pantalla:'Provincias' },
+  { path: '/proveedores/list', element: <Proveedor/>, pantalla:'Proveedores' },
+  { path: '/unidadesmedidas/list', element: <UnidadesMedidas/>, pantalla:'Unidades de Medida' },
+  { path: '/aduanas/list', element: <Aduana/>, pantalla:'Aduanas' },
+  { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
+  { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
+  { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+  { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
+  { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
+  { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
+  { path: '/niveles-comerciales/list', element: <NivelComercial/>, pantalla:'Niveles Comerciales' },
+  { path: '/marcas/list', element: <Marcas/>, pantalla:'Marcas' },
+  { path: '/modotransporte/list', element: <ModoTransporte/>, pantalla:'Modo Transporte' },
+  { path: '/tiposidentificacion/list', element: <TiposIdentificacion/>, pantalla:'Tipos de Identificacion' },
+  { path: '/tipointermediario/list', element: <TipoIntermediario/>, pantalla:'Tipo Intermediario' },
+  { path: '/categorias/list', element: <Categorias/>, pantalla:'Categorias' },
+  { path: '/marcasmaquinas/list', element: <MarcasMaquinas/>, pantalla:'Marcas Maquinas' },
+  { path: '/tipoembalaje/list', element: <TipoEmbalaje/>, pantalla:'Tipo Embalaje' },
+  { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
+  { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
+  { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
+  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
+  { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
+  { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
+  { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
+  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
+]
+
+const rutasFiltradas = todasLasRutas.filter((ruta) =>
+  esAdmin || pantallasPermitidas.includes(ruta.pantalla) || ruta.path === '/dashboards/modern'
+);
+
 const Router = [
   {
     path: '/',
     element: <FullLayout />,
     children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
-      { path: '/dashboards/modern', exact: true, element: <ModernDash /> },
-      { path: '/dashboards/ecommerce', exact: true, element: <EcommerceDash /> },
-      { path: '/apps/chats', element: <Chats /> },
-      { path: '/apps/notes', element: <Notes /> },
-      { path: '/apps/calendar', element: <Calendar /> },
-      { path: '/apps/email', element: <Email /> },
-      { path: '/apps/tickets', element: <Tickets /> },
-      { path: '/apps/contacts', element: <Contacts /> },
-      { path: '/apps/ecommerce/shop', element: <Ecommerce /> },
-      { path: '/apps/blog/posts', element: <Blog /> },
-      { path: '/apps/blog/detail/:id', element: <BlogDetail /> },
-      { path: '/apps/ecommerce/eco-product-list', element: <EcomProductList /> },
-      { path: '/apps/ecommerce/eco-checkout', element: <EcomProductCheckout /> },
-      { path: '/apps/ecommerce/detail/:id', element: <EcommerceDetail /> },
-      { path: '/apps/followers', element: <Followers /> },
-      { path: '/apps/friends', element: <Friends /> },
-      { path: '/apps/gallery', element: <Gallery /> },
-      { path: '/user-profile', element: <UserProfile /> },
-      { path: '/pages/casl', element: <RollbaseCASL /> },
-      { path: '/pages/treeview', element: <Treeview /> },
-      { path: '/pages/pricing', element: <Pricing /> },
-      { path: '/pages/account-settings', element: <AccountSetting /> },
-      { path: '/pages/faq', element: <Faq /> },
-      { path: '/forms/form-elements/autocomplete', element: <MuiAutoComplete /> },
-      { path: '/forms/form-elements/button', element: <MuiButton /> },
-      { path: '/forms/form-elements/checkbox', element: <MuiCheckbox /> },
-      { path: '/forms/form-elements/radio', element: <MuiRadio /> },
-      { path: '/forms/form-elements/slider', element: <MuiSlider /> },
-      { path: '/forms/form-elements/date-time', element: <MuiDateTime /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/form-elements/switch', element: <MuiSwitch /> },
-      { path: '/forms/quill-editor', element: <QuillEditor /> },
-      { path: '/forms/form-layouts', element: <FormLayouts /> },
-      { path: '/forms/form-horizontal', element: <FormHorizontal /> },
-      { path: '/forms/form-vertical', element: <FormVertical /> },
-      { path: '/forms/form-custom', element: <FormCustom /> },
-      { path: '/forms/form-wizard', element: <FormWizard /> },
-      { path: '/forms/form-validation', element: <FormValidation /> },
-      { path: '/tables/basic', element: <BasicTable /> },
-      { path: '/tables/collapsible', element: <CollapsibleTable /> },
-      { path: '/tables/enhanced', element: <EnhancedTable /> },
-      { path: '/tables/fixed-header', element: <FixedHeaderTable /> },
-      { path: '/tables/pagination', element: <PaginationTable /> },
-      { path: '/tables/search', element: <SearchTable /> },
-      { path: '/charts/line-chart', element: <LineChart /> },
-      { path: '/charts/gredient-chart', element: <GredientChart /> },
-      { path: '/charts/doughnut-pie-chart', element: <DoughnutChart /> },
-      { path: '/charts/area-chart', element: <AreaChart /> },
-      { path: '/charts/column-chart', element: <ColumnChart /> },
-      { path: '/charts/candlestick-chart', element: <CandlestickChart /> },
-      { path: '/charts/radialbar-chart', element: <RadialbarChart /> },
-      { path: '/ui-components/alert', element: <MuiAlert /> },
-      { path: '/ui-components/accordion', element: <MuiAccordion /> },
-      { path: '/ui-components/avatar', element: <MuiAvatar /> },
-      { path: '/ui-components/chip', element: <MuiChip /> },
-      { path: '/ui-components/dialog', element: <MuiDialog /> },
-      { path: '/ui-components/list', element: <MuiList /> },
-      { path: '/ui-components/popover', element: <MuiPopover /> },
-      { path: '/ui-components/rating', element: <MuiRating /> },
-      { path: '/ui-components/tabs', element: <MuiTabs /> },
-      { path: '/ui-components/tooltip', element: <MuiTooltip /> },
-      { path: '/ui-components/transfer-list', element: <MuiTransferList /> },
-      { path: '/ui-components/typography', element: <MuiTypography /> },
-      { path: '/widgets/cards', element: <WidgetCards /> },
-      { path: '/widgets/banners', element: <WidgetBanners /> },
-      { path: '/widgets/charts', element: <WidgetCharts /> },
-      { path: '/personas/list', element: <Persona  /> },
-      { path: '/tallas/list', element: <Tallas  /> },
-      { path: '/aduanas/list', element: <Aduana  /> },
-      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-      { path: '/formasdepago/list', element: <FormasPago  /> },
-
-      { path: '/paises/list', element: <Pais  /> },
-      { path: '/provincias/list', element: <Provincia  /> },
-      { path: '/ciudades/list', element: <Ciudad  /> },
-      {path: '/cargos/list', element: <Cargo  /> },
-      { path: '/categorias/list', element: <Categorias /> },
-      { path: '/subCategorias/list', element: <SubCategorias /> },
-      { path: '/oficinas/list', element: <Oficinas /> },
-      { path: '/unidadesmedidas/list', element: <UnidadesMedidas  /> },
-      { path: '/marcas/list', element: <Marcas  /> },
-      { path: '/marcasmaquinas/list', element: <MarcasMaquinas  /> },
-      { path: '/estadosciviles/list', element: <EstadosCivilesList /> },
-      { path: '/tiposidentificacion/list', element: <TiposIdentificacion  /> },
-      { path: '/modotransporte/list', element: <ModoTransporte  /> },
-      { path: '/concepto-de-pago/list', element: <ConceptoDePago /> },
-       { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
-       {path: '/formasenvio/list', element: <FormasEnvio  /> },
-       { path: '/niveles-comerciales/list', element: <NivelComercial  /> },
-       { path: '/proveedores/list', element: <Proveedor  /> },
-      { path: '/ciudades/list', element: <Ciudad  /> },
-      { path: '/cargos/list', element: <Cargo  /> },
-      { path: '/tipoembalaje/list', element: <TipoEmbalaje  /> },
-      { path: '/empleado/list', element: <Empleado  /> },
-      { path: '/tipointermediario/list', element: <TipoIntermediario  /> },
-      { path: '/moneda/list', element: <Moneda  /> },
-      { path: '/oficioProfesiones/list', element: <OficioProfesiones  /> },
-      { path: '/personas/create', element: <PersonaCrear  /> },
-      { path: '/estadosciviles/create', element: <EstadosCivilesCreate  /> },
-
-
-
-
-
-      { path: '*', element: <Navigate to="/auth/404" /> },
+        { path: '/user-profile', element: <UserProfile /> },
+      ...rutasFiltradas.map((ruta) => ({
+        ...ruta,
+        element: <PrivateRoute>{ruta.element}</PrivateRoute>,
+      })),
     ],
   },
   {
@@ -274,14 +259,10 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '/auth/404', element: <Error /> },
+        { path: '/user-profile', element: <UserProfile /> },
       { path: '/auth/login', element: <Login /> },
-      { path: '/auth/login2', element: <Login2 /> },
-      { path: '/auth/register', element: <Register /> },
-      { path: '/auth/register2', element: <Register2 /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
-      { path: '/auth/forgot-password2', element: <ForgotPassword2 /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },
-      { path: '/auth/two-steps2', element: <TwoSteps2 /> },
       { path: '/auth/maintenance', element: <Maintenance /> },
       { path: '/landingpage', element: <Landingpage /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
