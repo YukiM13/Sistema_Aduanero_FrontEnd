@@ -567,8 +567,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
               initialCountry={'hn'}
               value={formik.values.peju_NumeroLocalApart}
               onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                if (!number) {
-                  formik.setFieldValue('peju_NumeroLocalApart', '');
+                if (!number || number.length > 17) {
+                  formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17));
                 } else {
                   formik.setFieldValue('peju_NumeroLocalApart', number);
                 }
@@ -596,8 +596,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 initialCountry={'hn'}
                 value={formik.values.peju_NumeroLocalRepresentante}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('peju_NumeroLocalRepresentante', '');
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_NumeroLocalRepresentante', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_NumeroLocalRepresentante', number);
                   }
@@ -700,8 +700,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 initialCountry={'hn'}
                 value={formik.values.peju_TelefonoEmpresa}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('peju_TelefonoEmpresa', '');
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoEmpresa', number.slice(0, 17)); // Limit to 17 characters
                   } else {
                     formik.setFieldValue('peju_TelefonoEmpresa', number);
                   }
@@ -724,8 +724,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 initialCountry={'hn'}
                 value={formik.values.peju_TelefonoFijoRepresentanteLegal}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', '');
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
                   } else {
                     formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number);
                   }
@@ -748,8 +748,8 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 initialCountry={'hn'}
                 value={formik.values.peju_TelefonoRepresentanteLegal}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', '');
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
                   } else {
                     formik.setFieldValue('peju_TelefonoRepresentanteLegal', number);
                   }
