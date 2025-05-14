@@ -18,11 +18,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import BlankCard from '../../shared/BlankCard';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DownloadIcon from '@mui/icons-material/Download';
+import { IconBuilding, IconCalendarEvent, IconFlag } from '@tabler/icons';
+import Breadcrumb from "src/layouts/full/shared/breadcrumb/Breadcrumb";
 
 import { Link } from "react-router-dom";
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import ParentCard from "src/components/shared/ParentCard";
+import { f } from "html2pdf.js";
 const DevaCards = () => {
     const [devas, setDevas] = useState([]);
      const [page, setPage] = useState(0);//Define como la pagina actual
@@ -63,14 +66,26 @@ const DevaCards = () => {
       };
     
       const emptyRows = rowsPerPage - Math.min(rowsPerPage, devas.length - page * rowsPerPage);
+
+      
       
     
       const filteredData = devas.filter((deva) =>
       deva.deva_Id.toString().includes(searchQuery.trim())
       );
+
+      const formatearFecha = (fechaString) => {
+        const fecha = new Date(fechaString);
+        return fecha.toLocaleDateString("es-ES", {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        });
+    };
      
     return(
         <div>  
+            <Breadcrumb title="Conceptos de pago" subtitle={ "Listar"} />
             <ParentCard>
                 <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
@@ -85,6 +100,7 @@ const DevaCards = () => {
                 
        
                     {filteredData
+                        .reverse()
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((deva) => (
                         <Grid item xs={12} sm={12} lg={4} key={deva.deva_Id}>
@@ -157,56 +173,77 @@ const DevaCards = () => {
                             FL
                         </Box>
 
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
-                        <Button variant="outlined" startIcon={<DownloadIcon />} size="small">
-                            Exportar PDF
-                        </Button>
-                        </Box>
+                        
                         {/* Encabezado del documento */}
                         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3, borderBottom: '1px solid #ccc', pb: 1 }}>
                             Registro de Declaración de Valor
                         </Typography>
 
-                        
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                            <Typography variant="caption" sx={{ fontWeight: 500, color: '#555' }}>
-                                Aduana de Ingreso:
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                {deva.adua_IngresoNombre}
-                            </Typography>
-                            </Grid>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
+                        <Button
+                        variant="outlined"
+                        startIcon={<DownloadIcon />}
+                        size="small"
+                        sx={{
+                            borderColor: '#1976D2',
+                            color: '#1976D2',
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            fontSize: '12px',
+                            px: 1.5,
+                            py: 0.5,
+                            minHeight: '30px',
+                            '&:hover': {
+                            borderColor: '#115293',
+                            backgroundColor: 'rgba(25, 118, 210, 0.87)',
+                            },
+                            '& .MuiButton-startIcon': {
+                            marginRight: '6px',
+                            },
+                        }}
+                        >
+                        Exportar PDF
+                        </Button>
+                        </Box>
 
-                            <Grid item xs={12} sm={6}>
-                            <Typography variant="caption" sx={{ fontWeight: 500, color: '#555' }}>
-                                Aduana de Despacho:
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                {deva.adua_DespachoNombre}
-                            </Typography>
+                        
+                        <Grid container spacing={2} sx={{ fontSize: '15px' }}> {/* Tamaño uniforme */}
+                            <Grid item xs={12}>
+                                <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                <IconFlag size={16} style={{ marginRight: 6 }} />
+                                Aduana de Ingreso:
+                                </Typography>
+                                <Typography variant="body1" sx={{ mb: 2 }}>
+                                {deva.adua_IngresoNombre}
+                                </Typography>
                             </Grid>
 
                             <Grid item xs={12}>
-                            <Typography  sx={{ fontWeight: 600, color: '#555' }}>
-                                Fecha de aceptación:
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 0 }}>
-                                {deva.deva_FechaAceptacion.toLocaleDateString("es-ES", {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric'
-                            })}
-                            </Typography>
+                                <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                <IconBuilding size={16} style={{ marginRight: 6 }} />
+                                Aduana de Despacho:
+                                </Typography>
+                                <Typography variant="body1" sx={{ mb: 2 }}>
+                                {deva.adua_DespachoNombre}
+                                </Typography>
                             </Grid>
 
-                            {/* Puedes agregar más campos aquí si deseas */}
-                        </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                <IconCalendarEvent size={16} style={{ marginRight: 6 }} />
+                                Fecha de aceptación:
+                                </Typography>
+                                <Typography variant="body1">
+                                {formatearFecha(deva.deva_FechaAceptacion)}
+                                </Typography>
+                            </Grid>
+                            </Grid>
 
                         {/* Pie de página */}
                         <Box sx={{ mt: 4, borderTop: '1px dashed #ccc', pt: 2 }}>
-                            <Typography variant="caption" color="text.secondary">
-                            Documento generado electrónicamente por Frontier Logistic – {deva.usua_FechaCreacion}
+                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold', display: 'flex', fontStyle: 'italic', alignItems: 'center', color: '#555' }}>
+                            Documento generado electrónicamente por Frontier Logistic – {formatearFecha(deva.deva_FechaCreacion)}
                             </Typography>
                         </Box>
                         </CardContent>
