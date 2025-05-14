@@ -14,8 +14,8 @@ import { useParams } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import OrdenCompraDetallesCreateComponent from './OrdenCompraDetalleCreate';
-import OrdenCompraDetalleEditComponent from './OrdenCompraDetalleEdit';
+// import OrdenCompraCreate from './OrdenCompraCrear';
+// import OrdenesComprasEdit from './OrdenesComprasEdit';
 // import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
 
 import AddIcon from '@mui/icons-material/Add';
@@ -29,8 +29,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
-const OrdenesComprasDetalle = ({orco_Id}) => {
-  // const ordenCompraID = useParams().id;
+const OrdenesComprasDetalle = () => {
+  const ordenCompraID = useParams().id;
 
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
@@ -59,8 +59,7 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   };
 
   const cargarOrdenesCompras = () => {
-    console.log(orco_Id);
-    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${orco_Id}`, {
+    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${ordenCompraID}`, {
         headers: { 'XApiKey': apiKey }
     })
     .then(response => {
@@ -73,11 +72,11 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   };
 
   useEffect(() => {
-    console.log(orco_Id);
-    if (orco_Id) {
-      cargarOrdenesCompras(orco_Id);
+    if (ordenCompraID) {
+      cargarOrdenesCompras(ordenCompraID);
     }
-  }, [orco_Id]);
+  }, [ordenCompraID]);
+  
   
 
   const abrirMenu = (evento, ordenCompraDetalle) => {
@@ -125,6 +124,19 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   };
 
 
+  // <TableCell>{ordenCompraDetalle.orco_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_CantidadPrenda}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.esti_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.tall_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Sexo}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.colr_Id}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.proc_IdComienza}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.proc_IdActual}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Unidad}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Valor}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_Impuesto}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_EspecificacionEmbalaje}</TableCell>
+  //                       <TableCell>{ordenCompraDetalle.code_FechaProcActual}</TableCell>
 
   const filteredData = ordenesCompras.filter((ordenCompraDetalle) =>
     ordenCompraDetalle.code_CantidadPrenda ||
@@ -152,8 +164,8 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   // console.log("ID de la orden:", id);
   return (
     <div>
-      {/* <Breadcrumb title="OrdenesCompras" subtitle="Listar" /> */}
-      {/* <ParentCard> */}
+      <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
+      <ParentCard>
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
@@ -270,8 +282,8 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
           </>
         )}
 
-        {modo === 'crear' && (
-          <OrdenCompraDetallesCreateComponent
+        {/* {modo === 'crear' && (
+          <OrdenCompraCreate
             onCancelar={() => setModo('listar')}
             onGuardadoExitoso={() => {
               setModo('listar');
@@ -279,20 +291,7 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
               mostrarAlerta('guardado');
             }}
           />
-        )}
-
-        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
-          <OrdenCompraDetalleEditComponent
-              ordenesComprasDetalles={ordenCompraDetalleSeleccionada}
-              onCancelar={() => setModo('listar')} 
-              onGuardadoExitoso={() => {
-                  setModo('listar');
-                  mostrarAlerta('actualizado')
-                  // Recarga los datos después de guardar
-                  cargarOrdenesCompras();
-              }}>
-          </OrdenCompraDetalleEditComponent>
-        )}
+        )} */}
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -317,7 +316,7 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
             >
             <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
             </Snackbar>
-        {/* </ParentCard> */}
+        </ParentCard>
     </div>
   );
 };

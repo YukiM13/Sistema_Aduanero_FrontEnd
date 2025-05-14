@@ -9,8 +9,6 @@ import {
   IconFileText,
   IconFileCertificate,
   IconHome,
-  IconFileCode,
-  IconFileDatabase
 } from '@tabler/icons';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -466,7 +464,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Orden Compra')) {
       produccion.children.push({
         id: uniqueId(),
-        title: 'Orden de Compra',
+        title: 'Orden Compra',
         icon: IconPoint,
         href: '/ordenCompra',
         chipColor: 'secondary',
@@ -480,7 +478,7 @@ export const generarMenu = async () => {
 
   if (esAdmin || 
     nombresDePantalla.some(nombre => [
-      'Impresion Declaracion de Valor', 'Impresion Duca', 'Impresion Devas Pendientes'
+      'Impresion Declaracion de Valor', 'Impresion Duca'
     ].includes(nombre))) {
     
     const impresion = {
@@ -511,16 +509,6 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
-    impresion.children.push({
-      id: uniqueId(),
-      title: 'Devas Pendientes',
-      icon: IconPoint,
-      href: '/devaspendientes/list',
-      chipColor: 'secondary',
-    });
-  }
-
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
@@ -530,8 +518,8 @@ export const generarMenu = async () => {
     Menuitems.push({
       id: uniqueId(),
       title: 'Declaración de valor',
-      icon: IconFileCode,
-      href: '/declaracion-de-valor',
+      icon: IconFileText,
+      href: '/declaracion-valor',
       chipColor: 'secondary',
     });
   }
@@ -545,13 +533,21 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
-
-  if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
+  if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
-      title: 'Pedido Orden',
-      icon: IconFileDatabase,
-      href: '/pedidoOrden',
+      title: 'Ducas',
+      icon: IconFileCertificate,
+      href: '/duca',
+      chipColor: 'secondary',
+    });
+  }
+  if (esAdmin || nombresDePantalla.includes('devaspendientes')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Devas Pendientes',
+      icon: IconFileCertificate,
+      href: '/devaspendientes/list',
       chipColor: 'secondary',
     });
   }
