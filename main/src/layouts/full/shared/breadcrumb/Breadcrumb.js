@@ -59,7 +59,25 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
         />
       </svg>
     </Box>
-    <Grid item xs={12} sm={6} lg={8} mb={1}>
+    <Grid item xs={12} sm={6} lg={12} mb={1}>
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'block', lg: 'flex' },
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          width: '100%',
+        }}
+      >
+        {children ? (
+          <Box sx={{ top: '0px', position: 'absolute' }}>{children}</Box>
+        ) : (
+          <>
+            <Box sx={{ top: '0px', position: 'absolute' }}>
+              <img src={breadcrumbImg} alt={breadcrumbImg} width={'165px'} />
+            </Box>
+          </>
+        )}
+      </Box>
       <Typography variant="h4" color={'white'}>{title}</Typography>
       <Typography color="white" variant="h6" fontWeight={400} mt={0.8} mb={0}>
       <Typography
