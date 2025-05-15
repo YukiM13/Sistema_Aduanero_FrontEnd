@@ -14,6 +14,7 @@ import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
 import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
 import OrdenesCharts from '../charts/OrdenesEntregadas';
+import OrcoPorEstadi from 'src/components/dashboards/modern/OrdenCompraPorEstado';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -49,6 +50,10 @@ const Modern = () => {
         <Grid item xs={12} lg={6}>
           <OrcoSemanal />
         </Grid>
+         <Grid item xs={12} lg={12}>
+          <OrcoPorEstadi />
+        </Grid>
+        
         {/* column */}
         <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
