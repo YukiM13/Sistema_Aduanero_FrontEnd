@@ -138,7 +138,7 @@ const MaterialesIngresoPdf = () => {
                         <ParentCard>
                             <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}> Previsualización Reporte de Materiales de Ingreso </h5>
                             <div ref={contenidoRef} style={{ position: 'relative' }}>
-                                <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresión: {new Date().toLocaleString()} </p>
+                                <p style={{ fontSize: '8pt', margin: '2px 0' }}>Fecha y hora de impresión: {new Date().toLocaleString()} </p>
                                 <br />
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
