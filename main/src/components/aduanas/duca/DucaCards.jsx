@@ -105,8 +105,7 @@ const DucaCards = () => {
       setMenuAbierto(false);
     }
     const listarDucas = () => {
-        axios
-            .get(`${apiUrl}/api/Duca/Listar`, {
+        axios.get(`${apiUrl}/api/Duca/Listar`, {
                 headers: {
                     "XApiKey": apiKey,
                 },
