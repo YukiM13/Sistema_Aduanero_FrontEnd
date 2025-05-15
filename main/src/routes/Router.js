@@ -105,7 +105,7 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
-const materialesporPO = Loadable(lazy(() => import('../components/aduanas/materialesPorPO/materialesPorPO'))); //esquema aduanas
+const MaterialesporPO = Loadable(lazy(() => import('../components/aduanas/materialesPorPO/materialesPorPO'))); //esquema aduanas
 
 const PlanificacionPO = Loadable(lazy(() => import('../components/aduanas/PlanificacionPO/PlanificacionPO-pdf')));
 
@@ -238,7 +238,7 @@ const todasLasRutas = [
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
   { path: '/declaracion', element: <DeclaracionValor/>, pantalla:'Impresion Deva' },
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
-  {path: '/materialesporpo', element: <materialesporPO/>, pantalla:'Materiales por PO'},//esquema aduanas
+  {path: '/materialesporpo', element: <MaterialesporPO/>, pantalla:'Materiales por PO'},//esquema aduanas
     {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
 ]
 
