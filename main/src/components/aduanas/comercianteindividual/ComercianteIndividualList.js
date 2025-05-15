@@ -75,13 +75,6 @@ const ComercianteIndividualList = () => {
     setMenuAbierto(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
-
-  const handleEditar = () => {
-    setModo('editar');
-    cerrarMenu();
-  };
-
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -193,23 +186,7 @@ const ComercianteIndividualList = () => {
                   ActionsComponent={TablePaginationActions}
                 />
               </>
-            )}
-
-            <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
-              <DialogTitle color="warning.main">
-                <WarningAmberIcon sx={{ mr: 1 }} />
-                Confirmar Eliminación
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  ¿Está seguro que desea eliminar al comerciante "{comercianteSeleccionado?.pers_Nombre}"?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setConfirmarEliminacion(false)}>Cancelar</Button>
-                <Button color="error">Eliminar</Button>
-              </DialogActions>
-            </Dialog>
+            )} 
 
             <Snackbar
               open={openSnackbar}
