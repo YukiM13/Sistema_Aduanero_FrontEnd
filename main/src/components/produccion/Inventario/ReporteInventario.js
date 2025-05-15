@@ -4,10 +4,6 @@ import axios from 'axios';
 import {
   Grid, Button, CircularProgress, Box, Stack, Autocomplete, TextField
 } from '@mui/material';
-import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper
-} from '@mui/material';
 import { useFormik } from 'formik';
 import { Search } from '@mui/icons-material';
 import { IconDownload, IconArrowBack } from '@tabler/icons';
@@ -17,6 +13,7 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import html2pdf from 'html2pdf.js';
 import { storage } from '../../../layouts/config/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 
 const ReporteInventario = () => {
   const [datos, setDatos] = useState([]);
@@ -85,9 +82,9 @@ const ReporteInventario = () => {
     const opt = {
       margin: 3,
       filename: `reporte-inventario-${Date.now()}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 1.0 },
       html2canvas: {
-        scale: 1.5,
+        scale: 3.0,
         useCORS: true,
         letterRendering: true
       },
@@ -128,7 +125,6 @@ const ReporteInventario = () => {
               )}
             />
           </Grid>
-
           <Grid item>
             <Button variant="contained" onClick={buscarReporte} startIcon={<Search />}>
               Buscar
@@ -145,86 +141,97 @@ const ReporteInventario = () => {
         {showTable && datos.length > 0 && (
           <>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-              <Button
-                variant="outlined"
-                startIcon={<IconArrowBack style={{ fontSize: '18px' }} />}
-                onClick={() => window.history.back()}
-              >
+              <Button variant="outlined" startIcon={<IconArrowBack />} onClick={() => window.history.back()}>
                 Volver
               </Button>
-              <Button
-                variant="contained"
-                startIcon={<IconDownload style={{ fontSize: '18px' }} />}
-                onClick={exportarPDF}
-              >
+              <Button variant="contained" startIcon={<IconDownload />} onClick={exportarPDF}>
                 Descargar PDF
               </Button>
             </Stack>
 
             <ParentCard>
-              <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}>
-                Previsualización Reporte de Inventario
-              </h5>
-              <div ref={contenidoRef}>
+              <h5 style={{ textAlign: 'center', marginBottom: '15px', fontSize: '18px' }}>Previsualización Reporte de Inventario</h5>
+              <div ref={contenidoRef} style={{ position: 'relative' }}>
                 <p style={{ fontSize: '8pt', margin: '2px 0' }}>
                   Fecha y hora de impresión: {new Date().toLocaleString()}
                 </p>
 
                 {datos.map((item, idx) => {
-  const detalles = JSON.parse(item.detalles || '[]'); // OJO: "detalles" en minúscula
-  return (
-    <div key={idx} style={{ marginTop: '15px' }}>
-      {/* Tabla de datos generales */}
-      <table style={{ width: '100%', fontSize: '8pt' }} border="1" cellPadding="4" cellSpacing="0">
-        <tbody>
-          <tr>
-            <th colSpan="4" style={{ backgroundColor: '#1797be', color: 'white', textAlign: 'center' }}>
-              Información General del Material
-            </th>
-          </tr>
-          <tr>
-            <td><strong>Descripción:</strong></td>
-            <td>{item.mate_Descripcion}</td>
-            <td><strong>Categoría:</strong></td>
-            <td>{item.cate_Descripcion}</td>
-          </tr>
-          <tr>
-            <td><strong>Subcategoría:</strong></td>
-            <td>{item.subc_Descripcion}</td>
-            <td><strong>Stock Total:</strong></td>
-            <td>{item.stockTotal}</td>
-          </tr>
-        </tbody>
-      </table>
+                  const detalles = JSON.parse(item.detalles || '[]');
+                  return (
+                    <div key={idx} style={{ marginTop: '10px' }}>
+                      <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
+                        <tbody>
+                          <tr bgcolor="#eeeeee">
+                            <th colSpan="6" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px' }}>
+                              REPORTE DE INVENTARIO POR MATERIAL <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <th bgcolor="#f8f8f8">Material:</th>
+                            <td>{item.mate_Descripcion}</td>
+                            <th bgcolor="#f8f8f8">Categoría:</th>
+                            <td>{item.cate_Descripcion}</td>
+                            <th bgcolor="#f8f8f8">Subcategoría:</th>
+                            <td>{item.subc_Descripcion}</td>
+                          </tr>
+                          <tr>
+                            <th bgcolor="#f8f8f8">Stock Total:</th>
+                            <td colSpan="5">{item.stockTotal}</td>
+                          </tr>
+                          <tr bgcolor="#eeeeee">
+                            <th colSpan="6" style={{ color: '#1797be', textAlign: 'center', fontSize: '14px' }}>
+                              DETALLES DEL INVENTARIO
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
 
-      {/* Tabla de detalles */}
-      <table style={{ width: '100%', marginTop: '10px', fontSize: '8pt' }} border="1" cellPadding="3" cellSpacing="0">
-        <thead>
-          <tr style={{ backgroundColor: '#eeeeee' }}>
-            <th>ID Lote</th>
-            <th>Código</th>
-            <th>Stock</th>
-            <th>Unidad</th>
-            <th>Color</th>
-            <th>Área</th>
-          </tr>
-        </thead>
-        <tbody>
-          {detalles.map((detalle, i) => (
-            <tr key={i}>
-              <td>{detalle.lote_Id}</td>
-              <td>{detalle.lote_CodigoLote}</td>
-              <td>{detalle.lote_Stock}</td>
-              <td>{detalle.unme_Descripcion}</td>
-              <td>{detalle.colr_Nombre}</td>
-              <td>{detalle.tipa_area}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-})}
+                      <table style={{ width: '100%', tableLayout: 'fixed', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
+                        <thead>
+                          <tr bgcolor="#eeeeee">
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>ID Lote</th>
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>Código</th>
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>Stock</th>
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>Unidad</th>
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>Color</th>
+                            <th style={{ background: '#1797be', color: 'white', textAlign: 'center' }}>Área</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {detalles.map((detalle, i) => (
+                            <tr key={i}>
+                              <td style={{ textAlign: 'center' }}>{detalle.lote_Id}</td>
+                              <td>{detalle.lote_CodigoLote}</td>
+                              <td style={{ textAlign: 'center' }}>{detalle.lote_Stock}</td>
+                              <td>{detalle.unme_Descripcion}</td>
+                              <td>{detalle.colr_Nombre}</td>
+                              <td>{detalle.tipa_area}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })}
+
+              <div
+  style={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%) scale(2)',
+    width: '100%',
+    height: 'auto',
+    opacity: 0.2,
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }}
+>
+  <LogoAzul style={{ maxWidth: '100%', maxHeight: '100%' }} />
+</div>
 
 
                 <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
