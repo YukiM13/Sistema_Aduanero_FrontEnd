@@ -552,6 +552,26 @@ export const generarMenu = async () => {
       });
     }
 
+    if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Materiales Ingresos',
+        icon: IconPoint,
+        href: '/MaterialesIngresos',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Produccion Areas')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Produccion Areas',
+        icon: IconPoint,
+        href: '/ProduccionAreas',
+        chipColor: 'secondary',
+      });
+    }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }

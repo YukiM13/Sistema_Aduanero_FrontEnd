@@ -157,6 +157,8 @@ const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produc
 const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
+const MaterialesIngreso = Loadable(lazy(() => import('../components/produccion/materialesingresopdf/materialesingresopdf')));
+const ProduccionAreas = Loadable(lazy(() => import('../components/produccion/ProduccionAreas/ProduccionAreas')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -239,6 +241,8 @@ const todasLasRutas = [
   { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
+  { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
+  { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
