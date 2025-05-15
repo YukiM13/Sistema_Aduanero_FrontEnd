@@ -181,6 +181,9 @@ const CostosMaterialesNoBrindadosPdf = () => {
                             <div ref={contenidoRef} style={{ position: 'relative' }}>
                                 <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresion: {new Date().toLocaleString()} </p>
                                 <br />
+                                <table  border="3" borderradius="5px" >
+
+                               
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
@@ -200,11 +203,11 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE MATERIALES NO BRINDADOS</th>
+                                        <th colSpan="9" style={{ color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE MATERIALES NO BRINDADOS</th>
                                     </tr>
                                 </table>
                                 
-                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
+                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }}cellPadding="2" cellSpacing="0">
                                     <thead>
                                         <tr bgcolor="#eeeeee">
                                             <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>ID</th>
@@ -232,6 +235,7 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                         ))}
                                     </tbody>
                                 </table>
+                                 
                                   <div
                                                     style={{
                                                         position: 'absolute',
@@ -251,6 +255,7 @@ const CostosMaterialesNoBrindadosPdf = () => {
                                                 >
                                                     <LogoAzul style={{maxWidth: '100%', maxHeight: '100%'}}/>2s
                                                 </div>
+                                                 </table>
                                 <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
                                     <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
                                 </div>
