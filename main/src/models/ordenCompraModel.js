@@ -61,7 +61,10 @@ const OrdenCompraModel = {
     fechaExportacion: new Date(),
     cantidadExportada: 0,
     fede_Cajas: 0,
-    fede_TotalDetalle: 0
+    fede_TotalDetalle: 0,
+    anio: '',
+    fecha:'',
+    orco_Conteo: 0,
 }
 
 export default OrdenCompraModel;

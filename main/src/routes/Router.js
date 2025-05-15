@@ -111,7 +111,7 @@ const PlanificacionPO = Loadable(lazy(() => import('../components/aduanas/Planif
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
-const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DevaContenedor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 
 // General
@@ -158,6 +158,7 @@ const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produ
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 const PedidoOrdenDetalleList = Loadable(lazy(() => import('../components/produccion/pedidoOrdenDetalle/PedidoOrdenDetalleList')));
+const PedidoCliente = Loadable(lazy(() => import('../components/aduanas/pedidos-cliente/PedidosCliente')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -189,6 +190,10 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
+
+// Reportes
+const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
+
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -238,10 +243,13 @@ const todasLasRutas = [
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
-  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
     {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
+  { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
+  { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>

@@ -9,6 +9,8 @@ import {
   IconFileText,
   IconFileCertificate,
   IconHome,
+  IconFileCode,
+  IconFileDatabase
 } from '@tabler/icons';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -482,16 +484,6 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
-
-    if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
-      produccion.children.push({
-        id: uniqueId(),
-        title: 'Pedido Orden',
-        icon: IconPoint,
-        href: '/pedidoOrden',
-        chipColor: 'secondary',
-      });
-    }
     
     if (produccion.children.length > 0) {
       Menuitems.push(produccion);
@@ -500,7 +492,7 @@ export const generarMenu = async () => {
 
   if (esAdmin || 
     nombresDePantalla.some(nombre => [
-      'Impresion Declaracion de Valor', 'Impresion Duca'
+      'Impresion Declaracion de Valor', 'Impresion Duca', 'Impresion Devas Pendientes'
     ].includes(nombre))) {
     
     const impresion = {
@@ -543,6 +535,15 @@ export const generarMenu = async () => {
 
 
 
+    if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Devas Pendientes',
+      icon: IconPoint,
+      href: '/devaspendientes/list',
+      chipColor: 'secondary',
+    });
+  }
 
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
@@ -554,7 +555,7 @@ export const generarMenu = async () => {
     Menuitems.push({
       id: uniqueId(),
       title: 'Declaración de valor',
-      icon: IconFileText,
+      icon: IconFileCode,
       href: '/declaracion-de-valor',
       chipColor: 'secondary',
     });
@@ -570,12 +571,13 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
-  if (esAdmin || nombresDePantalla.includes('devaspendientes')) {
+
+  if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
     Menuitems.push({
       id: uniqueId(),
-      title: 'Devas Pendientes',
-      icon: IconFileCertificate,
-      href: '/devaspendientes/list',
+      title: 'Pedido Orden',
+      icon: IconFileDatabase,
+      href: '/pedidoOrden',
       chipColor: 'secondary',
     });
   }
