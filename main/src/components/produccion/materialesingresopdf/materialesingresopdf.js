@@ -10,9 +10,6 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
-import { storage } from '../../../layouts/config/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
 
