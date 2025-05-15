@@ -13,14 +13,14 @@ import { IconPrinter } from '@tabler/icons';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
-import declaracionvalor from '../../../models/devaspendientesModel.js'
+import Devaspendientesmodel from '../../../models/devaspendientesModel.js'
 
 
 const Devaspendientes = () => {
     const [Devaspendientes, setdevapedientes] = useState([]);
      const formik = useFormik({
         initialValues: {
-            ...declaracionvalor,
+            ...Devaspendientesmodel,
             fechaInicio: '',
             fechaFin: ''
         },

@@ -1,4 +1,4 @@
-const OrdenCompra = {
+const materialesporpo = {
     orco_Id: null,
     orco_IdCliente: null,
     orco_FechaEmision: null,
@@ -53,4 +53,4 @@ const OrdenCompra = {
     peor_FechaEntrada: null,
 };
 
-export default OrdenCompra;
+export default materialesporpo;
