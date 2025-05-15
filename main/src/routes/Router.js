@@ -158,6 +158,8 @@ const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produ
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 
+const MaterialesPorPO = Loadable(lazy(() => import('../components/produccion/materialesporPO/materialesporPO')));
+
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -217,7 +219,7 @@ const todasLasRutas = [
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
-   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
+  { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
   { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
@@ -239,6 +241,7 @@ const todasLasRutas = [
   { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
+  { path: '/materialesPorPO', element: <MaterialesPorPO/>, pantalla:'I. MaterialesPorPO' },
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
@@ -251,7 +254,7 @@ const Router = [
     element: <FullLayout />,
     children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
-        { path: '/user-profile', element: <UserProfile /> },
+      { path: '/user-profile', element: <UserProfile /> },
       ...rutasFiltradas.map((ruta) => ({
         ...ruta,
         element: <PrivateRoute>{ruta.element}</PrivateRoute>,
