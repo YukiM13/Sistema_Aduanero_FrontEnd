@@ -26,7 +26,7 @@ import ArrowBackIcon   from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import Logo from 'src/assets/images/logos/LOGO.svg';
 const steps = ['Asignar DEVAS a la DUCA', 'Identificación de la declaracion', 'Declarante, Transportista y Conductor', 'Mercancia y Documentos de soporte'];
-const DucaCreateComponent = ({onCancelar}) => {
+const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
     const [openSnackbar, setOpenSnackbar] = React.useState(false); 
@@ -134,7 +134,15 @@ const DucaCreateComponent = ({onCancelar}) => {
       localStorage.removeItem('edit');
       localStorage.removeItem('devaDuca');
       localStorage.removeItem('Devas');
-      setActiveStep(0);
+      if(admin)
+      {
+        if (onGuardadoExitoso) onGuardadoExitoso();
+      }
+      else
+      {
+        setActiveStep(0);
+
+      }
 
     };
      useEffect(() => {
