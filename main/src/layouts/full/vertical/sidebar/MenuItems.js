@@ -552,17 +552,6 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. MaterialesPorPo')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'I. MaterialesPorPo',
-        icon: IconPoint,
-        href: '/materialesPorPO',
-        chipColor: 'secondary',
-      });
-    }
-
-
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }

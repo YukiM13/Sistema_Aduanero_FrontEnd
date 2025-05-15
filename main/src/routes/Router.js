@@ -158,8 +158,6 @@ const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produ
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 
-const MaterialesPorPO = Loadable(lazy(() => import('../components/produccion/materialesporPO/materialesporPO')));
-
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
 const MuiAccordion = Loadable(lazy(() => import('../views/ui-components/MuiAccordion')));
@@ -241,7 +239,6 @@ const todasLasRutas = [
   { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
-  { path: '/materialesPorPO', element: <MaterialesPorPO/>, pantalla:'I. MaterialesPorPO' },
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
