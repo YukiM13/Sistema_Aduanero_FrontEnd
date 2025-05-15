@@ -14,7 +14,7 @@ TextField,InputAdornment,TablePagination, Grid,  CardContent,
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DucaCreateComponent from "./DucaCreate";
-import {IconArrowsDiff, IconUser, IconCalendar, IconMapPin } from '@tabler/icons';
+import { IconUser, IconCalendar, IconMapPin } from '@tabler/icons';
 import SearchIcon from '@mui/icons-material/Search';
 import BlankCard from '../../shared/BlankCard';
 import ParentCard from "src/components/shared/ParentCard";
@@ -105,8 +105,7 @@ const DucaCards = () => {
       setMenuAbierto(false);
     }
     const listarDucas = () => {
-        axios
-            .get(`${apiUrl}/api/Duca/Listar`, {
+        axios.get(`${apiUrl}/api/Duca/Listar`, {
                 headers: {
                     "XApiKey": apiKey,
                 },
@@ -145,6 +144,15 @@ const DucaCards = () => {
       duca.duca_NombreSocial_Declarante?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       duca.duca_Id.toString().includes(searchQuery.trim())
       );
+
+      const formatearFecha = (fechaString) => {
+        const fecha = new Date(fechaString);
+        return fecha.toLocaleDateString("es-ES", {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        });
+    };
      
     return(
         <div>  
@@ -153,7 +161,13 @@ const DucaCards = () => {
                    {modo === 'listar' && ( //esta linea muestra el listar osea la tabla
                     <container>
                     <Stack direction="row" justifyContent="flex-start" mb={2}>
-                        <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
+                        <Button variant="contained" onClick={() => { setModo('crear');
+                           localStorage.removeItem('ducaId'); 
+                           localStorage.removeItem('edit');
+                           localStorage.removeItem('devaDuca');
+                        
+                          }
+                        }   startIcon={<AddIcon />}>
                             {'Nuevo'}
                         </Button>
                     </Stack>
@@ -173,28 +187,40 @@ const DucaCards = () => {
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((duca) => (
                         <Grid item  md={12} sm={12} lg={4} key={duca.duca_Id}>
-                            <BlankCard>
+                            <BlankCard
+                             sx={{
+                              backgroundColor: '#fff',
+                                border: '1px solid #e0e0e0',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.05)',
+                                borderRadius: '12px',
+                              }}>
                                 <Box  sx={{position: 'relative'}}>
-                                 <Box sx={{
-                                   position: 'relative',
-                                  color: 'white',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  padding: '10px 16px',
-                                  borderTopLeftRadius: '12px',
-                                  borderTopRightRadius: '12px',
-                                  backgroundColor: '#003c69',
-                                
-                                  backgroundSize: '12px 12px',
-                                  backgroundRepeat: 'repeat',
+                                 
+                                    {/* ENCABEZADO DE LA CARD */}
+                                    <Box
+                                    sx={{
+                                    backgroundColor: '#1976D2',
+                                    color: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: '10px 16px',
+                                    borderTopLeftRadius: '12px',
+                                    borderTopRightRadius: '12px',
+                                    borderBottomLeftRadius: '0px',
+                                    borderBottomRightRadius: '0px',
+                                    backgroundColor: '#003c69',
+                                    backgroundImage: "https://www.transparenttextures.com/patterns/hixs-evolution.png",
+                                    backgroundSize: '12px 12px',
+                                    backgroundRepeat: 'repeat',
                                   }}
                                   >
-                                  <Box
-                                      component="img"
-                                      src={logo}
-                                      alt="Logo Aduana"
-                                      sx={{ height: '30px', mr: 2 }}
-                                  />
+                                   <Box
+                                     component="img"
+                                     src={logo}
+                                     alt="Logo Aduana"
+                                     sx={{ height: '30px', mr: 2 }}
+                                    />
+                                    
                                   <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                       DUCA #{duca.duca_No_Duca}
                                   </Typography>
@@ -214,15 +240,103 @@ const DucaCards = () => {
                                     </Fab>
                                 </Tooltip>
                                 </Box>
-                                <CardContent sx={{ p: 3, pt: 4 }}>
+                                <CardContent sx={{
+                                  backgroundColor: '#fff',
+                                  borderBottomLeftRadius: '12px',
+                                  borderBottomRightRadius: '12px',
+                                  borderTop: '1px solid #ccc',
+                                  padding: '30px 32px',
+                                  fontFamily: 'Georgia, serif',
+                                  boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.05)',
+                                  position: 'relative',
+                                  overflow: 'hidden',
+                              }}
+                              >
+                              
+      
+                              {/* Marca de agua */}
+                              <Box
+                                  sx={{
+                                  position: 'absolute',
+                                  top: '50%',
+                                  left: '50%',
+                                  transform: 'translate(-50%, -50%)',
+                                  fontSize: '100px',
+                                  color: 'rgba(0, 0, 0, 0.05)',
+                                  whiteSpace: 'nowrap',
+                                  pointerEvents: 'none',
+                                  userSelect: 'none',
+                                  fontWeight: 'bold',
+                                  fontStyle: 'italic',
+                                  }}
+                              >
+                                  FL
+                              </Box>
+      
+                              
+                              {/* Encabezado del documento */}
+                              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3, borderBottom: '1px solid #ccc', pb: 1 }}>
+                                    Registro de Declaración Unica Centroamericana (DUCA)
+                                    </Typography>
                              
-                                    <Typography variant="h6">No. Referencia: {duca.duca_No_Correlativo_Referencia}</Typography>
-                                    <IconUser size="16" /> {duca.duca_NombreSocial_Declarante} <br />
-                                    <IconCalendar size="16" /> {duca.duca_FechaVencimiento} <br />
-                                     <IconMapPin size="16" /> {duca.nombre_Aduana_Registro} <IconArrowsDiff size="16" /> {duca.nombre_Aduana_Destino}
-                                    <Stack direction="row" alignItems="center" justifyContent="space-between" mt={1}>
-                                   
-                                    </Stack>
+                                    
+                                    <Grid container spacing={2} sx={{ fontSize: '15px' }}> {/* Tamaño uniforme */}
+                                      <Grid item xs={12}>
+                                          <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                          <IconUser size={16} style={{ marginRight: 6 }} />
+                                          No. de Referencia:
+                                          </Typography>
+                                          <Typography variant="body1" sx={{ mb: 2 }}>
+                                          {duca.duca_No_Correlativo_Referencia}
+                                          </Typography>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                          <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                          <IconUser size={16} style={{ marginRight: 6 }} />
+                                          Declarante:
+                                          </Typography>
+                                          <Typography variant="body1" sx={{ mb: 2 }}>
+                                          {duca.duca_NombreSocial_Declarante}
+                                          </Typography>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                          <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                          <IconMapPin size={16} style={{ marginRight: 6 }} />
+                                          Aduana de Ingreso:
+                                          </Typography>
+                                          <Typography variant="body1" sx={{ mb: 2 }}>
+                                          {duca.nombre_Aduana_Registro}
+                                          </Typography>
+                                      </Grid>
+                                    
+                                      <Grid item xs={12}>
+                                          <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                          <IconMapPin size={16} style={{ marginRight: 6 }} />
+                                          Aduana de Despacho:
+                                          </Typography>
+                                          <Typography variant="body1" sx={{ mb: 2 }}>
+                                          {duca.nombre_Aduana_Destino}
+                                          </Typography>
+                                      </Grid>
+                                    
+                                      <Grid item xs={12}>
+                                          <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
+                                          <IconCalendar
+                                           size={16} style={{ marginRight: 6 }} />
+                                          Fecha de vencimiento:
+                                          </Typography>
+                                          <Typography variant="body1">
+                                          {formatearFecha(duca.duca_FechaVencimiento)}
+                                          </Typography>
+                                      </Grid>
+                                      </Grid>
+                                    
+                                  {/* Pie de página */}
+                                  <Box sx={{ mt: 4, borderTop: '1px dashed #ccc', pt: 2 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold', display: 'flex', fontStyle: 'italic', alignItems: 'center', color: '#555' }}>
+                                      Documento generado electrónicamente por Frontier Logistic – {formatearFecha(duca.duca_FechaCreacion)}
+                                      </Typography>
+                                  </Box>
                                 </CardContent>
                                 </Box>
                             </BlankCard>
@@ -239,13 +353,44 @@ const DucaCards = () => {
             )}
           {modo === 'crear' && (
             <DucaCreateComponent 
-             onCancelar={() => setModo('listar')} 
+             onCancelar={() =>{ setModo('listar');
+              localStorage.removeItem('ducaId'); 
+              localStorage.removeItem('edit');
+              localStorage.removeItem('devaDuca');
+              localStorage.removeItem('Devas');
+             }}
+             onGuardadoExitoso={() => {
+              localStorage.removeItem('ducaId'); 
+              localStorage.removeItem('edit');
+              localStorage.removeItem('devaDuca');
+              localStorage.removeItem('Devas');
+              setModo('listar');
+              mostrarAlerta('guardado')
+              // Recarga los datos después de guardar
+              listarDucas(); 
+             }}
              />
             )} 
           {modo === 'editar' && (
             <DucaCreateComponent 
-             onCancelar={() => setModo('listar')} 
+             onCancelar={() => { setModo('listar');
+              localStorage.removeItem('ducaId'); 
+              localStorage.removeItem('edit');
+              localStorage.removeItem('devaDuca');
+              localStorage.removeItem('Devas');
+             }}
+             onGuardadoExitoso={() => {
+              localStorage.removeItem('ducaId'); 
+              localStorage.removeItem('edit');
+              localStorage.removeItem('devaDuca');
+              localStorage.removeItem('Devas');
+              setModo('listar');
+              mostrarAlerta('actualizado')
+              // Recarga los datos después de guardar
+              listarDucas(); 
+             }}
              />
+             
             )} 
 
              {modo === 'detalle' && ( 
@@ -281,11 +426,11 @@ const DucaCards = () => {
                   >
                     {ducas.duca_Finalizado ?(
                        <MenuItem onClick={() => DetalleOficina(personaSeleccionada)}>
-                      <ListItemIcon>
-                        <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
-                      </ListItemIcon>
-                      <ListItemText>Detalles</ListItemText>
-                    </MenuItem>
+                        <ListItemIcon>
+                          <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
+                        </ListItemIcon>
+                        <ListItemText>Detalles</ListItemText>
+                      </MenuItem>
                     ):(
                       <>
                       <MenuItem onClick={() => editarOficina(personaSeleccionada)}>
