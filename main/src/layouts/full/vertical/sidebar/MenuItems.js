@@ -572,6 +572,16 @@ export const generarMenu = async () => {
       });
     }
 
+    if (esAdmin || nombresDePantalla.includes('I. Tiempos Maquinas')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Tiempos Maquinas',
+        icon: IconPoint,
+        href: '/TiemposMaquinas',
+        chipColor: 'secondary',
+      });
+    }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }

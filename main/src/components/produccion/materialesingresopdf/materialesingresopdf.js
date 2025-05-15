@@ -185,7 +185,7 @@ const MaterialesIngresoPdf = () => {
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
-                                           REPORTE DE MATERIALES DE INGRESO <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                            REPORTE DE MATERIALES DE INGRESO <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
                                         </th>
                                         <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
@@ -195,7 +195,6 @@ const MaterialesIngresoPdf = () => {
                                         <th bgcolor="#f8f8f8">Fecha Fin:</th>
                                         <td colSpan="4">{new Date(formik.values.fechaFin).toLocaleDateString()}</td>
                                     </tr>
-
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE MATERIALES DE INGRESO</th>
                                     </tr>

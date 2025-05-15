@@ -10,9 +10,6 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
-import { storage } from '../../../layouts/config/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
 
@@ -21,14 +18,11 @@ const ProduccionAreasPdf = () => {
     const [areasLista, setAreasLista] = useState([]);
     const contenidoRef = useRef();
     
-    // Inicializar con la fecha actual
     const today = new Date();
-    const monthAgo = new Date();
-    monthAgo.setMonth(monthAgo.getMonth() - 1);
     
     const formik = useFormik({
         initialValues: {
-            fechaInicio: monthAgo.toISOString().substring(0, 10),
+            fechaInicio: today.toISOString().substring(0, 10),
             fechaFin: today.toISOString().substring(0, 10),
             tipa_Id: 0
         },
@@ -37,7 +31,6 @@ const ProduccionAreasPdf = () => {
         }
     });
 
-    // Cargar lista de áreas al iniciar el componente
     useEffect(() => {
         cargarAreas();
     }, []);
@@ -89,7 +82,7 @@ const ProduccionAreasPdf = () => {
     const convertToPdf = async () => {
         const opt = {
             margin: 3,
-            filename: 'temporal.pdf',
+            filename: 'produccion-areas.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 1.5,
@@ -104,51 +97,9 @@ const ProduccionAreasPdf = () => {
             }
         };
 
-        const nombreArchivo = `documentos/produccion-areas-${Date.now()}.pdf`;
-        const archivoRef = ref(storage, nombreArchivo);
-
-        // 1. Generar primer PDF (sin QR)
-        const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-
-        // 2. Subir a Firebase
-        await uploadBytes(archivoRef, pdfBlobSinQR);
-
-        // 3. Obtener la URL del archivo subido
-        const urlDescarga = await getDownloadURL(archivoRef);
-
-        // 4. Generar el QR con esa URL
-        const qrDataUrl = await QRCode.toDataURL(urlDescarga);
-
-        // 5. Insertar el QR en el DOM
-        const qrContainer = document.getElementById("qr");
-        const img = document.createElement("img");
-        img.src = qrDataUrl;
-        img.width = 100;
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "contain";
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(img);
-
-        // 6. Generar el PDF nuevamente, ahora con el QR
-        const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-
-        // 7. Subir el nuevo PDF (sobrescribiendo el anterior)
-        await uploadBytes(archivoRef, pdfBlobConQR);
-        setTimeout(async () => {
-            const nuevaUrlDescarga = await getDownloadURL(archivoRef);
-            const printWindow = window.open(nuevaUrlDescarga, '_blank');
-            if (printWindow) {
-                printWindow.onload = () => {
-                    printWindow.print();
-                };
-            } else {
-                alert("Por favor permite las ventanas emergentes en tu navegador.");
-            }
-        }, 1000);
+        html2pdf().from(contenidoRef.current).set(opt).save();
     };
 
-    // Parsear los detalles JSON si existen
     const obtenerDetalles = (jsonString) => {
         if (!jsonString) return [];
         try {
@@ -159,7 +110,6 @@ const ProduccionAreasPdf = () => {
         }
     };
 
-    // Obtener el nombre del área seleccionada
     const obtenerNombreArea = () => {
         const areaSeleccionada = areasLista.find(area => area.tipa_Id === formik.values.tipa_Id);
         return areaSeleccionada ? areaSeleccionada.tipa_area : 'Área';
@@ -249,14 +199,13 @@ const ProduccionAreasPdf = () => {
                         <ParentCard>
                             <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}> Previsualización Reporte de Producción - Área: {obtenerNombreArea()} </h5>
                             <div ref={contenidoRef} style={{ position: 'relative' }}>
-                                <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresión: {new Date().toLocaleString()} </p>
+                                <p style={{ fontSize: '8pt', margin: '2px 0' }}>Fecha y hora de impresión: {new Date().toLocaleString()} </p>
                                 <br />
                                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
-                                        <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
-                                           REPORTE DE PRODUCCIÓN POR ÁREAS <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                        <th colSpan="9" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
+                                            REPORTE DE PRODUCCIÓN POR ÁREAS <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
                                         </th>
-                                        <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Área:</th>
@@ -319,7 +268,7 @@ const ProduccionAreasPdf = () => {
                                         <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
                                             <thead>
                                                 <tr bgcolor="#eeeeee">
-                                                    <th colSpan="8" style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Detalles de Producción</th>
+                                                    <th colSpan="7" style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Detalles de Producción</th>
                                                 </tr>
                                                 <tr bgcolor="#eeeeee">
                                                     <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Código Orden</th>
