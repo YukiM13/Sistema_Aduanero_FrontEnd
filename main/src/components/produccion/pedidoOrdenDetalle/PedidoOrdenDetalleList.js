@@ -28,8 +28,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
+import PedidoOrdenDetalleEditComponent from './PedidoOrdenDetalleEdit';
 
 const PedidosOrdenesDetalle = ({peor_Id}) => {
+              // const { id } = useParams();
+              // const peor_Id = id && !isNaN(parseInt(id)) ? parseInt(id) : null;
   // const ordenCompraID = useParams().id;
 
   const [pedidosOrdenes, setPedidosOrdenes] = useState([]);
@@ -41,7 +44,10 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
+ const [alertConfig, setAlertConfig] = useState({
+  severity: 'success',
+  message: ''
+});
 
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
@@ -49,6 +55,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+
 
   const mostrarAlerta = (tipo) => {
     const config = alertMessages[tipo];
@@ -72,7 +79,14 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
       .catch(() => mostrarAlerta('errorListar'));
   };
 
-  useEffect(() => {
+// useEffect(() => {
+//   console.log("ID desde params:", id);
+//   console.log("ID parseado:", peor_Id);
+//   if (peor_Id) {
+//     cargarPedidosOrdenes();
+//   }
+// }, [peor_Id]);
+ useEffect(() => {
     console.log(peor_Id);
     if (peor_Id) {
       cargarPedidosOrdenes(peor_Id);
@@ -130,7 +144,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
     pedidoOrdenDetalle.mate_Id.toString().includes(searchQuery.toLowerCase()) ||
     pedidoOrdenDetalle.prod_Cantidad.toString().includes(searchQuery.toLowerCase()) ||
     pedidoOrdenDetalle.prod_Precio.toString().includes(searchQuery.trim())
-    // ordenCompraDetalle.peor_Id.toString().includes(searchQuery.trim())
+    // pedidoOrdenDetalle.peor_Id.toString().includes(searchQuery.trim())
   );
 
     /* SIIII */
@@ -143,8 +157,8 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
   // console.log("ID de la orden:", id);
   return (
     <div>
-      <Breadcrumb title="PedidosOrdenes" subtitle="Listar" /> 
-      <ParentCard>
+      {/* <Breadcrumb title="PedidosOrdenes" subtitle="Listar" /> 
+      <ParentCard> */}
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
@@ -171,7 +185,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
                     <TableHead>
                         <TableRow>
                             <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Pedido Orden ID</Typography></TableCell>
+                            {/* <TableCell><Typography variant="h6">Pedido Orden ID</Typography></TableCell> */}
                             <TableCell><Typography variant="h6">Materiales</Typography></TableCell>
                             <TableCell><Typography variant="h6">Cantidad</Typography></TableCell>
                             <TableCell><Typography variant="h6">Precio</Typography></TableCell>
@@ -189,7 +203,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
                         </IconButton>
                         </TableCell>
                         {/* <TableCell>{ordenCompraDetalle.peor_Id}</TableCell> */}
-                        <TableCell>{pedidoOrdenDetalle.peor_Id}</TableCell>
+                        {/* <TableCell>{pedidoOrdenDetalle.peor_Id}</TableCell> */}
                         <TableCell>{pedidoOrdenDetalle.mate_Descripcion}</TableCell>
                         <TableCell>{pedidoOrdenDetalle.prod_Cantidad}</TableCell>
                         <TableCell>{pedidoOrdenDetalle.prod_Precio}</TableCell>
@@ -254,9 +268,9 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
           />
         )}
 
-        {/* {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
-          <OrdenCompraDetalleEditComponent
-              ordenesComprasDetalles={pedidoOrdenDetalleSeleccionada}
+        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+          <PedidoOrdenDetalleEditComponent
+              pedidosOrdenesDetalles={pedidoOrdenDetalleSeleccionada}
               onCancelar={() => setModo('listar')} 
               onGuardadoExitoso={() => {
                   setModo('listar');
@@ -264,8 +278,8 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
                   // Recarga los datos después de guardar
                   cargarPedidosOrdenes();
               }}>
-          </OrdenCompraDetalleEditComponent>
-        )} */}
+          </PedidoOrdenDetalleEditComponent>
+        )}
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -290,7 +304,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
             >
             <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
             </Snackbar>
-        </ParentCard>
+        {/* </ParentCard> */}
     </div>
   );
 };

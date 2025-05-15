@@ -154,7 +154,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
                             fullWidth
                             id="prod_Cantidad"
                             name="prod_Cantidad"
-                            type="text"
+                            type="number"
                             value={formik.values.prod_Cantidad}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -169,7 +169,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
                         fullWidth
                         id="prod_Precio"
                         name="prod_Precio"
-                        type="text"
+                        type="number"
                         value={formik.values.prod_Precio}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}

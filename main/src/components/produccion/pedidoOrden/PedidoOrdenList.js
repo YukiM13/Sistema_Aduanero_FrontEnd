@@ -95,9 +95,9 @@ const PedidosOrdenes = () => {
 
   const abrirMenu = (evento, pedidoOrden) => {
     setPosicionMenu(evento.currentTarget);
-    setPedidoOrdenSeleccionado(pedidoOrden);
     console.log(pedidoOrden);
     setMenuAbierto(true);
+    setPedidoOrdenSeleccionado(pedidoOrden);
   };
 
   const cerrarMenu = () => setMenuAbierto(false);
@@ -293,6 +293,7 @@ const PedidosOrdenes = () => {
                         </MenuItem>
 
                         <MenuItem onClick={() => {
+                            setPedidoOrdenSeleccionado(pedidoOrdenSeleccionada);
                             setModo('detalle');
                             cerrarMenu();
                         }}>
@@ -356,16 +357,18 @@ const PedidosOrdenes = () => {
           />
         )} 
 
-        { modo === 'detalle' && (
+        { modo === 'detalle' && pedidoOrdenSeleccionada && (
           <>
             <Button onClick={() => setModo('listar')}>
               Regresar
             </Button>
             <PedidosOrdenesDetalle
+              // pedidoOrdenId={pedidoOrdenSeleccionada.peor_Id} 
               peor_Id = {pedidoOrdenSeleccionada.peor_Id}
             />
           </>
         )} 
+
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
