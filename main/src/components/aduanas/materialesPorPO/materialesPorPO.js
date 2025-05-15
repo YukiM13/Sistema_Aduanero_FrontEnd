@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import axios from 'axios';
-import { Grid, Button, CircularProgress, Box, Stack, MenuItem } from '@mui/material';
+import { Grid, Button, CircularProgress, Box, Stack, MenuItem, Autocomplete } from '@mui/material';
 import ParentCard from '../../../components/shared/ParentCard';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
@@ -23,7 +23,6 @@ const Materialesporpo = () => {
   const [orcoId, setOrcoId] = useState('');
   const [ordenes, setOrdenes] = useState([]);
 
-  // Obtener listado de órdenes al cargar
   React.useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -118,28 +117,36 @@ const Materialesporpo = () => {
     <div>
       <Breadcrumb title="Materiales por Orden de compra" subtitle="Listar" />
       <ParentCard>
-        <Grid container spacing={3} mb={3}>
+        <Grid container spacing={3} mb={3} alignItems="center">
           <Grid item lg={6} md={12} sm={12}>
             <CustomFormLabel>Orden de Compra</CustomFormLabel>
-            <CustomTextField
-              select
-              fullWidth
-              name="orco_Id"
-              id="orco_Id"
-              value={orcoId}
-              onChange={e => setOrcoId(e.target.value)}
-            >
-              {ordenes.map((orden) => (
-                <MenuItem key={orden.orco_Id} value={orden.orco_Id}>
-                  {orden.orco_Codigo} ({orden.orco_Id})
-                </MenuItem>
-              ))}
-            </CustomTextField>
+            <Autocomplete
+              options={ordenes}
+              getOptionLabel={orden => `${orden.orco_Id} - ${orden.orco_Codigo}`}
+              value={ordenes.find(o => o.orco_Id === orcoId) || null}
+              onChange={(_, value) => setOrcoId(value ? value.orco_Id : '')}
+              renderInput={(params) => (
+                <CustomTextField
+                  {...params}
+                  label="Buscar orden"
+                  variant="outlined"
+                  fullWidth
+                />
+              )}
+              isOptionEqualToValue={(option, value) => option.orco_Id === value.orco_Id}
+            />
           </Grid>
-          <Grid item>
-            <Button variant="contained" onClick={buscarMaterialesPorPO} startIcon={<Search />}>
-              Buscar
-            </Button>
+          <Grid item lg={6} md={12} sm={12} display="flex" alignItems="center">
+            <Box display="flex" justifyContent="flex-start" alignItems="center" height="100%" mt={{ xs: 2, md: 4 }}>
+              <Button
+                variant="contained"
+                onClick={buscarMaterialesPorPO}
+                startIcon={<Search />}
+                sx={{ minWidth: 150 }}
+              >
+                Buscar
+              </Button>
+            </Box>
           </Grid>
         </Grid>
 
