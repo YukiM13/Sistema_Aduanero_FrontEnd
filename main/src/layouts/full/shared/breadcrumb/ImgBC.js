@@ -2,6 +2,8 @@ import React from 'react';
 import UsuarioImg from 'src/assets/images/imagenes/imgsBreadcrumb/usuarios.png';
 import RolesImg from 'src/assets/images/imagenes/imgsBreadcrumb/roles.png';
 import AldeaImg from 'src/assets/images/imagenes/imgsBreadcrumb/aldea.png';
+import CargoImg from 'src/assets/images/imagenes/imgsBreadcrumb/cargos.png';
+import ColoniaImg from 'src/assets/images/imagenes/imgsBreadcrumb/colonias.png';
 import DefaultImage from 'src/assets/images/breadcrumb/breadcrumb.png';
 
 const ImgBC = () => {
@@ -12,6 +14,8 @@ const ImgBC = () => {
         '/roles/list': RolesImg,
 
         '/Aldeas/list': AldeaImg,
+        '/cargos/list': CargoImg,
+        '/Colonias/list': ColoniaImg,
     };
 
     const breadcrumbImage = imageMap[currentPath] || DefaultImage;
