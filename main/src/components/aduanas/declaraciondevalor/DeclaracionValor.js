@@ -128,7 +128,6 @@ const DeclaracionValor = () => {
   };
   return (
     <PageContainer>
-      
         <Paper
           elevation={6}
           sx={{

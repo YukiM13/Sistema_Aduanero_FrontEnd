@@ -12,7 +12,8 @@ import * as yup from 'yup';
 import emailjs from '@emailjs/browser';
 import { CheckCircleRounded } from '@mui/icons-material';
 import { Snackbar, Alert } from '@mui/material'; 
-
+import ReactIntTelInput from 'react-intl-tel-input';
+import 'react-intl-tel-input/dist/main.css';
 
 
 const validationSchema = yup.object({
@@ -269,8 +270,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         const response = await axios.post(`${apiUrl}/api/PersonaNatural/Insertar`, formDataToSend, {
           headers: { 'XApiKey': apiKey }
         });
-
-        console.log('Formulario enviado con éxito:', response.data);
         
         setMensajeSnackbar('Persona insertada con éxito');
         setSeveritySnackbar('success');
@@ -384,10 +383,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const handleNext = () => {
     const isValid = validateTabFields();
     if (isValid) {
-      setActiveTab((prev) => {
-        if (prev < 3) return prev + 1;
-        return prev;
-      });
+      setActiveTab((prev) => prev + 1);
     }
   };
 
@@ -406,33 +402,29 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    Object.keys(formik.values).forEach(field => {
+
+    if (activeTab === 3) {
+      if (!formik.values.pena_NumeroRecibo || !formik.values.ArchivoNumeroRecibo) {
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
+    }
+
+    Object.keys(formik.values).forEach((field) => {
       formik.setFieldTouched(field, true);
     });
-    if (!formik.values.pena_NumeroRecibo) {
-      setMensajeSnackbar('El campo Número Recibo es obligatorio');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      return;
-    }
-    
-    if (!formik.values.ArchivoNumeroRecibo) {
-      setMensajeSnackbar('El archivo de recibo es obligatorio');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      return;
-    }
-    
+
     if (Object.keys(formik.errors).length > 0) {
       setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
       return;
     }
-    
+
     formik.handleSubmit(e);
   };
+
   const handlenumeros = (e) => {
     const { name, value } = e.target;
     const numericValue = value.replace(/\D/g, '');
@@ -521,28 +513,52 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel htmlFor="pena_TelefonoFijo">Teléfono Fijo</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="pena_TelefonoFijo"
-                name="pena_TelefonoFijo"
-                value={formik.values.pena_TelefonoFijo}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-              />
-            </Grid>
+            <CustomFormLabel htmlFor="pena_TelefonoFijo">Teléfono Fijo</CustomFormLabel>
+            <ReactIntTelInput
+              style={{ width: '100%' }}
+              containerClassName="intl-tel-input custom-intl-input"
+              inputClassName="form-control"
+              preferredCountries={['us', 'hn']}
+              initialCountry={'hn'}
+              value={formik.values.pena_TelefonoFijo}
+              onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                if (!number || number.length > 17) {
+                  formik.setFieldValue('pena_TelefonoFijo', number.slice(0, 17)); 
+                } else {
+                  formik.setFieldValue('pena_TelefonoFijo', number);
+                }
+              }}
+              onBlur={() => formik.setFieldTouched('pena_TelefonoFijo', true)}
+            />
+            {formik.touched.pena_TelefonoFijo && formik.errors.pena_TelefonoFijo && (
+              <div style={{ color: 'red', fontSize: 12 }}>
+                {formik.errors.pena_TelefonoFijo}
+              </div>
+            )}
+          </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_TelefonoCelular">Teléfono Celular</CustomFormLabel>
-              <CustomTextField
-                fullWidth
-                id="pena_TelefonoCelular"
-                name="pena_TelefonoCelular"
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
                 value={formik.values.pena_TelefonoCelular}
-                onChange={handlenumeros}
-                onBlur={formik.handleBlur}
-                error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
-                helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('pena_TelefonoCelular', number.slice(0, 17));
+                  } else {
+                    formik.setFieldValue('pena_TelefonoCelular', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('pena_TelefonoCelular', true)}
               />
+              {formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.pena_TelefonoCelular}
+                </div>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_CorreoElectronico">Correo Electrónico</CustomFormLabel>

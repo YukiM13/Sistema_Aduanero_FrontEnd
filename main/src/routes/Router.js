@@ -4,6 +4,7 @@ import PrivateRoute from './PrivateRoute';
 
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PersonaJuridica from 'src/models/PersonaJuridicaModel';
+// import OrdenCompraDetallesCreateComponent from '../components/ordenCompraDetalle/OrdenCompraDetalleCreate';
 import { es } from 'date-fns/locale';
 
 /* ***Layouts**** */
@@ -107,7 +108,7 @@ const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devasp
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
-const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DeclaracionValor')));
+const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DevaContenedor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
 const ComercianteIndividualList = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualList')));
 // General
@@ -146,10 +147,15 @@ const Categorias  = Loadable(lazy(() => import('../components/produccion/categor
 const MarcasMaquinas = Loadable(lazy(() => import('../components/produccion/marcasMaquinas/marcasMaquinas')));
 const Tallas = Loadable(lazy(() => import('../components/produccion/tallas/TallasList')));
 const SubCategorias   = Loadable(lazy(() => import('../components/produccion/subCategorias/subCategoriasList')));
-const OrdenCompra =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
-const OrdenCompraDetalle =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
+const OrdenCompraList =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
+const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraCrear')));
+const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
 const ReporteInventario = Loadable(lazy(() => import('../components/produccion/Inventario/ReporteInventario')));
+const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
+
+const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
+const PedidoCliente = Loadable(lazy(() => import('../components/aduanas/pedidos-cliente/PedidosCliente')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -181,6 +187,10 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
+
+// Reportes
+const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
+
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -224,7 +234,7 @@ const todasLasRutas = [
   { path: '/tipoembalaje/list', element: <TipoEmbalaje/>, pantalla:'Tipo Embalaje' },
   { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
   { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
-  { path: '/ordenCompra', element: <OrdenCompra/>, pantalla:'Orden Compra' },
+  { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
   { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
@@ -232,6 +242,11 @@ const todasLasRutas = [
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
   {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
+  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
+  { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
+  { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
