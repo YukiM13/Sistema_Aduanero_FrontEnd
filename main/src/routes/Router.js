@@ -236,13 +236,9 @@ const todasLasRutas = [
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
-<<<<<<< HEAD
   { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
-=======
-  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
-    {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
->>>>>>> origin/Deyby
+  { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
