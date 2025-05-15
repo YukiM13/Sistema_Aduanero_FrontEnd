@@ -1,6 +1,7 @@
 import React from 'react';
 import UsuarioImg from 'src/assets/images/imagenes/imgsBreadcrumb/usuarios.png';
 import RolesImg from 'src/assets/images/imagenes/imgsBreadcrumb/roles.png';
+import AldeaImg from 'src/assets/images/imagenes/imgsBreadcrumb/aldea.png';
 import DefaultImage from 'src/assets/images/breadcrumb/breadcrumb.png';
 
 const ImgBC = () => {
@@ -9,6 +10,8 @@ const ImgBC = () => {
     const imageMap = {
         '/usuarios/list': UsuarioImg,
         '/roles/list': RolesImg,
+
+        '/Aldeas/list': AldeaImg,
     };
 
     const breadcrumbImage = imageMap[currentPath] || DefaultImage;
