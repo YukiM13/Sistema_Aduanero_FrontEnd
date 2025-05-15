@@ -157,7 +157,7 @@ const MaterialesPorPOPdf = () => {
                 <Grid item xs={12}>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item xs={12} style={{ display: 'flex'}}>
-                            <div style={{ width: '40%', textAlign: 'center' }}>
+                            <div style={{ width: '25%' }}>
                                 <CustomFormLabel>Seleccione Orden de Compra</CustomFormLabel>
                                 <FormControl fullWidth>
                                     <CustomTextField
