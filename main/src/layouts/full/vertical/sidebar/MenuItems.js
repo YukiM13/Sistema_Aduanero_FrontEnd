@@ -532,18 +532,16 @@ export const generarMenu = async () => {
       });
     }
 
-<<<<<<< HEAD
     if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
-    impresion.children.push({
-      id: uniqueId(),
-      title: 'Devas Pendientes',
-      icon: IconPoint,
-      href: '/devaspendientes/list',
-      chipColor: 'secondary',
-    });
-  }
-=======
- if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Devas Pendientes',
+        icon: IconPoint,
+        href: '/devaspendientes/list',
+        chipColor: 'secondary',
+      });
+    }
+    if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'III. Costos Materiales No Brindados',
@@ -555,7 +553,6 @@ export const generarMenu = async () => {
 
 
 
->>>>>>> origin/Deyby
 
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
