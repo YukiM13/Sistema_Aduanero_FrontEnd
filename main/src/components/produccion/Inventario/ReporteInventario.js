@@ -1,3 +1,4 @@
+// ReporteInventario.js
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -12,10 +13,10 @@ import { Search } from '@mui/icons-material';
 import { IconDownload, IconArrowBack } from '@tabler/icons';
 import ParentCard from '../../../components/shared/ParentCard';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
+import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import html2pdf from 'html2pdf.js';
 import { storage } from '../../../layouts/config/firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 
 const ReporteInventario = () => {
   const [datos, setDatos] = useState([]);
@@ -26,7 +27,9 @@ const ReporteInventario = () => {
 
   const formik = useFormik({
     initialValues: {
-      material: null
+      material: null,
+      fechaInicio: '',
+      fechaFin: ''
     },
   });
 
@@ -51,12 +54,16 @@ const ReporteInventario = () => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
     const materialSeleccionado = formik.values.material;
+    const fechaInicio = formik.values.fechaInicio;
+    const fechaFin = formik.values.fechaFin;
 
     if (!materialSeleccionado) return;
 
     setLoading(true);
     axios.post(`${apiUrl}/api/Reportes/Inventario`, {
-      mate_Id: materialSeleccionado.mate_Id
+      mate_Id: materialSeleccionado.mate_Id,
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin
     }, {
       headers: {
         'XApiKey': apiKey,
@@ -79,15 +86,30 @@ const ReporteInventario = () => {
       margin: 3,
       filename: `reporte-inventario-${Date.now()}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 1.5 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      html2canvas: {
+        scale: 1.5,
+        useCORS: true,
+        letterRendering: true
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+        compress: true
+      }
     };
 
     const pdfBlob = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
     const archivoRef = ref(storage, `documentos/inventario-${Date.now()}.pdf`);
     await uploadBytes(archivoRef, pdfBlob);
     const urlDescarga = await getDownloadURL(archivoRef);
-    window.open(urlDescarga, '_blank');
+
+    const printWindow = window.open(urlDescarga, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
   };
 
   return (
@@ -95,17 +117,19 @@ const ReporteInventario = () => {
       <Breadcrumb title="Inventario" subtitle="Reporte por Material" />
       <ParentCard>
         <Grid container spacing={3} mb={3}>
-          <Grid item xs={12} md={6}>
+          <Grid item lg={4} md={12} sm={12}>
+            <CustomFormLabel>Material</CustomFormLabel>
             <Autocomplete
               options={materiales}
               getOptionLabel={(option) => option.mate_Descripcion}
               onChange={(e, value) => formik.setFieldValue('material', value)}
               renderInput={(params) => (
-                <TextField {...params} label="Seleccionar Material" variant="outlined" fullWidth />
+                <TextField {...params} placeholder="Seleccionar Material" variant="outlined" fullWidth />
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3}>
+
+          <Grid item>
             <Button variant="contained" onClick={buscarReporte} startIcon={<Search />}>
               Buscar
             </Button>
@@ -121,88 +145,90 @@ const ReporteInventario = () => {
         {showTable && datos.length > 0 && (
           <>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-              <Button variant="outlined" startIcon={<IconArrowBack />} onClick={() => window.history.back()}>
+              <Button
+                variant="outlined"
+                startIcon={<IconArrowBack style={{ fontSize: '18px' }} />}
+                onClick={() => window.history.back()}
+              >
                 Volver
               </Button>
-              <Button variant="contained" startIcon={<IconDownload />} onClick={exportarPDF}>
+              <Button
+                variant="contained"
+                startIcon={<IconDownload style={{ fontSize: '18px' }} />}
+                onClick={exportarPDF}
+              >
                 Descargar PDF
               </Button>
             </Stack>
 
             <ParentCard>
-              <div ref={contenidoRef} style={{ padding: 24, fontFamily: 'Arial, sans-serif', position: 'relative' }}>
-                {/* Encabezado institucional */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <img src="/logo-gobierno.png" alt="Logo" style={{ height: 70 }} />
-                  <div style={{ textAlign: 'center', flexGrow: 1 }}>
-                    <h2 style={{ margin: 0 }}>SECRETARÍA DE GESTIÓN TRIBUTARIA</h2>
-                    <p style={{ margin: 0 }}>Unidad de Control de Inventarios</p>
-                  </div>
-                  <p style={{ fontSize: '10pt', textAlign: 'right' }}>{new Date().toLocaleString()}</p>
-                </div>
+              <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}>
+                Previsualización Reporte de Inventario
+              </h5>
+              <div ref={contenidoRef}>
+                <p style={{ fontSize: '8pt', margin: '2px 0' }}>
+                  Fecha y hora de impresión: {new Date().toLocaleString()}
+                </p>
 
-                <hr style={{ margin: '10px 0', borderTop: '2px solid #000' }} />
+                {datos.map((item, idx) => {
+  const detalles = JSON.parse(item.detalles || '[]'); // OJO: "detalles" en minúscula
+  return (
+    <div key={idx} style={{ marginTop: '15px' }}>
+      {/* Tabla de datos generales */}
+      <table style={{ width: '100%', fontSize: '8pt' }} border="1" cellPadding="4" cellSpacing="0">
+        <tbody>
+          <tr>
+            <th colSpan="4" style={{ backgroundColor: '#1797be', color: 'white', textAlign: 'center' }}>
+              Información General del Material
+            </th>
+          </tr>
+          <tr>
+            <td><strong>Descripción:</strong></td>
+            <td>{item.mate_Descripcion}</td>
+            <td><strong>Categoría:</strong></td>
+            <td>{item.cate_Descripcion}</td>
+          </tr>
+          <tr>
+            <td><strong>Subcategoría:</strong></td>
+            <td>{item.subc_Descripcion}</td>
+            <td><strong>Stock Total:</strong></td>
+            <td>{item.stockTotal}</td>
+          </tr>
+        </tbody>
+      </table>
 
-                {/* Título del reporte */}
-                <h3 style={{ textAlign: 'center', textDecoration: 'underline', marginBottom: 20 }}>
-                  REPORTE DE INVENTARIO POR MATERIAL
-                </h3>
+      {/* Tabla de detalles */}
+      <table style={{ width: '100%', marginTop: '10px', fontSize: '8pt' }} border="1" cellPadding="3" cellSpacing="0">
+        <thead>
+          <tr style={{ backgroundColor: '#eeeeee' }}>
+            <th>ID Lote</th>
+            <th>Código</th>
+            <th>Stock</th>
+            <th>Unidad</th>
+            <th>Color</th>
+            <th>Área</th>
+          </tr>
+        </thead>
+        <tbody>
+          {detalles.map((detalle, i) => (
+            <tr key={i}>
+              <td>{detalle.lote_Id}</td>
+              <td>{detalle.lote_CodigoLote}</td>
+              <td>{detalle.lote_Stock}</td>
+              <td>{detalle.unme_Descripcion}</td>
+              <td>{detalle.colr_Nombre}</td>
+              <td>{detalle.tipa_area}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+})}
 
-                {datos.map((item, idx) => (
-                  <Box key={idx} mb={3}>
-                    <h4>Material: {item.mate_Descripcion}</h4>
-                    <p><strong>Categoría:</strong> {item.cate_Descripcion} | <strong>Subcategoría:</strong> {item.subc_Descripcion}</p>
-                    <p><strong>Stock total:</strong> {item.stockTotal}</p>
 
-                    {item.mate_Imagen && (
-                      <img src={item.mate_Imagen} alt="Imagen material" style={{ maxWidth: 200, maxHeight: 200 }} />
-                    )}
-
-                    <TableContainer component={Paper} sx={{ mt: 2 }}>
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow style={{ backgroundColor: '#0a4d8c' }}>
-                            <TableCell sx={{ color: 'white' }}>ID Lote</TableCell>
-                            <TableCell sx={{ color: 'white' }}>Código</TableCell>
-                            <TableCell sx={{ color: 'white' }}>Stock</TableCell>
-                            <TableCell sx={{ color: 'white' }}>Unidad</TableCell>
-                            <TableCell sx={{ color: 'white' }}>Color</TableCell>
-                            <TableCell sx={{ color: 'white' }}>Área</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {JSON.parse(item.Detalles || '[]').map((detalle, i) => (
-                            <TableRow key={i}>
-                              <TableCell>{detalle.lote_Id}</TableCell>
-                              <TableCell>{detalle.lote_CodigoLote}</TableCell>
-                              <TableCell>{detalle.lote_Stock}</TableCell>
-                              <TableCell>{detalle.unme_Descripcion}</TableCell>
-                              <TableCell>{detalle.colr_Nombre}</TableCell>
-                              <TableCell>{detalle.tipa_area}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                ))}
-
-                {/* Marca de agua */}
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%) scale(2)',
-                  opacity: 0.08,
-                  pointerEvents: 'none',
-                  zIndex: 0
-                }}>
-                  <LogoAzul />
-                </div>
-
-                {/* Pie de página */}
-                <div style={{ fontSize: '10px', textAlign: 'center', marginTop: 40 }}>
-                  Sistema de Gestión de Inventarios | Página 1 de 1
+                <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
+                  <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
                 </div>
               </div>
             </ParentCard>
