@@ -383,10 +383,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const handleNext = () => {
     const isValid = validateTabFields();
     if (isValid) {
-      setActiveTab((prev) => {
-        if (prev < 3) return prev + 1;
-        return prev;
-      });
+      setActiveTab((prev) => prev + 1);
     }
   };
 
@@ -405,33 +402,29 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    Object.keys(formik.values).forEach(field => {
+
+    if (activeTab === 3) {
+      if (!formik.values.pena_NumeroRecibo || !formik.values.ArchivoNumeroRecibo) {
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
+    }
+
+    Object.keys(formik.values).forEach((field) => {
       formik.setFieldTouched(field, true);
     });
-    if (!formik.values.pena_NumeroRecibo) {
-      setMensajeSnackbar('El campo Número Recibo es obligatorio');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      return;
-    }
-    
-    if (!formik.values.ArchivoNumeroRecibo) {
-      setMensajeSnackbar('El archivo de recibo es obligatorio');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      return;
-    }
-    
+
     if (Object.keys(formik.errors).length > 0) {
       setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
       return;
     }
-    
+
     formik.handleSubmit(e);
   };
+
   const handlenumeros = (e) => {
     const { name, value } = e.target;
     const numericValue = value.replace(/\D/g, '');
@@ -529,13 +522,13 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
               initialCountry={'hn'}
               value={formik.values.pena_TelefonoFijo}
               onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                if (!number) {
-                  formik.setFieldValue('pena_TelefonoFijo', '');
+                if (!number || number.length > 17) {
+                  formik.setFieldValue('pena_TelefonoFijo', number.slice(0, 17)); 
                 } else {
                   formik.setFieldValue('pena_TelefonoFijo', number);
                 }
               }}
-            x
+              onBlur={() => formik.setFieldTouched('pena_TelefonoFijo', true)}
             />
             {formik.touched.pena_TelefonoFijo && formik.errors.pena_TelefonoFijo && (
               <div style={{ color: 'red', fontSize: 12 }}>
@@ -553,8 +546,8 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 initialCountry={'hn'}
                 value={formik.values.pena_TelefonoCelular}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                  if (!number) {
-                    formik.setFieldValue('pena_TelefonoCelular', '');
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('pena_TelefonoCelular', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('pena_TelefonoCelular', number);
                   }
