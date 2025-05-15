@@ -30,7 +30,6 @@ const ReporteInventario = () => {
     },
   });
 
-  // Obtener materiales
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
@@ -64,15 +63,15 @@ const ReporteInventario = () => {
         'Content-Type': 'application/json'
       }
     })
-      .then(response => {
-        setDatos(response.data.data || []);
-        setShowTable(true);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error al obtener el reporte:', error);
-        setLoading(false);
-      });
+    .then(response => {
+      setDatos(response.data.data || []);
+      setShowTable(true);
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error al obtener el reporte:', error);
+      setLoading(false);
+    });
   };
 
   const exportarPDF = async () => {
@@ -129,13 +128,28 @@ const ReporteInventario = () => {
                 Descargar PDF
               </Button>
             </Stack>
+
             <ParentCard>
-              <div ref={contenidoRef} style={{ position: 'relative' }}>
-                <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Reporte de Inventario</h3>
-                <p style={{ fontSize: '9pt', textAlign: 'right' }}>Fecha y hora: {new Date().toLocaleString()}</p>
+              <div ref={contenidoRef} style={{ padding: 24, fontFamily: 'Arial, sans-serif', position: 'relative' }}>
+                {/* Encabezado institucional */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <img src="/logo-gobierno.png" alt="Logo" style={{ height: 70 }} />
+                  <div style={{ textAlign: 'center', flexGrow: 1 }}>
+                    <h2 style={{ margin: 0 }}>SECRETARÍA DE GESTIÓN TRIBUTARIA</h2>
+                    <p style={{ margin: 0 }}>Unidad de Control de Inventarios</p>
+                  </div>
+                  <p style={{ fontSize: '10pt', textAlign: 'right' }}>{new Date().toLocaleString()}</p>
+                </div>
+
+                <hr style={{ margin: '10px 0', borderTop: '2px solid #000' }} />
+
+                {/* Título del reporte */}
+                <h3 style={{ textAlign: 'center', textDecoration: 'underline', marginBottom: 20 }}>
+                  REPORTE DE INVENTARIO POR MATERIAL
+                </h3>
 
                 {datos.map((item, idx) => (
-                  <Box key={idx} mb={2}>
+                  <Box key={idx} mb={3}>
                     <h4>Material: {item.mate_Descripcion}</h4>
                     <p><strong>Categoría:</strong> {item.cate_Descripcion} | <strong>Subcategoría:</strong> {item.subc_Descripcion}</p>
                     <p><strong>Stock total:</strong> {item.stockTotal}</p>
@@ -147,13 +161,13 @@ const ReporteInventario = () => {
                     <TableContainer component={Paper} sx={{ mt: 2 }}>
                       <Table size="small">
                         <TableHead>
-                          <TableRow>
-                            <TableCell>ID Lote</TableCell>
-                            <TableCell>Código</TableCell>
-                            <TableCell>Stock</TableCell>
-                            <TableCell>Unidad</TableCell>
-                            <TableCell>Color</TableCell>
-                            <TableCell>Área</TableCell>
+                          <TableRow style={{ backgroundColor: '#0a4d8c' }}>
+                            <TableCell sx={{ color: 'white' }}>ID Lote</TableCell>
+                            <TableCell sx={{ color: 'white' }}>Código</TableCell>
+                            <TableCell sx={{ color: 'white' }}>Stock</TableCell>
+                            <TableCell sx={{ color: 'white' }}>Unidad</TableCell>
+                            <TableCell sx={{ color: 'white' }}>Color</TableCell>
+                            <TableCell sx={{ color: 'white' }}>Área</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
@@ -179,10 +193,16 @@ const ReporteInventario = () => {
                   top: '50%',
                   left: '50%',
                   transform: 'translate(-50%, -50%) scale(2)',
-                  opacity: 0.15,
-                  pointerEvents: 'none'
+                  opacity: 0.08,
+                  pointerEvents: 'none',
+                  zIndex: 0
                 }}>
                   <LogoAzul />
+                </div>
+
+                {/* Pie de página */}
+                <div style={{ fontSize: '10px', textAlign: 'center', marginTop: 40 }}>
+                  Sistema de Gestión de Inventarios | Página 1 de 1
                 </div>
               </div>
             </ParentCard>
