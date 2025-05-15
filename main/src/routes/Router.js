@@ -149,6 +149,7 @@ const SubCategorias   = Loadable(lazy(() => import('../components/produccion/sub
 const OrdenCompra =  Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraListar')));
 const OrdenCompraDetalle =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
+const ReporteInventario = Loadable(lazy(() => import('../components/produccion/Inventario/ReporteInventario')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -230,6 +231,7 @@ const todasLasRutas = [
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
+  {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>
