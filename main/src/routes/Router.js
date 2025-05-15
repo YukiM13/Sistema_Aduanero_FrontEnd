@@ -89,7 +89,10 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
+
 const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/declaracion-valor/declaracion-valor-impresion')));
+const CostosMaterialesNoBrindados = Loadable(lazy(() => import('../components/aduanas/CostosMaterialesNoBrindados/CostosMaterialesNoBrindados-pdf')));
+
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
 const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
@@ -104,6 +107,7 @@ const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/ti
 const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
 const materialesporPO = Loadable(lazy(() => import('../components/aduanas/materialesPorPO/materialesPorPO'))); //esquema aduanas
 
+const PlanificacionPO = Loadable(lazy(() => import('../components/aduanas/PlanificacionPO/PlanificacionPO-pdf')));
 
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
@@ -212,6 +216,7 @@ const todasLasRutas = [
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
   { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
@@ -234,6 +239,7 @@ const todasLasRutas = [
   { path: '/declaracion', element: <DeclaracionValor/>, pantalla:'Impresion Deva' },
   {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
   {path: '/materialesporpo', element: <materialesporPO/>, pantalla:'Materiales por PO'},//esquema aduanas
+    {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>

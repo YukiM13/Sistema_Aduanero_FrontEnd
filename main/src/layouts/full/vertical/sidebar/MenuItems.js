@@ -314,6 +314,18 @@ export const generarMenu = async () => {
       });
     }
     
+     if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
+// Planificacion PO pendiente
+      aduana.children.push({
+        id: uniqueId(),
+        title: 'Planificacion PO',
+        icon: IconPoint,
+        href: '/PlanificacionPO',
+        chipColor: 'secondary',
+      });
+          }
+  // Planificacion PO pendiente
+
     if (esAdmin || nombresDePantalla.includes('Concepto de Pago')) {
       aduana.children.push({
         id: uniqueId(),
@@ -509,11 +521,25 @@ export const generarMenu = async () => {
       });
     }
 
+ if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'III. Costos Materiales No Brindados',
+        icon: IconPoint,
+        href: '/CostosMaterialesNoBrindados',
+        chipColor: 'secondary',
+      });
+    }
+
+
+
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
   }
   
+//deb
   if (esAdmin || nombresDePantalla.includes('Declaracion de Valor')) {
     Menuitems.push({
       id: uniqueId(),
@@ -523,7 +549,8 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
-  
+  //deb
+
   if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
