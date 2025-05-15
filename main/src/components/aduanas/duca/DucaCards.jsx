@@ -9,7 +9,7 @@ TextField,InputAdornment,TablePagination, Grid,  CardContent,
   Tooltip,
     Fab,Box,Button, Menu, MenuItem,
   ListItemIcon, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText, Snackbar, Alert
+  DialogContentText, Snackbar, Alert, Link
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -37,6 +37,8 @@ const DucaCards = () => {
     const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
     const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [verMasSet, setVerMasSet] = useState(new Set());
+
     const [alertConfig, setAlertConfig] = useState({
         severity: '',
         message: '',
@@ -100,6 +102,18 @@ const DucaCards = () => {
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
     }
+    const abrirMas = (evento, tipo, id) => {
+      setVerMasSet((prev) => {
+        const nuevoSet = new Set(prev);
+        if (tipo === 1) {
+          nuevoSet.add(id);
+        } else if (tipo === 2) {
+          nuevoSet.delete(id);
+        }
+        return nuevoSet;
+      });
+    };
+    
   
     function cerrarMenu() {
       setMenuAbierto(false);
@@ -299,6 +313,19 @@ const DucaCards = () => {
                                           {duca.duca_NombreSocial_Declarante}
                                           </Typography>
                                       </Grid>
+                                      {!verMasSet.has(duca.duca_Id) ?
+                                      <Grid item xs={12}>
+                                          
+                                         <Typography variant="body2"  onClick={(e) => abrirMas(e, 1, duca.duca_Id)}>
+                                           <Link  underline="hover" color={"black"}>
+                                              {'Ver más'}
+                                            </Link>
+                                         </Typography>
+                                       
+                                         
+                                      </Grid>
+                                      :
+                                      <>
                                       <Grid item xs={12}>
                                           <Typography variant="body2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', color: '#555' }}>
                                           <IconMapPin size={16} style={{ marginRight: 6 }} />
@@ -329,6 +356,19 @@ const DucaCards = () => {
                                           {formatearFecha(duca.duca_FechaVencimiento)}
                                           </Typography>
                                       </Grid>
+                                       <Grid item xs={12}>
+                                          
+                                         <Typography variant="body2"   onClick={(e) => abrirMas(e, 2, duca.duca_Id)}>
+                                            <Link  underline="hover" color={"black"}>
+                                              {'Ver menos'}
+                                            </Link>
+                                         </Typography>
+                                       
+                                         
+                                      </Grid>
+                                      </>
+                                     
+                                      }
                                       </Grid>
                                     
                                   {/* Pie de página */}
