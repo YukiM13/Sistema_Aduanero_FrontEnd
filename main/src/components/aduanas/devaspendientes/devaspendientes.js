@@ -108,8 +108,6 @@ const Devaspendientes = () => {
         printWindow.onload = () => {
           printWindow.print();
         };
-      } else {
-        alert("Por favor permite las ventanas emergentes en tu navegador.");
       }
     }, 1000);
   };

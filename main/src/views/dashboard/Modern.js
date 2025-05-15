@@ -12,6 +12,7 @@ import SellingProducts from '../../components/dashboards/modern/SellingProducts'
 import WeeklyStats from '../../components/dashboards/modern/WeeklyStats';
 import TopPerformers from '../../components/dashboards/modern/TopPerformers';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
+import ImportacionesContadores from 'src/components/dashboards/modern/importaciones_contadores';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -23,7 +24,7 @@ const Modern = () => {
       <Grid container spacing={3}>
         {/* column */}
         <Grid item sm={12} lg={12}>
-          <TopCards />
+          <ImportacionesContadores />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={8}>
