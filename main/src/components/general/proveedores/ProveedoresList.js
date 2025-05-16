@@ -15,8 +15,8 @@ import ProveedoresCreateComponent from './ProveedoresCreate';
 import ProveedoresEditComponent from './ProveedoresEdit';
 import ProveedoresDetailsComponent from './ProveedoresDetails';
 
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StyledButton from 'src/components/shared/StyledButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -26,9 +26,11 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
 //Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import { values } from 'lodash';
 
 const ProveedoresList = () => {
     const [proveedores, setProveedores] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -69,7 +71,7 @@ const ProveedoresList = () => {
     }
     
     function eliminarProveedor(proveedor) {
-      console.log('Eliminar Oficina:', proveedor.prov_Id);
+      console.log('Eliminar Proveedor:', proveedor.prov_Id);
       setProveedorSeleccionado(proveedor);
       setConfirmarEliminacion(true);
       cerrarMenu();
@@ -83,10 +85,12 @@ const ProveedoresList = () => {
       setProveedorSeleccionado(proveedor);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true);
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false);
     }
 
     const cargarProveedores = () => {
@@ -104,6 +108,8 @@ const ProveedoresList = () => {
     }
 
     const eliminar = (proveedor) =>{
+      proveedor.prov_FechaEliminacion = new Date().toISOString();
+      proveedor.usua_UsuarioEliminacion = 1;
       axios.post(`${apiUrl}/api/Proveedores/Eliminar`,proveedor, {
         headers: { 'XApiKey': apiKey }
       })
@@ -149,9 +155,11 @@ const ProveedoresList = () => {
      
             <container>
         <Stack direction="row" justifyContent="flex-start" mb={2}>
-            <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-              {'Nuevo'}
-            </Button>
+            <StyledButton  
+            sx={{}} 
+            title="Nuevo"
+            event={() => setModo('crear')}>
+            </StyledButton>
         </Stack>
           <Paper variant="outlined">
             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -163,37 +171,40 @@ const ProveedoresList = () => {
                   ),
               }}/>
             <TableContainer component={Paper}>
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Compañia</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Contacto</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                      <Typography variant="h6">Correo electrónico</Typography>
+                    </TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Teléfono</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Código postal</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Pais</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Provincia</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Ciudad</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Dirección exacta</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Fax</Typography>
                     </TableCell>
                   </TableRow>
@@ -201,28 +212,41 @@ const ProveedoresList = () => {
                 <TableBody>
                 {filteredData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((proveedor) => (
+                  .map((proveedor, index) => (
                     <TableRow key={proveedor.pers_Id}>
                       <TableCell align="center">
   
                       <IconButton
-                        size="small" 
-                        // se abre el menu y se selecciona la data de la fila 
-                        onClick={(e) => abrirMenu(e, proveedor)}
-                      >
-                      <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                      </IconButton>
+                          size="small"
+                          onClick={(e) => abrirMenu(e, proveedor)}
+                          sx={{
+                            backgroundColor: '#d9e7ef', // Fondo celeste claro
+                            color: 'rgb(0, 83, 121)',           // Color del icono
+                            '&:hover': {
+                              backgroundColor: 'rgb(157, 191, 207)',
+                            },
+                            border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                            borderRadius: '8px',         // Bordes redondeados
+                            padding: '6px'
+                          }}
+                        >
+                          <SettingsIcon 
+                          sx={{transition: 'transform 0.3s ease-in-out',
+                            transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                          fontSize="small" />
+                          <Typography variante="h6">Acciones</Typography>
+                        </IconButton>
                       </TableCell>
-                      <TableCell>{proveedor.prov_NombreCompania}</TableCell>
-                    <TableCell>{proveedor.prov_NombreContacto}</TableCell>
-                    <TableCell>{proveedor.prov_CorreoElectronico}</TableCell>
-                    <TableCell>{proveedor.prov_Telefono}</TableCell>
-                    <TableCell>{proveedor.prov_CodigoPostal}</TableCell>
-                    <TableCell>{proveedor.pais_Nombre}</TableCell>
-                    <TableCell>{proveedor.pvin_Nombre}</TableCell>
-                    <TableCell>{proveedor.ciud_Nombre}</TableCell>
-                    <TableCell>{proveedor.prov_DireccionExacta}</TableCell>
-                    <TableCell>{proveedor.prov_Fax}</TableCell>
+                      <TableCell><Typography variant="body1">{proveedor.prov_NombreCompania}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_NombreContacto}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_CorreoElectronico}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_Telefono}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_CodigoPostal}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.pais_Nombre}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.pvin_Nombre}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.ciud_Nombre}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_DireccionExacta}</Typography></TableCell>
+                    <TableCell><Typography variant="body1">{proveedor.prov_Fax}</Typography></TableCell>
                     </TableRow>
                   ))}
                   {emptyRows > 0 && (

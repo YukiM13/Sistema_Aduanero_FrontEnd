@@ -70,7 +70,7 @@ const ProveedoresDetailsComponent = ({proveedor, onCancelar }) => { //esto es lo
                   </TableContainer>
                     <Grid container justifyContent="flex-end" spacing={2} mt={2}>
                         <Grid item>
-                            <Button variant="contained" color="secondary" onClick={onCancelar}
+                            <Button variant="outlined" color="primary" onClick={onCancelar}
                             startIcon={<ArrowBackIcon />}>
                                 Regresar
                             </Button>
