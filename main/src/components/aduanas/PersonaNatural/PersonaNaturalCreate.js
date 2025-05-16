@@ -91,7 +91,9 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
   const [showCorreoSnackbar, setShowCorreoSnackbar] = useState(false);
   const [showCorreoAltSnackbar, setShowCorreoAltSnackbar] = useState(false);
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const [archivos, setArchivos] = useState({
     ArchivoRTN: null,
     ArchivoDNI: null,
@@ -221,7 +223,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     initialValues: {
       ...PersonaNatural,
       pers_Id: 0, 
-      usua_UsuarioCreacion: 1,
+      usua_UsuarioCreacion: user,
       pena_FechaCreacion: new Date().toISOString(),
       pena_NumeroRecibo: '', 
     },

@@ -18,7 +18,9 @@ const ColoniasCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const listarCiudades = () => {
     axios.get(`${apiUrl}/api/Ciudades/Listar`, {
       headers: { 'XApiKey': apiKey }
@@ -41,7 +43,7 @@ const ColoniasCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
     initialValues: {
       colo_Nombre: '',
       ciud_Id: 0,
-      usua_UsuarioCreacion: 1,
+      usua_UsuarioCreacion: user,
       colo_FechaCreacion: new Date(),
     },
     validationSchema,
