@@ -203,7 +203,7 @@ const RolesList = () => {
                             <Typography variante="h6">Acciones</Typography>
                             </IconButton>
                           </TableCell>
-                          <TableCell>{role.role_Descripcion}</TableCell>
+                          <TableCell><Typography variant="body1">{role.role_Descripcion}</Typography></TableCell>
                         </TableRow>
                       ))}
                     {emptyRows > 0 && (

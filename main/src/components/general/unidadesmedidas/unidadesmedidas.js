@@ -145,10 +145,10 @@ const UnidadMedidasComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Descripción</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -185,7 +185,7 @@ const UnidadMedidasComponent = () => {
                                                             <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
                                                     </TableCell>
-                                                    <TableCell>{unidadMedida.unme_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{unidadMedida.unme_Descripcion}</Typography></TableCell>
                                                 </TableRow>
                                             ))}
                                         {emptyRows > 0 && (

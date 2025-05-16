@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Button, Stack,
+    TableHead, TableRow, Paper, Stack,
     IconButton, Menu, MenuItem,
     ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography
 } from '@mui/material';
@@ -11,7 +11,6 @@ import ParentCard from '../../../components/shared/ParentCard';
 import TipoIntermediarioCreateComponent from './tipointermediarioCreate';
 import TipoIntermediarioDetailsComponent from './tipointermediarioDetails';
 import TipoIntermediarioEditComponent from './tipointermediarioEdit';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -126,13 +125,13 @@ const TipoIntermediarioComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Código</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Descripción</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -169,8 +168,8 @@ const TipoIntermediarioComponent = () => {
                                                             <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
                                                     </TableCell>
-                                                    <TableCell>{tipoIntermediario.tite_Codigo}</TableCell>
-                                                    <TableCell>{tipoIntermediario.tite_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{tipoIntermediario.tite_Codigo}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{tipoIntermediario.tite_Descripcion}</Typography></TableCell>
                                                 </TableRow>
                                             ))}
                                         {emptyRows > 0 && (
