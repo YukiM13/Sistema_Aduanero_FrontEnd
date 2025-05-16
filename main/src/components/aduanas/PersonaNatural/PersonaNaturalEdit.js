@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { Snackbar, Alert, Button, Grid, MenuItem } from '@mui/material';
+import { Snackbar, Alert, Button, Grid, MenuItem, Typography, Box } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import PersonaNaturalModel from '../../../models/PersonaNaturalModel';
 
-const validationSchema = yup.object({
-  pers_Id: yup.number().required('La persona es requerida').moreThan(0, 'La persona es requerida'),
-  pena_DireccionExacta: yup.string().required('La dirección es requerida'),
-  ciud_Id: yup.number().required('La ciudad es requerida').moreThan(0, 'La ciudad es requerida'),
-  pena_TelefonoCelular: yup.string().required('El teléfono celular es requerido'),
-  pena_CorreoElectronico: yup.string().email('Correo inválido').required('El correo es requerido'),
-  pena_RTN: yup.string().required('El RTN es requerido'),
-  pena_DNI: yup.string().required('El DNI es requerido'),
-  pena_NumeroRecibo: yup.string().required('El número de recibo es requerido'),
-});
-
 const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar, onGuardadoExitoso }) => {
   const [ciudades, setCiudades] = useState([]);
   const [personas, setPersonas] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [archivos, setArchivos] = useState({
+    ArchivoRTN: null,
+    ArchivoDNI: null,
+    ArchivoNumeroRecibo: null,
+  });
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
@@ -37,27 +30,61 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
   }, [apiUrl, apiKey]);
 
   const formik = useFormik({
-    initialValues: persona,
-    validationSchema,
+    initialValues: {
+      ...persona,
+      pers_Id: persona.pers_Id || 0,
+      pena_DireccionExacta: persona.pena_DireccionExacta || '',
+      ciud_Id: persona.ciud_Id || 0,
+      pena_TelefonoFijo: persona.pena_TelefonoFijo || '',
+      pena_TelefonoCelular: persona.pena_TelefonoCelular || '',
+      pena_CorreoElectronico: persona.pena_CorreoElectronico || '',
+      pena_CorreoAlternativo: persona.pena_CorreoAlternativo || '',
+      pena_RTN: persona.pena_RTN || '',
+      pena_DNI: persona.pena_DNI || '',
+      pena_NumeroRecibo: persona.pena_NumeroRecibo || '',
+      pena_NombreArchRTN: persona.pena_NombreArchRTN || '',
+      pena_NombreArchDNI: persona.pena_NombreArchDNI || '',
+      pena_NombreArchRecibo: persona.pena_NombreArchRecibo || '',
+    },
     enableReinitialize: true,
     onSubmit: (values) => {
-      values.pena_FechaModificacion = new Date();
-      values.usua_UsuarioModificacion = 1;
-      axios.put(`${apiUrl}/api/PersonaNatural/Editar`, values, {
-        headers: { 'XApiKey': apiKey },
+      // Para depuración, muestra el objeto que se enviará
+      console.log('Valores enviados al endpoint:', values);
+
+      axios.post(`${apiUrl}/api/PersonaNatural/Editar`, values, {
+        headers: {
+          'XApiKey': apiKey,
+          'Content-Type': 'application/json'
+        }
       })
         .then(() => {
           if (onGuardadoExitoso) onGuardadoExitoso();
         })
-        .catch(() => setOpenSnackbar(true));
+        .catch((err) => {
+          setOpenSnackbar(true);
+          // Mostrar el error del backend en consola y en el frontend
+          if (err.response && err.response.data) {
+            console.error('Error al llamar endpoint:', err.response.data);
+            alert(
+              typeof err.response.data === 'string'
+                ? err.response.data
+                : JSON.stringify(err.response.data)
+            );
+          } else {
+            console.error('Error al llamar endpoint:', err);
+            alert('Error al llamar endpoint: ' + err.message);
+          }
+        });
     },
   });
 
-  useEffect(() => {
-    if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
-      setOpenSnackbar(true);
+  const handleFileChange = (event) => {
+    const { name, files } = event.target;
+    if (files && files.length > 0) {
+      setArchivos(prev => ({ ...prev, [name]: files[0] }));
+      formik.setFieldValue(name, files[0]);
     }
-  }, [formik.errors, formik.submitCount]);
+  };
 
   return (
     <div>
@@ -72,9 +99,6 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pers_Id"
               value={formik.values.pers_Id}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pers_Id && Boolean(formik.errors.pers_Id)}
-              helperText={formik.touched.pers_Id && formik.errors.pers_Id}
             >
               {personas.map((p) => (
                 <MenuItem key={p.pers_Id} value={p.pers_Id}>
@@ -92,9 +116,6 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="ciud_Id"
               value={formik.values.ciud_Id}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
-              helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
             >
               {ciudades.map((c) => (
                 <MenuItem key={c.ciud_Id} value={c.ciud_Id}>
@@ -111,9 +132,16 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_DireccionExacta"
               value={formik.values.pena_DireccionExacta}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_DireccionExacta && Boolean(formik.errors.pena_DireccionExacta)}
-              helperText={formik.touched.pena_DireccionExacta && formik.errors.pena_DireccionExacta}
+            />
+          </Grid>
+          <Grid item lg={6} md={12} sm={12}>
+            <CustomFormLabel>Teléfono Fijo</CustomFormLabel>
+            <CustomTextField
+              fullWidth
+              id="pena_TelefonoFijo"
+              name="pena_TelefonoFijo"
+              value={formik.values.pena_TelefonoFijo}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item lg={6} md={12} sm={12}>
@@ -124,9 +152,6 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_TelefonoCelular"
               value={formik.values.pena_TelefonoCelular}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
-              helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
             />
           </Grid>
           <Grid item lg={6} md={12} sm={12}>
@@ -137,9 +162,16 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_CorreoElectronico"
               value={formik.values.pena_CorreoElectronico}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_CorreoElectronico && Boolean(formik.errors.pena_CorreoElectronico)}
-              helperText={formik.touched.pena_CorreoElectronico && formik.errors.pena_CorreoElectronico}
+            />
+          </Grid>
+          <Grid item lg={6} md={12} sm={12}>
+            <CustomFormLabel>Correo Alternativo</CustomFormLabel>
+            <CustomTextField
+              fullWidth
+              id="pena_CorreoAlternativo"
+              name="pena_CorreoAlternativo"
+              value={formik.values.pena_CorreoAlternativo}
+              onChange={formik.handleChange}
             />
           </Grid>
           <Grid item lg={6} md={12} sm={12}>
@@ -150,10 +182,54 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_RTN"
               value={formik.values.pena_RTN}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_RTN && Boolean(formik.errors.pena_RTN)}
-              helperText={formik.touched.pena_RTN && formik.errors.pena_RTN}
             />
+          </Grid>
+          <Grid item lg={6} md={12} sm={12}>
+            <CustomFormLabel>Archivo RTN</CustomFormLabel>
+            <CustomTextField
+              fullWidth
+              id="ArchivoRTN"
+              name="ArchivoRTN"
+              type="file"
+              onChange={handleFileChange}
+              inputProps={{
+                accept: '.pdf,.jpg,.jpeg,.png',
+                key: 'rtn-file-input'
+              }}
+            />
+            {persona.pena_NombreArchRTN && !archivos.ArchivoRTN && (
+              <>
+                <Typography variant="caption" color="primary">
+                  Archivo actual: {persona.pena_NombreArchRTN}
+                </Typography>
+                <br />
+                {persona.pena_ArchivoRTN && (
+                  <>
+                    {/\.(jpg|jpeg|png|jfif)$/i.test(persona.pena_NombreArchRTN) ? (
+                      <img
+                        src={persona.pena_ArchivoRTN}
+                        alt="Archivo RTN"
+                        style={{ maxWidth: 120, maxHeight: 120, display: 'block', marginTop: 4, borderRadius: 4 }}
+                      />
+                    ) : (
+                      <a
+                        href={persona.pena_ArchivoRTN}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 13 }}
+                      >
+                        Ver archivo
+                      </a>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {archivos.ArchivoRTN && (
+              <Typography variant="caption" color="primary">
+                Nuevo archivo: {archivos.ArchivoRTN.name}
+              </Typography>
+            )}
           </Grid>
           <Grid item lg={6} md={12} sm={12}>
             <CustomFormLabel>DNI</CustomFormLabel>
@@ -163,10 +239,54 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_DNI"
               value={formik.values.pena_DNI}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_DNI && Boolean(formik.errors.pena_DNI)}
-              helperText={formik.touched.pena_DNI && formik.errors.pena_DNI}
             />
+          </Grid>
+          <Grid item lg={6} md={12} sm={12}>
+            <CustomFormLabel>Archivo DNI</CustomFormLabel>
+            <CustomTextField
+              fullWidth
+              id="ArchivoDNI"
+              name="ArchivoDNI"
+              type="file"
+              onChange={handleFileChange}
+              inputProps={{
+                accept: '.pdf,.jpg,.jpeg,.png',
+                key: 'dni-file-input'
+              }}
+            />
+            {persona.pena_NombreArchDNI && !archivos.ArchivoDNI && (
+              <>
+                <Typography variant="caption" color="primary">
+                  Archivo actual: {persona.pena_NombreArchDNI}
+                </Typography>
+                <br />
+                {persona.pena_ArchivoDNI && (
+                  <>
+                    {/\.(jpg|jpeg|png|jfif)$/i.test(persona.pena_NombreArchDNI) ? (
+                      <img
+                        src={persona.pena_ArchivoDNI}
+                        alt="Archivo DNI"
+                        style={{ maxWidth: 120, maxHeight: 120, display: 'block', marginTop: 4, borderRadius: 4 }}
+                      />
+                    ) : (
+                      <a
+                        href={persona.pena_ArchivoDNI}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 13 }}
+                      >
+                        Ver archivo
+                      </a>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {archivos.ArchivoDNI && (
+              <Typography variant="caption" color="primary">
+                Nuevo archivo: {archivos.ArchivoDNI.name}
+              </Typography>
+            )}
           </Grid>
           <Grid item lg={6} md={12} sm={12}>
             <CustomFormLabel>Número Recibo</CustomFormLabel>
@@ -176,10 +296,54 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
               name="pena_NumeroRecibo"
               value={formik.values.pena_NumeroRecibo}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pena_NumeroRecibo && Boolean(formik.errors.pena_NumeroRecibo)}
-              helperText={formik.touched.pena_NumeroRecibo && formik.errors.pena_NumeroRecibo}
             />
+          </Grid>
+          <Grid item lg={6} md={12} sm={12}>
+            <CustomFormLabel>Archivo Número Recibo</CustomFormLabel>
+            <CustomTextField
+              fullWidth
+              id="ArchivoNumeroRecibo"
+              name="ArchivoNumeroRecibo"
+              type="file"
+              onChange={handleFileChange}
+              inputProps={{
+                accept: '.pdf,.jpg,.jpeg,.png',
+                key: 'recibo-file-input'
+              }}
+            />
+            {persona.pena_NombreArchRecibo && !archivos.ArchivoNumeroRecibo && (
+              <>
+                <Typography variant="caption" color="primary">
+                  Archivo actual: {persona.pena_NombreArchRecibo}
+                </Typography>
+                <br />
+                {persona.pena_ArchivoNumeroRecibo && (
+                  <>
+                    {/\.(jpg|jpeg|png|jfif)$/i.test(persona.pena_NombreArchRecibo) ? (
+                      <img
+                        src={persona.pena_ArchivoNumeroRecibo}
+                        alt="Archivo Recibo"
+                        style={{ maxWidth: 120, maxHeight: 120, display: 'block', marginTop: 4, borderRadius: 4 }}
+                      />
+                    ) : (
+                      <a
+                        href={persona.pena_ArchivoNumeroRecibo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: 13 }}
+                      >
+                        Ver archivo
+                      </a>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            {archivos.ArchivoNumeroRecibo && (
+              <Typography variant="caption" color="primary">
+                Nuevo archivo: {archivos.ArchivoNumeroRecibo.name}
+              </Typography>
+            )}
           </Grid>
         </Grid>
         <Grid container justifyContent="flex-end" spacing={2} mt={2}>
@@ -210,13 +374,6 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity="error"
-          sx={{ width: '100%' }}
-        >
-          No puede haber campos vacíos o inválidos.
-        </Alert>
       </Snackbar>
     </div>
   );
