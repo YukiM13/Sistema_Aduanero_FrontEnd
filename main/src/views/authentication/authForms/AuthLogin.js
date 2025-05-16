@@ -97,6 +97,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         );
         setAlertSeverity('error');
         setOpenSnackbar(true);
+        formik.setErrors({
+          usua_Nombre: 'Error al iniciar sesión',
+          usua_Contrasenia: 'Error al iniciar sesión',
+        });
       }
     },
   });
