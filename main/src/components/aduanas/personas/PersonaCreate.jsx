@@ -38,6 +38,9 @@ const [oficioProfesion, setOficioProfesion] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const listarEstadoCiviles = () => {
       axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, {
         headers: {
@@ -94,7 +97,7 @@ const listarOficioProfesion = () => {
         onSubmit: (values) => {
           values.pers_FechaCreacion = new Date();
           values.pers_FechaModificacion = new Date();
-          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioCreacion = user;
           values.pers_RTN.replace(/\?/g, '');
           values.pers_FormaRepresentacion = Boolean(values.pers_FormaRepresentacion);
           console.log("Valores antes de enviar:", values);

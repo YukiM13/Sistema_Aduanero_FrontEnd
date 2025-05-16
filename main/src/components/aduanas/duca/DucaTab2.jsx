@@ -85,6 +85,9 @@ const handleClose = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+   const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const buscarEmbarque = (searchTerm) => {
     axios.get(`${apiUrl}/api/LugaresEmbarque/Listar?codigo=${searchTerm}`, {
       headers: {
@@ -227,7 +230,7 @@ useEffect(() => {
 
           let todosExitosos = true;
           try {
-            values.usua_UsuarioCreacion = 1;
+            values.usua_UsuarioCreacion = user;
           
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));

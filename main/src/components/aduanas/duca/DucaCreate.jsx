@@ -101,45 +101,52 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
                   console.log("Devas", response.data.data)
                   const devas = response.data.data;
                   console.log(devas);
-                  axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+                  if(localStorage.getItem('ducaId') != null){
+                     axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
                     headers: {
                         'XApiKey': apiKey
                     }
             
-                })
-                .then(response => {
-                  const localDevas = response.data.data;
-                  console.log('devas insertadas', localDevas);
-                 
-                  if (localDevas && devas) {
-                   const parsedLocal = localDevas;
-                   const devasDesdeApi = devas;
-                  console.log('devas desde listar', devasDesdeApi);
-                   const nuevos = devasDesdeApi.filter(apiDeva =>
-                    !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
-                   );
-                
-                   const combinado = [...parsedLocal, ...nuevos];
-                   setDeva(combinado);
-                  } else if(localDevas)
-                  {
-                    console.log('entro solo a las devas ya insertadas')
+                  })
+                  .then(response => {
+                    const localDevas = response.data.data;
+                    console.log('devas insertadas', localDevas);
+                  
+                    if (localDevas && devas) {
                     const parsedLocal = localDevas;
-                    setDeva(parsedLocal);
-      
+                    const devasDesdeApi = devas;
+                    console.log('devas desde listar', devasDesdeApi);
+                    const nuevos = devasDesdeApi.filter(apiDeva =>
+                      !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
+                    );
+                  
+                    const combinado = [...parsedLocal, ...nuevos];
+                    setDeva(combinado);
+                    } else if(localDevas)
+                    {
+                      console.log('entro solo a las devas ya insertadas')
+                      const parsedLocal = localDevas;
+                      setDeva(parsedLocal);
+        
+                    }
+                    else if (devas) {
+                      console.log('entro solo a las devas del listar')
+                    setDeva(devas);
+                    }
+                    else {
+                      console.log('entro al else')
+                      setDeva([]);
+                    }
+                  })
+                  .catch(error => {
+                      console.error('Error al obtener los datos del país:', error);
+                  });
                   }
-                  else if (devas) {
-                    console.log('entro solo a las devas del listar')
-                   setDeva(devas);
+                  else
+                  {
+                      setDeva(devas);
                   }
-                  else {
-                    console.log('entro al else')
-                    setDeva([]);
-                  }
-              })
-              .catch(error => {
-                  console.error('Error al obtener los datos del país:', error);
-              });
+                 
             })
             .catch(error => {
               console.error('Error al obtener los datos del país:', error);

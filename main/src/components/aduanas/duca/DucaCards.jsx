@@ -9,7 +9,7 @@ TextField,InputAdornment,TablePagination, Grid,  CardContent,
   Tooltip,
     Fab,Box,Button, Menu, MenuItem,
   ListItemIcon, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText, Snackbar, Alert, Link
+  DialogContentText, Snackbar, Alert, Link,IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -38,6 +38,7 @@ const DucaCards = () => {
     const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [verMasSet, setVerMasSet] = useState(new Set());
+    const [iconRotated, setIconRotated] = useState(false);
 
     const [alertConfig, setAlertConfig] = useState({
         severity: '',
@@ -101,6 +102,7 @@ const DucaCards = () => {
       setPersonaSeleccionada(persona);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true);
     }
     const abrirMas = (evento, tipo, id) => {
       setVerMasSet((prev) => {
@@ -117,6 +119,7 @@ const DucaCards = () => {
   
     function cerrarMenu() {
       setMenuAbierto(false);
+       setIconRotated(false);
     }
     const listarDucas = () => {
         axios.get(`${apiUrl}/api/Duca/Listar`, {
@@ -240,19 +243,27 @@ const DucaCards = () => {
                                   </Typography>
 
                                 {/* Tooltip justo debajo de la imagen */}
-                                <Tooltip title="Acciones">
-                                    <Fab
-                                    size="small"
-                                    color="primary"
-                                    sx={{
-                                        top: '40px', right: '15px', position: 'absolute' 
-                                       
-                                    }}
-                                    onClick={(e) => abrirMenu(e, duca)}
-                                    >
-                                      <SettingsIcon size="16" />
-                                    </Fab>
-                                </Tooltip>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => abrirMenu(e, duca)}
+                                  sx={{
+                                    backgroundColor: '#d9e7ef', // Fondo celeste claro
+                                    color: 'rgb(0, 83, 121)',           // Color del icono
+                                    '&:hover': {
+                                      backgroundColor: 'rgb(157, 191, 207)',
+                                    },
+                                    border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                                    borderRadius: '8px',         // Bordes redondeados
+                                    padding: '6px',top: '7px', right: '15px', position: 'absolute', zIndex: 2
+                                  }}
+                                >
+                                  <SettingsIcon 
+                                  sx={{transition: 'transform 0.3s ease-in-out',
+                                    transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                  fontSize="small" />
+                                  <Typography variante="h6">Acciones</Typography>
+                                </IconButton> 
+
                                 </Box>
                                 <CardContent sx={{
                                   backgroundColor: '#fff',
