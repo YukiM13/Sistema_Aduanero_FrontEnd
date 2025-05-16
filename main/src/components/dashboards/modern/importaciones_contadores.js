@@ -80,7 +80,7 @@ useEffect(() => {
     const IconComponent = topcard.icon;
 
     return (
-      <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+      <Grid item xs={12} sm={6} md={4} lg={4} key={i}>
         <Link to={topcard.href} style={{ textDecoration: 'none' }}>
           <Box
             sx={{

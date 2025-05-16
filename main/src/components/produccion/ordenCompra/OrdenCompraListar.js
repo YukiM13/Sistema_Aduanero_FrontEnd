@@ -13,17 +13,11 @@ import '../ordenCompra/ordenCompraDataGrid.css';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OrdenesComprasDetalle from '../ordenCompraDetalle/OrdenCompraDetalleList';
-
-import { useNavigate } from 'react-router-dom';
-
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
 import OrdenCompraComponent from './OrdenCompraCrear';
 import OrdenCompraDetallesCreateComponent from '../ordenCompraDetalle/OrdenCompraDetalleCreate';
-
 import OrdenCompraEditComponent from './OrdenCompraEditar';
-// import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
-
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,11 +25,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
-import { alertMessages } from 'src/layouts/config/alertConfig';
-
 import { Collapse} from '@mui/material';
+import StyledButton from 'src/components/shared/StyledButton';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
@@ -48,7 +40,7 @@ import { Collapse} from '@mui/material';
 
 const OrdenesCompras = () => {
   const [collapseAbiertoId, setCollapseAbiertoId] = useState(null);
-
+  const [iconRotated, setIconRotated] = useState(false);
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
   const [ordenCompraEditando, setOrdenCompraEditando] = useState(null);
@@ -109,11 +101,15 @@ const OrdenesCompras = () => {
   const abrirMenu = (evento, ordenCompra) => {
     setPosicionMenu(evento.currentTarget);
     setOrdenCompraSeleccionada(ordenCompra);
-    console.log(ordenCompra);
+    //console.log(ordenCompra);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setIconRotated(false);
+  }
 
   const handleAgregarClick = () => {
     setShowCollapse(true);
@@ -124,12 +120,12 @@ const OrdenesCompras = () => {
     setAlerta({ tipo: 'success', mensaje: 'Detalle guardado correctamente.' });
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setCollapseAbiertoId(null);
-    console.log('Guardado exitoso');
+    //console.log('Guardado exitoso');
   };
 
   const handleCancelar = () => {
     setShowCollapse(false);
-    console.log('Cancelar'); 
+    //console.log('Cancelar'); 
   };
 
   const handleEditar = () => {
@@ -185,20 +181,25 @@ const OrdenesCompras = () => {
   // const navigate = useNavigate();
 
   return (
-    <div>
-      
+    <div >
       <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
-      <ParentCard sx={{ width: '100%', maxWidth: '100%', overflowX: 'auto' }}>
+      <ParentCard>
         {modo === 'listar' && (
-          <>
+          <div>
             <Stack direction="row" justifyContent="space-between" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                Nuevo
-              </Button>
+              <StyledButton
+                  sx={{}}
+                  title="Nuevo"
+                  event={() => setModo('crear')}
+              >
+              </StyledButton>
+            </Stack>
+            <Paper>
               <TextField
                 variant="outlined"
                 size="small"
                 placeholder="Buscar"
+                sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
@@ -209,47 +210,66 @@ const OrdenesCompras = () => {
                   )
                 }}
               />
-            </Stack>
-
-            {alerta && (
-              <Alert severity={alerta.tipo} onClose={() => setAlerta(null)}>
-                {alerta.mensaje}
-              </Alert>
-            )}
-            <TableContainer component={Paper} sx={{ width: '100%', overflowX: 'auto' }}>
-                <Table>
+              <TableContainer component={Paper} sx={{ width: '100%', overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 1100, tableLayout: 'auto' }}>
                     <TableHead>
                         <TableRow> 
-                            <TableCell><Typography variant="h6"></Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Cliente</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Código</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Fecha Emisión</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Fecha Límite</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Método de Pago</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 70 }}><Typography variant="h6">Materiales</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 120 }}><Typography variant="h6">Embalaje</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Estado</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Dirección de Entrega</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">
+                            </Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Acciones</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Cliente</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Código</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Fecha Emisión</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Fecha Límite</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Método de Pago</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Materiales</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Embalaje</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Estado</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Dirección de Entrega</Typography>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
                 {(rowsPerPage > 0
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
-                ).map((ordenCompra) => (
+                ).map((ordenCompra, index) => (
                   <React.Fragment key={ordenCompra.orco_Id}>
-                  <TableRow align="center">
+                  <TableRow align="center"
+                    sx={{
+                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                        '&:hover': { backgroundColor: '#e3f2fd' },
+                    }}
+                  >
                   <TableCell>
                       <IconButton
-                        aria-label="expand row"
                         size="small"
                         onClick={() =>
                           setCollapseAbiertoId(
                             collapseAbiertoId === ordenCompra.orco_Id ? null : ordenCompra.orco_Id
                           )
                         }
-                        > 
+                      > 
                         {collapseAbiertoId === ordenCompra.orco_Id ? (
                           <KeyboardArrowUpIcon />
                         ) : (
@@ -258,28 +278,44 @@ const OrdenesCompras = () => {
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={(e) => abrirMenu(e, ordenCompra)}>
-                        <SettingsIcon sx={{ color: '#7521f3', fontSize: '20px' }} />
+                      <IconButton
+                        size="small"
+                        onClick={(e) => abrirMenu(e, ordenCompra)}
+                        sx={{
+                            backgroundColor: '#d9e7f7',
+                            color: 'rgb(0, 83, 121)',
+                            '&:hover': {
+                                backgroundColor: 'rgb(157, 191, 207)',
+                            },
+                            border: '2px solid rgb(0, 83, 121)',
+                            borderRadius: '8px',
+                            padding: '6px'
+                        }}
+                      >
+                        <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                            transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                            fontSize="small" 
+                        />
+                        <Typography variante="h6">Acciones</Typography>
                       </IconButton>
                     </TableCell>
-                    <TableCell align='center'>{ordenCompra.clie_Nombre_O_Razon_Social}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_Codigo}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_FechaEmision}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_FechaLimite}</TableCell>
-                    <TableCell align='center'>{ordenCompra.fopa_Descripcion}</TableCell>
-                    <TableCell align='center'>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.clie_Nombre_O_Razon_Social}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.orco_Codigo}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.orco_FechaEmision}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.orco_FechaLimite}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.fopa_Descripcion}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">
                       {ordenCompra.orco_Materiales === true
                         ? 'Sí'
                         : ordenCompra.orco_Materiales === false
                         ? 'No'
-                        : '—'}
+                        : '—'
+                      }
+                      </Typography>
                     </TableCell>
-                    <TableCell align='center'>{ordenCompra.tiem_Descripcion ?? '—'}</TableCell>
-                    <TableCell align='center'>{ordenCompra.orco_EstadoOrdenCompra}</TableCell>
-                    <TableCell align='center' sx={{ minWidth: 250, whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                      {ordenCompra.orco_DireccionEntrega ?? '—'}
-                    </TableCell>
-
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.tiem_Descripcion ?? '—'}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.orco_EstadoOrdenCompra}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{ordenCompra.orco_DireccionEntrega ?? '—'}</Typography></TableCell>
                   </TableRow>
 
                   {collapseAbiertoId === ordenCompra.orco_Id && (
@@ -347,7 +383,8 @@ const OrdenesCompras = () => {
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
             />
-          </>
+            </Paper>
+          </div>
         )}
 
         {modo === 'crear' && (

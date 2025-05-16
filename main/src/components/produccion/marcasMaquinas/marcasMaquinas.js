@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
-
 import MarcaMaquinaCreateComponent from './MarcaMaquinaCreate';
 import MarcaMaquinaEditComponent from './MarcaMaquinaEdit';
 import MarcaMaquinaDetailsComponent from './MarcaMaquinaDetails';
@@ -22,15 +21,14 @@ import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
-//Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import StyledButton from 'src/components/shared/StyledButton';
 
 
 
 const MarcaMaquina = () => {
-
-    const [MarcasMaquinas, setMarcaMaquina] = useState([]);
-    
+      const [MarcasMaquinas, setMarcaMaquina] = useState([]);
+      const [iconRotated, setIconRotated] = useState(false); 
       const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
       const [openSnackbar, setOpenSnackbar] = useState(false);
       const [menuAbierto, setMenuAbierto] = useState(false);
@@ -85,10 +83,12 @@ const MarcaMaquina = () => {
       setMarcasMaquinaSeleccionada(MarcaMaquina);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true);
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false);
     }
 
 
@@ -188,9 +188,12 @@ const MarcaMaquina = () => {
          
                 <container>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
-                <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-                  {'Nuevo'}
-                </Button>
+                <StyledButton
+                    sx={{}}
+                    title="Nuevo"
+                    event={() => setModo('crear')}
+                >
+                </StyledButton>
             </Stack>
               <Paper variant="outlined">
                 <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -205,36 +208,42 @@ const MarcaMaquina = () => {
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                             <Typography variant="h6">Acciones</Typography>
                           </TableCell>
-                        <TableCell>
-                          <Typography variant="h6">Id</Typography>
-                        </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                           <Typography variant="h6">Nombre</Typography>
                         </TableCell>
-                        
-                        
                       </TableRow>
                     </TableHead>
                     <TableBody>
                     {filteredData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((MarcaMaquina) => (
+                      .map((MarcaMaquina, index) => (
                         <TableRow key={MarcaMaquina.marq_Id}>
                           <TableCell align="center">
-      
                           <IconButton
                             size="small" 
-                            // se abre el menu y se Selecciona la data de la fila 
                             onClick={(e) => abrirMenu(e, MarcaMaquina)}
+                            sx={{
+                                backgroundColor: '#d9e7f7',
+                                color: 'rgb(0, 83, 121)',
+                                '&:hover': {
+                                    backgroundColor: 'rgb(157, 191, 207)',
+                                },
+                                border: '2px solid rgb(0, 83, 121)',
+                                borderRadius: '8px',
+                                padding: '6px'
+                            }}
                           >
-                          <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                fontSize="small" 
+                            />
+                            <Typography variante="h6">Acciones</Typography>
                           </IconButton>
                           </TableCell>
-                          <TableCell>{MarcaMaquina.marq_Id}</TableCell>
-                          <TableCell>{MarcaMaquina.marq_Nombre}</TableCell>
+                          <TableCell><Typography variant="body1">{MarcaMaquina.marq_Nombre}</Typography></TableCell>
                           
                         </TableRow>
                       ))}
