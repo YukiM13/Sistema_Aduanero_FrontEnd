@@ -17,15 +17,21 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
+// Autocomplete
+import { styled } from '@mui/material/styles';
+import { TextField } from '@mui/material';  
+import Autocomplete from '@mui/material/Autocomplete';
+// Autocomplete
 
 const PlanificacionPoPdf = () => {
-    const [planificacionData, setPlanificacionData] = useState(null);
+    const [planificacionData, setPlanificacionData] = useState([]);
+      const [SelectedOrco, setSelectedOrco] = useState(null);
     const [orcoData, setOrcoData] = useState(null);
     const contenidoRef = useRef();
 
     const formik = useFormik({
         initialValues: {
-            orco_Id: ''
+            orco_Id: '1'
         },
         onSubmit: (values) => {
             buscarplanificacionPO(values);
@@ -35,14 +41,14 @@ const PlanificacionPoPdf = () => {
     const buscarplanificacionPO = async (values) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-        
+
         try {
             const response = await axios.post(`${apiUrl}/api/Reportes/PlanificacionPO`, values, {
                 headers: {
                     'XApiKey': apiKey
                 }
             });
-            
+
             if (response.data && response.data.data) {
                 setPlanificacionData(response.data.data);
                 console.log('Datos:', response.data.data);
@@ -55,14 +61,14 @@ const PlanificacionPoPdf = () => {
   const buscarOrcoId = async (values) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-        
+
         try {
-            const response = await axios.get(`${apiUrl}/api/Graficas/ClientesProductivos`, {
+            const response = await axios.get(`${apiUrl}/api/AsignacionesOrden/Listar`, {
                 headers: {
                     'XApiKey': apiKey
                 }
             });
-            
+
             if (response.data && response.data.data) {
                 setOrcoData(response.data.data);
                 console.log('Datos:', response.data.data);
@@ -79,14 +85,14 @@ const PlanificacionPoPdf = () => {
             margin: 3,
             filename: 'temporal.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
+            html2canvas: {
                 scale: 1.5,
                 useCORS: true,
                 letterRendering: true
             },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
+            jsPDF: {
+                unit: 'mm',
+                format: 'a4',
                 orientation: 'portrait',
                 compress: true
             }
@@ -147,28 +153,64 @@ useEffect(() => {
                     <form onSubmit={formik.handleSubmit}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={2}>
-                                <CustomFormLabel>ID de Orden</CustomFormLabel>
-                                <CustomTextField
+                                
+
+        {/* Comienzo d autocomplete */}
+
+
+
+                   
+                        <CustomFormLabel>ID de Orden</CustomFormLabel>
+                        <Autocomplete
+                        options={orcoData}
+                        getOptionLabel={(option) => option.orco_Codigo || ''}
+                        value={SelectedOrco}
+                        onChange={(event, newValue) => {
+                            setSelectedOrco(newValue);
+                            if (newValue) {
+                            formik.setFieldValue('orco_Id', newValue.orco_Id);
+                            } else {
+                            formik.setFieldValue('orco_Id', 0);
+                            formik.setFieldValue('orco_Id', 0);
+                            }
+                        }}
+                        
+                        renderInput={(params) => (
+                            <TextField 
+                            {...params} 
+                            variant="outlined" 
+                            placeholder="Seleccione un País"
+                            error={formik.touched.orco_Id && Boolean(formik.errors.orco_Id)}
+                            helperText={formik.touched.orco_Id && formik.errors.orco_Id}
+                            />
+              )}
+              noOptionsText="No hay países disponibles"
+              isOptionEqualToValue={(option, value) => option.orco_Id === value?.orco_Id} />
+
+
+                                {/* <CustomTextField
                                     fullWidth
                                     name="orco_Id"
                                     value={formik.values.orco_Id}
                                     onChange={formik.handleChange}
-                                />
-                            </Grid>
+                                />*/}
+                            </Grid> 
+
+         {/* fin d autocomplete */}                   
                             <Grid item style={{  marginTop: '5%'}}>
-                                <Button 
+                                <Button
                                     variant="outlined"
                                     type="submit"
                                     startIcon={<Search />}
                                 >
                                     Buscar
-                                </Button>
+                               </Button>
                             </Grid>
                         </Grid>
                     </form>
                 </Grid>
 
-                {planificacionData && (
+                {planificacionData.length>0 && (
                     <Grid item xs={12}>
                         <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                             <Button
@@ -205,19 +247,18 @@ useEffect(() => {
                                     </tr> */}
                                     <tr>
                                         <th bgcolor="#f8f8f8">Orden ID:</th>
-                                        <td colSpan="2">{planificacionData[0].orco_Id}</td>
-                                        <th bgcolor="#f8f8f8">Cantidad Prenda:</th>
-                                        <td colSpan="2">{planificacionData[0].code_CantidadPrenda}</td>
+                                        <td colSpan="2">{(planificacionData[0].orco_Id)?planificacionData[0].orco_Id:'No Disponible'}</td>
+                                        <th bgcolor="#f8f8f8">Cantidad Prenda:</th>                                        <td colSpan="2">{planificacionData[0].code_CantidadPrenda || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Sexo:</th>
-                                        <td colSpan="2">{planificacionData[0].code_Sexo}</td>
+                                        <td colSpan="2">{planificacionData[0].code_Sexo || 'No Disponible'}</td>
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Fecha Inicio:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].asor_FechaInicio).toLocaleDateString()}</td>
+                                        <td colSpan="2">{(planificacionData[0].asor_FechaInicio) ? new Date(planificacionData[0].asor_FechaInicio).toLocaleDateString() : 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Fecha Límite:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].asor_FechaLimite).toLocaleDateString()}</td>
+                                        <td colSpan="2">{(planificacionData[0].asor_FechaLimite) ? new Date(planificacionData[0].asor_FechaLimite).toLocaleDateString() : 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Material Inicio:</th>
-                                        <td colSpan="2">{new Date(planificacionData[0].mate_FechaInicio).toLocaleDateString()}</td>
+                                        <td colSpan="2">{(planificacionData[0].mate_FechaInicio) ? new Date(planificacionData[0].mate_FechaInicio).toLocaleDateString() : 'No Disponible'}</td>
                                     </tr>
 
 
@@ -226,19 +267,19 @@ useEffect(() => {
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Cliente:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Nombre_O_Razon_Social}</td>
+                                        <td colSpan="2">{planificacionData[0].clie_Nombre_O_Razon_Social||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">RTN:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_RTN}</td>
+                                        <td colSpan="2">{(planificacionData[0].clie_RTN)?planificacionData[0].clie_RTN:'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">ID:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Id}</td>
+                                        <td colSpan="2">{(planificacionData[0].clie_Id)?planificacionData[0].clie_Id:'No Disponible'}</td>
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Nombre contacto:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Nombre_Contacto}</td>
+                                        <td colSpan="2">{planificacionData[0].clie_Nombre_Contacto||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Número Contacto:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Numero_Contacto}</td>
+                                        <td colSpan="2">{planificacionData[0].clie_Numero_Contacto||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Correo:</th>
-                                        <td colSpan="2">{planificacionData[0].clie_Correo_Electronico}</td>
+                                        <td colSpan="2">{planificacionData[0].clie_Correo_Electronico||'No Disponible'}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
@@ -246,79 +287,73 @@ useEffect(() => {
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Estilo:</th>
-                                        <td colSpan="2">{planificacionData[0].esti_Descripcion}</td>
+                                        <td colSpan="2">{planificacionData[0].esti_Descripcion||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Color:</th>
-                                        <td colSpan="2">{planificacionData[0].colr_Nombre}</td>
+                                        <td colSpan="2">{planificacionData[0].colr_Nombre||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Talla:</th>
-                                        <td colSpan="2">{planificacionData[0].tall_Nombre}</td>
+                                        <td colSpan="2">{planificacionData[0].tall_Nombre||'No Disponible'}</td>
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Proceso:</th>
-                                        <td colSpan="2">{planificacionData[0].proc_Descripcion}</td>
+                                        <td colSpan="2">{planificacionData[0].proc_Descripcion ||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Empleado:</th>
-                                        <td colSpan="2">{planificacionData[0].empl_NombreCompleto}</td>
+                                        <td colSpan="2">{planificacionData[0].empl_NombreCompleto ||'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Cantidad:</th>
-                                        <td colSpan="2">{planificacionData[0].asor_Cantidad}</td>
+                                        <td colSpan="2">{planificacionData[0].asor_Cantidad ||'No Disponible'}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>ESTADÍSTICAS</th>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Pedidos Terminados:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosTerminados}</td>
+                                        <th bgcolor="#f8f8f8">Pedidos Terminados:</th>                                        <td colSpan="2">{planificacionData[0].pedidosTerminados || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">En Curso:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosCurso}</td>
+                                        <td colSpan="2">{planificacionData[0].pedidosCurso || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Pendientes:</th>
-                                        <td colSpan="2">{planificacionData[0].pedidosPendientes}</td>
+                                        <td colSpan="2">{planificacionData[0].pedidosPendientes || 'No Disponible'}</td>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Cantidad Completada:</th>
-                                        <td colSpan="2">{planificacionData[0].cantidadCompletada}</td>
-                                        <th bgcolor="#f8f8f8">% Completado:</th>
-                                        <td colSpan="2">{planificacionData[0].procentajeCompletado}%</td>
+                                        <th bgcolor="#f8f8f8">Cantidad Completada:</th>                                        <td colSpan="2">{planificacionData[0].cantidadCompletada || 'No Disponible'}</td>
+                                        <th bgcolor="#f8f8f8"> Completado:</th>
+                                        <td colSpan="2">{(planificacionData[0].procentajeCompletado || 'No Disponible') }</td>
                                         <th bgcolor="#f8f8f8">Total Producción:</th>
-                                        <td colSpan="2">{planificacionData[0].totalProduccion}</td>
+                                        <td colSpan="2">{planificacionData[0].totalProduccion || 'No Disponible'}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>INFORMACIÓN DE MÁQUINA</th>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Máquina ID:</th>
-                                        <td colSpan="2">{planificacionData[0].maqu_Id}</td>
+                                        <th bgcolor="#f8f8f8">Máquina ID:</th>                                        <td colSpan="2">{planificacionData[0].maqu_Id || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Serie:</th>
-                                        <td colSpan="2">{planificacionData[0].maqu_NumeroSerie}</td>
+                                        <td colSpan="2">{planificacionData[0].maqu_NumeroSerie || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Marca:</th>
-                                        <td colSpan="2">{planificacionData[0].marq_Nombre}</td>
+                                        <td colSpan="2">{planificacionData[0].marq_Nombre || 'No Disponible'}</td>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Días Activa:</th>
-                                        <td colSpan="2">{planificacionData[0].diasActiva}</td>
+                                        <th bgcolor="#f8f8f8">Días Activa:</th>                                        <td colSpan="2">{planificacionData[0].diasActiva || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Días Inactiva:</th>
-                                        <td colSpan="2">{planificacionData[0].diasInactiva}</td>
+                                        <td colSpan="2">{planificacionData[0].diasInactiva || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Total Inactiva:</th>
-                                        <td colSpan="2">{planificacionData[0].diasTotalesInactiva}</td>
+                                        <td colSpan="2">{planificacionData[0].diasTotalesInactiva || 'No Disponible'}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>PROMEDIOS Y TOTALES</th>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Promedio Cantidad:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioCantidad}</td>
+                                        <th bgcolor="#f8f8f8">Promedio Cantidad:</th>                                        <td colSpan="2">{planificacionData[0].promedioCantidad || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Promedio Daño:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioDanio}</td>
+                                        <td colSpan="2">{planificacionData[0].promedioDanio || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Promedio Producción:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioProduccion}</td>
+                                        <td colSpan="2">{planificacionData[0].promedioProduccion || 'No Disponible'}</td>
                                     </tr>
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Total Material:</th>
-                                        <td colSpan="2">{planificacionData[0].totalMaterial}</td>
+                                        <th bgcolor="#f8f8f8">Total Material:</th>                                        <td colSpan="2">{planificacionData[0].totalMaterial || 'No Disponible'}</td>
                                         <th bgcolor="#f8f8f8">Promedio Material:</th>
-                                        <td colSpan="2">{planificacionData[0].promedioMaterial}</td>
-                                        <th bgcolor="#f8f8f8">% Material:</th>
-                                        <td colSpan="2">{planificacionData[0].porcentajeMaterial}%</td>
+                                        <td colSpan="2">{planificacionData[0].promedioMaterial || 'No Disponible'}</td>
+                                        <th bgcolor="#f8f8f8"> Material:</th>
+                                        <td colSpan="2">{(planificacionData[0].porcentajeMaterial || 'No Disponible')}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
@@ -326,23 +361,22 @@ useEffect(() => {
                                     </tr>
                                     <tr>
                                         <th bgcolor="#f8f8f8">Observaciones:</th>
-                                        <td colSpan="8">{planificacionData[0].mahi_Observaciones}</td>
+                                        <td colSpan="8">{planificacionData[0].mahi_Observaciones || 'No Disponible'}</td>
                                     </tr>
                                 </table>
 
-                                <div
-                                    style={{
+                                <div                                    style={{
                                         position: 'absolute',
                                         top: '50%',
-                                        transform: 'translate(-50%, -50%)',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%) scale(2)',
                                         width: '100%',
                                         height: 'auto',
                                         opacity: 0.2,
                                         pointerEvents: 'none',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transform: 'scale(2)'
+                                        justifyContent: 'center'
                                     }}
                                 >
                                     <LogoAzul style={{ maxWidth: '100%', maxHeight: '100%' }} />

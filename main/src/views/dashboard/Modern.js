@@ -10,6 +10,9 @@ import Social from '../../components/dashboards/modern/Social';
 import SellingProducts from '../../components/dashboards/modern/SellingProducts';
 import WeeklyStats from '../../components/dashboards/modern/WeeklyStats';
 import TopPerformers from '../../components/dashboards/modern/TopPerformers';
+import ClientesProductivosChart from '../../components/dashboards/modern/ClientesProductivosChart';
+import ProductividadModulosChart from '../../components/dashboards/modern/ProductividadModulosChart';
+import PrendasPedidasChart from '../../components/dashboards/modern/PrendasPedidasChart';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
 import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
@@ -73,6 +76,17 @@ const Modern = () => {
           <PaisesMasExportadores />
         </Grid>
         {/* column */}
+        <Grid item xs={12} lg={8}>
+          <ClientesProductivosChart />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <ProductividadModulosChart />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <PrendasPedidasChart />
+        </Grid>
         <Grid item xs={12} lg={8}>
           <TopPerformers />
         </Grid>
