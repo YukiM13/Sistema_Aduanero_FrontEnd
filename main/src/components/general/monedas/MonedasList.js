@@ -6,6 +6,7 @@ import {
     IconButton, Menu, MenuItem,
     ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, 
 } from '@mui/material';
+import StyledButton from 'src/components/shared/StyledButton';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
@@ -33,6 +34,7 @@ const MonedasComponent = () => {
     severity: '',
     message: '',
   });
+  const [iconRotated, setIconRotated] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
   const mostrarAlerta = (tipo) => {
@@ -65,10 +67,14 @@ const MonedasComponent = () => {
       setMonedaSeleccionada(persona);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+       setIconRotated(true);
+
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false);
+
     }
     const cargarMonedas =() =>{
       axios.get(`${apiUrl}/api/Moneda/Listar`, {
@@ -114,11 +120,14 @@ const MonedasComponent = () => {
        
    
           <container>
-      <Stack direction="row" justifyContent="flex-start" mb={2}>
-          <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-            {'Nuevo'}
-          </Button>
-      </Stack>
+            <Stack direction="row" justifyContent="flex-start" mb={2}>
+                <StyledButton  
+                  sx={{}} 
+                  title="Nuevo"
+                  event={() => setModo('crear')}>
+                </StyledButton>
+            </Stack>
+
         <Paper variant="outlined">
           <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
             InputProps={{
@@ -132,13 +141,13 @@ const MonedasComponent = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">
+                <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold',align:"center" }}>
                   <Typography variant="h6">Acciones</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Codigo</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Descripción</Typography>
                 </TableCell>
               </TableRow>
@@ -150,16 +159,30 @@ const MonedasComponent = () => {
                 <TableRow key={moneda.mone_Id}>
                  <TableCell align="center">
 
-                  <IconButton
-                    size="small" 
-                    // se abre el menu y se selecciona la data de la fila 
-                    onClick={(e) => abrirMenu(e, moneda)}
-                  >
-                  <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                  </IconButton>
+                 <IconButton
+                      size="small"
+                      onClick={(e) => abrirMenu(e, moneda)}
+                      sx={{
+                        backgroundColor: '#d9e7ef', // Fondo celeste claro
+                        color: 'rgb(0, 83, 121)',           // Color del icono
+                        '&:hover': {
+                          backgroundColor: 'rgb(157, 191, 207)',
+                        },
+                        border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                        borderRadius: '8px',         // Bordes redondeados
+                        padding: '6px'
+                      }}
+                    >
+                      <SettingsIcon 
+                      sx={{transition: 'transform 0.3s ease-in-out',
+                        transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                      fontSize="small" />
+                      <Typography variante="h6">Acciones</Typography>
+                    </IconButton> 
+
                   </TableCell>
-                  <TableCell>{moneda.mone_Codigo}</TableCell>
-                  <TableCell>{moneda.mone_Descripcion}</TableCell>
+                  <TableCell><Typography variant="body1">{moneda.mone_Codigo}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{moneda.mone_Descripcion}</Typography></TableCell>
                 </TableRow>
               ))}
              {emptyRows > 0 && (

@@ -523,8 +523,8 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
-//deb 
-  if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
+
+    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'II. Declaracion de Valor',
@@ -534,8 +534,7 @@ export const generarMenu = async () => {
       });
     }
 
-  if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
-
+    if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'III.Planificacion PO',
@@ -543,9 +542,8 @@ export const generarMenu = async () => {
         href: '/PlanificacionPO',
         chipColor: 'secondary',
       });
-          }
-  
- 
+    }
+
     if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
       impresion.children.push({
         id: uniqueId(),
@@ -565,7 +563,6 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
-//deb
 
     if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
       impresion.children.push({
@@ -617,6 +614,16 @@ export const generarMenu = async () => {
       });
     }
 
+    if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Materiales por Orden de compra',
+        icon: IconPoint,
+        href: '/materialesporpo',
+        chipColor: 'secondary',
+      });
+    }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
@@ -632,9 +639,7 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
-  //deb
-
-
+  
   if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
@@ -642,33 +647,6 @@ export const generarMenu = async () => {
       icon: IconFileCertificate,
       href: '/duca',
       chipColor: 'secondary',
-    });
-  }
-  if (esAdmin || nombresDePantalla.includes('Ducas')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Ducas',
-      icon: IconFileCertificate,
-      href: '/duca',
-      chipColor: 'secondary',
-    });
-  }
-  if (esAdmin || nombresDePantalla.includes('devaspendientes')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Devas Pendientes',
-      icon: IconFileCertificate,
-      href: '/devaspendientes/list',
-      chipColor: 'secondary',
-    });
-  }
-  if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Materiales por Orden de compra',
-      icon: IconFileCertificate,
-      href: '/materialesporpo',
-      chipColor: 'secondary',//esquema aduanas
     });
   }
   

@@ -25,12 +25,15 @@ const OficioEditComponent = ({ oficioProfesion,onCancelar, onGuardadoExitoso }) 
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const formik = useFormik({
         
         initialValues: oficioProfesion,
         validationSchema,
         onSubmit: (values) => {
-          values.usua_UsuarioModificacion = 1;
+          values.usua_UsuarioModificacion = user;
           values.ofpr_FechaModificacion =  new Date().toISOString()
           console.log("Valores antes de enviar:", values);
           axios.post(`${apiUrl}/api/Oficio_Profesiones/Editar`, values, {
