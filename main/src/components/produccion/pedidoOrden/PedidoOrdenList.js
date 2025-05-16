@@ -35,7 +35,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
-
+import StyledButton from 'src/components/shared/StyledButton';
 import { Collapse} from '@mui/material';
 // import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -49,7 +49,7 @@ import { Collapse} from '@mui/material';
 
 const PedidosOrdenes = () => {
   const [collapseAbiertoId, setCollapseAbiertoId] = useState(null);
-
+  const [iconRotated, setIconRotated] = useState(false);
   const [pedidosOrdenes, setPedidosOrdenes] = useState([]);
   const [modo, setModo] = useState('listar');
   const [pedidoOrdenEditando, setPedidoOrdenEditando] = useState(null);
@@ -98,9 +98,13 @@ const PedidosOrdenes = () => {
     console.log(pedidoOrden);
     setMenuAbierto(true);
     setPedidoOrdenSeleccionado(pedidoOrden);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setIconRotated(false)
+  }
 
   const handleAgregarClick = () => {
     setShowCollapse(true);
@@ -178,9 +182,12 @@ const PedidosOrdenes = () => {
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                Nuevo
-              </Button>
+              <StyledButton
+                  sx={{}}
+                  title="Nuevo"
+                  event={() => setModo('crear')}
+              >
+              </StyledButton>
               <TextField
                 variant="outlined"
                 size="small"
@@ -206,16 +213,27 @@ const PedidosOrdenes = () => {
                 <Table>
                     <TableHead>
                         <TableRow> 
-                            <TableCell><Typography variant="h6"></Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Código</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Proveedor</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">DUCA</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Ciudad</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Dirección Exacta</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 70 }}><Typography variant="h6">Fecha Entrada</Typography></TableCell>
-                            <TableCell align='center' sx={{ minWidth: 120 }}><Typography variant="h6">Observaciones</Typography></TableCell>
-                            <TableCell align='center'><Typography variant="h6">Impuestos</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6"></Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Acciones</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Código</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Proveedor</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">DUCA</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Ciudad</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Dirección Exacta</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Fecha Entrada</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Observaciones</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Impuestos</Typography></TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
@@ -243,19 +261,35 @@ const PedidosOrdenes = () => {
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={(e) => abrirMenu(e, pedidoOrden)}>
-                        <SettingsIcon sx={{ color: '#7521f3', fontSize: '20px' }} />
+                      <IconButton
+                        size="small"
+                        onClick={(e) => abrirMenu(e, pedidoOrden)}
+                        sx={{
+                            backgroundColor: '#d9e7f7',
+                            color: 'rgb(0, 83, 121)',
+                            '&:hover': {
+                                backgroundColor: 'rgb(157, 191, 207)',
+                            },
+                            border: '2px solid rgb(0, 83, 121)',
+                            borderRadius: '8px',
+                            padding: '6px'
+                        }}
+                      >
+                        <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                            transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                            fontSize="small" 
+                        />
+                        <Typography variante="h6">Acciones</Typography>
                       </IconButton>
                     </TableCell>
-                    <TableCell align='center'>{pedidoOrden.peor_Codigo}</TableCell>
-                    <TableCell align='center'>{pedidoOrden.prov_NombreCompania}</TableCell>
-                    <TableCell align='center'>{pedidoOrden.duca_No_Duca}</TableCell>
-                    <TableCell align='center'>{pedidoOrden.ciud_Nombre}</TableCell>
-                    <TableCell align='center' sx={{ minWidth: 250, whiteSpace: 'normal', wordBreak: 'break-word' }}>{pedidoOrden.peor_DireccionExacta}</TableCell>
-                    <TableCell align='center'>{pedidoOrden.peor_FechaEntrada ?? '—'}</TableCell>
-                    <TableCell align='center'>{pedidoOrden.peor_Obsevaciones}</TableCell>
-                    <TableCell align='center'> {pedidoOrden.peor_Impuestos ?? '—'}</TableCell>
-
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.peor_Codigo}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.prov_NombreCompania}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.duca_No_Duca ?? '---'}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.ciud_Nombre}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.peor_DireccionExacta}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.peor_FechaEntrada ?? '—--'}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.peor_Obsevaciones}</Typography></TableCell>
+                    <TableCell align='center'><Typography variant="body1">{pedidoOrden.peor_Impuestos ?? '—--'}</Typography></TableCell>
                   </TableRow>
 
                   {collapseAbiertoId === pedidoOrden.peor_Id && (
