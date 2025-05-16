@@ -587,7 +587,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Tiempos Maquinas')) {
+    if (esAdmin || nombresDePantalla.includes('I. TiSempos Maquinas')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'I. Tiempos Maquinas',

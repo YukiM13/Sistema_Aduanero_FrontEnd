@@ -50,13 +50,27 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  const mostrarAlerta = (tipo) => {
-    const config = alertMessages[tipo];
-    if (config) {
-      setAlertConfig(config);
-      setOpenSnackbar(true);
-    }
+  // const mostrarAlerta = (tipo) => {
+  //   const config = alertMessages[tipo];
+  //   if (config) {
+  //     setAlertConfig(config);
+  //     setOpenSnackbar(true);
+  //   }
+  // };
+const mostrarAlerta = (tipo) => {
+  const mensajes = {
+    creado: '¡Detalle de orden de compra creada exitosamente!',
+    actualizado: '¡Detalle de orden de compra actualizada exitosamente!',
+    eliminado: '¡Detalle de orden de compra eliminada exitosamente!'
   };
+
+  setAlertConfig({
+    severity: 'success',
+    message: mensajes[tipo]
+  });
+  setOpenSnackbar(true);
+};
+
 
   const cargarOrdenesCompras = () => {
     console.log(orco_Id);
@@ -276,7 +290,7 @@ const OrdenesComprasDetalle = ({orco_Id}) => {
             onGuardadoExitoso={() => {
               setModo('listar');
               cargarOrdenesCompras();
-              mostrarAlerta('guardado');
+              mostrarAlerta('creado');
             }}
           />
         )}

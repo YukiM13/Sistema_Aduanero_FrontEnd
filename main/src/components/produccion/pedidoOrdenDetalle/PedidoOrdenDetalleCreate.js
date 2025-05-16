@@ -72,8 +72,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
             mate_Id: values.mate_Id,
             prod_Cantidad: values.prod_Cantidad,
             prod_Precio: values.prod_Precio,
-            usua_UsuarioCreacion: 1,
-            code_FechaCreacion: new Date()
+            usua_UsuarioCreacion: 1
           };
 
           console.log("Datos que se enviarán al backend:", datosParaEnviar);
@@ -154,7 +153,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
                             fullWidth
                             id="prod_Cantidad"
                             name="prod_Cantidad"
-                            type="text"
+                            type="number"
                             value={formik.values.prod_Cantidad}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -169,7 +168,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
                         fullWidth
                         id="prod_Precio"
                         name="prod_Precio"
-                        type="text"
+                        type="number"
                         value={formik.values.prod_Precio}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}

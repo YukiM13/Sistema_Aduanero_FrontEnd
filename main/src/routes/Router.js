@@ -159,6 +159,7 @@ const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produ
 const ImportacionesReporte = Loadable(lazy(() => import('../components/reportes/ImportacionesReporte')));
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
+const PedidoOrdenDetalleList = Loadable(lazy(() => import('../components/produccion/pedidoOrdenDetalle/PedidoOrdenDetalleList')));
 const MaterialesIngreso = Loadable(lazy(() => import('../components/produccion/materialesingresopdf/materialesingresopdf')));
 const ProduccionAreas = Loadable(lazy(() => import('../components/produccion/ProduccionAreas/ProduccionAreas')));
 const TiemposMaquinas = Loadable(lazy(() => import('../components/produccion/TiemposMaquinas/TiemposMaquinas')))
@@ -199,7 +200,7 @@ const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landi
 
 // Reportes
 const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
-
+const ReporteContratosAdhesion = Loadable(lazy(() => import('../components/reportes/Contratos_Adhesion')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -252,6 +253,7 @@ const todasLasRutas = [
   {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
   {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
+  { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
   { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
   { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
@@ -260,6 +262,7 @@ const todasLasRutas = [
   { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'I. Reporte Modulo Dia Detalle'},
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+  { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
   { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
 ]
