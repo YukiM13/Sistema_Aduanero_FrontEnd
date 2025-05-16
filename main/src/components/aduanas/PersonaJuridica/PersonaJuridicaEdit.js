@@ -426,6 +426,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     setActiveTab((prev) => Math.max(prev - 1, 0));
   };
 
+  
   const renderTabContent = () => {
     switch (activeTab) {
       case 0:
@@ -929,8 +930,9 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     }
   };
 
+ // ...existing code...
   return (
-    <form onSubmit={handleSubmitFinal}>
+    <Box component="div">
       <Box display="flex" alignItems="center" mb={2}>
         <Button
           variant="text"
@@ -965,8 +967,9 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
           <Grid item>
             <Button
               variant="contained"
-              type="submit"
+              type="button"
               startIcon={<SaveIcon />}
+              onClick={handleSubmitFinal}
               disabled={(correoModificado && !correoVerificado) || (correoAltModificado && formik.values.peju_CorreoElectronicoAlternativo && !correoAlternativoVerificado)}
             >
               Guardar
@@ -984,7 +987,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
           {mensajeSnackbar}
         </Alert>
       </Snackbar>
-    </form>
+    </Box>
   );
 };
 
