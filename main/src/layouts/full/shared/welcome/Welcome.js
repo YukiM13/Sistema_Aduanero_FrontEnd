@@ -3,6 +3,9 @@ import { Snackbar, Alert, AlertTitle } from '@mui/material';
 
 const Welcome = () => {
   const [open, setOpen] = React.useState(false);
+  const localStorageData = localStorage.getItem('DataUsuario');
+  const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+  const userName = parsedData ? parsedData.usua_Nombre : 'Usuario';
 
   const handleClick = () => {
     setOpen(true);
@@ -15,7 +18,6 @@ const Welcome = () => {
     setOpen(false);
   };
   React.useEffect(() => {
-    // Update the document title using the browser API
     const timer = setTimeout(() => {
       handleClick();
     }, 1500);
@@ -37,8 +39,8 @@ const Welcome = () => {
           variant="filled"
           sx={{ width: '100%', color: 'white' }}
         >
-          <AlertTitle>Welcome To Modernize</AlertTitle>
-          Easy to customize the Template!!!
+          <AlertTitle>Hola {userName}</AlertTitle>
+          <strong>¡Bienvenido a Frontier Logistic!</strong>
         </Alert>
       </Snackbar>
     </React.Fragment>

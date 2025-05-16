@@ -9,8 +9,7 @@ import {
   IconFileText,
   IconFileCertificate,
   IconHome,
-  IconFileCode,
-  IconFileDatabase
+  IconFileCode
 } from '@tabler/icons';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -62,6 +61,18 @@ const Menuitems = [
 ];
 
 export const generarMenu = async () => {
+  Menuitems.length = 0;
+  Menuitems.push({
+    navlabel: true,
+    subheader: 'Home',
+  });
+  Menuitems.push({
+    id: uniqueId(),
+    title: 'Inicio',
+    icon: IconHome,
+    href: '/dashboards/modern',
+  });
+  
   let nombresDePantalla = [];
   
   if (!esAdmin && roleId) {
@@ -316,6 +327,18 @@ export const generarMenu = async () => {
       });
     }
     
+     if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
+// Planificacion PO pendiente
+      aduana.children.push({
+        id: uniqueId(),
+        title: 'Planificacion PO',
+        icon: IconPoint,
+        href: '/PlanificacionPO',
+        chipColor: 'secondary',
+      });
+          }
+  // Planificacion PO pendiente
+
     if (esAdmin || nombresDePantalla.includes('Concepto de Pago')) {
       aduana.children.push({
         id: uniqueId(),
@@ -402,7 +425,7 @@ export const generarMenu = async () => {
   if (esAdmin || 
       nombresDePantalla.some(nombre => [
         'Categorias', 'Marcas Maquinas', 'Tipo Embalaje', 
-        'Tallas', 'Sub Categorias', 'Orden Compra'
+        'Tallas', 'Sub Categorias', 'Orden Compra', 'Pedido Orden'
       ].includes(nombre))) {
     
     const produccion = {
@@ -472,6 +495,16 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+
+    if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
+      produccion.children.push({
+        id: uniqueId(),
+        title: 'Pedido Orden',
+        icon: IconPoint,
+        href: '/pedidoOrden',
+        chipColor: 'secondary',
+      });
+    }
     
     if (produccion.children.length > 0) {
       Menuitems.push(produccion);
@@ -512,20 +545,81 @@ export const generarMenu = async () => {
     }
 
     if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
-    impresion.children.push({
-      id: uniqueId(),
-      title: 'Devas Pendientes',
-      icon: IconPoint,
-      href: '/devaspendientes/list',
-      chipColor: 'secondary',
-    });
-  }
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Devas Pendientes',
+        icon: IconPoint,
+        href: '/devaspendientes/list',
+        chipColor: 'secondary',
+      });
+    }
+    
+    if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'III. Costos Materiales No Brindados',
+        icon: IconPoint,
+        href: '/CostosMaterialesNoBrindados',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Materiales Ingresos',
+        icon: IconPoint,
+        href: '/MaterialesIngresos',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Produccion Areas')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Produccion Areas',
+        icon: IconPoint,
+        href: '/ProduccionAreas',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Tiempos Maquinas')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Tiempos Maquinas',
+        icon: IconPoint,
+        href: '/TiemposMaquinas',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Produccion Por Modulos')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Produccion Por Modulos',
+        icon: IconPoint,
+        href: '/ProduccionPorModulo',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Reporte Modulo Dia Detalle')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Reporte Modulo Dia Detalle',
+        icon: IconPoint,
+        href: '/ReporteModuloDiaDetalle',
+        chipColor: 'secondary',
+      });
+    }
 
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
   }
   
+//deb
   if (esAdmin || nombresDePantalla.includes('Declaracion de Valor')) {
     Menuitems.push({
       id: uniqueId(),
@@ -535,23 +629,14 @@ export const generarMenu = async () => {
       chipColor: 'secondary',
     });
   }
-  
+  //deb
+
   if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
       id: uniqueId(),
       title: 'Ducas',
       icon: IconFileCertificate,
       href: '/duca',
-      chipColor: 'secondary',
-    });
-  }
-
-  if (esAdmin || nombresDePantalla.includes('Pedido Orden')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Pedido Orden',
-      icon: IconFileDatabase,
-      href: '/pedidoOrden',
       chipColor: 'secondary',
     });
   }
