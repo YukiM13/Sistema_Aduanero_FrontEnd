@@ -15,7 +15,7 @@ import {
   import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   pais_Codigo: yup.string().required('El código es requerido'),
   pais_Nombre: yup.string().required('El país es requerido'),
@@ -54,7 +54,7 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const formik = useFormik({
         
-        initialValues: PaisesModel,
+        initialValues: pais,
         validationSchema,
         onSubmit: (values) => {
 
@@ -73,18 +73,14 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
         //   axios.post(`${apiUrl}/api/Ciudades/Insertar`, values, {
         //     headers: { 'XApiKey': apiKey }
         //   })
-        const datosParaEnviar = {
-            pais_Id: values.pais_Id,
-            pais_Codigo: values.pais_Codigo,
-            pais_Nombre: values.pais_Nombre,
-            pais_esAduana: true,
-            usua_UsuarioCreacion: 1,
-            pais_FechaCreacion: new Date()
-          };
+        
           
-          console.log("Datos que se enviarán al backend:", datosParaEnviar);
-          
-          axios.post(`${apiUrl}/api/Paises/Editar`, datosParaEnviar, {
+          console.log("Datos que se enviarán al backend:", values);
+          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioModificacion = 1;
+          values.pais_FechaCreacion = new Date().toISOString();
+          values.pais_FechaModificacion = new Date().toISOString();
+          axios.post(`${apiUrl}/api/Paises/Editar`, values, {
             headers: { 'XApiKey': apiKey }
           })
           .then(() => {
@@ -142,25 +138,29 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                             helperText={formik.touched.pais_Nombre && formik.errors.pais_Nombre}
                         />
                 </Grid>
-
+                 <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
 
             </Grid>
-            <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-                <Grid item>
-                    <Button variant="contained" color="error" onClick={onCancelar}
-                         startIcon={<CancelIcon />}
-                    >
-                    Cancelar
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button variant="contained" type="submit"
-                         startIcon={<SaveIcon />}
-                    >
-                    Guardar
-                    </Button>
-                </Grid>
-            </Grid>
+           
            
         </form >
         <Snackbar

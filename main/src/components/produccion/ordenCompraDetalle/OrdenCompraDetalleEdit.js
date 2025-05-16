@@ -18,6 +18,7 @@ import {
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import OrdenCompraDetalleList from '../ordenCompra/OrdenCompraListar';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const validationSchema = yup.object({
     orco_Id: yup.number().required('El orden de compra es requerido'),
@@ -525,24 +526,28 @@ const OrdenCompraDetalleEditComponent = ({ordenesComprasDetalles, onCancelar, on
                       helperText={formik.touched.code_FechaProcActual && formik.errors.code_FechaProcActual}
                     />                      
                   </Grid>
-
-              </Grid>
-              <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-                  <Grid item>
-                      <Button variant="contained" color="error" onClick={onCancelar}
-                          startIcon={<CancelIcon />}
+                    <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
                       >
-                      Cancelar
-                      </Button>
-                  </Grid>
-                  <Grid item>
-                      <Button variant="contained" type="submit" onClick={formik.handleSubmit}
-                          startIcon={<SaveIcon />}
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
                       >
-                      Guardar
-                      </Button>
+                      
+                    </StyledButton>
+          
                   </Grid>
               </Grid>
+            
             </form>
           )}
         </>

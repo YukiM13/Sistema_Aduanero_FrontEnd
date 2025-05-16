@@ -14,7 +14,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import PedidoOrdenModel from 'src/models/pedidoOrdenModel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   peor_Codigo: yup.string().required('El código es requerido'),
   prov_Id: yup.number().required('El proveedor es requerido').moreThan(0, 'El proveedor es requerido'),
@@ -326,23 +326,28 @@ const PedidoOrdenCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
                             helperText={formik.touched.peor_Impuestos && formik.errors.peor_Impuestos}
                         />
                 </Grid>
+                 <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
             </Grid>
-            <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-                <Grid item>
-                    <Button variant="contained" color="error" onClick={onCancelar}
-                         startIcon={<CancelIcon />}
-                    >
-                    Cancelar
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button variant="contained" type="submit"
-                         startIcon={<SaveIcon />}
-                    >
-                    Guardar
-                    </Button>
-                </Grid>
-            </Grid>
+            
            
         </form >
         <Snackbar

@@ -13,7 +13,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import ProvinciaModel from 'src/models/provinciaModel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
     pvin_Codigo: yup.string().required('El código de la provincia es requerido'),
     pvin_Nombre: yup.string().required('El nombre de la provincia es requerido'),
@@ -110,18 +110,7 @@ const ProvinciasEdit = ({ provinciaInicial, onCancelar, onGuardadoExitoso }) => 
         </Grid>
       </Grid>
 
-      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-        <Grid item>
-          <Button variant="contained" color="error" onClick={onCancelar} startIcon={<CancelIcon />}>
-            Cancelar
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" type="submit" startIcon={<SaveIcon />} disabled={formik.isSubmitting}>
-            Guardar
-          </Button>
-        </Grid>
-      </Grid>
+     
     </form>
   );
 };

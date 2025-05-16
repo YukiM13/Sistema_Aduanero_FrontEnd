@@ -12,7 +12,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SubCategoriaModel from 'src/models/subcategoriamodel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   subc_Descripcion: yup.string().required('La descripción es requerida'),
   cate_Id: yup.number().required('La categoría es requerida').moreThan(0, 'La categoría es requerida')
@@ -102,30 +102,29 @@ const SubCategoriasCreate = ({ onCancelar, onGuardadoExitoso }) => {
               ))}
             </CustomTextField>
           </Grid>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
         </Grid>
 
-        <Grid container justifyContent="flex-end" spacing={2}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              startIcon={<SaveIcon style={{ fontSize: '18px' }} />}
-            >
-              Guardar
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={onCancelar}
-              startIcon={<CancelIcon style={{ fontSize: '18px' }} />}
-            >
-              Cancelar
-            </Button>
-          </Grid>
-        </Grid>
+        
       </form>
     </div>
   );
