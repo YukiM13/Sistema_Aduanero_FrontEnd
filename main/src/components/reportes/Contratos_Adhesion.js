@@ -186,7 +186,7 @@ const generarPDF = () => {
 
     {/* Botones */}
     <Grid item xs={12}>
-      <Grid item style={{ marginTop: '2.5%' }}>
+      <Grid item style={{ marginTop: '2.5%' }} spacing={2}>
         <Button
           variant="outlined"
           startIcon={<Search />}
@@ -206,7 +206,7 @@ const generarPDF = () => {
     </Grid>
 
     {/* Resultados */}
-    <Grid item xs={12} ref={tablaRef} style={{
+    {/* <Grid item xs={12} ref={tablaRef} style={{
         border: '1px solid #333',
         padding: '20px',
         backgroundColor: '#fff'
@@ -250,10 +250,108 @@ const generarPDF = () => {
           </tbody>
         </table>
       )}
-    </Grid>
+    </Grid> */}
+    {/* Resultados */}
+<Grid item xs={12} ref={tablaRef} style={{
+  border: '1px solid #333',
+  padding: '20px',
+  backgroundColor: '#fff'
+}}> 
+  <h3 style={{ textAlign: 'center', backgroundColor: '#0ea5e9', color: 'white', padding: '10px' }}>Resultados:</h3>
+
+  {resultado.length === 0 ? (
+    <p>No hay resultados</p>
+  ) : (
+    <table
+      border="1"
+      cellPadding="8"
+      style={{
+        marginTop: "20px",
+        width: "100%",
+        borderCollapse: "collapse"
+      }}
+    >
+      <thead>
+        <tr style={{ backgroundColor: '#f0f0f0' }}>
+          <th style={thStyle}>#</th>
+          <th style={thStyle}>Nombre</th>
+
+          {filtro.tipoContrato === "PN" && (
+            <>
+              <th style={thStyle}>Ciudad</th>
+              <th style={thStyle}>Dirección</th>
+              <th style={thStyle}>Teléfono Celular</th>
+              <th style={thStyle}>Correo</th>
+              <th style={thStyle}>DNI</th>
+            </>
+          )}
+
+          {filtro.tipoContrato === "CI" && (
+            <>
+              <th style={thStyle}>Ciudad</th>
+              <th style={thStyle}>Colonia</th>
+              <th style={thStyle}>Teléfono Celular</th>
+              <th style={thStyle}>Correo</th>
+            </>
+          )}
+
+          {filtro.tipoContrato === "PJ" && (
+            <>
+              <th style={thStyle}>Empresa</th>
+              <th style={thStyle}>Teléfono Empresa</th>
+              <th style={thStyle}>Correo Empresa</th>
+              <th style={thStyle}>Ciudad Empresa</th>
+              <th style={thStyle}>Dirección</th>
+            </>
+          )}
+        </tr>
+      </thead>
+
+      <tbody>
+        {resultado.map((item, index) => (
+          <tr key={index}>
+            <td style={tdStyle}>{index + 1}</td>
+            <td style={tdStyle}>{item.pers_Nombre}</td>
+
+            {filtro.tipoContrato === "PN" && (
+              <>
+                <td style={tdStyle}>{item.ciud_Nombre}</td>
+                <td style={tdStyle}>{item.pena_DireccionExacta}</td>
+                <td style={tdStyle}>{item.pena_TelefonoCelular}</td>
+                <td style={tdStyle}>{item.pena_CorreoElectronico}</td>
+                <td style={tdStyle}>{item.pena_DNI}</td>
+              </>
+            )}
+
+            {filtro.tipoContrato === "CI" && (
+              <>
+                <td style={tdStyle}>{item.ciud_Nombre}</td>
+                <td style={tdStyle}>{item.colo_Nombre}</td>
+                <td style={tdStyle}>{item.coin_TelefonoCelular}</td>
+                <td style={tdStyle}>{item.coin_CorreoElectronico}</td>
+              </>
+            )}
+
+            {filtro.tipoContrato === "PJ" && (
+              <>
+                <td style={tdStyle}>{item.pers_Nombre}</td> {/* Nombre empresa */}
+                <td style={tdStyle}>{item.peju_TelefonoEmpresa}</td>
+                <td style={tdStyle}>{item.peju_CorreoElectronico}</td>
+                <td style={tdStyle}>{item.ciud_Nombre}</td>
+                <td style={tdStyle}>{item.peju_PuntoReferencia}</td>
+              </>
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )}
+</Grid>
+
+
+    
   </Grid>
 );
-
 
 
 };

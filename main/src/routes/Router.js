@@ -199,6 +199,7 @@ const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landi
 // Reportes
 const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
 const ReporteContratosAdhesion = Loadable(lazy(() => import('../components/reportes/Contratos_Adhesion')));
+const ReporteSeguimientoProcesos = Loadable(lazy(() => import('../components/reportes/SeguimientoDeProcesosporPO')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -259,6 +260,7 @@ const todasLasRutas = [
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
   { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
+  { path: '/reporteSeguimientoProcesos', element: <ReporteSeguimientoProcesos  /> , pantalla:'Seguimiento de Procesos por PO' },
 
 ]
 
