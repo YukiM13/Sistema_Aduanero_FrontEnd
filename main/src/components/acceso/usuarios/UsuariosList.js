@@ -288,10 +288,10 @@ const UsuariosComponent = () => {
                                                             />
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{usuario.usua_Nombre}</TableCell>
-                                                    <TableCell>{usuario.emplNombreCompleto}</TableCell>
-                                                    <TableCell>{usuario.empl_CorreoElectronico}</TableCell>
-                                                    <TableCell>{usuario.role_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.usua_Nombre}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.emplNombreCompleto}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.empl_CorreoElectronico}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.role_Descripcion}</Typography></TableCell>
                                                     <TableCell>
                                                         {usuario.usua_Estado ? (
                                                             <Chip

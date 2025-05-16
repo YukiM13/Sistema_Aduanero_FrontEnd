@@ -146,10 +146,10 @@ const TipoEmbalajeComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Descripción</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -186,7 +186,7 @@ const TipoEmbalajeComponent = () => {
                                                             <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
                                                     </TableCell>
-                                                    <TableCell>{tipoEmbalaje.tiem_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{tipoEmbalaje.tiem_Descripcion}</Typography></TableCell>
                                                 </TableRow>
                                             ))}
                                         {emptyRows > 0 && (
