@@ -4,7 +4,7 @@ import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Button, Stack,
     IconButton, Menu, MenuItem,
-    ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
+    ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
     DialogContentText
 } from '@mui/material';
 import { Chip } from '@mui/material';
@@ -15,8 +15,8 @@ import UsuarioEditComponent from './UsuarioEdit';
 import UsuarioDetailsComponent from './UsuarioDetails';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StyledButton from 'src/components/shared/StyledButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import RestoreIcon from '@mui/icons-material/Restore';
@@ -31,6 +31,7 @@ import LockResetIcon from '@mui/icons-material/LockReset';
 
 const UsuariosComponent = () => {
     const [usuarios, setUsuarios] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -169,10 +170,12 @@ const UsuariosComponent = () => {
         setPosicionMenu(evento.currentTarget);
         setUsuarioSeleccionado(usuario);
         setMenuAbierto(true);
+        setIconRotated(true);
     };
 
     const cerrarMenu = () => {
         setMenuAbierto(false);
+        setIconRotated(false);
     };
 
     const handleChangePage = (event, newPage) => setPage(newPage);
@@ -201,9 +204,12 @@ const UsuariosComponent = () => {
                 {modo === 'listar' && (
                     <div>
                         <Stack direction="row" justifyContent="flex-start" mb={2}>
-                            <Button variant="contained" onClick={() => setModo('crear')} startIcon={<AddIcon />}>
-                                {'Nuevo'}
-                            </Button>
+                            <StyledButton
+                                sx={{}}
+                                title="Nuevo"
+                                event={() => setModo('crear')}
+                            >
+                            </StyledButton>
                         </Stack>
                         <Paper variant="outlined">
                             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -218,25 +224,25 @@ const UsuariosComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Imagen</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Nombre de Usuario</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Nombre Completo</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Email</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Rol</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Estado</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -244,15 +250,35 @@ const UsuariosComponent = () => {
                                     <TableBody>
                                         {filteredData
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((usuario) => (
-                                                <TableRow key={usuario.usua_Id}>
+                                            .map((usuario, index) => (
+                                                <TableRow key={usuario.usua_Id}
+                                                    sx={{
+                                                      backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                                                      '&:hover': { backgroundColor: '#e3f2fd' },
+                                                    }}
+                                                >
                                                     <TableCell align="center">
+                                                        <Tooltip title="Opciones">
                                                         <IconButton
                                                             size="small"
                                                             onClick={(e) => abrirMenu(e, usuario)}
+                                                            sx={{
+                                                                backgroundColor: '#d9e7f7',
+                                                                color: 'rgb(0, 83, 121)',
+                                                                '&:hover': {
+                                                                  backgroundColor: 'rgb(157, 191, 207)',
+                                                                },
+                                                                border: '2px solid rgb(0, 83, 121)',
+                                                                borderRadius: '8px',
+                                                                padding: '6px'
+                                                            }}
                                                         >
-                                                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                                                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                                                fontSize="small" 
+                                                            />
                                                         </IconButton>
+                                                        </Tooltip>
                                                     </TableCell>
                                                     <TableCell>
                                                         {usuario.usua_Image && (
