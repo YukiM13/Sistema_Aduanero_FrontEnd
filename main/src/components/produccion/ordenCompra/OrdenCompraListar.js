@@ -68,13 +68,27 @@ const OrdenesCompras = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
+  // const mostrarAlerta = (tipo) => {
+  //   const config = alertMessages[tipo];
+  //   if (config) {
+  //     setAlertConfig(config);
+  //     setOpenSnackbar(true);
+  //   }
+  // };
+
   const mostrarAlerta = (tipo) => {
-    const config = alertMessages[tipo];
-    if (config) {
-      setAlertConfig(config);
-      setOpenSnackbar(true);
-    }
+  const mensajes = {
+    creado: '¡Orden de compra creada exitosamente!',
+    actualizado: '¡Orden de compra actualizada exitosamente!',
+    eliminado: '¡Orden de compra eliminada exitosamente!'
   };
+
+  setAlertConfig({
+    severity: 'success',
+    message: mensajes[tipo]
+  });
+  setOpenSnackbar(true);
+};
 
   const cargarOrdenesCompras = () => {
     axios.get(`${apiUrl}/api/OrdenCompra/Listar`, {
@@ -344,7 +358,7 @@ const OrdenesCompras = () => {
             onGuardadoExitoso={() => {
               setModo('listar');
               cargarOrdenesCompras();
-              mostrarAlerta('guardado');
+              mostrarAlerta('creado');
             }}
           />
         )}
@@ -394,13 +408,16 @@ const OrdenesCompras = () => {
             </Dialog>
 
             <Snackbar
-                open={openSnackbar}
-                autoHideDuration={3000}
-                onClose={() => setOpenSnackbar(false)}
-                message="¡Detalle guardado exitosamente!"
+              open={openSnackbar}
+              autoHideDuration={3000}
+              onClose={() => setOpenSnackbar(false)}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-            <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
+              <Alert severity={alertConfig.severity}>
+                {alertConfig.message}
+              </Alert>
             </Snackbar>
+
         </ParentCard>
     </div>
   );

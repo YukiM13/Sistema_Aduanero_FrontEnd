@@ -22,7 +22,7 @@ const validationSchema = yup.object({
   code_CantidadPrenda: yup.string().required('La cantidad de prenda es requerida'),
   esti_Id: yup.number().required('El estilo es requerido').moreThan(0,'El estilo es requerido'),
   tall_Id: yup.number().required('La talla es requerida').moreThan(0,'La talla es requerida'),
-  code_Sexo: yup.string().required('El sexo es requerida'),
+  code_Sexo: yup.string().required('El sexo es requerido'),
   colr_Id: yup.number().required('El color es requerido').moreThan(0,'El color es requerido'),
   proc_IdComienza: yup.number().required('El proceso ID es requerido').moreThan(0,'El proceso ID es requerido'),
   proc_IdActual: yup.number().required('El proceso ID es requerido').moreThan(0,'El proceso ID es requerido'),
