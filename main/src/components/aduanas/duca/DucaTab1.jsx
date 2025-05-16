@@ -34,22 +34,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
   const apiKey = process.env.REACT_APP_API_KEY;
 
   
-  const listarDevas = () => {
-    axios.get(`${apiUrl}/api/Duca/ListaDevaNoDuca`, {
-        headers: {
-            'XApiKey': apiKey
-        }
-
-    })
-    .then(response => {
-        
-        console.log("Devas", response.data.data)
-        localStorage.setItem('Devas',JSON.stringify(response.data.data));
-    })
-    .catch(error => {
-        console.error('Error al obtener los datos del país:', error);
-    });
-} 
+  
 
 
 
@@ -75,6 +60,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
               }
               if(localStorage.getItem('devaDuca'))
               {
+                  console.log('entro a la liberacion');
                   axios.post(`${apiUrl}/api/ItemsDEVAxDUCA/LiberarDevasPorDucaId?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`,null, {
                     headers: {
                       'XApiKey': apiKey
@@ -145,16 +131,36 @@ const itemPorDuca =  itemDevaPorDucaModel;
           }
         },
       }));
-      useEffect(() => {
-        listarDevas();
-        const cargarDevas =  () => {
-            const localDevas = localStorage.getItem('devaDuca') ;
+
+      const listarDevas = () => {
+        axios.get(`${apiUrl}/api/Duca/ListaDevaNoDuca`, {
+            headers: {
+                'XApiKey': apiKey
+            }
+    
+        })
+        .then(response => {
             
-            console.log(localStorage.getItem('Devas'));
-            if (localDevas && localStorage.getItem('Devas')) {
-             const parsedLocal = JSON.parse(localDevas);
-             const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
-            console.log(devasDesdeApi);
+            console.log("Devas", response.data.data)
+            const devas = response.data.data;
+            console.log(devas);
+            axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+              headers: {
+                  'XApiKey': apiKey
+              }
+      
+          })
+          .then(response => {
+            const localDevas = response.data.data;
+            console.log('devas insertadas', localDevas);
+           if(localDevas !== null)
+           {
+            localStorage.setItem('devaDuca', 'true');
+           }
+            if (localDevas && devas) {
+             const parsedLocal = localDevas;
+             const devasDesdeApi = devas;
+            console.log('devas desde listar', devasDesdeApi);
              const nuevos = devasDesdeApi.filter(apiDeva =>
               !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
              );
@@ -164,20 +170,32 @@ const itemPorDuca =  itemDevaPorDucaModel;
              formik.setFieldValue('seleccionados', parsedLocal);
             } else if(localDevas)
             {
-              const parsedLocal = JSON.parse(localDevas);
+              console.log('entro solo a las devas ya insertadas')
+              const parsedLocal = localDevas;
               setDeva(parsedLocal);
              formik.setFieldValue('seleccionados', parsedLocal);
+
             }
-            else if (localStorage.getItem('Devas')) {
-              const devasDesdeApi = JSON.parse(localStorage.getItem('Devas'));
-             setDeva(devasDesdeApi);
+            else if (devas) {
+              console.log('entro solo a las devas del listar')
+             setDeva(devas);
             }
             else {
+              console.log('entro al else')
               setDeva([]);
             }
-           };
-          
-          cargarDevas();
+        })
+        .catch(error => {
+            console.error('Error al obtener los datos del país:', error);
+        });
+      })
+      .catch(error => {
+        console.error('Error al obtener los datos del país:', error);
+      });
+    } 
+      useEffect(() => {
+        listarDevas();
+        
         if (formik.submitCount > 0 && Object.keys(formik.errors).length > 0) {
           setOpenSnackbar(true);
         }

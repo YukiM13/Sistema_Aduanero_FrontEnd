@@ -24,7 +24,6 @@ const DevaContenedor = () => {
         <>
             {mostarLista ? (
                <div>
-           
                     <DevaCards />
               
                 </div>

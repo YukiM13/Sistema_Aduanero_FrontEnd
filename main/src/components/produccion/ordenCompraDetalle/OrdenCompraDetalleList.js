@@ -14,8 +14,8 @@ import { useParams } from 'react-router-dom';
 
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-// import OrdenCompraCreate from './OrdenCompraCrear';
-// import OrdenesComprasEdit from './OrdenesComprasEdit';
+import OrdenCompraDetallesCreateComponent from './OrdenCompraDetalleCreate';
+import OrdenCompraDetalleEditComponent from './OrdenCompraDetalleEdit';
 // import OrdenesComprasDetails from './OrdenesComprasDetails'; // Agregado
 
 import AddIcon from '@mui/icons-material/Add';
@@ -29,8 +29,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
 
-const OrdenesComprasDetalle = () => {
-  const ordenCompraID = useParams().id;
+const OrdenesComprasDetalle = ({orco_Id}) => {
+  // const ordenCompraID = useParams().id;
 
   const [ordenesCompras, setOrdenesCompras] = useState([]);
   const [modo, setModo] = useState('listar');
@@ -50,16 +50,31 @@ const OrdenesComprasDetalle = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
 
-  const mostrarAlerta = (tipo) => {
-    const config = alertMessages[tipo];
-    if (config) {
-      setAlertConfig(config);
-      setOpenSnackbar(true);
-    }
+  // const mostrarAlerta = (tipo) => {
+  //   const config = alertMessages[tipo];
+  //   if (config) {
+  //     setAlertConfig(config);
+  //     setOpenSnackbar(true);
+  //   }
+  // };
+const mostrarAlerta = (tipo) => {
+  const mensajes = {
+    creado: '¡Detalle de orden de compra creada exitosamente!',
+    actualizado: '¡Detalle de orden de compra actualizada exitosamente!',
+    eliminado: '¡Detalle de orden de compra eliminada exitosamente!'
   };
 
+  setAlertConfig({
+    severity: 'success',
+    message: mensajes[tipo]
+  });
+  setOpenSnackbar(true);
+};
+
+
   const cargarOrdenesCompras = () => {
-    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${ordenCompraID}`, {
+    console.log(orco_Id);
+    axios.get(`${apiUrl}/api/OrdenCompraDetalles/Listar?orco_Id=${orco_Id}`, {
         headers: { 'XApiKey': apiKey }
     })
     .then(response => {
@@ -72,11 +87,11 @@ const OrdenesComprasDetalle = () => {
   };
 
   useEffect(() => {
-    if (ordenCompraID) {
-      cargarOrdenesCompras(ordenCompraID);
+    console.log(orco_Id);
+    if (orco_Id) {
+      cargarOrdenesCompras(orco_Id);
     }
-  }, [ordenCompraID]);
-  
+  }, [orco_Id]);
   
 
   const abrirMenu = (evento, ordenCompraDetalle) => {
@@ -124,19 +139,6 @@ const OrdenesComprasDetalle = () => {
   };
 
 
-  // <TableCell>{ordenCompraDetalle.orco_Id}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_CantidadPrenda}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.esti_Id}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.tall_Id}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_Sexo}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.colr_Id}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.proc_IdComienza}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.proc_IdActual}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_Unidad}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_Valor}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_Impuesto}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_EspecificacionEmbalaje}</TableCell>
-  //                       <TableCell>{ordenCompraDetalle.code_FechaProcActual}</TableCell>
 
   const filteredData = ordenesCompras.filter((ordenCompraDetalle) =>
     ordenCompraDetalle.code_CantidadPrenda ||
@@ -164,8 +166,8 @@ const OrdenesComprasDetalle = () => {
   // console.log("ID de la orden:", id);
   return (
     <div>
-      <Breadcrumb title="OrdenesCompras" subtitle="Listar" />
-      <ParentCard>
+      {/* <Breadcrumb title="OrdenesCompras" subtitle="Listar" /> */}
+      {/* <ParentCard> */}
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
@@ -282,16 +284,29 @@ const OrdenesComprasDetalle = () => {
           </>
         )}
 
-        {/* {modo === 'crear' && (
-          <OrdenCompraCreate
+        {modo === 'crear' && (
+          <OrdenCompraDetallesCreateComponent
             onCancelar={() => setModo('listar')}
             onGuardadoExitoso={() => {
               setModo('listar');
               cargarOrdenesCompras();
-              mostrarAlerta('guardado');
+              mostrarAlerta('creado');
             }}
           />
-        )} */}
+        )}
+
+        {modo === 'editar' && ( //en caso de que el modo sea crear muestra el componente de crear y seria lo mismo para el editar y details
+          <OrdenCompraDetalleEditComponent
+              ordenesComprasDetalles={ordenCompraDetalleSeleccionada}
+              onCancelar={() => setModo('listar')} 
+              onGuardadoExitoso={() => {
+                  setModo('listar');
+                  mostrarAlerta('actualizado')
+                  // Recarga los datos después de guardar
+                  cargarOrdenesCompras();
+              }}>
+          </OrdenCompraDetalleEditComponent>
+        )}
 
             <Dialog open={confirmarEliminacion} onClose={() => setConfirmarEliminacion(false)}>
                 <DialogTitle color="warning.main">
@@ -316,7 +331,7 @@ const OrdenesComprasDetalle = () => {
             >
             <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
             </Snackbar>
-        </ParentCard>
+        {/* </ParentCard> */}
     </div>
   );
 };

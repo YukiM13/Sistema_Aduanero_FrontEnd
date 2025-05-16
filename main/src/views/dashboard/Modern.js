@@ -4,15 +4,24 @@ import TopCards from '../../components/dashboards/modern/TopCards';
 import RevenueUpdates from '../../components/dashboards/modern/RevenueUpdates';
 import YearlyBreakup from '../../components/dashboards/modern/YearlyBreakup';
 import MonthlyEarnings from '../../components/dashboards/modern/MonthlyEarnings';
-import EmployeeSalary from '../../components/dashboards/modern/EmployeeSalary';
 import Customers from '../../components/dashboards/modern/Customers';
 import Projects from '../../components/dashboards/modern/Projects';
 import Social from '../../components/dashboards/modern/Social';
 import SellingProducts from '../../components/dashboards/modern/SellingProducts';
 import WeeklyStats from '../../components/dashboards/modern/WeeklyStats';
 import TopPerformers from '../../components/dashboards/modern/TopPerformers';
+import ClientesProductivosChart from '../../components/dashboards/modern/ClientesProductivosChart';
+import ProductividadModulosChart from '../../components/dashboards/modern/ProductividadModulosChart';
+import PrendasPedidasChart from '../../components/dashboards/modern/PrendasPedidasChart';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import ImportacionesContadores from 'src/components/dashboards/modern/importaciones_contadores';
+import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
+import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
+import OrdenesCharts from '../charts/OrdenesEntregadas';
+import OrcoPorEstadi from 'src/components/dashboards/modern/OrdenCompraPorEstado';
+import ImportacionesSemana from 'src/components/dashboards/modern/ImportacionesSemana';
+import ImportacionesAnio from 'src/components/dashboards/modern/ImportacionesAnio';
+import PaisesMasExportadores from 'src/components/dashboards/modern/PaisesMasExportadores';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -42,9 +51,25 @@ const Modern = () => {
           </Grid>
         </Grid>
         {/* column */}
-        <Grid item xs={12} lg={4}>
-          <EmployeeSalary />
+        <Grid item xs={12} lg={6}>
+          <OrcoMensual />
         </Grid>
+        <Grid item xs={12} lg={6}>
+          <OrcoSemanal />
+        </Grid>
+         <Grid item xs={12} lg={12}>
+          <OrcoPorEstadi />
+        </Grid>
+         <Grid item xs={12} lg={6}>
+          <ImportacionesSemana />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <ImportacionesAnio />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PaisesMasExportadores />
+        </Grid>
+        
         {/* column */}
         <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
@@ -65,11 +90,25 @@ const Modern = () => {
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
-          <WeeklyStats />
+          <PaisesMasExportadores />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={8}>
+          <ClientesProductivosChart />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <ProductividadModulosChart />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <PrendasPedidasChart />
+        </Grid>
+        <Grid item xs={12} lg={8}>
           <TopPerformers />
+        </Grid>
+        <Grid item xs={12} lg={23}>
+          <OrdenesCharts />
         </Grid>
       </Grid>
       {/* column */}

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Grid, List, ListItem, ListItemIcon, ListItemText, Button, Divider, CardHeader, Stack, Paper
+  Grid, List, ListItem, ListItemIcon, ListItemText, 
+  Button, CardHeader, Stack, Paper, TextField, InputAdornment
 } from '@mui/material';
-import { IconChevronRight, IconChevronLeft } from "@tabler/icons";
+import { IconChevronRight, IconChevronLeft, IconSearch } from "@tabler/icons";
 import CustomCheckbox from "../../forms/theme-elements/CustomCheckbox";
 
 function not(a, b) {
@@ -14,7 +15,9 @@ function intersection(a, b) {
 }
 
 const EnhancedTransferList = ({ left, right, setRight, leftTitle, rightTitle, leftKey, leftLabel }) => {
-  const [checked, setChecked] = React.useState([]);
+  const [checked, setChecked] = useState([]);
+  const [leftFilter, setLeftFilter] = useState('');
+  const [rightFilter, setRightFilter] = useState('');
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -42,14 +45,29 @@ const EnhancedTransferList = ({ left, right, setRight, leftTitle, rightTitle, le
     setChecked(not(checked, rightChecked));
   };
 
-  const customList = (title, items) => (
+  const customList = (title, items, filter, setFilter) => (
     <Paper variant="outlined">
       <CardHeader
         sx={{ px: 2 }}
         title={title}
         subheader={`${items.length} seleccionadas`}
       />
-      <Divider />
+      <TextField
+        variant="outlined"
+        size="small"
+        fullWidth
+        placeholder="Buscar..."
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        sx={{ px: 1 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <IconSearch width={20} height={20} />
+            </InputAdornment>
+          ),
+        }}
+      />
       <List
         sx={{
           width: 300,
@@ -60,37 +78,39 @@ const EnhancedTransferList = ({ left, right, setRight, leftTitle, rightTitle, le
         component="div"
         role="list"
       >
-        {items.map((item) => {
-          const labelId = `transfer-list-item-${item[leftKey]}-label`;
+        {items
+          .filter((item) => item[leftLabel].toLowerCase().includes(filter.toLowerCase())) // Filtrar por el texto ingresado
+          .map((item) => {
+            const labelId = `transfer-list-item-${item[leftKey]}-label`;
 
-          return (
-            <ListItem
-              key={item[leftKey]}
-              role="listitem"
-              button
-              onClick={handleToggle(item)}
-            >
-              <ListItemIcon>
-                <CustomCheckbox
-                  checked={checked.findIndex((checkedItem) => checkedItem[leftKey] === item[leftKey]) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{
-                    'aria-labelledby': labelId,
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={item[leftLabel]} />
-            </ListItem>
-          );
-        })}
+            return (
+              <ListItem
+                key={item[leftKey]}
+                role="listitem"
+                button
+                onClick={handleToggle(item)}
+              >
+                <ListItemIcon>
+                  <CustomCheckbox
+                    checked={checked.findIndex((checkedItem) => checkedItem[leftKey] === item[leftKey]) !== -1}
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{
+                      'aria-labelledby': labelId,
+                    }}
+                  />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={item[leftLabel]} />
+              </ListItem>
+            );
+          })}
       </List>
     </Paper>
   );
 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
-      <Grid item>{customList(leftTitle, left)}</Grid>
+      <Grid item>{customList(leftTitle, left, leftFilter, setLeftFilter)}</Grid>
       <Grid item>
         <Stack spacing={1}>
           <Button
@@ -113,7 +133,7 @@ const EnhancedTransferList = ({ left, right, setRight, leftTitle, rightTitle, le
           </Button>
         </Stack>
       </Grid>
-      <Grid item>{customList(rightTitle, right)}</Grid>
+      <Grid item>{customList(rightTitle, right, rightFilter, setRightFilter)}</Grid>
     </Grid>
   );
 };
