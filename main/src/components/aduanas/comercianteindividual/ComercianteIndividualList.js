@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, Stack,
+  TableHead, TableRow, Paper, Button, Stack, Box,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, TextField, InputAdornment,
   TablePagination, Typography, Dialog, DialogTitle,
@@ -22,6 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ComercianteIndividualCreate from './ComercianteIndividualCreate';
+import ComercianteIndividualEdit from './ComercianteIndividualEdit';
 
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
@@ -41,6 +42,7 @@ const ComercianteIndividualList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [mostrarFormularioEditar, setMostrarFormularioEditar] = useState(false);
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -75,6 +77,38 @@ const ComercianteIndividualList = () => {
     setMenuAbierto(true);
   };
 
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setPosicionMenu(null);
+  };
+
+  const handleEditar = () => {
+    setMostrarFormularioEditar(true);
+    cerrarMenu();
+    // Desplazar la vista hacia arriba para ver el formulario de edición
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEliminar = () => {
+    setConfirmarEliminacion(true);
+    cerrarMenu();
+  };
+
+  const confirmarEliminar = () => {
+    axios.put(`${apiUrl}/api/ComercianteIndividual/Eliminar?id=${comercianteSeleccionado.coin_Id}`, {}, {
+      headers: { 'XApiKey': apiKey }
+    })
+      .then(() => {
+        cargarComerciantes();
+        mostrarAlerta('successEliminar');
+        setConfirmarEliminacion(false);
+      })
+      .catch(() => {
+        mostrarAlerta('errorEliminar');
+        setConfirmarEliminacion(false);
+      });
+  };
+
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -87,6 +121,23 @@ const ComercianteIndividualList = () => {
   );
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
+
+  const obtenerComercianteDetalle = (id) => {
+    return axios.get(`${apiUrl}/api/ComercianteIndividual/Buscar?id=${id}`, {
+      headers: { 'XApiKey': apiKey }
+    })
+      .then(response => {
+        if (response.data && response.data.data) {
+          return response.data.data;
+        }
+        return null;
+      })
+      .catch(error => {
+        console.error("Error al obtener detalle del comerciante:", error);
+        mostrarAlerta('errorBuscar');
+        return null;
+      });
+  };
 
   return (
     <div>
@@ -101,7 +152,11 @@ const ComercianteIndividualList = () => {
                 onClick={() => {
                   setMostrarFormulario(prev => {
                     const nuevoEstado = !prev;
-                    if (!prev) window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (!prev) {
+                      // Si estaba oculto y ahora se mostrará, ocultar editar
+                      setMostrarFormularioEditar(false);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
                     return nuevoEstado;
                   });
                 }}
@@ -136,7 +191,21 @@ const ComercianteIndividualList = () => {
               />
             </Collapse>
 
-            {!mostrarFormulario && (
+            <Collapse in={mostrarFormularioEditar} timeout="auto" unmountOnExit>
+              {comercianteSeleccionado && (
+                <ComercianteIndividualEdit
+                  comercianteData={comercianteSeleccionado}
+                  onSaveSuccess={() => {
+                    setMostrarFormularioEditar(false);
+                    cargarComerciantes();
+                    mostrarAlerta('successEditar');
+                  }}
+                  onCancel={() => setMostrarFormularioEditar(false)}
+                />
+              )}
+            </Collapse>
+
+            {!mostrarFormulario && !mostrarFormularioEditar && (
               <>
                 <TableContainer component={Paper}>
                   <Table>
@@ -186,7 +255,53 @@ const ComercianteIndividualList = () => {
                   ActionsComponent={TablePaginationActions}
                 />
               </>
-            )} 
+            )}
+
+            {/* Menú de opciones */}
+            <Menu
+              anchorEl={posicionMenu}
+              open={menuAbierto}
+              onClose={cerrarMenu}
+            >
+              <MenuItem onClick={handleEditar}>
+                <ListItemIcon>
+                  <EditIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Editar</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleEliminar}>
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Eliminar</ListItemText>
+              </MenuItem>
+            </Menu>
+
+            {/* Diálogo de confirmación de eliminación */}
+            <Dialog
+              open={confirmarEliminacion}
+              onClose={() => setConfirmarEliminacion(false)}
+            >
+              <DialogTitle>
+                <Box display="flex" alignItems="center">
+                  <WarningAmberIcon color="warning" sx={{ mr: 1 }} />
+                  Confirmar Eliminación
+                </Box>
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  ¿Está seguro que desea eliminar este registro?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setConfirmarEliminacion(false)} color="primary">
+                  Cancelar
+                </Button>
+                <Button onClick={confirmarEliminar} color="error" autoFocus>
+                  Eliminar
+                </Button>
+              </DialogActions>
+            </Dialog>
 
             <Snackbar
               open={openSnackbar}
