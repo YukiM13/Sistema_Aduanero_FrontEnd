@@ -97,6 +97,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
   const abrirMenu = (evento, pedidoOrdenDetalle) => {
     setPosicionMenu(evento.currentTarget);
     setPedidoOrdenDetalleSeleccionada(pedidoOrdenDetalle);
+    console.log("Pedido", pedidoOrdenDetalle);
     setMenuAbierto(true);
   };
 
@@ -105,6 +106,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
   const handleEditar = () => {
     if (pedidoOrdenDetalleSeleccionada) {
         setPedidoOrdenDetalleEditando(pedidoOrdenDetalleSeleccionada);
+        console.log(pedidoOrdenDetalleSeleccionada);
       setModo('editar');
     }
     cerrarMenu();
@@ -265,6 +267,7 @@ const PedidosOrdenesDetalle = ({peor_Id}) => {
               cargarPedidosOrdenes();
               mostrarAlerta('guardado');
             }}
+            pedidoOrdenId = {peor_Id}
           />
         )}
 

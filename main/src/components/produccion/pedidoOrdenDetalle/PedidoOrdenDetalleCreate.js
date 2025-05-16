@@ -72,8 +72,7 @@ const PedidoOrdenDetallesCreateComponent = ({ onCancelar, onGuardadoExitoso, ped
             mate_Id: values.mate_Id,
             prod_Cantidad: values.prod_Cantidad,
             prod_Precio: values.prod_Precio,
-            usua_UsuarioCreacion: 1,
-            code_FechaCreacion: new Date()
+            usua_UsuarioCreacion: 1
           };
 
           console.log("Datos que se enviarán al backend:", datosParaEnviar);

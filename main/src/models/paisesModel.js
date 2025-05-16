@@ -6,15 +6,15 @@ const PaisesModel = {
     pais_EsAduana: true,
     usua_UsuarioCreacion: 0,
     usuarioCreacionNombre: '',
-    pais_FechaCreacion: newDate(),
+    pais_FechaCreacion: new Date(),
     usua_UsuarioModificacion: 0,
     usuarioModificadorNombre: '',
-    pais_FechaModificacion: newDate(),
+    pais_FechaModificacion: new Date(),
     usua_UsuarioEliminacion: 0,
-    pais_FechaEliminacion: newDate(),
+    pais_FechaEliminacion: new Date(),
     pais_Estado: true,
-    fechaInicio: newDate(),
-    fechaFin: newDate(),
+    fechaInicio: new Date(),
+    fechaFin: new Date(),
   }
 
 export default PaisesModel;

@@ -222,9 +222,9 @@ const PedidosOrdenes = () => {
                 {(rowsPerPage > 0
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
-                ).map((pedidoOrden) => (
+                ).map((pedidoOrden, index) => (
                   <React.Fragment key={pedidoOrden.peor_Id}>
-                  <TableRow align="center">
+                  <TableRow sx={{backgroundColor: index %2 === 0 ? 'white' : '#f5f5f5'}} align="center">
                   <TableCell>
                       <IconButton
                         aria-label="expand row"

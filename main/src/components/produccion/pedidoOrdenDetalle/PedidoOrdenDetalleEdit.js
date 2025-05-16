@@ -34,6 +34,7 @@ const PedidoOrdenDetalleEditComponent = ({pedidosOrdenesDetalles, onCancelar, on
   const apiKey = process.env.REACT_APP_API_KEY;
 
  const listarPedidoOrdenDetalles = () => {
+  console.log(formik.values);
   const peor_Id = formik.values.peor_Id;
 
   if (!peor_Id) {
@@ -42,7 +43,6 @@ const PedidoOrdenDetalleEditComponent = ({pedidosOrdenesDetalles, onCancelar, on
   }
 
   console.log("📌 peor_Id:", peor_Id);
-
   axios.get(`${apiUrl}/api/PedidosOrdenDetalles/Listar?peor_Id=${peor_Id}`, {
     headers: {
       'XApiKey': apiKey
@@ -94,7 +94,7 @@ const PedidoOrdenDetalleEditComponent = ({pedidosOrdenesDetalles, onCancelar, on
     const formik = useFormik({
       initialValues: {
         prod_Id: pedidosOrdenesDetalles.prod_Id,
-        peor_Id: peor_Id || '',
+        peor_Id: pedidosOrdenesDetalles.peor_Id,
         mate_Id: pedidosOrdenesDetalles.mate_Id,
         prod_Cantidad: pedidosOrdenesDetalles.prod_Cantidad,
         prod_Precio: pedidosOrdenesDetalles.prod_Precio,  
