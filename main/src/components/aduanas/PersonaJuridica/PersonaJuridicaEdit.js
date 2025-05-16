@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography } from '@mui/material';
+import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography, Snackbar, Alert } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -11,7 +11,6 @@ import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import emailjs from '@emailjs/browser';
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
-import { Snackbar, Alert } from '@mui/material';
 import PersonaJuridicaModel from '../../../models/PersonaJuridicaModel';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -96,24 +95,22 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   const [estadoCivil, setEstadoCivil] = useState([]);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-  
 
   const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
   const [correoVerificado, setCorreoVerificado] = useState(true);
   const [correoOriginal, setCorreoOriginal] = useState('');
-  
+
   const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
   const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
   const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
-  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(true); 
+  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(true);
   const [correoAlternativoOriginal, setCorreoAlternativoOriginal] = useState('');
-  
+
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
   const [correoModificado, setCorreoModificado] = useState(false);
   const [correoAltModificado, setCorreoAltModificado] = useState(false);
-  
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
@@ -123,19 +120,18 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(response => setCiudades(response.data.data || []))
       .catch(error => console.error('Error al obtener ciudades:', error));
-    
+
     axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, { headers: { 'XApiKey': apiKey } })
       .then(response => setEstadoCivil(response.data.data || []))
       .catch(error => console.error('Error al obtener estados civiles:', error));
-    
+
     axios.get(`${apiUrl}/api/Oficinas/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(response => setOficinas(response.data.data || []))
       .catch(error => console.error('Error al obtener oficinas:', error));
-    
+
     axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(response => setOficioProfesion(response.data.data || []))
       .catch(error => console.error('Error al obtener oficios y profesiones:', error));
-
 
     if (personaJuridica.ciud_Id) {
       cargarColoniasAldeas(personaJuridica.ciud_Id);
@@ -148,7 +144,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     if (personaJuridica.peju_CorreoElectronico) {
       setCorreoOriginal(personaJuridica.peju_CorreoElectronico);
     }
-    
+
     if (personaJuridica.peju_CorreoElectronicoAlternativo) {
       setCorreoAlternativoOriginal(personaJuridica.peju_CorreoElectronicoAlternativo);
     }
@@ -163,7 +159,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
         );
       }))
       .catch(error => console.error('Error al obtener colonias:', error));
-    
+
     axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?ciud_Id=${ciudadId}`, { headers: { 'XApiKey': apiKey } })
       .then(response => setAldeas(prevAldeas => {
         const nuevasAldeas = response.data.data || [];
@@ -177,7 +173,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   const handleEmailChange = (e) => {
     const { name, value } = e.target;
     formik.handleChange(e);
-    
+
     if (name === 'peju_CorreoElectronico') {
       if (value !== correoOriginal) {
         setCorreoModificado(true);
@@ -187,7 +183,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
         setCorreoVerificado(true);
       }
     }
-    
+
     if (name === 'peju_CorreoElectronicoAlternativo') {
       if (value !== correoAlternativoOriginal) {
         setCorreoAltModificado(true);
@@ -232,15 +228,15 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
           usua_UsuarioModificacion: 1,
           peju_FechaModificacion: new Date().toISOString()
         };
-        
+
         await axios.post(`${apiUrl}/api/PersonaJuridica/Editar`, completeData, {
           headers: { 'XApiKey': apiKey }
         });
-        
+
         setMensajeSnackbar('Persona jurídica actualizada con éxito');
         setSeveritySnackbar('success');
         setOpenSnackbar(true);
-        
+
         setTimeout(() => {
           if (onGuardadoExitoso) {
             onGuardadoExitoso();
@@ -265,22 +261,22 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     setCodigoVerificacion(codigo);
     emailjs.send('service_5x68ulj', 'template_lwiowkp', {
       email: correoElectronico,
-      codigo: codigo 
+      codigo: codigo
     }, 'mnyq6v-rJ4eMaYUOb')
-    .then(() => {
-      setMensajeSnackbar('Código de verificación enviado correctamente.');
-      setSeveritySnackbar('success');
-      setOpenSnackbar(true);
-      setMostrarInputCodigo(true);
-    })
-    .catch(() => {
-      setMensajeSnackbar('Error al enviar el código de verificación.');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-      setVerificarCorreoDeshabilitado(false);
-    });
+      .then(() => {
+        setMensajeSnackbar('Código de verificación enviado correctamente.');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+        setMostrarInputCodigo(true);
+      })
+      .catch(() => {
+        setMensajeSnackbar('Error al enviar el código de verificación.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        setVerificarCorreoDeshabilitado(false);
+      });
   };
-  
+
   const verificarCodigo = () => {
     if (codigoIngresado === codigoVerificacion) {
       setCorreoVerificado(true);
@@ -310,17 +306,17 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       email: correoElectronico,
       codigo: codigo
     }, 'mnyq6v-rJ4eMaYUOb')
-    .then(() => {
-      setMensajeSnackbar('Código de verificación enviado correctamente al correo alternativo.');
-      setSeveritySnackbar('success');
-      setOpenSnackbar(true);
-      setMostrarInputCodigoAlt(true);
-    })
-    .catch(() => {
-      setMensajeSnackbar('Error al enviar el código al correo alternativo.');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
-    });
+      .then(() => {
+        setMensajeSnackbar('Código de verificación enviado correctamente al correo alternativo.');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+        setMostrarInputCodigoAlt(true);
+      })
+      .catch(() => {
+        setMensajeSnackbar('Error al enviar el código al correo alternativo.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      });
   };
 
   const verificarCodigoAlt = () => {
@@ -357,7 +353,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
 
   const handleSubmitFinal = (e) => {
     e.preventDefault();
-    
+
     if (correoModificado && !correoVerificado && formik.values.peju_CorreoElectronico) {
       setMensajeSnackbar('Debe verificar el correo electrónico antes de guardar.');
       setSeveritySnackbar('error');
@@ -371,7 +367,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       setOpenSnackbar(true);
       return;
     }
-    
 
     const fieldsToValidate = [
       ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
@@ -379,23 +374,23 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
       ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
     ];
-    
+
     const tocados = {};
     fieldsToValidate[activeTab].forEach(campo => {
       tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
-    
+
     formik.validateForm().then(errores => {
       const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
-      
+
       if (currentTabErrors) {
         setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return;
       }
-      
+
       formik.handleSubmit(e);
     });
   };
@@ -412,19 +407,16 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
-    
 
     formik.validateForm().then(errores => {
-
       const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
-      
+
       if (currentTabErrors) {
         setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return;
       }
-      
 
       setActiveTab(prevTab => prevTab + 1);
     });
@@ -822,8 +814,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
                   (formik.touched.peju_CorreoElectronico && formik.errors.peju_CorreoElectronico) || 
                   (correoModificado && !correoVerificado ? 'Correo modificado, requiere verificación' : '')
                 }
-                disabled={correoVerificado && !correoModificado}
-                sx={(correoVerificado && !correoModificado) ? { bgcolor: '#f5f5f5' } : {}}
               />
               {correoModificado && !correoVerificado && (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
@@ -886,8 +876,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
                   (formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo) ||
                   (correoAltModificado && !correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo ? 'Correo modificado, requiere verificación' : '')
                 }
-                disabled={correoAlternativoVerificado && !correoAltModificado}
-                sx={(correoAlternativoVerificado && !correoAltModificado) ? { bgcolor: '#f5f5f5' } : {}}
               />
               {formik.values.peju_CorreoElectronicoAlternativo && correoAltModificado && !correoAlternativoVerificado && (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
@@ -962,9 +950,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       <Box sx={{ width: '100%', mb: 2 }}>
         <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
       </Box>
-      
       <Box mt={3}>{renderTabContent()}</Box>
-      
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
         {activeTab > 0 && (
           <Grid item>
@@ -988,7 +974,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
           </Grid>
         )}
       </Grid>
-      
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
