@@ -503,7 +503,15 @@ export const generarMenu = async () => {
 
   if (esAdmin || 
     nombresDePantalla.some(nombre => [
-      'Impresion Declaracion de Valor', 'Impresion Duca', 'Impresion Devas Pendientes'
+      'Impresion Planificacion PO', 
+      'Impresion Devas Pendientes',       
+      'Impresion Materiales No Brindados',
+      'Impresion Materiales Ingresos',
+      'Impresion Produccion Areas',
+      'Impresion Tiempos Maquinas',
+      'Impresion Produccion Por Modulos',
+      'Impresion Reporte Modulo Dia Detalle',
+      'Impresion Materiales por Orden de Compra'
     ].includes(nombre))) {
     
     const impresion = {
@@ -514,7 +522,7 @@ export const generarMenu = async () => {
       children: []
     };
 
-    if (esAdmin || nombresDePantalla.includes('Planificacion PO')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Planificacion PO')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Planificacion PO',
@@ -534,7 +542,7 @@ export const generarMenu = async () => {
       });
     }
     
-    if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales No Brindados')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Materiales No Brindados',
@@ -544,7 +552,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales Ingresos')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Materiales Ingresos',
@@ -554,7 +562,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Produccion Areas')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Produccion Areas')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Produccion Areas',
@@ -564,7 +572,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. TiSempos Maquinas')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Tiempos Maquinas')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Tiempos Maquinas',
@@ -574,7 +582,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Produccion Por Modulos')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Produccion Por Modulos')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Produccion Por Modulos',
@@ -584,7 +592,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Reporte Modulo Dia Detalle')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Reporte Modulo Dia Detalle')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Reporte Modulo Dia Detalle',
@@ -594,7 +602,7 @@ export const generarMenu = async () => {
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales por Orden de Compra')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Materiales por Orden de compra',
