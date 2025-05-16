@@ -17,7 +17,9 @@ import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
 import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
 import OrdenesCharts from '../charts/OrdenesEntregadas';
-import PaisesMasExportadores from '../charts/PaisesMasExportadores';
+import ImportacionesSemana from 'src/components/dashboards/modern/ImportacionesSemana';
+import ImportacionesAnio from 'src/components/dashboards/modern/ImportacionesAnio';
+import PaisesMasExportadores from 'src/components/dashboards/modern/PaisesMasExportadores';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -53,6 +55,16 @@ const Modern = () => {
         <Grid item xs={12} lg={6}>
           <OrcoSemanal />
         </Grid>
+         <Grid item xs={12} lg={6}>
+          <ImportacionesSemana />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <ImportacionesAnio />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PaisesMasExportadores />
+        </Grid>
+        
         {/* column */}
         <Grid item xs={12} lg={4}>
           <Grid container spacing={3}>
