@@ -14,8 +14,8 @@ import ParentCard from '../../../components/shared/ParentCard';
 import NivelesComercialesCreateComponent from './NivelesComercialesCreate';
 import NivelesComercialesEditComponent from './NivelesComercialesEdit';
 
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StyledButton from 'src/components/shared/StyledButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { Snackbar, Alert } from '@mui/material';
@@ -27,6 +27,7 @@ import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions
 
 const NivelesComercialesList = () => {
     const [nivelcomercial, setnivelescomerciales] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -67,10 +68,12 @@ const NivelesComercialesList = () => {
       setNivelSeleccionado(nivelcomercial);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true); // Activar rotación
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false);
     }
 
     const cargarNivelesComerciales = () => {
@@ -124,9 +127,11 @@ const NivelesComercialesList = () => {
      
             <container>
         <Stack direction="row" justifyContent="flex-start" mb={2}>
-            <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-              {'Nuevo'}
-            </Button>
+            <StyledButton  
+            sx={{}} 
+            title="Nuevo"
+            event={() => setModo('crear')}>
+            </StyledButton>
         </Stack>
           <Paper variant="outlined">
             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -138,16 +143,16 @@ const NivelesComercialesList = () => {
                   ),
               }}/>
             <TableContainer component={Paper}>
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Código</Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                       <Typography variant="h6">Descripción</Typography>
                     </TableCell>
                   </TableRow>
@@ -155,20 +160,37 @@ const NivelesComercialesList = () => {
                 <TableBody>
                 {filteredData
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((nivelcomercial) => (
-                    <TableRow key={nivelcomercial.nico_Id}>
+                  .map((nivelcomercial, index) => (
+                    <TableRow key={nivelcomercial.nico_Id}
+                      sx={{
+                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                        '&:hover': { backgroundColor: '#e3f2fd' },
+                      }}>
                       <TableCell align="center">
   
                       <IconButton
-                        size="small" 
-                        // se abre el menu y se selecciona la data de la fila 
-                        onClick={(e) => abrirMenu(e, nivelcomercial)}
-                      >
-                      <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                      </IconButton>
+                          size="small"
+                          onClick={(e) => abrirMenu(e, nivelcomercial)}
+                          sx={{
+                            backgroundColor: '#d9e7ef', // Fondo celeste claro
+                            color: 'rgb(0, 83, 121)',           // Color del icono
+                            '&:hover': {
+                              backgroundColor: 'rgb(157, 191, 207)',
+                            },
+                            border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                            borderRadius: '8px',         // Bordes redondeados
+                            padding: '6px'
+                          }}
+                        >
+                          <SettingsIcon 
+                          sx={{transition: 'transform 0.3s ease-in-out',
+                            transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                          fontSize="small" />
+                          <Typography variante="h6">Acciones</Typography>
+                        </IconButton>
                       </TableCell>
-                      <TableCell>{nivelcomercial.nico_Codigo}</TableCell>
-                      <TableCell>{nivelcomercial.nico_Descripcion}</TableCell>
+                      <TableCell><Typography variant="body1">{nivelcomercial.nico_Codigo}</Typography></TableCell>
+                      <TableCell><Typography variant="body1">{nivelcomercial.nico_Descripcion}</Typography></TableCell>
                     </TableRow>
                   ))}
                   {emptyRows > 0 && (
@@ -179,7 +201,39 @@ const NivelesComercialesList = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-              <TablePagination component="div" count={nivelcomercial.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
+              <TablePagination component="div" count={nivelcomercial.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" 
+              sx={{
+                backgroundColor: '#fff',
+                color: '#333',
+                borderTop: '1px solid #e0e0e0',
+                fontSize: '0.85rem',
+                '& .MuiTablePagination-toolbar': {
+                  padding: '8px 16px',
+                  minHeight: '48px',
+                },
+                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                  color: '#666',
+                  fontSize: '0.8rem',
+                  mb: '0'
+                },
+                '& .MuiTablePagination-actions': {
+                  '& button': {
+                    color: '#666',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                },
+                '& .MuiInputBase-root': {
+                  fontSize: '0.8rem',
+                  borderRadius: '6px',
+                  backgroundColor: '#f9f9f9',
+                  padding: '2px 6px',
+                },
+                '& .MuiSelect-icon': {
+                  color: '#888',
+                }
+              }}/>
               </Paper>
             </container>
             )}
