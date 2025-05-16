@@ -61,6 +61,18 @@ const Menuitems = [
 ];
 
 export const generarMenu = async () => {
+  Menuitems.length = 0;
+  Menuitems.push({
+    navlabel: true,
+    subheader: 'Home',
+  });
+  Menuitems.push({
+    id: uniqueId(),
+    title: 'Inicio',
+    icon: IconHome,
+    href: '/dashboards/modern',
+  });
+  
   let nombresDePantalla = [];
   
   if (!esAdmin && roleId) {
