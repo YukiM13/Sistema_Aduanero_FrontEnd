@@ -18,6 +18,7 @@ import AuthSocialButtons from './AuthSocialButtons';
 import axios from 'axios';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
+import { BorderAllRounded } from '@mui/icons-material';
 
 const validationSchema = yup.object({
   usua_Nombre: yup.string().required('El Usuario es requerido'),
@@ -126,7 +127,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       <Typography
         variant="h5"
         gutterBottom
-        sx={{ color: '#003857', mt: 5, textAlign: 'center' }}
+        sx={{ color: '#003857', mt: 3, textAlign: 'center' }}
       >
         Inicia sesión para continuar
       </Typography>
@@ -189,7 +190,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             Iniciar sesión
           </Button>
         </Box>
-        <Stack justifyContent="space-around" direction="row" alignItems="center" mb={2.5}>
+        <Stack justifyContent="space-around" direction="row" alignItems="center" mb={1.5}>
           <Typography
             component={Link}
             to="/auth/forgot-password"

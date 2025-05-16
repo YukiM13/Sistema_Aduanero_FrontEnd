@@ -109,7 +109,6 @@ const TwoSteps = () => {
 
   return (
     <PageContainer title="Restablecer Contraseña" description="this is Two Steps page">
-      {/* Imagen de fondo en toda la pantalla */}
       <Box
         sx={{
           position: 'fixed',
@@ -127,7 +126,7 @@ const TwoSteps = () => {
             width: '100vw',
             height: '100vh',
             objectFit: 'cover',
-            filter: 'blur(2px)',
+            filter: 'blur(1px)',
           }}
         />
       </Box>
@@ -159,7 +158,7 @@ const TwoSteps = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 420 }}>
-            <Card elevation={20} sx={{ backgroundColor: '#ffffff80', position: 'relative', zIndex: 1, width: '110%' }}>
+            <Card sx={{ backgroundColor: '#ffffff50', position: 'relative', zIndex: 1, width: '100%' }}>
               <Box
                 sx={{
                   display: 'flex',
