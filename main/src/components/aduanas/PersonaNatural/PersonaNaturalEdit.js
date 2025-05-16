@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography, Snackbar, Alert } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { CheckCircleRounded } from '@mui/icons-material';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import PersonaNaturalModel from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
 import { useFormik } from 'formik';
+import emailjs from '@emailjs/browser';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
@@ -60,6 +62,23 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     ArchivoDNI: null,
     ArchivoNumeroRecibo: null,
   });
+  // Email verification states
+  const [codigoVerificacion, setCodigoVerificacion] = useState('');
+  const [codigoIngresado, setCodigoIngresado] = useState('');
+  const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
+  const [correoVerificado, setCorreoVerificado] = useState(false);
+  const [correoOriginal, setCorreoOriginal] = useState('');
+  const [correoAlternativoOriginal, setCorreoAlternativoOriginal] = useState('');
+  const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
+  const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
+  const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
+  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(false);
+  const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
+  const [showCorreoSnackbar, setShowCorreoSnackbar] = useState(false);
+  const [showCorreoAltSnackbar, setShowCorreoAltSnackbar] = useState(false);
+  const [correoModificado, setCorreoModificado] = useState(false);
+  const [correoAltModificado, setCorreoAltModificado] = useState(false);
+  
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
   const [activeTab, setActiveTab] = useState(0);
@@ -73,8 +92,37 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       .catch(() => setPersonas([]));
   }, [apiUrl, apiKey]);
 
-  // Create a completely separate submit handler for the final tab
+  // Store original email values and set them as verified initially
+  useEffect(() => {
+    if (persona.pena_CorreoElectronico) {
+      setCorreoOriginal(persona.pena_CorreoElectronico);
+      // No auto-verify the email - it needs verification if changed
+      setCorreoVerificado(false);
+    }
+    if (persona.pena_CorreoAlternativo) {
+      setCorreoAlternativoOriginal(persona.pena_CorreoAlternativo);
+      // No auto-verify the alternate email - it needs verification if changed
+      setCorreoAlternativoVerificado(false);
+    }
+  }, [persona]);
+
   const handleFinalSubmit = async () => {
+    // Check if email verification is required
+    if (correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico) {
+      setMensajeSnackbar('Debe verificar el correo electrónico primario antes de guardar.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return;
+    }
+    
+    // Check if alternate email verification is required
+    if (correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo) {
+      setMensajeSnackbar('Debe verificar el correo electrónico alternativo antes de guardar.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return;
+    }
+    
     try {
       console.log('Submitting from final tab...');
       const formDataToSend = new FormData();
@@ -121,7 +169,6 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     }
   };
   
-  // Modify formik to not auto-submit
   const formik = useFormik({
     initialValues: {
       ...persona,
@@ -140,12 +187,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       pena_NombreArchRecibo: persona.pena_NombreArchRecibo || '',
     },
     enableReinitialize: true,
-    // Remove onSubmit to prevent automatic submission 
+ 
   });
-
-  // Only advance tabs, never submit
   const handleNavigation = (e) => {
-    // Prevent default form submission behavior
     e.preventDefault();
     if (activeTab < 3) {
       setActiveTab(activeTab + 1);
@@ -157,6 +201,153 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     if (files && files.length > 0) {
       setArchivos(prev => ({ ...prev, [name]: files[0] }));
       formik.setFieldValue(name, files[0]);
+    }
+  };
+
+  const enviarCodigoVerificacion = (correoElectronico) => {
+    setVerificarCorreoDeshabilitado(true);
+    console.log("Correo electrónico:", correoElectronico);
+    const generarCodigoAleatorio = () => {
+      return Math.floor(1000000 + Math.random() * 9000000).toString();
+    };
+
+    const codigo = generarCodigoAleatorio();
+    setCodigoVerificacion(codigo);
+    console.log("Código generado:", codigo);
+    emailjs.send('service_5x68ulj', 'template_lwiowkp', {
+      email: correoElectronico,
+      codigo: codigo 
+    }, 'mnyq6v-rJ4eMaYUOb')
+    .then((response) => {
+      console.log('Correo enviado:', response.text);
+
+      if (activeTab === 1) {
+        setShowCorreoSnackbar(true);
+      }
+      setMostrarInputCodigo(true);
+    })
+    .catch((error) => {
+      console.error('Error al enviar correo:', error);
+      if (activeTab === 1) {
+        setMensajeSnackbar('Error al enviar el código de verificación.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      }
+    });
+  };
+  
+  const verificarCodigo = () => {
+    if (codigoIngresado === codigoVerificacion) {
+      setCorreoVerificado(true);
+      setShowCorreoSnackbar(false);
+    } else {
+      if (activeTab === 1) {
+        setMensajeSnackbar('El código de verificación no es válido.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      }
+    }
+  };
+
+  const handleCodigoChange = (e) => {
+    setCodigoIngresado(e.target.value);
+  };
+
+  const enviarCodigoVerificacionAlt = (correoElectronico) => {
+    console.log("Correo alternativo:", correoElectronico);
+    const generarCodigoAleatorio = () => {
+      return Math.floor(1000000 + Math.random() * 9000000).toString();
+    };
+
+    const codigo = generarCodigoAleatorio();
+    setCodigoVerificacionAlt(codigo);
+    console.log("Código generado para correo alternativo:", codigo);
+    
+    emailjs.send('service_5x68ulj', 'template_lwiowkp', {
+      email: correoElectronico,
+      codigo: codigo
+    }, 'mnyq6v-rJ4eMaYUOb')
+    .then((response) => {
+      console.log('Correo alternativo enviado:', response.text);
+      setMensajeSnackbar('Código de verificación enviado correctamente al correo alternativo.');
+      setSeveritySnackbar('success');
+      setOpenSnackbar(true);
+      setMostrarInputCodigoAlt(true);
+      if (activeTab === 1) setShowCorreoAltSnackbar(true);
+    })
+    .catch((error) => {
+      console.error('Error al enviar correo alternativo:', error);
+      setMensajeSnackbar('Error al enviar el código al correo alternativo.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    });
+  };
+  
+  const verificarCodigoAlt = () => {
+    if (codigoIngresadoAlt === codigoVerificacionAlt) {
+      setCorreoAlternativoVerificado(true);
+      setShowCorreoAltSnackbar(false);
+    } else {
+      setMensajeSnackbar('El código de verificación no es válido.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleCodigoChangeAlt = (e) => {
+    setCodigoIngresadoAlt(e.target.value);
+  };
+
+  // Check the current email and set verification status on component load
+  useEffect(() => {
+    // If we're editing and already have email, assume it's verified
+    if (persona.pena_CorreoElectronico) {
+      setCorreoVerificado(true);
+    }
+    if (persona.pena_CorreoAlternativo) {
+      setCorreoAlternativoVerificado(true);
+    }
+  }, [persona]);
+
+  // Clean up email verification UI when changing tabs
+  useEffect(() => {
+    if (activeTab !== 1) {
+      setShowCorreoSnackbar(false);
+      setShowCorreoAltSnackbar(false);
+      if (openSnackbar && 
+         (mensajeSnackbar.includes('correo') || 
+          mensajeSnackbar.includes('código') || 
+          mensajeSnackbar.includes('Código'))) {
+        setOpenSnackbar(false);
+      }
+    }
+  }, [activeTab]);
+
+  // Track when email is modified
+  const handleEmailChange = (e) => {
+    const { name, value } = e.target;
+    formik.handleChange(e);
+    
+    if (name === 'pena_CorreoElectronico') {
+      // Check if email is modified from its original value
+      if (value !== correoOriginal) {
+        setCorreoModificado(true);
+        setCorreoVerificado(false);
+      } else {
+        setCorreoModificado(false);
+        setCorreoVerificado(true); // Auto-verify if it matches original
+      }
+    }
+    
+    if (name === 'pena_CorreoAlternativo') {
+      // Check if alternate email is modified from its original value
+      if (value !== correoAlternativoOriginal) {
+        setCorreoAltModificado(true);
+        setCorreoAlternativoVerificado(false);
+      } else {
+        setCorreoAltModificado(false);
+        setCorreoAlternativoVerificado(true); // Auto-verify if it matches original
+      }
     }
   };
 
@@ -211,7 +402,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
             </Grid>
           </Grid>
         );
-      case 1:
+      case 1: 
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
@@ -241,8 +432,48 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 id="pena_CorreoElectronico"
                 name="pena_CorreoElectronico"
                 value={formik.values.pena_CorreoElectronico}
-                onChange={formik.handleChange}
+                onChange={handleEmailChange}
+                error={correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== ''}
+                helperText={correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== '' ? 'Necesita verificación' : ''}
               />
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                <Button 
+                  variant="contained" 
+                  type="button" 
+                  startIcon={<CheckCircleRounded />}
+                  onClick={() => enviarCodigoVerificacion(formik.values.pena_CorreoElectronico)}
+                  disabled={!correoModificado || verificarCorreoDeshabilitado || correoVerificado || !formik.values.pena_CorreoElectronico}
+                >
+                  {correoVerificado ? "Correo Verificado" : "Verificar correo"}
+                </Button>
+                {correoVerificado && (
+                  <CheckCircleRounded color="success" />
+                )}
+              </Box>
+              {mostrarInputCodigo && !correoVerificado && (
+                <Box sx={{ mt: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                      <CustomTextField
+                        fullWidth
+                        label="Código de verificación"
+                        value={codigoIngresado}
+                        onChange={handleCodigoChange}
+                        placeholder="Ingrese el código"
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Button 
+                        variant="contained" 
+                        onClick={verificarCodigo}
+                        sx={{ height: '100%' }}
+                      >
+                        Verificar
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Correo Alternativo</CustomFormLabel>
@@ -251,8 +482,50 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 id="pena_CorreoAlternativo"
                 name="pena_CorreoAlternativo"
                 value={formik.values.pena_CorreoAlternativo}
-                onChange={formik.handleChange}
+                onChange={handleEmailChange}
+                error={correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo !== ''}
+                helperText={correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo !== '' ? 'Necesita verificación' : ''}
               />
+              {formik.values.pena_CorreoAlternativo && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                  <Button 
+                    variant="contained" 
+                    type="button" 
+                    startIcon={<CheckCircleRounded />}
+                    onClick={() => enviarCodigoVerificacionAlt(formik.values.pena_CorreoAlternativo)}
+                    disabled={!correoAltModificado || correoAlternativoVerificado}
+                  >
+                    {correoAlternativoVerificado ? "Correo Alternativo Verificado" : "Verificar correo alternativo"}
+                  </Button>
+                  {correoAlternativoVerificado && (
+                    <CheckCircleRounded color="success" />
+                  )}
+                </Box>
+              )}
+              {mostrarInputCodigoAlt && !correoAlternativoVerificado && (
+                <Box sx={{ mt: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                      <CustomTextField
+                        fullWidth
+                        label="Código de verificación"
+                        value={codigoIngresadoAlt}
+                        onChange={handleCodigoChangeAlt}
+                        placeholder="Ingrese el código"
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      <Button 
+                        variant="contained" 
+                        onClick={verificarCodigoAlt}
+                        sx={{ height: '100%' }}
+                      >
+                        Verificar
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
             </Grid>
           </Grid>
         );
@@ -534,6 +807,26 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
           </Grid>
         )}
       </Grid>
+      <Snackbar
+        open={showCorreoSnackbar && activeTab === 1}
+        autoHideDuration={6000}
+        onClose={() => setShowCorreoSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setShowCorreoSnackbar(false)} severity="success">
+          Código de verificación enviado correctamente.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={showCorreoAltSnackbar && activeTab === 1}
+        autoHideDuration={6000}
+        onClose={() => setShowCorreoAltSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setShowCorreoAltSnackbar(false)} severity="success">
+          Código de verificación enviado correctamente al correo alternativo.
+        </Alert>
+      </Snackbar>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
