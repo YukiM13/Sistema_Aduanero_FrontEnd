@@ -111,7 +111,9 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
   const [correoModificado, setCorreoModificado] = useState(false);
   const [correoAltModificado, setCorreoAltModificado] = useState(false);
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
@@ -225,7 +227,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       try {
         const completeData = {
           ...values,
-          usua_UsuarioModificacion: 1,
+          usua_UsuarioModificacion: user,
           peju_FechaModificacion: new Date().toISOString()
         };
 

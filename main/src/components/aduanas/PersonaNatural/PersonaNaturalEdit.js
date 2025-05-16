@@ -91,7 +91,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
   const [showCorreoAltSnackbar, setShowCorreoAltSnackbar] = useState(false);
   const [correoModificado, setCorreoModificado] = useState(false);
   const [correoAltModificado, setCorreoAltModificado] = useState(false);
-  
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
   const [activeTab, setActiveTab] = useState(0);
@@ -175,7 +177,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
         }
       });
       formDataToSend.append('pena_FechaModificacion', new Date().toISOString());
-      formDataToSend.append('usua_UsuarioModificacion', 1);
+      formDataToSend.append('usua_UsuarioModificacion', user);
 
       await axios.post(`${apiUrl}/api/PersonaNatural/Editar`, formDataToSend, {
         headers: {    
