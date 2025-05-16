@@ -17,12 +17,15 @@ const CargosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
 
   const formik = Cargos({
     initialValues: {
       carg_Nombre: '',
       carg_Aduana: false,
-      usua_UsuarioCreacion: 1,
+      usua_UsuarioCreacion: user,
       carg_FechaCreacion: new Date().toISOString(),
     },
     validationSchema,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, Stack,
+  TableHead, TableRow, Paper, Stack,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert
 } from '@mui/material';
@@ -11,13 +11,14 @@ import ParentCard from '../../../components/shared/ParentCard';
 import CargosCreateComponent from './CargosCreate';
 import CargosEditComponent from './CargosEdit';
 import CargosDetailsComponent from './CargosDetails';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { alertMessages } from 'src/layouts/config/alertConfig';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import StyledButton from 'src/components/shared/StyledButton';
 
 const CargosComponent = () => {
   const [cargos, setCargos] = useState([]);
@@ -26,6 +27,7 @@ const CargosComponent = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [cargoSeleccionado, setCargoSeleccionado] = useState(null);
+  const [iconRotated, setIconRotated] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
@@ -73,9 +75,29 @@ const CargosComponent = () => {
     setPosicionMenu(evento.currentTarget);
     setCargoSeleccionado(cargo);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setIconRotated(false);
+  };
+
+  const eliminarCargo = (cargoId) => {
+    axios.post(`${apiUrl}/api/Cargos/Eliminar`, { carg_Id: cargoId }, {
+      headers: { 'XApiKey': apiKey },
+    })
+      .then(() => {
+        cargarCargos();
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'success', message: 'Cargo eliminado exitosamente.' });
+      })
+      .catch((error) => {
+        console.error('Error al eliminar el cargo:', error);
+        setOpenSnackbar(true);
+        setAlertConfig({ severity: 'error', message: 'Error al eliminar el cargo.' });
+      });
+  };
 
   return (
     <div>
@@ -84,9 +106,11 @@ const CargosComponent = () => {
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                {'Nuevo'}
-              </Button>
+              <StyledButton
+                sx={{}}
+                title="Nuevo"
+                event={() => setModo('crear')}>
+              </StyledButton>
             </Stack>
             <Paper variant="outlined">
               <TextField
@@ -105,30 +129,60 @@ const CargosComponent = () => {
                 }}
               />
               <TableContainer component={Paper}>
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }} align="center">
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">ID</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Nombre</Typography>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo) => (
-                      <TableRow key={cargo.carg_Id}>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cargo, index) => (
+                      <TableRow
+                        key={cargo.carg_Id}
+                        sx={{
+                          backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                          '&:hover': { backgroundColor: '#e3f2fd' },
+                        }}
+                      >
                         <TableCell align="center">
-                          <IconButton size="small" onClick={(e) => abrirMenu(e, cargo)}>
-                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                          <IconButton
+                            size="small"
+                            onClick={(e) => abrirMenu(e, cargo)}
+                            sx={{
+                              backgroundColor: '#d9e7ef',
+                              color: 'rgb(0, 83, 121)',
+                              '&:hover': {
+                                backgroundColor: 'rgb(157, 191, 207)',
+                              },
+                              border: '2px solid rgb(0, 83, 121)',
+                              borderRadius: '8px',
+                              padding: '6px'
+                            }}
+                          >
+                            <SettingsIcon
+                              sx={{
+                                transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',
+                              }}
+                              fontSize="small"
+                            />
+                            <Typography variant="h6" sx={{ ml: 1, fontSize: '0.95rem' }}>Acciones</Typography>
                           </IconButton>
                         </TableCell>
-                        <TableCell>{cargo.carg_Id}</TableCell>
-                        <TableCell>{cargo.carg_Nombre}</TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{cargo.carg_Id}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{cargo.carg_Nombre}</Typography>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {emptyRows > 0 && (
@@ -147,6 +201,38 @@ const CargosComponent = () => {
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 ActionsComponent={TablePaginationActions}
+                sx={{
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  borderTop: '1px solid #e0e0e0',
+                  fontSize: '0.85rem',
+                  '& .MuiTablePagination-toolbar': {
+                    padding: '8px 16px',
+                    minHeight: '48px',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    mb: '0'
+                  },
+                  '& .MuiTablePagination-actions': {
+                    '& button': {
+                      color: '#666',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    },
+                  },
+                  '& .MuiInputBase-root': {
+                    fontSize: '0.8rem',
+                    borderRadius: '6px',
+                    backgroundColor: '#f9f9f9',
+                    padding: '2px 6px',
+                  },
+                  '& .MuiSelect-icon': {
+                    color: '#888',
+                  }
+                }}
                 labelRowsPerPage="Filas por página"
               />
             </Paper>
@@ -206,6 +292,12 @@ const CargosComponent = () => {
             <VisibilityIcon fontSize="small" style={{ color: '#9C27B0', fontSize: '18px' }} />
           </ListItemIcon>
           <ListItemText>Detalles</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => { eliminarCargo(cargoSeleccionado.carg_Id); cerrarMenu(); }}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" style={{ color: '#F44336', fontSize: '18px' }} />
+          </ListItemIcon>
+          <ListItemText>Eliminar</ListItemText>
         </MenuItem>
       </Menu>
     </div>
