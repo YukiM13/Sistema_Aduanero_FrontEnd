@@ -4,7 +4,7 @@ import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button, Stack,
   IconButton, Menu, MenuItem,
-  ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, Dialog, DialogTitle, DialogContent, DialogActions,
+  ListItemIcon, ListItemText,TextField,InputAdornment,TablePagination,Typography, Tooltip,  Dialog, DialogTitle, DialogContent, DialogActions,
   DialogContentText
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
@@ -17,6 +17,7 @@ import AduanasDetailsComponent from './AduanaDetails';
 
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StyledButton from 'src/components/shared/StyledButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,6 +30,7 @@ import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions
 
 const AduanasList = () => {
     const [aduanas, setAduanas] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -83,10 +85,12 @@ const AduanasList = () => {
       setAduanaSeleccionada(aduana);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true); // Activar rotación
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false); // Detener rotación
     }
 
     const cargarAduanas = () => {
@@ -149,9 +153,11 @@ const AduanasList = () => {
      
             <container>
         <Stack direction="row" justifyContent="flex-start" mb={2}>
-            <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-              {'Nuevo'}
-            </Button>
+            <StyledButton  
+            sx={{}} 
+            title="Nuevo"
+            event={() => setModo('crear')}>
+            </StyledButton>
         </Stack>
           <Paper variant="outlined">
             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -163,52 +169,99 @@ const AduanasList = () => {
                   ),
               }}/>
             <TableContainer component={Paper}>
-              <Table>
+              <Table stickyHeader>
                 <TableHead>
-                  <TableRow>
-                    <TableCell align="center">
-                        <Typography variant="h6">Acciones</Typography>
+                  <TableRow >
+                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                      <Typography variant="h6">Acciones</Typography>
+                    </TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                        <Typography variant="h6">Código</Typography>
                       </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">Código</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">Nombre</Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="h6">Dirección exacta</Typography>
-                    </TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                        <Typography variant="h6">Nombre</Typography>
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                        <Typography variant="h6">Dirección exacta</Typography>
+                      </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {filteredData
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((aduana) => (
-                    <TableRow key={aduana.pers_Id}>
+                  {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((aduana, index) => (
+                    <TableRow
+                      key={aduana.pers_Id}
+                      sx={{
+                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                        '&:hover': { backgroundColor: '#e3f2fd' },
+                      }}
+                    >
                       <TableCell align="center">
-  
-                      <IconButton
-                        size="small" 
-                        // se abre el menu y se selecciona la data de la fila 
-                        onClick={(e) => abrirMenu(e, aduana)}
-                      >
-                      <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                      </IconButton>
+                        
+                        <IconButton
+                          size="small"
+                          onClick={(e) => abrirMenu(e, aduana)}
+                          sx={{
+                            backgroundColor: '#d9e7ef', // Fondo celeste claro
+                            color: 'rgb(0, 83, 121)',           // Color del icono
+                            '&:hover': {
+                              backgroundColor: 'rgb(157, 191, 207)',
+                            },
+                            border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                            borderRadius: '8px',         // Bordes redondeados
+                            padding: '6px'
+                          }}
+                        >
+                          <SettingsIcon 
+                          sx={{transition: 'transform 0.3s ease-in-out',
+                            transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                          fontSize="small" />
+                          <Typography variante="h6">Acciones</Typography>
+                        </IconButton> 
+                      
+
                       </TableCell>
-                      <TableCell>{aduana.adua_Codigo}</TableCell>
-                      <TableCell>{aduana.adua_Nombre}</TableCell>
-                      <TableCell>{aduana.adua_Direccion_Exacta}</TableCell>
+                      <TableCell><Typography variant="body1">{aduana.adua_Codigo}</Typography></TableCell>
+                      <TableCell><Typography variant="body1">{aduana.adua_Nombre}</Typography></TableCell>
+                      <TableCell><Typography variant="body1">{aduana.adua_Direccion_Exacta}</Typography></TableCell>
                     </TableRow>
                   ))}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                       <TableCell colSpan={2} />
-                    </TableRow>
-                     )}
                 </TableBody>
               </Table>
             </TableContainer>
-              <TablePagination component="div" count={aduanas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
+              <TablePagination component="div" count={aduanas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} 
+              sx={{
+                backgroundColor: '#fff',
+                color: '#333',
+                borderTop: '1px solid #e0e0e0',
+                fontSize: '0.85rem',
+                '& .MuiTablePagination-toolbar': {
+                  padding: '8px 16px',
+                  minHeight: '48px',
+                },
+                '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                  color: '#666',
+                  fontSize: '0.8rem',
+                  mb: '0'
+                },
+                '& .MuiTablePagination-actions': {
+                  '& button': {
+                    color: '#666',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                },
+                '& .MuiInputBase-root': {
+                  fontSize: '0.8rem',
+                  borderRadius: '6px',
+                  backgroundColor: '#f9f9f9',
+                  padding: '2px 6px',
+                },
+                '& .MuiSelect-icon': {
+                  color: '#888',
+                }
+              }}
+              labelRowsPerPage="Filas por página" />
               </Paper>
             </container>
             )}

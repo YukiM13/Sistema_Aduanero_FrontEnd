@@ -12,7 +12,6 @@ import ParentCard from '../../../components/shared/ParentCard';
 import RolesCreate from './rolesCreate';
 import RolesEdit from './rolesEdit';
 import RolesDetails from './rolesDetails';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,9 +20,11 @@ import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import StyledButton from 'src/components/shared/StyledButton';
 
 const RolesList = () => {
   const [roles, setRoles] = useState([]);
+  const [iconRotated, setIconRotated] = useState(false);
   const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -103,10 +104,12 @@ const RolesList = () => {
     setPosicionMenu(evento.currentTarget);
     setRoleSeleccionado(role);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
   const cerrarMenu = () => {
     setMenuAbierto(false);
+    setIconRotated(false);
   };
 
   const handleChangePage = (event, newPage) => setPage(newPage);
@@ -133,9 +136,12 @@ const RolesList = () => {
         {modo === 'listar' && (
           <div>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button variant="contained" onClick={() => setModo('crear')} startIcon={<AddIcon />}>
-                Nuevo
-              </Button>
+              <StyledButton
+                sx={{}}
+                title="Nuevo"
+                event={() => setModo('crear')}
+              >
+              </StyledButton>
             </Stack>
             <Paper variant="outlined">
               <TextField
@@ -157,10 +163,10 @@ const RolesList = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Descripción del Rol</Typography>
                       </TableCell>
                     </TableRow>
@@ -168,17 +174,36 @@ const RolesList = () => {
                   <TableBody>
                     {filteredData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((role) => (
-                        <TableRow key={role.role_Id}>
+                      .map((role, index) => (
+                        <TableRow key={role.role_Id}
+                          sx={{
+                            backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                            '&:hover': { backgroundColor: '#e3f2fd' },
+                          }}
+                        >
                           <TableCell align="center">
                             <IconButton
-                              size="small"
-                              onClick={(e) => abrirMenu(e, role)}
+                              size='small'
+                              onClick={(event) => abrirMenu(event, role)}
+                              sx={{
+                                  backgroundColor: '#d9e7f7',
+                                  color: 'rgb(0, 83, 121)',
+                                  '&:hover': {
+                                    backgroundColor: 'rgb(157, 191, 207)',
+                                  },
+                                  border: '2px solid rgb(0, 83, 121)',
+                                  borderRadius: '8px',
+                                  padding: '6px'
+                              }}
                             >
-                              <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                fontSize="small" 
+                            />
+                            <Typography variante="h6">Acciones</Typography>
                             </IconButton>
                           </TableCell>
-                          <TableCell>{role.role_Descripcion}</TableCell>
+                          <TableCell><Typography variant="body1">{role.role_Descripcion}</Typography></TableCell>
                         </TableRow>
                       ))}
                     {emptyRows > 0 && (

@@ -18,8 +18,7 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 
 const validationSchema = yup.object({
   pais_Codigo: yup.string().required('El código es requerido'),
-  pais_Nombre: yup.number().required('El país es requerido')
-  .moreThan(0,'El país es requerido'),
+  pais_Nombre: yup.string().required('El país es requerido'),
 });
 
 
@@ -114,7 +113,6 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                    
                 <CustomFormLabel>Código</CustomFormLabel>
                 <CustomTextField
-                    select
                     fullWidth
                     id="pais_Codigo"
                     name="pais_Codigo"
@@ -124,11 +122,6 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
                     error={formik.touched.pais_Codigo && Boolean(formik.errors.pais_Codigo)}
                     helperText={formik.touched.pais_Codigo && formik.errors.pais_Codigo}
                 >
-                    {paises.map((pais) => (
-                    <MenuItem key={pais.pais_Codigo} value={pais.pais_Codigo}>
-                        {pais.pais_Nombre}
-                    </MenuItem>
-                    ))}
                 </CustomTextField>
                     
                 </Grid>

@@ -13,8 +13,10 @@ import ParentCard from '../../../components/shared/ParentCard';
 import UsuarioCreateComponent from './UsuarioCreate';
 import UsuarioEditComponent from './UsuarioEdit';
 import UsuarioDetailsComponent from './UsuarioDetails';
-import AddIcon from '@mui/icons-material/Add';
+import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
+import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StyledButton from 'src/components/shared/StyledButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import RestoreIcon from '@mui/icons-material/Restore';
@@ -25,9 +27,11 @@ import { alertMessages } from 'src/layouts/config/alertConfig';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BlockIcon from '@mui/icons-material/Block';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import LockResetIcon from '@mui/icons-material/LockReset';
 
 const UsuariosComponent = () => {
     const [usuarios, setUsuarios] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -36,6 +40,10 @@ const UsuariosComponent = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
+    const [abrirModalReset, setAbrirModalReset] = useState(false);
+    const [nuevaContrasenia, setNuevaContrasenia] = useState('');
+    const [confirmarContrasenia, setConfirmarContrasenia] = useState('');
+    const [resetError, setResetError] = useState('');
     const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
     const [confirmarActivacion, setConfirmarActivacion] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
@@ -99,6 +107,15 @@ const UsuariosComponent = () => {
         cerrarMenu();
     };
 
+    const abrirModalRestablecer = (usuario) => {
+        setUsuarioSeleccionado(usuario);
+        setNuevaContrasenia('');
+        setConfirmarContrasenia('');
+        setResetError('');
+        setAbrirModalReset(true);
+        cerrarMenu();
+    };
+
     const eliminar = (usuario) => {
         axios.post(`${apiUrl}/api/Usuarios/Eliminar`, usuario, {
             headers: { 'XApiKey': apiKey }
@@ -121,14 +138,44 @@ const UsuariosComponent = () => {
             .catch(() => mostrarAlerta('errorActivar'));
     };
 
+    const restablecerContrasenia = async () => {
+        if (!nuevaContrasenia.trim() || !confirmarContrasenia.trim()) {
+            setResetError('Ambos campos son requeridos.');
+            return;
+        }
+        if (nuevaContrasenia !== confirmarContrasenia) {
+            setResetError('Las contraseñas no coinciden.');
+            return;
+        }
+        try {
+            const payload = {
+                usua_Nombre: usuarioSeleccionado.usua_Nombre,
+                usua_Contrasenia: nuevaContrasenia,
+            };
+            const response = await axios.post(`${apiUrl}/api/Usuarios/CambiarContrasenia`, payload, {
+                headers: { 'XApiKey': apiKey },
+            });
+            if (response.data.success) {
+                setAbrirModalReset(false);
+                mostrarAlerta('actualizado');
+            } else {
+                setResetError(response.data.message || 'Error al restablecer la contraseña.');
+            }
+        } catch (error) {
+            setResetError('Error al restablecer la contraseña. Intente nuevamente.');
+        }
+    };
+
     const abrirMenu = (evento, usuario) => {
         setPosicionMenu(evento.currentTarget);
         setUsuarioSeleccionado(usuario);
         setMenuAbierto(true);
+        setIconRotated(true);
     };
 
     const cerrarMenu = () => {
         setMenuAbierto(false);
+        setIconRotated(false);
     };
 
     const handleChangePage = (event, newPage) => setPage(newPage);
@@ -157,9 +204,12 @@ const UsuariosComponent = () => {
                 {modo === 'listar' && (
                     <div>
                         <Stack direction="row" justifyContent="flex-start" mb={2}>
-                            <Button variant="contained" onClick={() => setModo('crear')} startIcon={<AddIcon />}>
-                                {'Nuevo'}
-                            </Button>
+                            <StyledButton
+                                sx={{}}
+                                title="Nuevo"
+                                event={() => setModo('crear')}
+                            >
+                            </StyledButton>
                         </Stack>
                         <Paper variant="outlined">
                             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -174,25 +224,25 @@ const UsuariosComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Imagen</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Nombre de Usuario</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Nombre Completo</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Email</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Rol</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Estado</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -200,14 +250,33 @@ const UsuariosComponent = () => {
                                     <TableBody>
                                         {filteredData
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((usuario) => (
-                                                <TableRow key={usuario.usua_Id}>
+                                            .map((usuario, index) => (
+                                                <TableRow key={usuario.usua_Id}
+                                                    sx={{
+                                                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                                                        '&:hover': { backgroundColor: '#e3f2fd' },
+                                                    }}
+                                                >
                                                     <TableCell align="center">
                                                         <IconButton
                                                             size="small"
                                                             onClick={(e) => abrirMenu(e, usuario)}
+                                                            sx={{
+                                                                backgroundColor: '#d9e7f7',
+                                                                color: 'rgb(0, 83, 121)',
+                                                                '&:hover': {
+                                                                    backgroundColor: 'rgb(157, 191, 207)',
+                                                                },
+                                                                border: '2px solid rgb(0, 83, 121)',
+                                                                borderRadius: '8px',
+                                                                padding: '6px'
+                                                            }}
                                                         >
-                                                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                                                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                                                fontSize="small" 
+                                                            />
+                                                            <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
                                                     </TableCell>
                                                     <TableCell>
@@ -219,10 +288,10 @@ const UsuariosComponent = () => {
                                                             />
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{usuario.usua_Nombre}</TableCell>
-                                                    <TableCell>{usuario.emplNombreCompleto}</TableCell>
-                                                    <TableCell>{usuario.empl_CorreoElectronico}</TableCell>
-                                                    <TableCell>{usuario.role_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.usua_Nombre}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.emplNombreCompleto}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.empl_CorreoElectronico}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.role_Descripcion}</Typography></TableCell>
                                                     <TableCell>
                                                         {usuario.usua_Estado ? (
                                                             <Chip
@@ -319,6 +388,12 @@ const UsuariosComponent = () => {
                     </ListItemIcon>
                     <ListItemText>Detalles</ListItemText>
                 </MenuItem>
+                <MenuItem onClick={() => abrirModalRestablecer(usuarioSeleccionado)}>
+                    <ListItemIcon>
+                        <LockResetIcon fontSize="small" style={{ color: '#1976d2', fontSize: '18px' }} />
+                    </ListItemIcon>
+                    <ListItemText>Restablecer Contraseña</ListItemText>
+                </MenuItem>
                 {usuarioSeleccionado?.usua_Estado === true && (
                     <MenuItem onClick={() => eliminarUsuario(usuarioSeleccionado)}>
                         <ListItemIcon>
@@ -403,6 +478,42 @@ const UsuariosComponent = () => {
                         color="success"
                     >
                         Activar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={abrirModalReset} onClose={() => setAbrirModalReset(false)}>
+                <DialogTitle>Restablecer Contraseña</DialogTitle>
+                <DialogContent>
+                    <CustomFormLabel htmlFor="nuevaContrasenia">Nueva Contraseña</CustomFormLabel>
+                    <CustomTextField
+                        id="nuevaContrasenia"
+                        type="password"
+                        fullWidth
+                        value={nuevaContrasenia}
+                        onChange={(e) => setNuevaContrasenia(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <CustomFormLabel htmlFor="confirmarContrasenia">Confirmar Contraseña</CustomFormLabel>
+                    <CustomTextField
+                        id="confirmarContrasenia"
+                        type="password"
+                        fullWidth
+                        value={confirmarContrasenia}
+                        onChange={(e) => setConfirmarContrasenia(e.target.value)}
+                    />
+                    {resetError && (
+                        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            {resetError}
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setAbrirModalReset(false)} color="primary" variant="outlined">
+                        Cancelar
+                    </Button>
+                    <Button onClick={restablecerContrasenia} color="primary" variant="contained">
+                        Guardar
                     </Button>
                 </DialogActions>
             </Dialog>

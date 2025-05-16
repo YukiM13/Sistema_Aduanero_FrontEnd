@@ -12,6 +12,7 @@ import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import emailjs from '@emailjs/browser';
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { Snackbar, Alert } from '@mui/material';
 
@@ -94,7 +95,7 @@ const camposPorTab = [
   ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico', 'peju_CorreoElectronicoAlternativo'],
 ];
 
-const PersonaJuridicaForm = ({ onGuardar }) => {
+const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [ciudades, setCiudades] = useState([]);
   const [colonias, setColonias] = useState([]);
@@ -725,7 +726,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 value={formik.values.peju_TelefonoFijoRepresentanteLegal}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                   if (!number || number.length > 17) {
-                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
+                    formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_TelefonoFijoRepresentanteLegal', number);
                   }
@@ -749,7 +750,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
                 value={formik.values.peju_TelefonoRepresentanteLegal}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                   if (!number || number.length > 17) {
-                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17)); // Limit to 17 characters
+                    formik.setFieldValue('peju_TelefonoRepresentanteLegal', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_TelefonoRepresentanteLegal', number);
                   }
@@ -879,8 +880,16 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
 
   return (
     <form onSubmit={handleSubmitFinal}>
-      <Breadcrumb title="Persona Juridica" description="this is Form Wizard page" />
-      <ParentCard>
+        <Box display="flex" alignItems="center" mb={2}>
+          <Button
+            variant="text"
+            color="inherit"
+            onClick={onCancelar}
+            sx={{ minWidth: 0, p: 1 }}
+          >
+            <CloseIcon />
+          </Button>
+        </Box>
         <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
           <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
           <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
@@ -924,7 +933,7 @@ const PersonaJuridicaForm = ({ onGuardar }) => {
             {mensajeSnackbar}
           </Alert>
         </Snackbar>
-      </ParentCard>
+
     </form>
   );
 };
