@@ -60,35 +60,11 @@ const RadialbarChart = () => {
   };
   const seriesradialchart = [44, 55, 67, 83];
 
-  // 2
-  const optionsradarchart = {
-    chart: {
-      id: 'pie-chart',
-      fontFamily: "'Plus Jakarta Sans', sans-serif",
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: [primary],
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    tooltip: {
-      theme: 'dark',
-    },
-  };
-  const seriesradarchart = [
-    {
-      name: 'Sales',
-      data: [80, 50, 30, 40, 100, 20],
-    },
-  ];
+  
 
   return (
-    <PageContainer title="Radialbar & Radar Chart" description="this is innerpage">
-      {/* breadcrumb */}
-      <Breadcrumb title="Radialbar Chart" items={BCrumb} />
-      {/* end breadcrumb */}
       <Grid container spacing={3}>
-        <Grid item lg={6} md={12} xs={12}>
+        <Grid item lg={4} md={12} xs={12}>
           <ParentCard title="Radialbar Charts">
             <Chart
               options={optionsradialchart}
@@ -98,18 +74,28 @@ const RadialbarChart = () => {
             />
           </ParentCard>
         </Grid>
-        <Grid item lg={6} md={12} xs={12}>
-          <ParentCard title="Radar Charts">
+        <Grid item lg={4} md={12} xs={12}>
+          <ParentCard title="Radialbar Charts">
             <Chart
-              options={optionsradarchart}
-              series={seriesradarchart}
-              type="radar"
+              options={optionsradialchart}
+              series={seriesradialchart}
+              type="radialBar"
               height="300px"
             />
           </ParentCard>
         </Grid>
+        <Grid item lg={4} md={12} xs={12}>
+          <ParentCard title="Radialbar Charts">
+            <Chart
+              options={optionsradialchart}
+              series={seriesradialchart}
+              type="radialBar"
+              height="300px"
+            />
+          </ParentCard>
+        </Grid>
+        
       </Grid>
-    </PageContainer>
   );
 };
 
