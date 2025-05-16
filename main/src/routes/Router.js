@@ -113,7 +113,7 @@ const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContene
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DevaContenedor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
-
+const ComercianteIndividualList = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualList')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -154,7 +154,9 @@ const OrdenCompraList =  Loadable(lazy(() => import('../components/produccion/or
 const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraCrear')));
 const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
+const ReporteInventario = Loadable(lazy(() => import('../components/produccion/Inventario/ReporteInventario')));
 const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
+const ImportacionesReporte = Loadable(lazy(() => import('../components/reportes/ImportacionesReporte')));
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 const PedidoOrdenDetalleList = Loadable(lazy(() => import('../components/produccion/pedidoOrdenDetalle/PedidoOrdenDetalleList')));
@@ -248,7 +250,9 @@ const todasLasRutas = [
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
-  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
+  {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
@@ -261,6 +265,7 @@ const todasLasRutas = [
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
   { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
   { path: '/reporteSeguimientoProcesos', element: <ReporteSeguimientoProcesos  /> , pantalla:'Seguimiento de Procesos por PO' },
+  { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
 ]
 
