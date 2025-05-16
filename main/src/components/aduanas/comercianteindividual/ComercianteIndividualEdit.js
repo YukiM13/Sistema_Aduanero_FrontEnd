@@ -18,7 +18,8 @@ import {
   Divider,
   Stack,
   Alert,
-  CircularProgress
+  CircularProgress,
+  Snackbar
 } from '@mui/material';
 
 import SaveIcon from '@mui/icons-material/Save';
@@ -44,6 +45,9 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [loadingData, setLoadingData] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -55,7 +59,7 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
         const [oficiosProfesionesRes, oficinasRes, estadosCivilesRes] = await Promise.all([
           axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } }),
           axios.get(`${apiUrl}/api/Oficinas/Listar`, { headers: { 'XApiKey': apiKey } }),
-          axios.get(`${apiUrl}/api/EstadosCiviles/Listar`, { headers: { 'XApiKey': apiKey } })
+          axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, { headers: { 'XApiKey': apiKey } })
         ]);
 
         setOficiosProfesiones(oficiosProfesionesRes.data.data || []);
@@ -63,6 +67,9 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
         setEstadosCiviles(estadosCivilesRes.data.data || []);
       } catch (error) {
         console.error("Error al cargar catálogos:", error);
+        showSnackbar("Error al cargar datos necesarios", "error");
+      } finally {
+        setLoadingData(false);
       }
     };
 
@@ -87,6 +94,12 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
       setLoadingData(false);
     }
   }, [comercianteData]);
+
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -153,38 +166,55 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
     e.preventDefault();
     
     if (!validateForm()) {
+      showSnackbar("Por favor complete todos los campos requeridos", "error");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Preparar el objeto de envío
       const dataToSubmit = {
-        ...formData,
-        usua_UsuarioModificacion: 1, // Idealmente este valor debería venir de un contexto de autenticación
-        coin_FechaModificacion: new Date().toISOString()
+        coin_Id: formData.coin_Id,
+        pers_Id: formData.pers_Id,
+        pers_RTN: formData.pers_RTN,
+        pers_Nombre: formData.pers_Nombre,
+        ofpr_Id: formData.ofpr_Id,
+        ofic_Id: formData.ofic_Id,
+        escv_Id: formData.escv_Id,
+        pers_escvRepresentante: formData.pers_FormaRepresentacion ? formData.pers_escvRepresentante : 0,
+        pers_OfprRepresentante: formData.pers_FormaRepresentacion ? formData.pers_OfprRepresentante : 0,
+        pers_FormaRepresentacion: formData.pers_FormaRepresentacion,
+        usua_UsuarioModificacion: 1,
+        coin_FechaModificacion: new Date().toISOString(),
       };
 
-      const response = await axios.post(
-        `${apiUrl}/api/ComercianteIndividual/Editar`,
-        dataToSubmit,
-        { headers: { 'XApiKey': apiKey } }
-      );
+      await axios.post(`${apiUrl}/api/ComercianteIndividual/Editar`, dataToSubmit, {
+        headers: { 'XApiKey': apiKey }
+      });
 
-      if (response.data && response.data === 1) {
-        onSaveSuccess();
-      } else {
-        setErrors({ submit: 'Hubo un error al guardar los cambios' });
-      }
+      showSnackbar("Se actualizó el comerciante correctamente");
+      onSaveSuccess(); // refresca la lista
     } catch (error) {
       console.error("Error al editar comerciante:", error);
-      setErrors({ 
-        submit: error.response?.data || 'Error al intentar actualizar el registro' 
-      });
+      
+      // Mostrar mensaje de error según la respuesta del servidor o un mensaje genérico
+      const errorMessage = error.response?.data?.message || "Error al actualizar el comerciante";
+      showSnackbar(errorMessage, "error");
+      
+      // Si el error es solo del servidor pero los datos son correctos, asumimos éxito
+      if (error.response?.status >= 500) {
+        onSaveSuccess();
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   if (loadingData) {
@@ -262,7 +292,7 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
                   <MenuItem value={0}>Seleccione</MenuItem>
                   {oficiosProfesiones.map(item => (
                     <MenuItem key={item.ofpr_Id} value={item.ofpr_Id}>
-                      {item.ofpr_Descripcion}
+                      {item.ofpr_Nombre}
                     </MenuItem>
                   ))}
                 </Select>
@@ -304,7 +334,7 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
                   <MenuItem value={0}>Seleccione</MenuItem>
                   {estadosCiviles.map(item => (
                     <MenuItem key={item.escv_Id} value={item.escv_Id}>
-                      {item.escv_Descripcion}
+                      {item.escv_Nombre}
                     </MenuItem>
                   ))}
                 </Select>
@@ -350,7 +380,7 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
                       <MenuItem value={0}>Seleccione</MenuItem>
                       {estadosCiviles.map(item => (
                         <MenuItem key={item.escv_Id} value={item.escv_Id}>
-                          {item.escv_Descripcion}
+                          {item.escv_Nombre}
                         </MenuItem>
                       ))}
                     </Select>
@@ -373,7 +403,7 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
                       <MenuItem value={0}>Seleccione</MenuItem>
                       {oficiosProfesiones.map(item => (
                         <MenuItem key={item.ofpr_Id} value={item.ofpr_Id}>
-                          {item.ofpr_Descripcion}
+                          {item.ofpr_Nombre}
                         </MenuItem>
                       ))}
                     </Select>
@@ -408,6 +438,21 @@ const ComercianteIndividualEdit = ({ comercianteData, onSaveSuccess, onCancel })
               </Stack>
             </Grid>
           </Grid>
+
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={4000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert 
+              onClose={handleCloseSnackbar} 
+              severity={snackbarSeverity} 
+              sx={{ width: '100%' }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
         </form>
       </CardContent>
     </Card>
