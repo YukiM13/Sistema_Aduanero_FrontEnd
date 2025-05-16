@@ -514,30 +514,10 @@ export const generarMenu = async () => {
       children: []
     };
 
-    if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
+    if (esAdmin || nombresDePantalla.includes('Planificacion PO')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Duca',
-        icon: IconPoint,
-        href: '/ducas/list',
-        chipColor: 'secondary',
-      });
-    }
-
-    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'II. Declaracion de Valor',
-        icon: IconPoint,
-        href: '/declaracionValor/list',
-        chipColor: 'secondary',
-      });
-    }
-
-    if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'III.Planificacion PO',
+        title: 'Planificacion PO',
         icon: IconPoint,
         href: '/PlanificacionPO',
         chipColor: 'secondary',
@@ -557,7 +537,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'IV. Materiales No Brindados',
+        title: 'Materiales No Brindados',
         icon: IconPoint,
         href: '/CostosMaterialesNoBrindados',
         chipColor: 'secondary',
@@ -567,7 +547,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Materiales Ingresos',
+        title: 'Materiales Ingresos',
         icon: IconPoint,
         href: '/MaterialesIngresos',
         chipColor: 'secondary',
@@ -577,7 +557,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('I. Produccion Areas')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Produccion Areas',
+        title: 'Produccion Areas',
         icon: IconPoint,
         href: '/ProduccionAreas',
         chipColor: 'secondary',
@@ -587,7 +567,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('I. TiSempos Maquinas')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Tiempos Maquinas',
+        title: 'Tiempos Maquinas',
         icon: IconPoint,
         href: '/TiemposMaquinas',
         chipColor: 'secondary',
@@ -597,7 +577,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('I. Produccion Por Modulos')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Produccion Por Modulos',
+        title: 'Produccion Por Modulos',
         icon: IconPoint,
         href: '/ProduccionPorModulo',
         chipColor: 'secondary',
@@ -607,7 +587,7 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('I. Reporte Modulo Dia Detalle')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Reporte Modulo Dia Detalle',
+        title: 'Reporte Modulo Dia Detalle',
         icon: IconPoint,
         href: '/ReporteModuloDiaDetalle',
         chipColor: 'secondary',
@@ -629,7 +609,6 @@ export const generarMenu = async () => {
     }
   }
   
-//deb
   if (esAdmin || nombresDePantalla.includes('Declaracion de Valor')) {
     Menuitems.push({
       id: uniqueId(),
