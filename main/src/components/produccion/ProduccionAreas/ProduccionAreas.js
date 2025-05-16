@@ -10,9 +10,6 @@ import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
 import html2pdf from 'html2pdf.js';
-import { storage } from '../../../layouts/config/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
 import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
 
@@ -104,48 +101,7 @@ const ProduccionAreasPdf = () => {
             }
         };
 
-        const nombreArchivo = `documentos/produccion-areas-${Date.now()}.pdf`;
-        const archivoRef = ref(storage, nombreArchivo);
-
-        // 1. Generar primer PDF (sin QR)
-        const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-
-        // 2. Subir a Firebase
-        await uploadBytes(archivoRef, pdfBlobSinQR);
-
-        // 3. Obtener la URL del archivo subido
-        const urlDescarga = await getDownloadURL(archivoRef);
-
-        // 4. Generar el QR con esa URL
-        const qrDataUrl = await QRCode.toDataURL(urlDescarga);
-
-        // 5. Insertar el QR en el DOM
-        const qrContainer = document.getElementById("qr");
-        const img = document.createElement("img");
-        img.src = qrDataUrl;
-        img.width = 100;
-        img.style.width = "100%";
-        img.style.height = "100%";
-        img.style.objectFit = "contain";
-        qrContainer.innerHTML = '';
-        qrContainer.appendChild(img);
-
-        // 6. Generar el PDF nuevamente, ahora con el QR
-        const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
-
-        // 7. Subir el nuevo PDF (sobrescribiendo el anterior)
-        await uploadBytes(archivoRef, pdfBlobConQR);
-        setTimeout(async () => {
-            const nuevaUrlDescarga = await getDownloadURL(archivoRef);
-            const printWindow = window.open(nuevaUrlDescarga, '_blank');
-            if (printWindow) {
-                printWindow.onload = () => {
-                    printWindow.print();
-                };
-            } else {
-                alert("Por favor permite las ventanas emergentes en tu navegador.");
-            }
-        }, 1000);
+        html2pdf().from(contenidoRef.current).set(opt).save();
     };
 
     // Parsear los detalles JSON si existen

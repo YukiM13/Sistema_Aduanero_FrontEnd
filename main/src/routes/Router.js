@@ -235,7 +235,6 @@ const todasLasRutas = [
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/list', element: <PersonaJuridicaList/>, pantalla:'Persona Juridica' },
-   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica/>, pantalla:'Persona Juridica' },
   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
@@ -252,17 +251,11 @@ const todasLasRutas = [
   { path: '/tallas/list', element: <Tallas/>, pantalla:'Tallas' },
   { path: '/subCategorias/list', element: <SubCategorias/>, pantalla:'Sub Categorias' },
   { path: '/ordenCompra', element: <OrdenCompraList/>, pantalla:'Orden Compra' },
-  { path: '/declaracionValor/list', element: <DeclaracionValor/>, pantalla:'Impresion Declaracion de Valor' },
-  { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
-  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
-  {path: '/materialesporpo', element: <MaterialesporPO/>, pantalla:'Materiales por PO'},//esquema aduanas
-    {path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
-  {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
-  {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
+  { path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual'},
   { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
   { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
   { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
@@ -275,8 +268,26 @@ const todasLasRutas = [
   { path: '/reporteSeguimientoProcesos', element: <ReporteSeguimientoProcesos  /> , pantalla:'Seguimiento de Procesos por PO' },
   { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
-  { path: '/maquinaUso', element: <MaquinaUsoReporte  />  },
 
+  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Impresion Devas Pendientes'},
+  { path: '/materialesporpo', element: <MaterialesporPO/>, pantalla:'Impresion Materiales por Orden de Compra'},
+  { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Impresion Materiales No Brindados'},
+  { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Impresion Planificacion PO' },
+  { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'Impresion Materiales Ingresos'},
+  { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'Impresion Produccion Areas'},
+  { path: '/TiemposMaquinas', element: <TiemposMaquinas/>, pantalla:'Impresion Tiempos Maquinas'},
+  { path: '/ProduccionPorModulo', element: <ProduccionPorModulo/>, pantalla:'Impresion Produccion Por Modulos'},
+  { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'Impresion Reporte Modulo Dia Detalle'},
+
+  { path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Impresion Inventario' },
+  { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Impresion Importaciones' },
+
+  { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Impresion Pedido Orden' },
+  
+  { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Impresion Contratos Adhesion' },
+
+  { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />, pantalla:'Impresion Consumo Materiales'  },
+  { path: '/maquinaUso', element: <MaquinaUsoReporte  /> , pantalla:'Impresion Uso Maquina' },
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>

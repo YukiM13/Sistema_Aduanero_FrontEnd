@@ -503,7 +503,15 @@ export const generarMenu = async () => {
 
   if (esAdmin || 
     nombresDePantalla.some(nombre => [
-      'Impresion Declaracion de Valor', 'Impresion Duca', 'Impresion Devas Pendientes'
+      'Impresion Planificacion PO', 
+      'Impresion Devas Pendientes',       
+      'Impresion Materiales No Brindados',
+      'Impresion Materiales Ingresos',
+      'Impresion Produccion Areas',
+      'Impresion Tiempos Maquinas',
+      'Impresion Produccion Por Modulos',
+      'Impresion Reporte Modulo Dia Detalle',
+      'Impresion Materiales por Orden de Compra'
     ].includes(nombre))) {
     
     const impresion = {
@@ -514,30 +522,10 @@ export const generarMenu = async () => {
       children: []
     };
 
-    if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Planificacion PO')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Duca',
-        icon: IconPoint,
-        href: '/ducas/list',
-        chipColor: 'secondary',
-      });
-    }
-
-    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'II. Declaracion de Valor',
-        icon: IconPoint,
-        href: '/declaracionValor/list',
-        chipColor: 'secondary',
-      });
-    }
-
-    if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'III.Planificacion PO',
+        title: 'Planificacion PO',
         icon: IconPoint,
         href: '/PlanificacionPO',
         chipColor: 'secondary',
@@ -574,67 +562,67 @@ export const generarMenu = async () => {
       });
     }
     
-    if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales No Brindados')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'IV. Materiales No Brindados',
+        title: 'Materiales No Brindados',
         icon: IconPoint,
         href: '/CostosMaterialesNoBrindados',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales Ingresos')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Materiales Ingresos',
+        title: 'Materiales Ingresos',
         icon: IconPoint,
         href: '/MaterialesIngresos',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Produccion Areas')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Produccion Areas')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Produccion Areas',
+        title: 'Produccion Areas',
         icon: IconPoint,
         href: '/ProduccionAreas',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. TiSempos Maquinas')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Tiempos Maquinas')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Tiempos Maquinas',
+        title: 'Tiempos Maquinas',
         icon: IconPoint,
         href: '/TiemposMaquinas',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Produccion Por Modulos')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Produccion Por Modulos')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Produccion Por Modulos',
+        title: 'Produccion Por Modulos',
         icon: IconPoint,
         href: '/ProduccionPorModulo',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('I. Reporte Modulo Dia Detalle')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Reporte Modulo Dia Detalle')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'I. Reporte Modulo Dia Detalle',
+        title: 'Reporte Modulo Dia Detalle',
         icon: IconPoint,
         href: '/ReporteModuloDiaDetalle',
         chipColor: 'secondary',
       });
     }
 
-    if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
+    if (esAdmin || nombresDePantalla.includes('Impresion Materiales por Orden de Compra')) {
       impresion.children.push({
         id: uniqueId(),
         title: 'Materiales por Orden de compra',
@@ -670,7 +658,6 @@ export const generarMenu = async () => {
     }
   }
   
-//deb
   if (esAdmin || nombresDePantalla.includes('Declaracion de Valor')) {
     Menuitems.push({
       id: uniqueId(),
