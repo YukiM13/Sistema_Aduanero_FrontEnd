@@ -22,6 +22,8 @@ import OrcoPorEstadi from 'src/components/dashboards/modern/OrdenCompraPorEstado
 import ImportacionesSemana from 'src/components/dashboards/modern/ImportacionesSemana';
 import ImportacionesAnio from 'src/components/dashboards/modern/ImportacionesAnio';
 import PaisesMasExportadores from 'src/components/dashboards/modern/PaisesMasExportadores';
+import TratadosMasUsadosChart from 'src/components/dashboards/modern/TratadosMasUsados';
+import AvanceOrdenCompra from 'src/components/dashboards/modern/AvanceOrdenCompra';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -38,6 +40,10 @@ const Modern = () => {
         {/* column */}
         <Grid item xs={12} lg={8}>
           <RevenueUpdates />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={8}>
+          <AvanceOrdenCompra />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
@@ -100,6 +106,12 @@ const Modern = () => {
         <Grid item xs={12} lg={4}>
           <ProductividadModulosChart />
         </Grid>
+
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <TratadosMasUsadosChart />
+        </Grid>
+
         {/* column */}
         <Grid item xs={12} lg={4}>
           <PrendasPedidasChart />
