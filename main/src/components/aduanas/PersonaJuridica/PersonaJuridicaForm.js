@@ -295,7 +295,7 @@ const infoLogin = localStorage.getItem('DataUsuario');
           setOpenSnackbar(true);
           setTimeout(() => {
             if (onGuardar) onGuardar();
-            window.location.href = 'http://localhost:3000/dashboards/modern';
+            window.location.href = 'http://localhost:3000/PersonaJuridica/list';
           }, 1500);
         }
       } catch (error) {
@@ -304,7 +304,7 @@ const infoLogin = localStorage.getItem('DataUsuario');
         setOpenSnackbar(true);
         setTimeout(() => {
           if (onGuardar) onGuardar();
-          window.location.href = 'http://localhost:3000/dashboards/modern';
+          window.location.href = 'http://localhost:3000/PersonaJuridica/list';
         }, 1500);
       }
     },

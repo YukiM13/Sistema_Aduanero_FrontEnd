@@ -11,6 +11,12 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import StyledButton from 'src/components/shared/StyledButton';
+
+
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
+
 const validationSchema = yup.object({
   cate_Descripcion: yup.string().required('La descripción es requerida')
 });
@@ -24,7 +30,7 @@ const CategoriasEdit = ({ categoria, onCancelar, onGuardadoExitoso }) => {
     validationSchema,
     onSubmit: (values) => {
       values.cate_FechaModificacion = new Date().toISOString();
-      values.usua_UsuarioModificacion = 1; // ID del usuario actual
+      values.usua_UsuarioModificacion = user; // ID del usuario actual
       
       axios.post(`${apiUrl}/api/Categoria/Editar`, values, {
         headers: { 'XApiKey': apiKey }

@@ -6,6 +6,7 @@ import {
   } from '@mui/material';
   import ArrowBackIcon   from '@mui/icons-material/ArrowBack'; 
 
+import StyledButton from 'src/components/shared/StyledButton';
 
 const CiudadesDetailsComponent = ({ciudad, onCancelar }) => { //esto es lo que manda para saber cuando cerrar el crear
  
@@ -51,10 +52,14 @@ const CiudadesDetailsComponent = ({ciudad, onCancelar }) => { //esto es lo que m
                   </TableContainer>
                     <Grid container justifyContent="flex-end" spacing={2} mt={2}>
                         <Grid item>
-                            <Button variant="contained" color="secondary" onClick={onCancelar}
-                            startIcon={<ArrowBackIcon />}>
-                                Regresar
-                            </Button>
+                            <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
                         </Grid>
                     </Grid>
       

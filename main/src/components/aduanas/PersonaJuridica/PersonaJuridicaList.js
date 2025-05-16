@@ -2,28 +2,30 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, Stack,
+  TableHead, TableRow, Paper, Stack,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PersonaJuridicaForm from './PersonaJuridicaForm';
 import PersonaJuridicaEdit from './PersonaJuridicaEdit';
 import PersonaJuridicaDetails from './PersonaJuridicaDetails';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const PersonaJuridicaList = () => {
   const [personasJuridicas, setPersonasJuridicas] = useState([]);
-  const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle'
+  const [modo, setModo] = useState('listar');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [personaSeleccionada, setPersonaSeleccionada] = useState(null);
+  const [iconRotated, setIconRotated] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
@@ -66,9 +68,13 @@ const PersonaJuridicaList = () => {
     setPosicionMenu(evento.currentTarget);
     setPersonaSeleccionada(persona);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setIconRotated(false);
+  };
 
   return (
     <div>
@@ -80,9 +86,11 @@ const PersonaJuridicaList = () => {
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                {'Nuevo'}
-              </Button>
+              <StyledButton
+                sx={{}}
+                title="Nuevo"
+                event={() => setModo('crear')}
+              />
             </Stack>
             <Paper variant="outlined">
               <TextField
@@ -101,42 +109,78 @@ const PersonaJuridicaList = () => {
                 }}
               />
               <TableContainer component={Paper}>
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }} align="center">
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">ID</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Nombre</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">RTN</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Ciudad</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Correo Electrónico</Typography>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((persona) => (
-                      <TableRow key={persona.peju_Id}>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((persona, index) => (
+                      <TableRow
+                        key={persona.peju_Id}
+                        sx={{
+                          backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                          '&:hover': { backgroundColor: '#e3f2fd' },
+                        }}
+                      >
                         <TableCell align="center">
-                          <IconButton size="small" onClick={(e) => abrirMenu(e, persona)}>
-                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                          <IconButton
+                            size="small"
+                            onClick={(e) => abrirMenu(e, persona)}
+                            sx={{
+                              backgroundColor: '#d9e7ef',
+                              color: 'rgb(0, 83, 121)',
+                              '&:hover': {
+                                backgroundColor: 'rgb(157, 191, 207)',
+                              },
+                              border: '2px solid rgb(0, 83, 121)',
+                              borderRadius: '8px',
+                              padding: '6px'
+                            }}
+                          >
+                            <SettingsIcon
+                              sx={{
+                                transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',
+                              }}
+                              fontSize="small"
+                            />
+                            <Typography variant="h6" sx={{ ml: 1, fontSize: '0.95rem' }}>Acciones</Typography>
                           </IconButton>
                         </TableCell>
-                        <TableCell>{persona.peju_Id}</TableCell>
-                        <TableCell>{persona.pers_Nombre}</TableCell>
-                        <TableCell>{persona.pers_RTN}</TableCell>
-                        <TableCell>{persona.ciud_Nombre}</TableCell>
-                        <TableCell>{persona.peju_CorreoElectronico}</TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{persona.peju_Id}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{persona.pers_Nombre}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{persona.pers_RTN}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{persona.ciud_Nombre}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{persona.peju_CorreoElectronico}</Typography>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {emptyRows > 0 && (
@@ -154,6 +198,38 @@ const PersonaJuridicaList = () => {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  borderTop: '1px solid #e0e0e0',
+                  fontSize: '0.85rem',
+                  '& .MuiTablePagination-toolbar': {
+                    padding: '8px 16px',
+                    minHeight: '48px',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    mb: '0'
+                  },
+                  '& .MuiTablePagination-actions': {
+                    '& button': {
+                      color: '#666',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    },
+                  },
+                  '& .MuiInputBase-root': {
+                    fontSize: '0.8rem',
+                    borderRadius: '6px',
+                    backgroundColor: '#f9f9f9',
+                    padding: '2px 6px',
+                  },
+                  '& .MuiSelect-icon': {
+                    color: '#888',
+                  }
+                }}
                 labelRowsPerPage="Filas por página"
               />
             </Paper>

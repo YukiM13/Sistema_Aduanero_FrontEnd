@@ -9,6 +9,8 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg'; // Importar como componente
 
+import StyledButton from 'src/components/shared/StyledButton';
+
 const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
     const contenidoRef = useRef();
 
@@ -78,13 +80,14 @@ const DeclaracionValorImpresionPdf = ({ declaracionValor, onCancelar }) => {
         <>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
 
-                <Button
-                    variant="outlined"
-                    startIcon={<ArrowBackIcon fontSize="small" />}
-                    onClick={onCancelar} 
-                >
-                    Volver
-                </Button>
+               <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
                 <Button
                     variant="contained"
                     color="primary"

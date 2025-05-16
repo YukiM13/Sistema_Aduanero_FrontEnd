@@ -553,6 +553,26 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+
+     if (esAdmin || nombresDePantalla.includes('Reporte Inventario')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Inventario',
+        icon: IconPoint,
+        href: '/reportes/inventario',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('Importaciones Reporte')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Importaciones Reporte',
+        icon: IconPoint,
+        href: '/importaciones/reporte',
+        chipColor: 'secondary',
+      });
+    }
     
     if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
       impresion.children.push({
