@@ -13,6 +13,8 @@ import ParentCard from '../../../components/shared/ParentCard';
 import UsuarioCreateComponent from './UsuarioCreate';
 import UsuarioEditComponent from './UsuarioEdit';
 import UsuarioDetailsComponent from './UsuarioDetails';
+import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
+import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -25,6 +27,7 @@ import { alertMessages } from 'src/layouts/config/alertConfig';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BlockIcon from '@mui/icons-material/Block';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import LockResetIcon from '@mui/icons-material/LockReset';
 
 const UsuariosComponent = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -36,6 +39,10 @@ const UsuariosComponent = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchQuery, setSearchQuery] = useState('');
+    const [abrirModalReset, setAbrirModalReset] = useState(false);
+    const [nuevaContrasenia, setNuevaContrasenia] = useState('');
+    const [confirmarContrasenia, setConfirmarContrasenia] = useState('');
+    const [resetError, setResetError] = useState('');
     const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
     const [confirmarActivacion, setConfirmarActivacion] = useState(false);
     const [alertConfig, setAlertConfig] = useState({
@@ -99,6 +106,15 @@ const UsuariosComponent = () => {
         cerrarMenu();
     };
 
+    const abrirModalRestablecer = (usuario) => {
+        setUsuarioSeleccionado(usuario);
+        setNuevaContrasenia('');
+        setConfirmarContrasenia('');
+        setResetError('');
+        setAbrirModalReset(true);
+        cerrarMenu();
+    };
+
     const eliminar = (usuario) => {
         axios.post(`${apiUrl}/api/Usuarios/Eliminar`, usuario, {
             headers: { 'XApiKey': apiKey }
@@ -119,6 +135,34 @@ const UsuariosComponent = () => {
                 mostrarAlerta('activado');
             })
             .catch(() => mostrarAlerta('errorActivar'));
+    };
+
+    const restablecerContrasenia = async () => {
+        if (!nuevaContrasenia.trim() || !confirmarContrasenia.trim()) {
+            setResetError('Ambos campos son requeridos.');
+            return;
+        }
+        if (nuevaContrasenia !== confirmarContrasenia) {
+            setResetError('Las contraseñas no coinciden.');
+            return;
+        }
+        try {
+            const payload = {
+                usua_Nombre: usuarioSeleccionado.usua_Nombre,
+                usua_Contrasenia: nuevaContrasenia,
+            };
+            const response = await axios.post(`${apiUrl}/api/Usuarios/CambiarContrasenia`, payload, {
+                headers: { 'XApiKey': apiKey },
+            });
+            if (response.data.success) {
+                setAbrirModalReset(false);
+                mostrarAlerta('actualizado');
+            } else {
+                setResetError(response.data.message || 'Error al restablecer la contraseña.');
+            }
+        } catch (error) {
+            setResetError('Error al restablecer la contraseña. Intente nuevamente.');
+        }
     };
 
     const abrirMenu = (evento, usuario) => {
@@ -319,6 +363,12 @@ const UsuariosComponent = () => {
                     </ListItemIcon>
                     <ListItemText>Detalles</ListItemText>
                 </MenuItem>
+                <MenuItem onClick={() => abrirModalRestablecer(usuarioSeleccionado)}>
+                    <ListItemIcon>
+                        <LockResetIcon fontSize="small" style={{ color: '#1976d2', fontSize: '18px' }} />
+                    </ListItemIcon>
+                    <ListItemText>Restablecer Contraseña</ListItemText>
+                </MenuItem>
                 {usuarioSeleccionado?.usua_Estado === true && (
                     <MenuItem onClick={() => eliminarUsuario(usuarioSeleccionado)}>
                         <ListItemIcon>
@@ -403,6 +453,42 @@ const UsuariosComponent = () => {
                         color="success"
                     >
                         Activar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={abrirModalReset} onClose={() => setAbrirModalReset(false)}>
+                <DialogTitle>Restablecer Contraseña</DialogTitle>
+                <DialogContent>
+                    <CustomFormLabel htmlFor="nuevaContrasenia">Nueva Contraseña</CustomFormLabel>
+                    <CustomTextField
+                        id="nuevaContrasenia"
+                        type="password"
+                        fullWidth
+                        value={nuevaContrasenia}
+                        onChange={(e) => setNuevaContrasenia(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <CustomFormLabel htmlFor="confirmarContrasenia">Confirmar Contraseña</CustomFormLabel>
+                    <CustomTextField
+                        id="confirmarContrasenia"
+                        type="password"
+                        fullWidth
+                        value={confirmarContrasenia}
+                        onChange={(e) => setConfirmarContrasenia(e.target.value)}
+                    />
+                    {resetError && (
+                        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            {resetError}
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setAbrirModalReset(false)} color="primary" variant="outlined">
+                        Cancelar
+                    </Button>
+                    <Button onClick={restablecerContrasenia} color="primary" variant="contained">
+                        Guardar
                     </Button>
                 </DialogActions>
             </Dialog>
