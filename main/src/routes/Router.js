@@ -233,7 +233,7 @@ const todasLasRutas = [
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/list', element: <PersonaJuridicaList/>, pantalla:'Persona Juridica' },
    { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
-  { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+  { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica/>, pantalla:'Persona Juridica' },
   { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
