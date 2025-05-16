@@ -189,6 +189,7 @@ const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landi
 
 // Reportes
 const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
+const MaquinaUsoReporte = Loadable(lazy(() => import('../components/reportes/MaquinaUsoReporte')));
 
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
@@ -242,6 +243,8 @@ const todasLasRutas = [
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+
+  { path: '/maquinaUso', element: <MaquinaUsoReporte  />  },
 
 ]
 
