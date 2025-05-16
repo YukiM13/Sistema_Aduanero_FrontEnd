@@ -21,7 +21,7 @@ import { any } from 'prop-types';
 
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, CircularProgress
+  TableHead, TableRow, Paper, CircularProgress, MenuItem
 } from '@mui/material';
 import { useFormik } from 'formik';
 import SaveIcon from '@mui/icons-material/Save';
@@ -36,12 +36,17 @@ import declaracionvalor from '../../models/devaspendientesModel.js'
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg'; // Importar como componente
 import LogoAzulUrl from 'src/assets/images/logos/LOGOAZUL.svg'; // Importar como componente
 import LogoAzulPNG from 'src/assets/images/logos/LOGOAZULPNG.png'; // Importar como componente
+import { set } from 'lodash';
 
-const ConsumoMaterialesReporte = ()=>{
+const MaquinaUsoReporte = ()=>{
 
     const [datos, setDatos] = useState({fecha_inicio: new Date(), fecha_fin: new Date()}) ;
-    const [fechaInicio, setFechaInicio] = useState(new Date());
-    const [fechaFin, setFechaFin] = useState(new Date());
+    // const [fechaInicio, setFechaInicio] = useState(new Date());
+    // const [fechaFin, setFechaFin] = useState(new Date());
+    const [modu_Id, setModu_Id] = useState(0);
+    const [moduSeleccionado, setModuSeleccionado] = useState('');
+    const [modulos, setModulos] = useState([]);
+
 
     const LogoAzulSVGCode = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="180px" height="77px" viewBox="0 0 180 77" version="1.1">
 <defs>
@@ -137,10 +142,18 @@ const ConsumoMaterialesReporte = ()=>{
       //setDatos({fecha_inicio: fechaInicio, fecha_fin: fechaFin});
       // datos.fecha_inicio = fechaInicio;
       //   datos.fecha_fin = fechaInicio;
-      const parametros = {fecha_inicio: fechaInicio, fecha_fin: fechaFin};
+      
+      if (!modu_Id) {
+
+        return;
+        
+      }
+      setModuSeleccionado(modulos.find(mod=> mod.modu_Id == modu_Id).modu_Nombre);
+
+      const parametros = {modu_Id: modu_Id};
       console.log("datosdatos", parametros);
 
-        axios.post(`${apiUrl}/api/Reportes/Consumo_Materiales`, parametros,{
+        axios.post(`${apiUrl}/api/Reportes/Maquina_Uso`, parametros,{
       headers: { 'XApiKey': apiKey }
     })
     .then(Response =>{ setConsumos(Response.data.data);
@@ -314,6 +327,17 @@ const generarRepo = async () => {
 
 
     useEffect(() => {
+
+            axios.get(`${apiUrl}/api/Modulos/Listar`,{
+        headers: { 'XApiKey': apiKey }
+        })
+        .then(Response =>{ setModulos(Response.data.data);
+
+            console.log("cargadosmod?", Response.data);
+            
+
+        })
+        .catch(error => console.error('Error al obtener consumos:', error));
         
     
     }, []);
@@ -327,7 +351,39 @@ const generarRepo = async () => {
                 <ParentCard>
                     <Grid container spacing={3} mb={3}>
 
-                  <Grid item lg={4} md={4} sm={4}>
+                    <Grid item lg={6} md={12} sm={12}>
+                   
+                        <CustomFormLabel>Modulo</CustomFormLabel>
+                        <CustomTextField
+                          select
+                          fullWidth
+                          id="modu_Id"
+                          name="modu_Id"
+                          placeholder="Seleccione un Modulo"
+                          value={modu_Id}
+                          onChange={e => {setModu_Id(e.target.value);
+                            
+
+                          }}
+                        //   value={formik.values.ofic_Id}
+                        //   onChange={formik.handleChange}
+                        //   onBlur={formik.handleBlur}
+                        //   error={formik.touched.ofic_Id && Boolean(formik.errors.ofic_Id)}
+                        //   helperText={formik.touched.ofic_Id && formik.errors.ofic_Id}
+                        >
+                            <MenuItem value= {0} disabled >
+                                <em style={{ color: '#888' }}>Seleccione un Modulo</em>
+                            </MenuItem>
+                          {modulos.map((modulo) => (
+                            <MenuItem key={modulo.modu_Id} value={modulo.modu_Id}>
+                              {modulo.modu_Nombre}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                  
+                </Grid>
+
+                  {/* <Grid item lg={4} md={4} sm={4}>
                     <CustomFormLabel>Fecha Inicio</CustomFormLabel>
                     <CustomTextField
                         fullWidth
@@ -355,7 +411,7 @@ const generarRepo = async () => {
                         // error={formik.touched.fechaFin && Boolean(formik.errors.fechaFin)}
                         // helperText={formik.touched.fechaFin && formik.errors.fechaFin}
                     />
-                  </Grid>
+                  </Grid> */}
 
                    <Grid item lg={2} md={2} sm={2}>
                     <CustomFormLabel><br/></CustomFormLabel>
@@ -380,10 +436,12 @@ const generarRepo = async () => {
                             <div id='tablapdf' style={{ position: 'relative' }}>
                                 <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresion: {new Date().toLocaleString()} </p>
                                 <br />
-                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
+                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt',
+                                    letterSpacing: 'normal', wordSpacing: 'normal', whiteSpace: 'normal' }} 
+                                    border="3" cellPadding="2" cellSpacing="0">
                                     <tr bgcolor="#eeeeee">
                                         <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
-                                           REPORTE DE CONSUMO DE MATERIALES <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                           REPORTE DE USO DE MAQUINAS POR MODULO <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
                                         </th>
                                         <th rowSpan="2" id="imagenqr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
                                     </tr>
@@ -392,24 +450,27 @@ const generarRepo = async () => {
                                         <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>PARÁMETROS DE BÚSQUEDA</th>
                                     </tr> */}
                                     <tr>
-                                        <th bgcolor="#f8f8f8">Fecha Inicio:</th>
-                                        <td colSpan="3">{new Date(fechaInicio).toLocaleDateString()}</td>
-                                        <th bgcolor="#f8f8f8">Fecha Fin:</th>
-                                        <td colSpan="4">{new Date(fechaFin).toLocaleDateString()}</td>
+                                        <th bgcolor="#f8f8f8">Modulo:</th>
+                                        <td colSpan="3">{moduSeleccionado}</td>
+                                        <th bgcolor="#f8f8f8">Id Del Modulo:</th>
+                                        <td colSpan="4">{(moduSeleccionado)?modulos.find(mod=>mod.modu_Nombre == moduSeleccionado).modu_Id:""}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
-                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE CONSUMO DE MATERIALES</th>
+                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE MAQUINAS UTILIZADAS EN MODULO {(modu_Id)?moduSeleccionado.toUpperCase():''}</th>
                                     </tr>
                                 </table>
                                 
-                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
+                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', 
+                                    letterSpacing: 'normal', wordSpacing: 'normal', whiteSpace: 'normal', marginTop: '10px' }} 
+                                    border="1" cellPadding="2" cellSpacing="0">
                                     <thead>
                                         <tr bgcolor="#eeeeee">
-                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Materiales</th>
-                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>{"Promedio de Material"}</th>
-                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Porcentaje de Material</th>
-                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Total</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Numero De Serie</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Marca</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Estado</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Fecha Habilitada</th>
+                                            <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Fecha Deshabilitada</th>
                                             {/* <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Número Serie</th>
                                             <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Marca</th>
                                             <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Precio Promedio</th>
@@ -422,11 +483,15 @@ const generarRepo = async () => {
                                         {consumos.map((item, index) => (
                                             <tr key={index}>
                                                 
-                                                <td style={{ border: "1px solid black" }}>{item.mate_Descripcion}</td>
-                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.promedioMaterial?.toFixed(2)}</td>
-                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.porcentajeMaterial?.toFixed(2)}</td>
-                                                <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.totalMaterial?.toFixed(2)}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.maqu_NumeroSerie}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.marq_Nombre}</td>
+                                                <td style={{ border: "1px solid black" }}>{(item.enUso)?"En Uso": "No En Uso"}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.deshabilitada}</td>
+                                                <td style={{ border: "1px solid black" }}>{item.habilitada}</td>
+
+
                                                 
+                                                {/* <td style={{ border: "1px solid black", textAlign: 'right' }}>{item.totalMaterial?.toFixed(2)}</td> */}
                                                 {/* <td style={{ border: "1px solid black", textAlign: 'center' }}>{item.maqu_Id}</td>
                                                 <td style={{ border: "1px solid black" }}>{item.maqu_NumeroSerie}</td>
                                                 <td style={{ border: "1px solid black" }}>{item.marq_Nombre}</td>
@@ -454,19 +519,14 @@ const generarRepo = async () => {
                                                     }}
                                                     
                                                 >
-                                                    {/* <LogoAzul style={{maxWidth: '100%', maxHeight: '100%'}}/> */}
+                                                    <LogoAzul style={{maxWidth: '100%', maxHeight: '100%'}}/>
                                                     {/* <img src={LogoAzulPNG} alt="" style={{maxWidth: '100%', maxHeight: '100%'}} /> */}
                                                     {/* <img
                                                       src={logoAzulDataUrl}
                                                       alt="Logo Azul"
                                                       
                                                     /> */}
-                                                    <img
-                                                      src={LogoAzulPNG}
-                                                      alt="Logo Azul"
-                                                      
-                                                      
-                                                    />
+                                                    
                                                 </div>
                                 <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
                                     <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
@@ -496,5 +556,5 @@ const generarRepo = async () => {
 
 }
 
-export default ConsumoMaterialesReporte;
+export default MaquinaUsoReporte;
 
