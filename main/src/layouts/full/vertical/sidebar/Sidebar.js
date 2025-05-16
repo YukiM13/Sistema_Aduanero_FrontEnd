@@ -71,10 +71,9 @@ const Sidebar = () => {
               boxSizing: 'border-box',
             },
           }}
-        >
-          <Box
+        >          <Box
             sx={{
-              backgroundColor: '#003859',
+              backgroundImage: 'linear-gradient(to bottom right, #034165 0%, #000000 100%)',
               color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
               height: '100%',
               borderRadius: '0px 20px 20px 0px',
