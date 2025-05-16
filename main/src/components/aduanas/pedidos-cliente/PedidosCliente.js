@@ -240,7 +240,7 @@ const PedidosCliente = () => {
                     <td colSpan="1">{formik.values.fechaFin ? new Date(formik.values.fechaFin).toLocaleDateString() : ''}</td>
                   </tr>
                   <tr bgcolor="#eeeeee">
-                    <th colSpan="5" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE DEVAS PENDIENTES</th>
+                    <th colSpan="5" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>LISTADO DE PEDIDOS CLIENTE</th>
                   </tr>
                 </table>
                 <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
