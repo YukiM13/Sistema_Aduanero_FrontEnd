@@ -25,6 +25,12 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Snackbar, Alert } from '@mui/material';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
+import StyledButton from 'src/components/shared/StyledButton';
+
+
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
 
 const SubCategoriasComponent = () => {
   const [subcategorias, setSubCategorias] = useState([]);
@@ -37,6 +43,7 @@ const SubCategoriasComponent = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
+  const [iconRotated, setIconRotated] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     severity: '',
     message: '',
@@ -75,15 +82,16 @@ const SubCategoriasComponent = () => {
     setConfirmarEliminacion(true);
     cerrarMenu();
   }
-
   function abrirMenu(evento, subcategoria) {
     setPosicionMenu(evento.currentTarget);
     setSubcategoriaSeleccionada(subcategoria);
     setMenuAbierto(true);
+    setIconRotated(true); // Activar rotación
   }
 
   function cerrarMenu() {
     setMenuAbierto(false);
+    setIconRotated(false); // Detener rotación
   }
 
   const cargarSubCategorias = () => {
@@ -103,7 +111,7 @@ const SubCategoriasComponent = () => {
   const eliminar = (subcategoria) => {
     const subcategoriaEliminar = {...SubCategoriaModel};
     subcategoriaEliminar.subc_Id = subcategoria.subc_Id;
-    subcategoriaEliminar.usua_UsuarioEliminacion = 1; // ID real del usuario
+    subcategoriaEliminar.usua_UsuarioEliminacion = user; // ID real del usuario
     subcategoriaEliminar.subc_FechaEliminacion = new Date().toISOString();
   
     axios.post(`${apiUrl}/api/SubCategoria/Eliminar`, subcategoriaEliminar, {
@@ -143,14 +151,11 @@ const SubCategoriasComponent = () => {
       <ParentCard>
         {modo === 'listar' && (
           <container>
-            <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button 
-                variant="contained" 
-                onClick={() => setModo('crear')} 
-                startIcon={<AddIcon style={{ fontSize: '18px' }} />}
-              >
-                Nuevo
-              </Button>
+            <Stack direction="row" justifyContent="flex-start" mb={2}>              <StyledButton  
+                sx={{}} 
+                title="Nuevo"
+                event={() => setModo('crear')}>
+              </StyledButton>
             </Stack>
             <Paper variant="outlined">
               <TextField 
@@ -167,21 +172,20 @@ const SubCategoriasComponent = () => {
                     </InputAdornment>
                   ),
                 }}
-              />
-              <TableContainer component={Paper}>
-                <Table>
+              />              <TableContainer component={Paper}>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">ID</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Descripción</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Categoría</Typography>
                       </TableCell>
                     </TableRow>
@@ -189,19 +193,41 @@ const SubCategoriasComponent = () => {
                   <TableBody>
                     {filteredData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((subcategoria) => (
-                        <TableRow key={subcategoria.subc_Id}>
+                      .map((subcategoria, index) => (
+                        <TableRow 
+                          key={subcategoria.subc_Id}
+                          sx={{
+                            backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                            '&:hover': { backgroundColor: '#e3f2fd' },
+                          }}
+                        >
                           <TableCell align="center">
                             <IconButton
                               size="small"
                               onClick={(e) => abrirMenu(e, subcategoria)}
+                              sx={{
+                                backgroundColor: '#d9e7ef',
+                                color: 'rgb(0, 83, 121)',
+                                '&:hover': {
+                                  backgroundColor: 'rgb(157, 191, 207)',
+                                },
+                                border: '2px solid rgb(0, 83, 121)',
+                                borderRadius: '8px',
+                                padding: '6px'
+                              }}
                             >
-                              <SettingsIcon style={{ color: '#2196F3', fontSize: '18px' }} />
+                              <SettingsIcon 
+                                sx={{
+                                  transition: 'transform 0.3s ease-in-out',
+                                  transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',
+                                }}
+                                fontSize="small" 
+                              />
                             </IconButton>
                           </TableCell>
-                          <TableCell>{subcategoria.subc_Id}</TableCell>
-                          <TableCell>{subcategoria.subc_Descripcion}</TableCell>
-                          <TableCell>{subcategoria.cate_Descripcion}</TableCell>
+                          <TableCell><Typography variant="body1">{subcategoria.subc_Id}</Typography></TableCell>
+                          <TableCell><Typography variant="body1">{subcategoria.subc_Descripcion}</Typography></TableCell>
+                          <TableCell><Typography variant="body1">{subcategoria.cate_Descripcion}</Typography></TableCell>
                         </TableRow>
                       ))}
                     {emptyRows > 0 && (
@@ -211,8 +237,7 @@ const SubCategoriasComponent = () => {
                     )}
                   </TableBody>
                 </Table>
-              </TableContainer>
-              <TablePagination 
+              </TableContainer>              <TablePagination 
                 component="div" 
                 count={filteredData.length} 
                 page={page} 
@@ -220,7 +245,39 @@ const SubCategoriasComponent = () => {
                 rowsPerPage={rowsPerPage} 
                 onRowsPerPageChange={handleChangeRowsPerPage} 
                 ActionsComponent={TablePaginationActions} 
-                labelRowsPerPage="Filas por página" 
+                labelRowsPerPage="Filas por página"
+                sx={{
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  borderTop: '1px solid #e0e0e0',
+                  fontSize: '0.85rem',
+                  '& .MuiTablePagination-toolbar': {
+                    padding: '8px 16px',
+                    minHeight: '48px',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    mb: '0'
+                  },
+                  '& .MuiTablePagination-actions': {
+                    '& button': {
+                      color: '#666',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    },
+                  },
+                  '& .MuiInputBase-root': {
+                    fontSize: '0.8rem',
+                    borderRadius: '6px',
+                    backgroundColor: '#f9f9f9',
+                    padding: '2px 6px',
+                  },
+                  '& .MuiSelect-icon': {
+                    color: '#888',
+                  }
+                }}
               />
             </Paper>
           </container>

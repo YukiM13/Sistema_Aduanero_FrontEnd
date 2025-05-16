@@ -13,6 +13,11 @@ import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SubCategoriaModel from 'src/models/subcategoriamodel';
 
+
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
+
 const validationSchema = yup.object({
   subc_Descripcion: yup.string().required('La descripción es requerida'),
   cate_Id: yup.number().required('La categoría es requerida').moreThan(0, 'La categoría es requerida')
@@ -45,7 +50,7 @@ const SubCategoriasCreate = ({ onCancelar, onGuardadoExitoso }) => {
     validationSchema,
     onSubmit: (values) => {
       values.subc_FechaCreacion = new Date().toISOString();
-      values.usua_UsuarioCreacion = 1; // ID del usuario actual
+      values.usua_UsuarioCreacion = user; // ID del usuario actual
       
       axios.post(`${apiUrl}/api/SubCategoria/Insertar`, values, {
         headers: { 'XApiKey': apiKey }

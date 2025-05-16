@@ -15,6 +15,7 @@ import {
 
 } from '@mui/material';
 import PageContainer from '../../container/PageContainer';
+import StyledButton from 'src/components/shared/StyledButton';
 import { Stack } from '@mui/system';
 import DucaTab2Component from './DucaTab2';
 import DucaTab1Component from './DucaTab1';
@@ -101,45 +102,52 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
                   console.log("Devas", response.data.data)
                   const devas = response.data.data;
                   console.log(devas);
-                  axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+                  if(localStorage.getItem('ducaId') != null){
+                     axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
                     headers: {
                         'XApiKey': apiKey
                     }
             
-                })
-                .then(response => {
-                  const localDevas = response.data.data;
-                  console.log('devas insertadas', localDevas);
-                 
-                  if (localDevas && devas) {
-                   const parsedLocal = localDevas;
-                   const devasDesdeApi = devas;
-                  console.log('devas desde listar', devasDesdeApi);
-                   const nuevos = devasDesdeApi.filter(apiDeva =>
-                    !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
-                   );
-                
-                   const combinado = [...parsedLocal, ...nuevos];
-                   setDeva(combinado);
-                  } else if(localDevas)
-                  {
-                    console.log('entro solo a las devas ya insertadas')
+                  })
+                  .then(response => {
+                    const localDevas = response.data.data;
+                    console.log('devas insertadas', localDevas);
+                  
+                    if (localDevas && devas) {
                     const parsedLocal = localDevas;
-                    setDeva(parsedLocal);
-      
+                    const devasDesdeApi = devas;
+                    console.log('devas desde listar', devasDesdeApi);
+                    const nuevos = devasDesdeApi.filter(apiDeva =>
+                      !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
+                    );
+                  
+                    const combinado = [...parsedLocal, ...nuevos];
+                    setDeva(combinado);
+                    } else if(localDevas)
+                    {
+                      console.log('entro solo a las devas ya insertadas')
+                      const parsedLocal = localDevas;
+                      setDeva(parsedLocal);
+        
+                    }
+                    else if (devas) {
+                      console.log('entro solo a las devas del listar')
+                    setDeva(devas);
+                    }
+                    else {
+                      console.log('entro al else')
+                      setDeva([]);
+                    }
+                  })
+                  .catch(error => {
+                      console.error('Error al obtener los datos del país:', error);
+                  });
                   }
-                  else if (devas) {
-                    console.log('entro solo a las devas del listar')
-                   setDeva(devas);
+                  else
+                  {
+                      setDeva(devas);
                   }
-                  else {
-                    console.log('entro al else')
-                    setDeva([]);
-                  }
-              })
-              .catch(error => {
-                  console.error('Error al obtener los datos del país:', error);
-              });
+                 
             })
             .catch(error => {
               console.error('Error al obtener los datos del país:', error);
@@ -335,28 +343,31 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
                 <Box>{handleSteps(activeStep)}</Box>
   
                 <Box display="flex" justifyContent="space-between" mt={2}>
-                <Button
-                  color="inherit"
-                  variant="contained"
-                  disabled={!admin && activeStep === 0}
-                  onClick={admin && activeStep === 0 ? onCancelar : handleBack}
-                  startIcon={<ArrowBackIcon />}
-                >
-                  {admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
-                 
-                </Button>
-
-                <Button
-                  onClick={handleNext}
-                  variant="contained"
-                  disabled={activeStep === 0 && deva.length ===0 }
-                  color={activeStep === steps.length - 1 ? 'success' : 'primary'}
-                  endIcon={
-                    activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />
-                  }
-                >
-                  {activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
-                </Button>
+                <StyledButton 
+                  disabled={!admin && activeStep === 0} 
+                  sx={{}} 
+                  title={admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
+                  event={() => {
+                    if (admin && activeStep === 0) {
+                      onCancelar();
+                    } else {
+                      handleBack();
+                    }
+                  }}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
+                <StyledButton 
+                  disabled={activeStep === 0 && deva.length ===0 } 
+                  sx={{}} 
+                  title={activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
+                  event={handleNext}
+                  variant={activeStep === steps.length - 1 ? 'finish' : 'sig'}
+                  >
+                  
+                </StyledButton>
+               
               </Box>
               </>
             )}

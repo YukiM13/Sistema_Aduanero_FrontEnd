@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import StyledButton from 'src/components/shared/StyledButton';
 import {
   Grid,
   Typography,
@@ -103,14 +104,14 @@ const RolesDetails = ({ role, onCancelar }) => {
 
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
         <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={onCancelar}
-            startIcon={<ArrowBackIcon />}
-          >
-            Regresar
-          </Button>
+              <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
         </Grid>
       </Grid>
     </div>

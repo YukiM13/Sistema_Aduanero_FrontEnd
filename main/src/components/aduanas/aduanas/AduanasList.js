@@ -189,7 +189,7 @@ const AduanasList = () => {
                 <TableBody>
                   {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((aduana, index) => (
                     <TableRow
-                      key={aduana.pers_Id}
+                      key={aduana.adua_Id}
                       sx={{
                         backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
                         '&:hover': { backgroundColor: '#e3f2fd' },
