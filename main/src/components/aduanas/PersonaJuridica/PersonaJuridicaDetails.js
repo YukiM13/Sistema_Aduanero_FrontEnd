@@ -9,6 +9,8 @@ import ContactMailIcon from '@mui/icons-material/ContactMail';
 import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
+import StyledButton from 'src/components/shared/StyledButton';
+
 const PersonaJuridicaDetails = ({ persona, onCancelar }) => {
   return (
     <div>
@@ -185,14 +187,14 @@ const PersonaJuridicaDetails = ({ persona, onCancelar }) => {
       
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
         <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={onCancelar}
-            startIcon={<ArrowBackIcon />}
-          >
-            Regresar
-          </Button>
+         <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
         </Grid>
       </Grid>
     </div>
