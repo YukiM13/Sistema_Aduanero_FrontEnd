@@ -20,7 +20,6 @@ import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
-//Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import StyledButton from 'src/components/shared/StyledButton';
 
