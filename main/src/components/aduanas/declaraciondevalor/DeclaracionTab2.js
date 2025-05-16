@@ -181,8 +181,7 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     // Los demás submodelos se mantienen con los valores por defecto de Deva
                   };
 
-                  setInitialValues(mappedValues);
-                  console.log("Valores seteados:", mappedValues);
+                  setInitialValues(Deva);
                 }
               })
               .catch(error => {
@@ -200,6 +199,9 @@ const Tab2 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 initialValues: initialValues,
                 validationSchema,
                 onSubmit: async(values) => {
+
+                  const confirmar = window.confirm("¿Estás seguro de que deseas guardar esta información? No podrá revertir los cambios.");
+  if (!confirmar) return; // Detiene el submit si el usuario cancela
                   try {
                     values.declaraciones_ValorViewModel.usua_UsuarioCreacion = 1;
                     values.declaraciones_ValorViewModel.usua_UsuarioModificacion = 1;
