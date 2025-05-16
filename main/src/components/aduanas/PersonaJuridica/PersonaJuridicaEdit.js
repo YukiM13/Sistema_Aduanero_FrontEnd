@@ -97,29 +97,28 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
   
-  // Estado para manejo de correos y verificación
+
   const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
-  const [correoVerificado, setCorreoVerificado] = useState(true); // Inicialmente true para edición
+  const [correoVerificado, setCorreoVerificado] = useState(true);
   const [correoOriginal, setCorreoOriginal] = useState('');
   
   const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
   const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
   const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
-  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(true); // Inicialmente true para edición
+  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(true); 
   const [correoAlternativoOriginal, setCorreoAlternativoOriginal] = useState('');
   
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
   const [correoModificado, setCorreoModificado] = useState(false);
   const [correoAltModificado, setCorreoAltModificado] = useState(false);
   
-  // Estado para notificaciones
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
 
-  // Cargar los datos iniciales
   useEffect(() => {
     axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
       .then(response => setCiudades(response.data.data || []))
@@ -137,17 +136,15 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       .then(response => setOficioProfesion(response.data.data || []))
       .catch(error => console.error('Error al obtener oficios y profesiones:', error));
 
-    // Si hay una ciudad seleccionada, cargar colonias y aldeas
+
     if (personaJuridica.ciud_Id) {
       cargarColoniasAldeas(personaJuridica.ciud_Id);
     }
 
-    // Si hay una ciudad de representante seleccionada, cargar colonias y aldeas para el representante
     if (personaJuridica.peju_CiudadIdRepresentante) {
       cargarColoniasAldeas(personaJuridica.peju_CiudadIdRepresentante);
     }
 
-    // Guardar los correos originales para saber si fueron modificados
     if (personaJuridica.peju_CorreoElectronico) {
       setCorreoOriginal(personaJuridica.peju_CorreoElectronico);
     }
@@ -361,15 +358,13 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   const handleSubmitFinal = (e) => {
     e.preventDefault();
     
-    // Verificar si el correo ha sido modificado y no está verificado
     if (correoModificado && !correoVerificado && formik.values.peju_CorreoElectronico) {
       setMensajeSnackbar('Debe verificar el correo electrónico antes de guardar.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
       return;
     }
-    
-    // Verificar si el correo alternativo ha sido modificado y no está verificado
+
     if (correoAltModificado && !correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo) {
       setMensajeSnackbar('Debe verificar el correo electrónico alternativo antes de guardar.');
       setSeveritySnackbar('error');
@@ -377,7 +372,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       return;
     }
     
-    // Fix the validation fields reference since validationSchemas doesn't have a 'fields' property
+
     const fieldsToValidate = [
       ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
       ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
@@ -385,7 +380,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
     ];
     
-    // Validar campos del tab actual
     const tocados = {};
     fieldsToValidate[activeTab].forEach(campo => {
       tocados[campo] = true;
@@ -393,7 +387,6 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     formik.setTouched(tocados, true);
     
     formik.validateForm().then(errores => {
-      // Check if there are errors in the current tab's fields
       const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
       
       if (currentTabErrors) {
@@ -408,24 +401,21 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   };
 
   const handleNext = () => {
-    // Define the fields to validate for each tab
     const fieldsToValidate = [
       ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
       ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
       ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
       ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
     ];
-    
-    // Mark fields as touched
     const tocados = {};
     fieldsToValidate[activeTab].forEach(campo => {
       tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
     
-    // Validate the current forms
+
     formik.validateForm().then(errores => {
-      // Check if there are errors in the current tab's fields
+
       const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
       
       if (currentTabErrors) {
@@ -435,7 +425,7 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
         return;
       }
       
-      // If no errors, proceed to next tab
+
       setActiveTab(prevTab => prevTab + 1);
     });
   };

@@ -92,7 +92,6 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const [showCorreoSnackbar, setShowCorreoSnackbar] = useState(false);
   const [showCorreoAltSnackbar, setShowCorreoAltSnackbar] = useState(false);
 
-  // Mantener archivos seleccionados aunque cambie de tab
   const [archivos, setArchivos] = useState({
     ArchivoRTN: null,
     ArchivoDNI: null,
