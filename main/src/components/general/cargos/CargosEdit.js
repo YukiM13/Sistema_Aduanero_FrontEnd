@@ -17,14 +17,16 @@ const CargosEditComponent = ({ cargo = Cargos, onCancelar, onGuardadoExitoso }) 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const formik = useFormik({
     initialValues: cargo,
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
       values.carg_FechaModificacion = new Date();
-      values.usua_UsuarioModificacion = 1;
+      values.usua_UsuarioModificacion = user;
       axios.post(`${apiUrl}/api/Cargos/Editar`, values, {
         headers: { 'XApiKey': apiKey },
       })

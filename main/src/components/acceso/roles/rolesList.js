@@ -5,8 +5,7 @@ import {
   TableHead, TableRow, Paper, Button, Stack,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
-  DialogContentText,
-  Tooltip
+  DialogContentText
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
@@ -183,29 +182,28 @@ const RolesList = () => {
                           }}
                         >
                           <TableCell align="center">
-                            <Tooltip>
-                              <IconButton
-                                size='small'
-                                onClick={(event) => abrirMenu(event, role)}
-                                sx={{
-                                    backgroundColor: '#d9e7f7',
-                                    color: 'rgb(0, 83, 121)',
-                                    '&:hover': {
-                                      backgroundColor: 'rgb(157, 191, 207)',
-                                    },
-                                    border: '2px solid rgb(0, 83, 121)',
-                                    borderRadius: '8px',
-                                    padding: '6px'
-                                }}
-                              >
-                              <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
-                                  transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
-                                  fontSize="small" 
-                              />
-                              </IconButton>
-                            </Tooltip>
+                            <IconButton
+                              size='small'
+                              onClick={(event) => abrirMenu(event, role)}
+                              sx={{
+                                  backgroundColor: '#d9e7f7',
+                                  color: 'rgb(0, 83, 121)',
+                                  '&:hover': {
+                                    backgroundColor: 'rgb(157, 191, 207)',
+                                  },
+                                  border: '2px solid rgb(0, 83, 121)',
+                                  borderRadius: '8px',
+                                  padding: '6px'
+                              }}
+                            >
+                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                fontSize="small" 
+                            />
+                            <Typography variante="h6">Acciones</Typography>
+                            </IconButton>
                           </TableCell>
-                          <TableCell>{role.role_Descripcion}</TableCell>
+                          <TableCell><Typography variant="body1">{role.role_Descripcion}</Typography></TableCell>
                         </TableRow>
                       ))}
                     {emptyRows > 0 && (
