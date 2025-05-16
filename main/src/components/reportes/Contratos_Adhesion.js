@@ -100,7 +100,7 @@ const generarPDF = () => {
       filename:     'Reporte_ContratosAdhesion.pdf',
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
     };
 
     html2pdf().set(opt).from(element).save();
@@ -136,13 +136,13 @@ const generarPDF = () => {
   };
 
    return (
-  <Grid container spacing={2} alignItems="center" ref={contentRef} style={{ padding: '20px', fontFamily: 'Arial' }}>
+  <Grid container spacing={2} alignItems="center" style={{ padding: '20px', fontFamily: 'Arial' }}>
     <Grid item xs={12}>
-      <h2>Reporte de Contratos</h2>
+      <h2>Reporte de Tipos de Contratos</h2>
     </Grid>
 
     {/* Filtro: Tipo de Contrato */}
-    <Grid item xs={2}>
+    <Grid item xs={4} className="no-print">
       <CustomFormLabel>Tipo de Contrato</CustomFormLabel>
       <CustomTextField
         fullWidth
@@ -161,7 +161,7 @@ const generarPDF = () => {
     </Grid>
 
     {/* Filtro: Fecha Inicio */}
-    <Grid item xs={2}>
+    <Grid item xs={4} className="no-print">
       <CustomFormLabel>Fecha Inicio</CustomFormLabel>
       <CustomTextField
         fullWidth
@@ -173,7 +173,7 @@ const generarPDF = () => {
     </Grid>
 
     {/* Filtro: Fecha Fin */}
-    <Grid item xs={2}>
+    <Grid item xs={4} className="no-print">
       <CustomFormLabel>Fecha Fin</CustomFormLabel>
       <CustomTextField
         fullWidth
@@ -186,11 +186,12 @@ const generarPDF = () => {
 
     {/* Botones */}
     <Grid item xs={12}>
-      <Grid item style={{ marginTop: '2.5%' }} spacing={2}>
+      <Grid item style={{ marginTop: '2.5%' }} spacing={4} className="no-print">
         <Button
           variant="outlined"
           startIcon={<Search />}
           onClick={obtenerDatos}
+          style={{ marginRight: '10px', backgroundColor: '#003c69', color: 'white' }}
         >
           Buscar
         </Button>
@@ -199,6 +200,7 @@ const generarPDF = () => {
           variant="outlined"
           startIcon={<PictureAsPdf />}
           onClick={generarPDF}
+          style={{ backgroundColor: '#003c69', color: 'white' }}
         >
           Descargar PDF
         </Button>
@@ -252,12 +254,11 @@ const generarPDF = () => {
       )}
     </Grid> */}
     {/* Resultados */}
-<Grid item xs={12} ref={tablaRef} style={{
-  border: '1px solid #333',
+<Grid item xs={12} ref={contentRef}  style={{
   padding: '20px',
   backgroundColor: '#fff'
 }}> 
-  <h3 style={{ textAlign: 'center', backgroundColor: '#0ea5e9', color: 'white', padding: '10px' }}>Resultados:</h3>
+  <h3 style={tableTitle}> Datos: </h3>
 
   {resultado.length === 0 ? (
     <p>No hay resultados</p>
@@ -272,7 +273,7 @@ const generarPDF = () => {
       }}
     >
       <thead>
-        <tr style={{ backgroundColor: '#f0f0f0' }}>
+        <tr style={{ backgroundColor: '#003c69' }}>
           <th style={thStyle}>#</th>
           <th style={thStyle}>Nombre</th>
 
@@ -349,7 +350,14 @@ const generarPDF = () => {
 </Grid>
 
 
-    
+        {/* Estilos para ocultar al imprimir */}
+    <style>{`
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+      }
+    `}</style>
   </Grid>
 );
 
@@ -359,13 +367,21 @@ const generarPDF = () => {
 const thStyle = {
   border: '1px solid #ccc',
   padding: '8px',
-  textAlign: 'left',
-  backgroundColor: '#e5e7eb'
+  textAlign: 'center',
+  backgroundColor: '#003c69',
+  color: 'white'
 };
 
 const tdStyle = {
   border: '1px solid #ccc',
-  padding: '8px'
+  padding: '8px',
+  textAlign: 'center'
 };
 
+const tableTitle = {
+  textAlign: 'center', 
+  color: 'black', 
+  padding: '10px', 
+  marginTop: '20px'
+};
 export default ReporteContratosAdhesion;

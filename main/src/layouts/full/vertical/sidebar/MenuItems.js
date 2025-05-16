@@ -624,6 +624,27 @@ export const generarMenu = async () => {
       });
     }
 
+      if (esAdmin || nombresDePantalla.includes('Contratos Adhesión')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Contratos Adhesión',
+      icon: IconPoint,
+      href: '/reporteContratosAdhesion',
+      chipColor: 'secondary',
+    });
+  }
+
+
+  if (esAdmin || nombresDePantalla.includes('Seguimiento de Procesos por Orden Compra')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Seguimiento de Procesos por Orden Compra',
+      icon: IconPoint,
+      href: '/reporteSeguimientoProcesos',
+      chipColor: 'secondary',
+    });
+  }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
@@ -646,27 +667,6 @@ export const generarMenu = async () => {
       title: 'Ducas',
       icon: IconFileCertificate,
       href: '/duca',
-      chipColor: 'secondary',
-    });
-  }
-
-  if (esAdmin || nombresDePantalla.includes('Contratos Adhesión')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Contratos Adhesión',
-      icon: IconFileCertificate,
-      href: '/reporteContratosAdhesion',
-      chipColor: 'secondary',
-    });
-  }
-
-
-  if (esAdmin || nombresDePantalla.includes('Seguimiento de Procesos por Orden Compra')) {
-    Menuitems.push({
-      id: uniqueId(),
-      title: 'Seguimiento de Procesos por Orden Compra',
-      icon: IconFileCertificate,
-      href: '/reporteSeguimientoProcesos',
       chipColor: 'secondary',
     });
   }
