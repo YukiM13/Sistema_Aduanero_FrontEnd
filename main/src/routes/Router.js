@@ -94,7 +94,7 @@ const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/decla
 const CostosMaterialesNoBrindados = Loadable(lazy(() => import('../components/aduanas/CostosMaterialesNoBrindados/CostosMaterialesNoBrindados-pdf')));
 
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
-const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
+const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalList')));
 const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));

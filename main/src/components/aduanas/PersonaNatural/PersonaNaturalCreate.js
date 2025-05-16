@@ -3,8 +3,6 @@ import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography } from '@mui
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
-import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../shared/ParentCard';
 import PersonaNatural from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -14,6 +12,7 @@ import { CheckCircleRounded } from '@mui/icons-material';
 import { Snackbar, Alert } from '@mui/material'; 
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const validationSchema = yup.object({
@@ -90,7 +89,15 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
   const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(false);
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
+  const [showCorreoSnackbar, setShowCorreoSnackbar] = useState(false);
+  const [showCorreoAltSnackbar, setShowCorreoAltSnackbar] = useState(false);
 
+  // Mantener archivos seleccionados aunque cambie de tab
+  const [archivos, setArchivos] = useState({
+    ArchivoRTN: null,
+    ArchivoDNI: null,
+    ArchivoNumeroRecibo: null,
+  });
 
  
   useEffect(() => {
@@ -133,29 +140,32 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     }, 'mnyq6v-rJ4eMaYUOb')
     .then((response) => {
       console.log('Correo enviado:', response.text);
-      setMensajeSnackbar('Código de verificación enviado correctamente.');
-      setSeveritySnackbar('success');
-      setOpenSnackbar(true);
+
+      if (activeTab === 1) {
+        setShowCorreoSnackbar(true);
+      }
       setMostrarInputCodigo(true);
     })
     .catch((error) => {
       console.error('Error al enviar correo:', error);
-      setMensajeSnackbar('Error al enviar el código de verificación.');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
+      if (activeTab === 1) {
+        setMensajeSnackbar('Error al enviar el código de verificación.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      }
     });
   };
   
   const verificarCodigo = () => {
     if (codigoIngresado === codigoVerificacion) {
       setCorreoVerificado(true);
-      setMensajeSnackbar('Correo electrónico verificado correctamente.');
-      setSeveritySnackbar('success');
-      setOpenSnackbar(true);
+      setShowCorreoSnackbar(false);
     } else {
-      setMensajeSnackbar('El código de verificación no es válido.');
-      setSeveritySnackbar('error');
-      setOpenSnackbar(true);
+      if (activeTab === 1) {
+        setMensajeSnackbar('El código de verificación no es válido.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      }
     }
   };
 
@@ -183,6 +193,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
       setSeveritySnackbar('success');
       setOpenSnackbar(true);
       setMostrarInputCodigoAlt(true);
+      if (activeTab === 1) setShowCorreoAltSnackbar(true);
     })
     .catch((error) => {
       console.error('Error al enviar correo alternativo:', error);
@@ -195,9 +206,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const verificarCodigoAlt = () => {
     if (codigoIngresadoAlt === codigoVerificacionAlt) {
       setCorreoAlternativoVerificado(true);
-      setMensajeSnackbar('Correo alternativo verificado correctamente.');
-      setSeveritySnackbar('success');
-      setOpenSnackbar(true);
+      setShowCorreoAltSnackbar(false);
     } else {
       setMensajeSnackbar('El código de verificación no es válido.');
       setSeveritySnackbar('error');
@@ -279,7 +288,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
           if (onGuardar) {
             onGuardar();
           } 
-          window.location.href = 'http://localhost:3000/dashboards/modern';
+          window.location.href = '/PersonaNatural/PersonaNaturalForm';
         }, 1500);
         
       } catch (error) {
@@ -293,7 +302,7 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
           if (onGuardar) {
             onGuardar();
           }
-          window.location.href = 'http://localhost:3000/dashboards/modern';
+          window.location.href = '/PersonaNatural/PersonaNaturalForm';
         }, 1500);
       }
     },
@@ -326,18 +335,17 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
       if (!formik.values.pena_CorreoElectronico) {
         camposrequeridos.push('Correo Electrónico');
       }
-      
+
       if (formik.values.pena_CorreoElectronico && !correoVerificado) {
         setMensajeSnackbar('Debe verificar el correo electrónico antes de continuar');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return false;
       }
-      
-      
+
       formik.setFieldTouched('pena_TelefonoCelular', true);
       formik.setFieldTouched('pena_CorreoElectronico', true);
-      
+
       hasErrors = !!(formik.errors.pena_TelefonoCelular || formik.errors.pena_CorreoElectronico);
     } else if (activeTab === 2) {
 
@@ -383,6 +391,9 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
   const handleNext = () => {
     const isValid = validateTabFields();
     if (isValid) {
+
+      setShowCorreoSnackbar(false);
+      setShowCorreoAltSnackbar(false);
       setActiveTab((prev) => prev + 1);
     }
   };
@@ -393,12 +404,19 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   const handleFileChange = (event) => {
     const { name, files } = event.target;
-    
     if (files && files.length > 0) {
+      setArchivos(prev => ({ ...prev, [name]: files[0] }));
       formik.setFieldValue(name, files[0]);
-      console.log(`File "${files[0].name}" selected for ${name}`);
     }
   };
+
+
+  useEffect(() => {
+    formik.setFieldValue('ArchivoRTN', archivos.ArchivoRTN);
+    formik.setFieldValue('ArchivoDNI', archivos.ArchivoDNI);
+    formik.setFieldValue('ArchivoNumeroRecibo', archivos.ArchivoNumeroRecibo);
+
+  }, [archivos.ArchivoRTN, archivos.ArchivoDNI, archivos.ArchivoNumeroRecibo]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -430,6 +448,19 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
     const numericValue = value.replace(/\D/g, '');
     formik.setFieldValue(name, numericValue);
   };
+
+  useEffect(() => {
+    if (activeTab !== 1) {
+      setShowCorreoSnackbar(false);
+      setShowCorreoAltSnackbar(false);
+      if (openSnackbar && 
+         (mensajeSnackbar.includes('correo') || 
+          mensajeSnackbar.includes('código') || 
+          mensajeSnackbar.includes('Código'))) {
+        setOpenSnackbar(false);
+      }
+    }
+  }, [activeTab]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -693,13 +724,18 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 name="ArchivoRTN"
                 type="file" 
                 onChange={handleFileChange}
-                error={formik.touched.ArchivoRTN && !formik.values.ArchivoRTN}
-                helperText={formik.touched.ArchivoRTN && !formik.values.ArchivoRTN ? 'El archivo RTN es requerido' : ''}
+                error={formik.touched.ArchivoRTN && !archivos.ArchivoRTN}
+                helperText={formik.touched.ArchivoRTN && !archivos.ArchivoRTN ? 'El archivo RTN es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
                   key: 'rtn-file-input'
                 }}
               />
+              {archivos.ArchivoRTN && (
+                <Typography variant="caption" color="primary">
+                  Archivo seleccionado: {archivos.ArchivoRTN.name}
+                </Typography>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel htmlFor="pena_DNI">DNI</CustomFormLabel>
@@ -722,13 +758,18 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 name="ArchivoDNI"
                 type="file"
                 onChange={handleFileChange}
-                error={formik.touched.ArchivoDNI && !formik.values.ArchivoDNI}
-                helperText={formik.touched.ArchivoDNI && !formik.values.ArchivoDNI ? 'El archivo DNI es requerido' : ''}
+                error={formik.touched.ArchivoDNI && !archivos.ArchivoDNI}
+                helperText={formik.touched.ArchivoDNI && !archivos.ArchivoDNI ? 'El archivo DNI es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
                   key: 'dni-file-input'
                 }}
               />
+              {archivos.ArchivoDNI && (
+                <Typography variant="caption" color="primary">
+                  Archivo seleccionado: {archivos.ArchivoDNI.name}
+                </Typography>
+              )}
             </Grid>
           </Grid>
         );
@@ -757,13 +798,18 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
                 name="ArchivoNumeroRecibo"
                 type="file"
                 onChange={handleFileChange}
-                error={formik.touched.ArchivoNumeroRecibo && !formik.values.ArchivoNumeroRecibo}
-                helperText={formik.touched.ArchivoNumeroRecibo && !formik.values.ArchivoNumeroRecibo ? 'El archivo del recibo es requerido' : ''}
+                error={formik.touched.ArchivoNumeroRecibo && !archivos.ArchivoNumeroRecibo}
+                helperText={formik.touched.ArchivoNumeroRecibo && !archivos.ArchivoNumeroRecibo ? 'El archivo del recibo es requerido' : ''}
                 inputProps={{ 
                   accept: '.pdf,.jpg,.jpeg,.png',
                   key: 'receipt-file-input'
                 }}
               />
+              {archivos.ArchivoNumeroRecibo && (
+                <Typography variant="caption" color="primary">
+                  Archivo seleccionado: {archivos.ArchivoNumeroRecibo.name}
+                </Typography>
+              )}
             </Grid>
           </Grid>
         );
@@ -774,8 +820,16 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-                       <Breadcrumb title="Persona Natural" description="this is Form Wizard page" />
-                  <ParentCard >
+      <Box display="flex" alignItems="center" mb={2}>
+        <Button
+          variant="text"
+          color="inherit"
+          startIcon={<CloseIcon />}
+          onClick={onCancelar}
+          sx={{ minWidth: 0, p: 1 }}
+        >
+        </Button>
+      </Box>
       <StyledTabs 
         value={activeTab} 
         centered
@@ -852,8 +906,26 @@ const PersonaNaturalForm = ({ onGuardar, onCancelar }) => {
           </Grid>
         )}
       </Grid>
-      </ParentCard>
-      
+      <Snackbar
+        open={showCorreoSnackbar && activeTab === 1}
+        autoHideDuration={6000}
+        onClose={() => setShowCorreoSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setShowCorreoSnackbar(false)} severity="success">
+          Código de verificación enviado correctamente.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={showCorreoAltSnackbar && activeTab === 1}
+        autoHideDuration={6000}
+        onClose={() => setShowCorreoAltSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setShowCorreoAltSnackbar(false)} severity="success">
+          Código de verificación enviado correctamente al correo alternativo.
+        </Alert>
+      </Snackbar>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
