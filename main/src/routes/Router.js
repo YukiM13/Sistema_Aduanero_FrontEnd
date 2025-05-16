@@ -162,6 +162,7 @@ const ProduccionAreas = Loadable(lazy(() => import('../components/produccion/Pro
 const TiemposMaquinas = Loadable(lazy(() => import('../components/produccion/TiemposMaquinas/TiemposMaquinas')))
 const ProduccionPorModulo = Loadable(lazy(() => import('../components/produccion/ProduccionPorModulos/ProduccionPorModulos')))
 const ReporteModuloDia = Loadable(lazy(() => import('../components/produccion/ReporteModuloDiaDetalle/ReporteModuloDiaDetalle')));
+const PedidoCliente = Loadable(lazy(() => import('../components/aduanas/pedidos-cliente/PedidosCliente')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -193,6 +194,10 @@ const Maintenance = Loadable(lazy(() => import('../views/authentication/Maintena
 
 // landingpage
 const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landingpage')));
+
+// Reportes
+const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
+
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -249,6 +254,9 @@ const todasLasRutas = [
   { path: '/TiemposMaquinas', element: <TiemposMaquinas/>, pantalla:'I. Tiempos Maquinas'},
   { path: '/ProduccionPorModulo', element: <ProduccionPorModulo/>, pantalla:'I. Produccion Por Modulo'},
   { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'I. Reporte Modulo Dia Detalle'},
+  { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
+  { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>

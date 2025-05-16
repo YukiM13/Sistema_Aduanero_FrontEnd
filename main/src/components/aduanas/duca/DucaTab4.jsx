@@ -15,6 +15,7 @@ import {
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import DocumentoDeSoporte from 'src/models/documentoDeSoporteModel';
+import { filter } from 'lodash';
 
 
 
@@ -78,56 +79,52 @@ useEffect(() => {
   const ducaIdString = localStorage.getItem('ducaId');
   if (ducaIdString !== null) {
     const ducaId = parseInt(ducaIdString);
-    axios.post(`${apiUrl}/api/Duca/Listar_ById?id=${ducaId}`, null , {
+    axios.get(`${apiUrl}/api/DocumentosDeSoporte/Listar` , {
       headers: {
         'XApiKey': apiKey
       }
     })
     .then(response => {
       const rawData = response.data.data;
-
-      const data = Array.isArray(rawData)
-        ? rawData[0]
-        : rawData[0] !== undefined
-        ? rawData[0]
-        : rawData;
-    
-      if (data && typeof data === 'object') {
-        const camposUtiles = Object.entries(data).filter(([key, value]) => {
-          return key !== 'duca_Id' && value !== null && value !== undefined && value !== '';
-        });
-    
-        const esSoloPreinsert = camposUtiles.length === 0;
+      console.log('data como llego desde api',rawData);
+      console.log(ducaId);
+      const dataFiltrada = rawData.find(p => p.duca_Id === parseInt(ducaId));
+        
+      console.log('dataConFiltro', dataFiltrada);
+      if (dataFiltrada && typeof dataFiltrada === 'object') {
+        
+        
+        const esSoloPreinsert = dataFiltrada.length >0? true: false;
+      
     
         if (esSoloPreinsert) {
-     
+          console.log('entro al insert')
           setInitialValues({...DocumentoDeSoporte });
         } else {
-
-          Object.keys(data).forEach(key => {
-            if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
-              DocumentoDeSoporte[key] = data[key];
+          console.log('entro al edit')
+          console.log('data filtrada',dataFiltrada)
+          Object.keys(dataFiltrada).forEach(key => {
+            if (dataFiltrada[key] !== null && dataFiltrada[key] !== undefined && dataFiltrada[key] !== '') {
+              DocumentoDeSoporte[key] = dataFiltrada[key];
             }
           });
     
-          const fechaFormateada = new Date(DocumentoDeSoporte.duca_FechaVencimiento).toISOString().split('T')[0];
-          DocumentoDeSoporte.duca_FechaVencimiento = fechaFormateada;
-    
-          if (paises.length > 0) {
-            const paisProcedencia = paises.find(p => p.pais_Id === DocumentoDeSoporte.pais_IdExpedicion);
-            const paisDestino = paises.find(p => p.pais_Id === DocumentoDeSoporte.id_pais_transporte);
-            setSelectedPais(paisProcedencia );
-            setSelectedTipoDocumento(paisDestino);
-          }
+          const fechaFormateada = new Date(DocumentoDeSoporte.doso_FechaVencimiento).toISOString().split('T')[0];
+          DocumentoDeSoporte.doso_FechaVencimiento = fechaFormateada;
+          const fechaFormateada2 = new Date(DocumentoDeSoporte.doso_FechaEmision).toISOString().split('T')[0];
+          DocumentoDeSoporte.doso_FechaEmision = fechaFormateada2;
+          
     
          
           setInitialValues({ ...DocumentoDeSoporte });
+          localStorage.setItem('edit', 'true');
         }
     
         console.log("DUCA RELLENA O VACÍA:", DocumentoDeSoporte);
       }
     })
     .catch(error => {
+      console.log("DUCA RELLENA O VACÍA:", DocumentoDeSoporte);
       console.error('Error al obtener los datos del país:', error);
     });
   }
@@ -146,26 +143,55 @@ useEffect(() => {
           
             
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
-            
+            const edit = localStorage.getItem('edit');
+           console.log(edit);
+            if(edit === 'true') {
+              console.log('entro al edit');
+              values.usua_UsuarioModificacion = 1;
+              values.doso_FechaModificacion = new Date().toISOString();
+
+                const response = await axios.post(`${apiUrl}/api/Duca/EditarPart3`, values, {
+                  headers: { 'XApiKey': apiKey },
+                  'Content-Type': 'application/json'
+                });
+                if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+                  todosExitosos = false;
+                  console.log(response.data.data);
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                  
+                
+                }
+                if (todosExitosos) {
+                  localStorage.removeItem('insert');
+                  if (onGuardadoExitoso) onGuardadoExitoso();
+                } else {
+                  console.log(response.data.data);
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                }
+           
+            }
+            else{
             const response = await axios.post(`${apiUrl}/api/Duca/InsertPart3`, values, {
               headers: { 'XApiKey': apiKey },
               'Content-Type': 'application/json'
             });
        
-          if (response.status !== 200 || response.data.data.messageStatus !== '1') {
-                todosExitosos = false;
+              if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+                    todosExitosos = false;
+                    throw new Error('Error');
+                    
+              
+              }
+              if (todosExitosos) {
+                if (onGuardadoExitoso) onGuardadoExitoso();
+              } else {
+                setOpenSnackbar(true);
                 throw new Error('Error');
-                
-          
-          }
-          if (todosExitosos) {
-            if (onGuardadoExitoso) onGuardadoExitoso();
-          } else {
-            setOpenSnackbar(true);
-            throw new Error('Error');
-          }
+              }
      
-          
+          }
           } catch (error) {
             todosExitosos = false;
             console.error('Error al insertar:', error);
@@ -199,6 +225,18 @@ useEffect(() => {
           }
         },
       }));
+      useEffect(()=> {
+        if (paises.length > 0) {
+          const paisProcedencia = paises.find(p => p.pais_Id === formik.values.doso_PaisEmision);
+       
+          setSelectedPais(paisProcedencia );
+       
+        }
+        if(tiposDocumentos.length > 0){
+          const tipoDocumentoSeleccionado = tiposDocumentos.find(p => p.tido_Id === formik.values.tido_Id);
+          setSelectedTipoDocumento(tipoDocumentoSeleccionado);
+        }
+      },[formik.values.tido_Id, formik.values.doso_PaisEmision, paises, tiposDocumentos])
       useEffect(() => {
         listarpaises();
         listarTiposDocumentos();
