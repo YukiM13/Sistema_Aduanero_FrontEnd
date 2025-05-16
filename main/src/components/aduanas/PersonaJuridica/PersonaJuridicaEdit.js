@@ -3,18 +3,16 @@ import { Button, Grid, Tabs, Tab, Box, MenuItem, styled, Typography } from '@mui
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
-import ParentCard from '../../shared/ParentCard';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import SaveIcon from '@mui/icons-material/Save';
+import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import emailjs from '@emailjs/browser';
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
-import CloseIcon from '@mui/icons-material/Close';
-
 import { Snackbar, Alert } from '@mui/material';
+import PersonaJuridicaModel from '../../../models/PersonaJuridicaModel';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
@@ -88,14 +86,7 @@ const validationSchemas = [
   }),
 ];
 
-const camposPorTab = [
-  ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
-  ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
-  ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
-  ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico', 'peju_CorreoElectronicoAlternativo'],
-];
-
-const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
+const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancelar, onGuardadoExitoso }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [ciudades, setCiudades] = useState([]);
   const [colonias, setColonias] = useState([]);
@@ -103,21 +94,166 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
   const [oficinas, setOficinas] = useState([]);
   const [oficioProfesion, setOficioProfesion] = useState([]);
   const [estadoCivil, setEstadoCivil] = useState([]);
-  const [personaJuridicaId, setPersonaJuridicaId] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  
+
   const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
-  const [correoVerificado, setCorreoVerificado] = useState(false);
+  const [correoVerificado, setCorreoVerificado] = useState(true);
+  const [correoOriginal, setCorreoOriginal] = useState('');
+  
   const [codigoVerificacionAlt, setCodigoVerificacionAlt] = useState('');
   const [codigoIngresadoAlt, setCodigoIngresadoAlt] = useState('');
   const [mostrarInputCodigoAlt, setMostrarInputCodigoAlt] = useState(false);
-  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(false);
+  const [correoAlternativoVerificado, setCorreoAlternativoVerificado] = useState(true); 
+  const [correoAlternativoOriginal, setCorreoAlternativoOriginal] = useState('');
+  
   const [verificarCorreoDeshabilitado, setVerificarCorreoDeshabilitado] = useState(false);
+  const [correoModificado, setCorreoModificado] = useState(false);
+  const [correoAltModificado, setCorreoAltModificado] = useState(false);
+  
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
+
+  useEffect(() => {
+    axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setCiudades(response.data.data || []))
+      .catch(error => console.error('Error al obtener ciudades:', error));
+    
+    axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setEstadoCivil(response.data.data || []))
+      .catch(error => console.error('Error al obtener estados civiles:', error));
+    
+    axios.get(`${apiUrl}/api/Oficinas/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setOficinas(response.data.data || []))
+      .catch(error => console.error('Error al obtener oficinas:', error));
+    
+    axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setOficioProfesion(response.data.data || []))
+      .catch(error => console.error('Error al obtener oficios y profesiones:', error));
+
+
+    if (personaJuridica.ciud_Id) {
+      cargarColoniasAldeas(personaJuridica.ciud_Id);
+    }
+
+    if (personaJuridica.peju_CiudadIdRepresentante) {
+      cargarColoniasAldeas(personaJuridica.peju_CiudadIdRepresentante);
+    }
+
+    if (personaJuridica.peju_CorreoElectronico) {
+      setCorreoOriginal(personaJuridica.peju_CorreoElectronico);
+    }
+    
+    if (personaJuridica.peju_CorreoElectronicoAlternativo) {
+      setCorreoAlternativoOriginal(personaJuridica.peju_CorreoElectronicoAlternativo);
+    }
+  }, [apiUrl, apiKey, personaJuridica]);
+
+  const cargarColoniasAldeas = (ciudadId) => {
+    axios.get(`${apiUrl}/api/Colonias/FiltrarPorCiudad?ciud_Id=${ciudadId}`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setColonias(prevColonias => {
+        const nuevasColonias = response.data.data || [];
+        return [...prevColonias, ...nuevasColonias].filter(
+          (colonia, index, self) => index === self.findIndex((c) => c.colo_Id === colonia.colo_Id)
+        );
+      }))
+      .catch(error => console.error('Error al obtener colonias:', error));
+    
+    axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?ciud_Id=${ciudadId}`, { headers: { 'XApiKey': apiKey } })
+      .then(response => setAldeas(prevAldeas => {
+        const nuevasAldeas = response.data.data || [];
+        return [...prevAldeas, ...nuevasAldeas].filter(
+          (aldea, index, self) => index === self.findIndex((a) => a.alde_Id === aldea.alde_Id)
+        );
+      }))
+      .catch(error => console.error('Error al obtener aldeas:', error));
+  };
+
+  const handleEmailChange = (e) => {
+    const { name, value } = e.target;
+    formik.handleChange(e);
+    
+    if (name === 'peju_CorreoElectronico') {
+      if (value !== correoOriginal) {
+        setCorreoModificado(true);
+        setCorreoVerificado(false);
+      } else {
+        setCorreoModificado(false);
+        setCorreoVerificado(true);
+      }
+    }
+    
+    if (name === 'peju_CorreoElectronicoAlternativo') {
+      if (value !== correoAlternativoOriginal) {
+        setCorreoAltModificado(true);
+        setCorreoAlternativoVerificado(false);
+      } else {
+        setCorreoAltModificado(false);
+        setCorreoAlternativoVerificado(true);
+      }
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      ...personaJuridica,
+      pers_Nombre: personaJuridica.pers_Nombre || '',
+      pers_RTN: personaJuridica.pers_RTN || '',
+      escv_Id: personaJuridica.escv_Id || 0,
+      ofic_Id: personaJuridica.ofic_Id || 0,
+      ofpr_Id: personaJuridica.ofpr_Id || 0,
+      ciud_Id: personaJuridica.ciud_Id || 0,
+      colo_Id: personaJuridica.colo_Id || 0,
+      alde_Id: personaJuridica.alde_Id || 0,
+      peju_PuntoReferencia: personaJuridica.peju_PuntoReferencia || '',
+      peju_NumeroLocalApart: personaJuridica.peju_NumeroLocalApart || '',
+      peju_CiudadIdRepresentante: personaJuridica.peju_CiudadIdRepresentante || 0,
+      peju_ColoniaRepresentante: personaJuridica.peju_ColoniaRepresentante || 0,
+      peju_AldeaIdRepresentante: personaJuridica.peju_AldeaIdRepresentante || 0,
+      peju_NumeroLocalRepresentante: personaJuridica.peju_NumeroLocalRepresentante || '',
+      peju_PuntoReferenciaRepresentante: personaJuridica.peju_PuntoReferenciaRepresentante || '',
+      peju_TelefonoEmpresa: personaJuridica.peju_TelefonoEmpresa || '',
+      peju_TelefonoFijoRepresentanteLegal: personaJuridica.peju_TelefonoFijoRepresentanteLegal || '',
+      peju_TelefonoRepresentanteLegal: personaJuridica.peju_TelefonoRepresentanteLegal || '',
+      peju_CorreoElectronico: personaJuridica.peju_CorreoElectronico || '',
+      peju_CorreoElectronicoAlternativo: personaJuridica.peju_CorreoElectronicoAlternativo || '',
+    },
+    validationSchema: validationSchemas[activeTab],
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        const completeData = {
+          ...values,
+          usua_UsuarioModificacion: 1,
+          peju_FechaModificacion: new Date().toISOString()
+        };
+        
+        await axios.post(`${apiUrl}/api/PersonaJuridica/Editar`, completeData, {
+          headers: { 'XApiKey': apiKey }
+        });
+        
+        setMensajeSnackbar('Persona jurídica actualizada con éxito');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+        
+        setTimeout(() => {
+          if (onGuardadoExitoso) {
+            onGuardadoExitoso();
+          }
+        }, 1500);
+      } catch (error) {
+        console.error('Error al actualizar persona jurídica:', error);
+        setMensajeSnackbar('Error al actualizar la persona jurídica');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+      }
+    }
+  });
 
   const enviarCodigoVerificacion = (correoElectronico) => {
     setVerificarCorreoDeshabilitado(true);
@@ -141,13 +277,10 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
       setMensajeSnackbar('Error al enviar el código de verificación.');
       setSeveritySnackbar('error');
       setOpenSnackbar(true);
+      setVerificarCorreoDeshabilitado(false);
     });
   };
-  const handlenumeros = (e) => {
-    const { name, value } = e.target;
-    const numericValue = value.replace(/\D/g, '');
-    formik.setFieldValue(name, numericValue);
-  };
+  
   const verificarCodigo = () => {
     if (codigoIngresado === codigoVerificacion) {
       setCorreoVerificado(true);
@@ -207,178 +340,93 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
     setCodigoIngresadoAlt(e.target.value);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      pers_Nombre: '',
-      pers_RTN: '',
-      escv_Id: 0,
-      ofic_Id: 0,
-      ofpr_Id: 0,
-      ciud_Id: 0,
-      colo_Id: 0,
-      alde_Id: 0,
-      peju_PuntoReferencia: '',
-      peju_NumeroLocalApart: '',
-      peju_CiudadIdRepresentante: 0,
-      peju_ColoniaRepresentante: 0,
-      peju_AldeaIdRepresentante: 0,
-      peju_NumeroLocalRepresentante: '',
-      peju_PuntoReferenciaRepresentante: '',
-      peju_TelefonoEmpresa: '',
-      peju_TelefonoFijoRepresentanteLegal: '',
-      peju_TelefonoRepresentanteLegal: '',
-      peju_CorreoElectronico: '',
-      peju_CorreoElectronicoAlternativo: '',
-      usua_UsuarioCreacion: 0,
-      peju_FechaCreacion: '',
-    },
-    validationSchema: validationSchemas[activeTab],
-    onSubmit: async (values) => {
-      try {
-        if (activeTab === 0) {
-          values.usua_UsuarioCreacion = 1;
-          values.peju_FechaCreacion = new Date().toISOString();
-          const response = await axios.post(`${apiUrl}/api/PersonaJuridica/Insertar`, values, {
-            headers: { 'XApiKey': apiKey },
-          });
-          const returnedId = response.data;
-          setPersonaJuridicaId(returnedId);
-          setActiveTab((prev) => prev + 1);
-        } else if (activeTab === 1) {
-          const data = {
-            peju_Id: personaJuridicaId,
-            ciud_Id: values.ciud_Id,
-            colo_Id: values.colo_Id,
-            alde_Id: values.alde_Id,
-            peju_PuntoReferencia: values.peju_PuntoReferencia,
-            peju_NumeroLocalApart: values.peju_NumeroLocalApart,
-            usua_UsuarioCreacion: 1,
-            peju_FechaCreacion: new Date().toISOString(),
-          };
-          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap2`, data, {
-            headers: { 'XApiKey': apiKey },
-          });
-          setActiveTab((prev) => prev + 1);
-        } else if (activeTab === 2) {
-          const data = {
-            peju_Id: personaJuridicaId,
-            peju_CiudadIdRepresentante: values.peju_CiudadIdRepresentante,
-            peju_ColoniaRepresentante: values.peju_ColoniaRepresentante,
-            peju_AldeaIdRepresentante: values.peju_AldeaIdRepresentante,
-            peju_NumeroLocalRepresentante: values.peju_NumeroLocalRepresentante,
-            peju_PuntoReferenciaRepresentante: values.peju_PuntoReferenciaRepresentante,
-            usua_UsuarioCreacion: 1,
-            peju_FechaCreacion: new Date().toISOString(),
-          };
-          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap3`, data, {
-            headers: { 'XApiKey': apiKey },
-          });
-          setActiveTab((prev) => prev + 1);
-        } else if (activeTab === 3) {
-          const data = {
-            peju_Id: personaJuridicaId,
-            peju_TelefonoEmpresa: values.peju_TelefonoEmpresa,
-            peju_TelefonoFijoRepresentanteLegal: values.peju_TelefonoFijoRepresentanteLegal,
-            peju_TelefonoRepresentanteLegal: values.peju_TelefonoRepresentanteLegal,
-            peju_CorreoElectronico: values.peju_CorreoElectronico,
-            peju_CorreoElectronicoAlternativo: values.peju_CorreoElectronicoAlternativo,
-            usua_UsuarioCreacion: 1,
-            peju_FechaCreacion: new Date().toISOString(),
-          };
-          await axios.post(`${apiUrl}/api/PersonaJuridica/InsertarTap4`, data, {
-            headers: { 'XApiKey': apiKey },
-          });
-          setMensajeSnackbar('Persona Jurídica insertada con éxito');
-          setSeveritySnackbar('success');
-          setOpenSnackbar(true);
-          setTimeout(() => {
-            if (onGuardar) onGuardar();
-            window.location.href = 'http://localhost:3000/dashboards/modern';
-          }, 1500);
-        }
-      } catch (error) {
-        setMensajeSnackbar('Persona Jurídica insertada con éxito');
-        setSeveritySnackbar('success');
-        setOpenSnackbar(true);
-        setTimeout(() => {
-          if (onGuardar) onGuardar();
-          window.location.href = 'http://localhost:3000/dashboards/modern';
-        }, 1500);
-      }
-    },
-  });
-
-  useEffect(() => {
-    axios.get(`${apiUrl}/api/Ciudades/Listar`, { headers: { 'XApiKey': apiKey } })
-      .then((response) => setCiudades(response.data.data || []))
-      .catch(() => {});
-    axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, { headers: { 'XApiKey': apiKey } })
-      .then((response) => setEstadoCivil(response.data.data || []))
-      .catch(() => {});
-    axios.get(`${apiUrl}/api/Oficinas/Listar`, { headers: { 'XApiKey': apiKey } })
-      .then((response) => setOficinas(response.data.data || []))
-      .catch(() => {});
-    axios.get(`${apiUrl}/api/Oficio_Profesiones/Listar`, { headers: { 'XApiKey': apiKey } })
-      .then((response) => setOficioProfesion(response.data.data || []))
-      .catch(() => {});
-  }, [apiUrl, apiKey]);
-
   const handleCityChange = (e) => {
     const { name, value } = e.target;
     formik.setFieldValue(name, value);
 
     if (name === 'ciud_Id' || name === 'peju_CiudadIdRepresentante') {
-      axios.get(`${apiUrl}/api/Colonias/FiltrarPorCiudad?ciud_Id=${value}`, { headers: { 'XApiKey': apiKey } })
-        .then((response) => setColonias(response.data.data || []))
-        .catch(() => {});
-      axios.get(`${apiUrl}/api/Aldea/FiltrarPorCiudades?ciud_Id=${value}`, { headers: { 'XApiKey': apiKey } })
-        .then((response) => setAldeas(response.data.data || []))
-        .catch(() => {});
+      cargarColoniasAldeas(value);
     }
   };
 
-  const handleNext = () => {
-    const tocados = {};
-    camposPorTab[activeTab].forEach(campo => {
-      tocados[campo] = true;
-    });
-    formik.setTouched(tocados, true);
-
-    formik.validateForm().then(errores => {
-      const hayErrores = Object.keys(errores).length > 0;
-      if (hayErrores) {
-        setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
-        setSeveritySnackbar('error');
-        setOpenSnackbar(true);
-        return;
-      }
-      formik.handleSubmit();
-    });
+  const handlenumeros = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, '');
+    formik.setFieldValue(name, numericValue);
   };
 
   const handleSubmitFinal = (e) => {
     e.preventDefault();
+    
+    if (correoModificado && !correoVerificado && formik.values.peju_CorreoElectronico) {
+      setMensajeSnackbar('Debe verificar el correo electrónico antes de guardar.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (correoAltModificado && !correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo) {
+      setMensajeSnackbar('Debe verificar el correo electrónico alternativo antes de guardar.');
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return;
+    }
+    
+
+    const fieldsToValidate = [
+      ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
+      ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
+      ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
+      ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
+    ];
+    
     const tocados = {};
-    camposPorTab[activeTab].forEach(campo => {
+    fieldsToValidate[activeTab].forEach(campo => {
       tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
-
+    
     formik.validateForm().then(errores => {
-      const hayErrores = Object.keys(errores).length > 0;
-      if (hayErrores) {
+      const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
+      
+      if (currentTabErrors) {
         setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return;
       }
-      if (!correoVerificado) {
-        setMensajeSnackbar('Debe verificar el correo electrónico antes de guardar.');
+      
+      formik.handleSubmit(e);
+    });
+  };
+
+  const handleNext = () => {
+    const fieldsToValidate = [
+      ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
+      ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
+      ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
+      ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
+    ];
+    const tocados = {};
+    fieldsToValidate[activeTab].forEach(campo => {
+      tocados[campo] = true;
+    });
+    formik.setTouched(tocados, true);
+    
+
+    formik.validateForm().then(errores => {
+
+      const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
+      
+      if (currentTabErrors) {
+        setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return;
       }
-      formik.handleSubmit();
+      
+
+      setActiveTab(prevTab => prevTab + 1);
     });
   };
 
@@ -459,7 +507,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
               </CustomTextField>
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel>Oficio o Profesion</CustomFormLabel>
+              <CustomFormLabel>Oficio o Profesión</CustomFormLabel>
               <CustomTextField
                 select
                 fullWidth
@@ -515,7 +563,6 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.colo_Id && Boolean(formik.errors.colo_Id)}
                 helperText={formik.touched.colo_Id && formik.errors.colo_Id}
-                disabled={!formik.values.ciud_Id}
               >
                 {colonias.map((colonia) => (
                   <MenuItem key={colonia.colo_Id} value={colonia.colo_Id}>
@@ -536,7 +583,6 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.alde_Id && Boolean(formik.errors.alde_Id)}
                 helperText={formik.touched.alde_Id && formik.errors.alde_Id}
-                disabled={!formik.values.ciud_Id}
               >
                 {aldeas.map((aldea) => (
                   <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
@@ -559,28 +605,28 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-             <CustomFormLabel>Numero telefonico de Referencia</CustomFormLabel>
-            <ReactIntTelInput
-              style={{ width: '100%' }}
-              containerClassName="intl-tel-input custom-intl-input"
-              inputClassName="form-control"
-              preferredCountries={['us', 'hn']}
-              initialCountry={'hn'}
-              value={formik.values.peju_NumeroLocalApart}
-              onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
-                if (!number || number.length > 17) {
-                  formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17));
-                } else {
-                  formik.setFieldValue('peju_NumeroLocalApart', number);
-                }
-              }}
-              onBlur={() => formik.setFieldTouched('peju_NumeroLocalApart', true)}
-            />
-            {formik.touched.peju_NumeroLocalApart && formik.errors.peju_NumeroLocalApart && (
-              <div style={{ color: 'red', fontSize: 12 }}>
-                {formik.errors.peju_NumeroLocalApart}
-              </div>
-            )}
+              <CustomFormLabel>Número teléfonico de Referencia</CustomFormLabel>
+              <ReactIntTelInput
+                style={{ width: '100%' }}
+                containerClassName="intl-tel-input custom-intl-input"
+                inputClassName="form-control"
+                preferredCountries={['us', 'hn']}
+                initialCountry={'hn'}
+                value={formik.values.peju_NumeroLocalApart}
+                onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
+                  if (!number || number.length > 17) {
+                    formik.setFieldValue('peju_NumeroLocalApart', number.slice(0, 17));
+                  } else {
+                    formik.setFieldValue('peju_NumeroLocalApart', number);
+                  }
+                }}
+                onBlur={() => formik.setFieldTouched('peju_NumeroLocalApart', true)}
+              />
+              {formik.touched.peju_NumeroLocalApart && formik.errors.peju_NumeroLocalApart && (
+                <div style={{ color: 'red', fontSize: 12 }}>
+                  {formik.errors.peju_NumeroLocalApart}
+                </div>
+              )}
             </Grid>
           </Grid>
         );
@@ -588,7 +634,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
         return (
           <Grid container spacing={3}>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel>Numero telefonico del Representante</CustomFormLabel>
+              <CustomFormLabel>Número teléfonico del Representante</CustomFormLabel>
               <ReactIntTelInput
                 style={{ width: '100%' }}
                 containerClassName="intl-tel-input custom-intl-input"
@@ -643,7 +689,6 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_ColoniaRepresentante && Boolean(formik.errors.peju_ColoniaRepresentante)}
                 helperText={formik.touched.peju_ColoniaRepresentante && formik.errors.peju_ColoniaRepresentante}
-                disabled={!formik.values.peju_CiudadIdRepresentante}
               >
                 {colonias.map((colonia) => (
                   <MenuItem key={colonia.colo_Id} value={colonia.colo_Id}>
@@ -653,7 +698,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
               </CustomTextField>
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
-              <CustomFormLabel>Aldea del representante</CustomFormLabel>
+              <CustomFormLabel>Aldea del Representante</CustomFormLabel>
               <CustomTextField
                 select
                 fullWidth
@@ -664,7 +709,6 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.peju_AldeaIdRepresentante && Boolean(formik.errors.peju_AldeaIdRepresentante)}
                 helperText={formik.touched.peju_AldeaIdRepresentante && formik.errors.peju_AldeaIdRepresentante}
-                disabled={!formik.values.peju_CiudadIdRepresentante}
               >
                 {aldeas.map((aldea) => (
                   <MenuItem key={aldea.alde_Id} value={aldea.alde_Id}>
@@ -702,7 +746,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 value={formik.values.peju_TelefonoEmpresa}
                 onPhoneNumberChange={(isValid, fullValue, countryData, number) => {
                   if (!number || number.length > 17) {
-                    formik.setFieldValue('peju_TelefonoEmpresa', number.slice(0, 17)); // Limit to 17 characters
+                    formik.setFieldValue('peju_TelefonoEmpresa', number.slice(0, 17));
                   } else {
                     formik.setFieldValue('peju_TelefonoEmpresa', number);
                   }
@@ -770,28 +814,31 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 id="peju_CorreoElectronico"
                 name="peju_CorreoElectronico"
                 value={formik.values.peju_CorreoElectronico}
-                onChange={formik.handleChange}
+                onChange={handleEmailChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.peju_CorreoElectronico && Boolean(formik.errors.peju_CorreoElectronico)}
-                helperText={formik.touched.peju_CorreoElectronico && formik.errors.peju_CorreoElectronico}
-                disabled={correoVerificado}
-                sx={correoVerificado ? { bgcolor: '#f5f5f5' } : {}}
+                error={(formik.touched.peju_CorreoElectronico && Boolean(formik.errors.peju_CorreoElectronico)) || 
+                      (correoModificado && !correoVerificado)}
+                helperText={
+                  (formik.touched.peju_CorreoElectronico && formik.errors.peju_CorreoElectronico) || 
+                  (correoModificado && !correoVerificado ? 'Correo modificado, requiere verificación' : '')
+                }
+                disabled={correoVerificado && !correoModificado}
+                sx={(correoVerificado && !correoModificado) ? { bgcolor: '#f5f5f5' } : {}}
               />
-              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
-                <Button 
-                  variant="contained" 
-                  type="button" 
-                  startIcon={<CheckCircleRounded />}
-                  onClick={() => enviarCodigoVerificacion(formik.values.peju_CorreoElectronico)}
-                  disabled={correoVerificado || verificarCorreoDeshabilitado}
-                >
-                  {correoVerificado ? "Correo Verificado" : "Verificar correo"}
-                </Button>
-                {correoVerificado && (
-                  <CheckCircleRounded color="success" />
-                )}
-              </Box>
-              {mostrarInputCodigo && !correoVerificado && (
+              {correoModificado && !correoVerificado && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                  <Button 
+                    variant="contained" 
+                    type="button" 
+                    startIcon={<CheckCircleRounded />}
+                    onClick={() => enviarCodigoVerificacion(formik.values.peju_CorreoElectronico)}
+                    disabled={verificarCorreoDeshabilitado || !formik.values.peju_CorreoElectronico}
+                  >
+                    Verificar correo
+                  </Button>
+                </Box>
+              )}
+              {mostrarInputCodigo && correoModificado && !correoVerificado && (
                 <Box sx={{ mt: 2 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={8}>
@@ -815,6 +862,14 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                   </Grid>
                 </Box>
               )}
+              {correoVerificado && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                  <Typography variant="caption" color="success.main">
+                    <CheckCircleRounded fontSize="small" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                    Correo verificado
+                  </Typography>
+                </Box>
+              )}
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
               <CustomFormLabel>Correo Electrónico Alternativo</CustomFormLabel>
@@ -823,30 +878,30 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                 id="peju_CorreoElectronicoAlternativo"
                 name="peju_CorreoElectronicoAlternativo"
                 value={formik.values.peju_CorreoElectronicoAlternativo}
-                onChange={formik.handleChange}
+                onChange={handleEmailChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)}
-                helperText={formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo}
-                disabled={correoAlternativoVerificado}
-                sx={correoAlternativoVerificado ? { bgcolor: '#f5f5f5' } : {}}
+                error={(formik.touched.peju_CorreoElectronicoAlternativo && Boolean(formik.errors.peju_CorreoElectronicoAlternativo)) ||
+                      (correoAltModificado && !correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo)}
+                helperText={
+                  (formik.touched.peju_CorreoElectronicoAlternativo && formik.errors.peju_CorreoElectronicoAlternativo) ||
+                  (correoAltModificado && !correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo ? 'Correo modificado, requiere verificación' : '')
+                }
+                disabled={correoAlternativoVerificado && !correoAltModificado}
+                sx={(correoAlternativoVerificado && !correoAltModificado) ? { bgcolor: '#f5f5f5' } : {}}
               />
-              {formik.values.peju_CorreoElectronicoAlternativo && (
+              {formik.values.peju_CorreoElectronicoAlternativo && correoAltModificado && !correoAlternativoVerificado && (
                 <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
                   <Button 
                     variant="contained" 
                     type="button" 
                     startIcon={<CheckCircleRounded />}
                     onClick={() => enviarCodigoVerificacionAlt(formik.values.peju_CorreoElectronicoAlternativo)}
-                    disabled={correoAlternativoVerificado}
                   >
-                    {correoAlternativoVerificado ? "Correo Alternativo Verificado" : "Verificar correo alternativo"}
+                    Verificar correo alternativo
                   </Button>
-                  {correoAlternativoVerificado && (
-                    <CheckCircleRounded color="success" />
-                  )}
                 </Box>
               )}
-              {mostrarInputCodigoAlt && !correoAlternativoVerificado && (
+              {mostrarInputCodigoAlt && correoAltModificado && !correoAlternativoVerificado && (
                 <Box sx={{ mt: 2 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={8}>
@@ -870,6 +925,14 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
                   </Grid>
                 </Box>
               )}
+              {correoAlternativoVerificado && formik.values.peju_CorreoElectronicoAlternativo && (
+                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
+                  <Typography variant="caption" color="success.main">
+                    <CheckCircleRounded fontSize="small" style={{ verticalAlign: 'middle', marginRight: 4 }} />
+                    Correo alternativo verificado
+                  </Typography>
+                </Box>
+              )}
             </Grid>
           </Grid>
         );
@@ -880,62 +943,64 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
 
   return (
     <form onSubmit={handleSubmitFinal}>
-        <Box display="flex" alignItems="center" mb={2}>
-          <Button
-            variant="text"
-            color="inherit"
-            onClick={onCancelar}
-            sx={{ minWidth: 0, p: 1 }}
-          >
-            <CloseIcon />
-          </Button>
-        </Box>
-        <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
-          <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
-        </StyledTabs>
-        <Box sx={{ width: '100%', mb: 2 }}>
-          <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
-        </Box>
-        <Box mt={3}>{renderTabContent()}</Box>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          {activeTab > 0 && (
-            <Grid item>
-              <Button variant="contained" onClick={handleBack}>Volver</Button>
-            </Grid>
-          )}
-          {activeTab < 3 ? (
-            <Grid item>
-              <Button variant="contained" onClick={handleNext}>Siguiente</Button>
-            </Grid>
-          ) : (
-            <Grid item>
-              <Button
-                variant="contained"
-                type="submit"
-                startIcon={<SaveIcon />}
-                disabled={!correoVerificado}
-              >
-                Guardar
-              </Button>
-            </Grid>
-          )}
-        </Grid>
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={() => setOpenSnackbar(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      <Box display="flex" alignItems="center" mb={2}>
+        <Button
+          variant="text"
+          color="inherit"
+          onClick={onCancelar}
+          sx={{ minWidth: 0, p: 1 }}
         >
-          <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
-            {mensajeSnackbar}
-          </Alert>
-        </Snackbar>
-
+          <CloseIcon />
+        </Button>
+      </Box>
+      <StyledTabs value={activeTab} centered variant="fullWidth" sx={{ mb: 3 }}>
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 0}>1</NumberCircle><Typography>Datos Generales</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 1}>2</NumberCircle><Typography>Ubicación de la Empresa</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 2}>3</NumberCircle><Typography>Ubicación del Representante</Typography></TabWrapper>} />
+        <StyledTab label={<TabWrapper><NumberCircle active={activeTab === 3}>4</NumberCircle><Typography>Contacto</Typography></TabWrapper>} />
+      </StyledTabs>
+      <Box sx={{ width: '100%', mb: 2 }}>
+        <Box sx={{ height: 6, width: `${(activeTab + 1) * 25}%`, backgroundColor: 'primary.main', borderRadius: 3, transition: 'width 0.3s ease' }} />
+      </Box>
+      
+      <Box mt={3}>{renderTabContent()}</Box>
+      
+      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
+        {activeTab > 0 && (
+          <Grid item>
+            <Button variant="contained" onClick={handleBack} type="button">Volver</Button>
+          </Grid>
+        )}
+        {activeTab < 3 ? (
+          <Grid item>
+            <Button variant="contained" onClick={handleNext} type="button">Siguiente</Button>
+          </Grid>
+        ) : (
+          <Grid item>
+            <Button
+              variant="contained"
+              type="submit"
+              startIcon={<SaveIcon />}
+              disabled={(correoModificado && !correoVerificado) || (correoAltModificado && formik.values.peju_CorreoElectronicoAlternativo && !correoAlternativoVerificado)}
+            >
+              Guardar
+            </Button>
+          </Grid>
+        )}
+      </Grid>
+      
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
+          {mensajeSnackbar}
+        </Alert>
+      </Snackbar>
     </form>
   );
 };
 
-export default PersonaJuridicaForm;
+export default PersonaJuridicaEdit;

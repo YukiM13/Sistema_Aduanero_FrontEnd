@@ -14,6 +14,7 @@ import ClientesProductivosChart from '../../components/dashboards/modern/Cliente
 import ProductividadModulosChart from '../../components/dashboards/modern/ProductividadModulosChart';
 import PrendasPedidasChart from '../../components/dashboards/modern/PrendasPedidasChart';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
+import ImportacionesContadores from 'src/components/dashboards/modern/importaciones_contadores';
 import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
 import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
 import OrdenesCharts from '../charts/OrdenesEntregadas';
@@ -32,7 +33,7 @@ const Modern = () => {
       <Grid container spacing={3}>
         {/* column */}
         <Grid item sm={12} lg={12}>
-          <TopCards />
+          <ImportacionesContadores />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={8}>
