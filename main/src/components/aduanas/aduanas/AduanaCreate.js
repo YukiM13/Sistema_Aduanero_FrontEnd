@@ -32,6 +32,9 @@ const [ciudades, setCiudades] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
 
   const listarCiudades = () => {
     axios.get(`${apiUrl}/api/Ciudades/Listar`, {
@@ -56,7 +59,7 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
         validationSchema,
         onSubmit: (values) => {
           values.adua_FechaCreacion = new Date().toISOString();
-          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioCreacion = user;
           console.log("Valores antes de enviar:", values);
           axios.post(`${apiUrl}/api/Aduanas/Insertar`, values, {
             headers: { 'XApiKey': apiKey }
