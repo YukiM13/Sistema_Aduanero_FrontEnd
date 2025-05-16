@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import emailjs from '@emailjs/browser';
 import * as yup from 'yup';
 
-// Add validation schema similar to PersonaNaturalCreate
+
 const validationSchema = yup.object({
   pers_Id: yup.number().required('El campo Persona ID es obligatorio').moreThan(0, 'Debe seleccionar una persona'),
   pena_DireccionExacta: yup.string().required('El campo Dirección Exacta es obligatorio'),
@@ -75,7 +75,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     ArchivoDNI: null,
     ArchivoNumeroRecibo: null,
   });
-  // Email verification states
+
   const [codigoVerificacion, setCodigoVerificacion] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [mostrarInputCodigo, setMostrarInputCodigo] = useState(false);
@@ -105,22 +105,22 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       .catch(() => setPersonas([]));
   }, [apiUrl, apiKey]);
 
-  // Store original email values and set them as verified initially
+
   useEffect(() => {
     if (persona.pena_CorreoElectronico) {
       setCorreoOriginal(persona.pena_CorreoElectronico);
-      // No auto-verify the email - it needs verification if changed
+
       setCorreoVerificado(false);
     }
     if (persona.pena_CorreoAlternativo) {
       setCorreoAlternativoOriginal(persona.pena_CorreoAlternativo);
-      // No auto-verify the alternate email - it needs verification if changed
+
       setCorreoAlternativoVerificado(false);
     }
   }, [persona]);
 
   const handleFinalSubmit = async () => {
-    // Check if email verification is required
+
     if (correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico) {
       setMensajeSnackbar('Debe verificar el correo electrónico primario antes de guardar.');
       setSeveritySnackbar('error');
@@ -128,7 +128,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       return;
     }
     
-    // Check if alternate email verification is required
+
     if (correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo) {
       setMensajeSnackbar('Debe verificar el correo electrónico alternativo antes de guardar.');
       setSeveritySnackbar('error');
@@ -136,9 +136,8 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       return;
     }
     
-    // Validate all fields before submitting
     formik.validateForm().then(errors => {
-      // Mark all fields as touched to show validation errors
+
       Object.keys(formik.values).forEach(field => {
         formik.setFieldTouched(field, true);
       });
@@ -150,7 +149,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
         return;
       }
 
-      // If no errors, proceed with submit
+
       submitForm();
     });
   };
@@ -219,12 +218,12 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       pena_NombreArchDNI: persona.pena_NombreArchDNI || '',
       pena_NombreArchRecibo: persona.pena_NombreArchRecibo || '',
     },
-    validationSchema, // Add validation schema
+    validationSchema,
     enableReinitialize: true,
  
   });
 
-  // Add validation for tab navigation similar to PersonaNaturalCreate
+
   const validateTabFields = () => {
     let hasErrors = false;
     const camposrequeridos = [];
@@ -294,7 +293,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     return true;
   };
 
-  // Modify handleNavigation to use validation
+
   const handleNavigation = (e) => {
     e.preventDefault();
     if (activeTab < 3) {
@@ -407,9 +406,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     setCodigoIngresadoAlt(e.target.value);
   };
 
-  // Check the current email and set verification status on component load
+
   useEffect(() => {
-    // If we're editing and already have email, assume it's verified
+
     if (persona.pena_CorreoElectronico) {
       setCorreoVerificado(true);
     }
@@ -418,7 +417,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     }
   }, [persona]);
 
-  // Clean up email verification UI when changing tabs
+
   useEffect(() => {
     if (activeTab !== 1) {
       setShowCorreoSnackbar(false);
@@ -432,39 +431,67 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     }
   }, [activeTab]);
 
-  // Track when email is modified
+
   const handleEmailChange = (e) => {
     const { name, value } = e.target;
     formik.handleChange(e);
     
     if (name === 'pena_CorreoElectronico') {
-      // Check if email is modified from its original value
       if (value !== correoOriginal) {
         setCorreoModificado(true);
         setCorreoVerificado(false);
       } else {
         setCorreoModificado(false);
-        setCorreoVerificado(true); // Auto-verify if it matches original
+        setCorreoVerificado(true);
       }
     }
     
     if (name === 'pena_CorreoAlternativo') {
-      // Check if alternate email is modified from its original value
+
       if (value !== correoAlternativoOriginal) {
         setCorreoAltModificado(true);
         setCorreoAlternativoVerificado(false);
       } else {
         setCorreoAltModificado(false);
-        setCorreoAlternativoVerificado(true); // Auto-verify if it matches original
+        setCorreoAlternativoVerificado(true);
       }
     }
   };
 
-  // Add a function for handling numeric values
+
   const handlenumeros = (e) => {
     const { name, value } = e.target;
     const numericValue = value.replace(/\D/g, '');
     formik.setFieldValue(name, numericValue);
+  };
+
+
+  const handleTabChange = (_, newValue) => {
+
+    if (newValue < activeTab) {
+      setActiveTab(newValue);
+      return;
+    }
+    
+
+    let canProceed = true;
+    
+
+    if (newValue === activeTab + 1) {
+      canProceed = validateTabFields();
+    } else if (newValue > activeTab + 1) {
+
+      for (let i = activeTab; i < newValue; i++) {
+        const currentTab = i;
+        setActiveTab(currentTab);
+        canProceed = validateTabFields();
+        if (!canProceed) break;
+      }
+    }
+    
+    if (canProceed) {
+      setActiveTab(newValue);
+    }
   };
 
   const renderTabContent = () => {
@@ -860,7 +887,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
   };
 
   return (
-    // Form no longer auto-submits
+
     <form onSubmit={handleNavigation}>
       <Box display="flex" alignItems="center" mb={2}>
         <Button
@@ -877,7 +904,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
         centered
         variant="fullWidth"
         sx={{ mb: 3 }}
-        onChange={(_, newValue) => setActiveTab(newValue)}
+        onChange={handleTabChange}
       >
         <StyledTab
           label={
