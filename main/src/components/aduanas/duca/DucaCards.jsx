@@ -6,12 +6,11 @@ import {
 TextField,InputAdornment,TablePagination, Grid,  CardContent,
   Typography,
   Stack,
-  Tooltip,
-    Fab,Box,Button, Menu, MenuItem,
+ Box,Button, Menu, MenuItem,
   ListItemIcon, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions,
   DialogContentText, Snackbar, Alert, Link,IconButton
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import StyledButton from 'src/components/shared/StyledButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DucaCreateComponent from "./DucaCreate";
 import { IconUser, IconCalendar, IconMapPin } from '@tabler/icons';
@@ -178,16 +177,18 @@ const DucaCards = () => {
                    {modo === 'listar' && ( //esta linea muestra el listar osea la tabla
                     <container>
                     <Stack direction="row" justifyContent="flex-start" mb={2}>
-                        <Button variant="contained" onClick={() => { setModo('crear');
-                           localStorage.removeItem('ducaId'); 
+                        <StyledButton  
+                          sx={{}} 
+                          title="Nuevo"
+                          event={() => {setModo('crear')
+                            localStorage.removeItem('ducaId'); 
                            localStorage.removeItem('edit');
                            localStorage.removeItem('devaDuca');
-                        
-                          }
-                        }   startIcon={<AddIcon />}>
-                            {'Nuevo'}
-                        </Button>
+                          }}>
+                        </StyledButton>
                     </Stack>
+
+                   
                     <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     InputProps={{
                     startAdornment: (
