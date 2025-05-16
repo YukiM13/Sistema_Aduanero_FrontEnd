@@ -160,6 +160,8 @@ const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pe
 const MaterialesIngreso = Loadable(lazy(() => import('../components/produccion/materialesingresopdf/materialesingresopdf')));
 const ProduccionAreas = Loadable(lazy(() => import('../components/produccion/ProduccionAreas/ProduccionAreas')));
 const TiemposMaquinas = Loadable(lazy(() => import('../components/produccion/TiemposMaquinas/TiemposMaquinas')))
+const ProduccionPorModulo = Loadable(lazy(() => import('../components/produccion/ProduccionPorModulos/ProduccionPorModulos')))
+const ReporteModuloDia = Loadable(lazy(() => import('../components/produccion/ReporteModuloDiaDetalle/ReporteModuloDiaDetalle')));
 
 // ui
 const MuiAlert = Loadable(lazy(() => import('../views/ui-components/MuiAlert')));
@@ -245,6 +247,8 @@ const todasLasRutas = [
   { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
   { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
   { path: '/TiemposMaquinas', element: <TiemposMaquinas/>, pantalla:'I. Tiempos Maquinas'},
+  { path: '/ProduccionPorModulo', element: <ProduccionPorModulo/>, pantalla:'I. Produccion Por Modulo'},
+  { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'I. Reporte Modulo Dia Detalle'},
 ]
 
 const rutasFiltradas = todasLasRutas.filter((ruta) =>

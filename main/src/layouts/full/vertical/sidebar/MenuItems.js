@@ -582,6 +582,26 @@ export const generarMenu = async () => {
       });
     }
 
+    if (esAdmin || nombresDePantalla.includes('I. Produccion Por Modulos')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Produccion Por Modulos',
+        icon: IconPoint,
+        href: '/ProduccionPorModulo',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('I. Reporte Modulo Dia Detalle')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'I. Reporte Modulo Dia Detalle',
+        icon: IconPoint,
+        href: '/ReporteModuloDiaDetalle',
+        chipColor: 'secondary',
+      });
+    }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
