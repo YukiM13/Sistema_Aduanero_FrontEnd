@@ -14,6 +14,7 @@ import Welcome from 'src/layouts/full/shared/welcome/Welcome';
 import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
 import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
 import OrdenesCharts from '../charts/OrdenesEntregadas';
+import PaisesMasExportadores from '../charts/PaisesMasExportadores';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -69,7 +70,7 @@ const Modern = () => {
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
-          <WeeklyStats />
+          <PaisesMasExportadores />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={8}>
