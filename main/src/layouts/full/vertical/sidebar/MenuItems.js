@@ -322,7 +322,7 @@ export const generarMenu = async () => {
         id: uniqueId(),
         title: 'Persona Jurídica',
         icon: IconPoint,
-        href: '/PersonaJuridica/PersonaJuridicaForm',
+        href: '/PersonaJuridica/list',
         chipColor: 'secondary',
       });
     }
@@ -642,6 +642,33 @@ export const generarMenu = async () => {
       icon: IconFileCertificate,
       href: '/duca',
       chipColor: 'secondary',
+    });
+  }
+  if (esAdmin || nombresDePantalla.includes('Ducas')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Ducas',
+      icon: IconFileCertificate,
+      href: '/duca',
+      chipColor: 'secondary',
+    });
+  }
+  if (esAdmin || nombresDePantalla.includes('devaspendientes')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Devas Pendientes',
+      icon: IconFileCertificate,
+      href: '/devaspendientes/list',
+      chipColor: 'secondary',
+    });
+  }
+  if (esAdmin || nombresDePantalla.includes('MaterialesporOrdendecompra')) {
+    Menuitems.push({
+      id: uniqueId(),
+      title: 'Materiales por Orden de compra',
+      icon: IconFileCertificate,
+      href: '/materialesporpo',
+      chipColor: 'secondary',//esquema aduanas
     });
   }
   
