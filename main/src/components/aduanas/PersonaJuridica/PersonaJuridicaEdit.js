@@ -230,28 +230,25 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        // For the final tab, submit all the data at once
-        if (activeTab === 3) {
-          const completeData = {
-            ...values,
-            usua_UsuarioModificacion: 1,
-            peju_FechaModificacion: new Date().toISOString()
-          };
-          
-          await axios.post(`${apiUrl}/api/PersonaJuridica/Editar`, completeData, {
-            headers: { 'XApiKey': apiKey }
-          });
-          
-          setMensajeSnackbar('Persona jurídica actualizada con éxito');
-          setSeveritySnackbar('success');
-          setOpenSnackbar(true);
-          
-          setTimeout(() => {
-            if (onGuardadoExitoso) {
-              onGuardadoExitoso();
-            }
-          }, 1500);
-        }
+        const completeData = {
+          ...values,
+          usua_UsuarioModificacion: 1,
+          peju_FechaModificacion: new Date().toISOString()
+        };
+        
+        await axios.post(`${apiUrl}/api/PersonaJuridica/Editar`, completeData, {
+          headers: { 'XApiKey': apiKey }
+        });
+        
+        setMensajeSnackbar('Persona jurídica actualizada con éxito');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+        
+        setTimeout(() => {
+          if (onGuardadoExitoso) {
+            onGuardadoExitoso();
+          }
+        }, 1500);
       } catch (error) {
         console.error('Error al actualizar persona jurídica:', error);
         setMensajeSnackbar('Error al actualizar la persona jurídica');
@@ -380,18 +377,26 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
       return;
     }
     
+    // Fix the validation fields reference since validationSchemas doesn't have a 'fields' property
+    const fieldsToValidate = [
+      ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
+      ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
+      ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
+      ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
+    ];
+    
     // Validar campos del tab actual
     const tocados = {};
-    validationSchemas[activeTab].fields.forEach(campo => {
-      if (formik.values[campo] !== undefined) {
-        tocados[campo] = true;
-      }
+    fieldsToValidate[activeTab].forEach(campo => {
+      tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
     
     formik.validateForm().then(errores => {
-      const hayErrores = Object.keys(errores).length > 0;
-      if (hayErrores) {
+      // Check if there are errors in the current tab's fields
+      const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
+      
+      if (currentTabErrors) {
         setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
@@ -403,24 +408,34 @@ const PersonaJuridicaEdit = ({ personaJuridica = PersonaJuridicaModel, onCancela
   };
 
   const handleNext = () => {
+    // Define the fields to validate for each tab
+    const fieldsToValidate = [
+      ['pers_Nombre', 'pers_RTN', 'escv_Id', 'ofic_Id', 'ofpr_Id'],
+      ['ciud_Id', 'colo_Id', 'alde_Id', 'peju_PuntoReferencia', 'peju_NumeroLocalApart'],
+      ['peju_CiudadIdRepresentante', 'peju_ColoniaRepresentante', 'peju_AldeaIdRepresentante', 'peju_NumeroLocalRepresentante', 'peju_PuntoReferenciaRepresentante'],
+      ['peju_TelefonoEmpresa', 'peju_TelefonoFijoRepresentanteLegal', 'peju_TelefonoRepresentanteLegal', 'peju_CorreoElectronico']
+    ];
+    
+    // Mark fields as touched
     const tocados = {};
-    validationSchemas[activeTab].fields.forEach(campo => {
-      if (formik.values[campo] !== undefined) {
-        tocados[campo] = true;
-      }
+    fieldsToValidate[activeTab].forEach(campo => {
+      tocados[campo] = true;
     });
     formik.setTouched(tocados, true);
     
+    // Validate the current forms
     formik.validateForm().then(errores => {
-      const hayErrores = Object.keys(errores).length > 0;
-      if (hayErrores) {
+      // Check if there are errors in the current tab's fields
+      const currentTabErrors = fieldsToValidate[activeTab].some(field => errores[field]);
+      
+      if (currentTabErrors) {
         setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
         setSeveritySnackbar('error');
         setOpenSnackbar(true);
         return;
       }
       
-      // Move to the next tab directly instead of submitting the form
+      // If no errors, proceed to next tab
       setActiveTab(prevTab => prevTab + 1);
     });
   };
