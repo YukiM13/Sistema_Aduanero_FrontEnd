@@ -4,7 +4,7 @@ import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, Button, Stack,
     IconButton, Menu, MenuItem,
-    ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Tooltip, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
+    ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Dialog, DialogTitle, DialogContent, DialogActions,
     DialogContentText
 } from '@mui/material';
 import { Chip } from '@mui/material';
@@ -253,12 +253,11 @@ const UsuariosComponent = () => {
                                             .map((usuario, index) => (
                                                 <TableRow key={usuario.usua_Id}
                                                     sx={{
-                                                      backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
-                                                      '&:hover': { backgroundColor: '#e3f2fd' },
+                                                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                                                        '&:hover': { backgroundColor: '#e3f2fd' },
                                                     }}
                                                 >
                                                     <TableCell align="center">
-                                                        <Tooltip title="Opciones">
                                                         <IconButton
                                                             size="small"
                                                             onClick={(e) => abrirMenu(e, usuario)}
@@ -266,7 +265,7 @@ const UsuariosComponent = () => {
                                                                 backgroundColor: '#d9e7f7',
                                                                 color: 'rgb(0, 83, 121)',
                                                                 '&:hover': {
-                                                                  backgroundColor: 'rgb(157, 191, 207)',
+                                                                    backgroundColor: 'rgb(157, 191, 207)',
                                                                 },
                                                                 border: '2px solid rgb(0, 83, 121)',
                                                                 borderRadius: '8px',
@@ -277,8 +276,8 @@ const UsuariosComponent = () => {
                                                                 transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
                                                                 fontSize="small" 
                                                             />
+                                                            <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
-                                                        </Tooltip>
                                                     </TableCell>
                                                     <TableCell>
                                                         {usuario.usua_Image && (
@@ -289,10 +288,10 @@ const UsuariosComponent = () => {
                                                             />
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>{usuario.usua_Nombre}</TableCell>
-                                                    <TableCell>{usuario.emplNombreCompleto}</TableCell>
-                                                    <TableCell>{usuario.empl_CorreoElectronico}</TableCell>
-                                                    <TableCell>{usuario.role_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.usua_Nombre}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.emplNombreCompleto}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.empl_CorreoElectronico}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{usuario.role_Descripcion}</Typography></TableCell>
                                                     <TableCell>
                                                         {usuario.usua_Estado ? (
                                                             <Chip

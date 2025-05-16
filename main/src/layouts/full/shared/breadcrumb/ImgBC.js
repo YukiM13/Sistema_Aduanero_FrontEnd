@@ -14,6 +14,7 @@ import ProveedoresImg from 'src/assets/images/imagenes/imgsBreadcrumb/proveedore
 import UnidadesMedidasImg from 'src/assets/images/imagenes/imgsBreadcrumb/unidadesmedidas.png';
 import ConceptoDePago from 'src/assets/images/imagenes/imgsBreadcrumb/conceptodepago.png';
 import Marcas from 'src/assets/images/imagenes/imgsBreadcrumb/marcas.png';
+import Reporte from 'src/assets/images/imagenes/imgsBreadcrumb/reportes.png';
 import DefaultImage from 'src/assets/images/breadcrumb/breadcrumb.png';
 
 const ImgBC = () => {

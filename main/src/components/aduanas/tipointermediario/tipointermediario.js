@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Table, TableBody, TableCell, TableContainer,
-    TableHead, TableRow, Paper, Button, Stack,
+    TableHead, TableRow, Paper, Stack,
     IconButton, Menu, MenuItem,
     ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography
 } from '@mui/material';
@@ -11,7 +11,6 @@ import ParentCard from '../../../components/shared/ParentCard';
 import TipoIntermediarioCreateComponent from './tipointermediarioCreate';
 import TipoIntermediarioDetailsComponent from './tipointermediarioDetails';
 import TipoIntermediarioEditComponent from './tipointermediarioEdit';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,9 +18,11 @@ import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { alertMessages } from 'src/layouts/config/alertConfig';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import StyledButton from 'src/components/shared/StyledButton';
 
 const TipoIntermediarioComponent = () => {
     const [tipoIntermediarios, setTipoIntermediarios] = useState([]);
+    const [iconRotated, setIconRotated] = useState(false);
     const [modo, setModo] = useState('listar');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
@@ -71,10 +72,12 @@ const TipoIntermediarioComponent = () => {
         setPosicionMenu(evento.currentTarget);
         setTipoIntermediarioSeleccionado(tipoIntermediario);
         setMenuAbierto(true);
+        setIconRotated(true)
     };
 
     const cerrarMenu = () => {
         setMenuAbierto(false);
+        setIconRotated(false)
     };
 
     const handleChangePage = (event, newPage) => setPage(newPage);
@@ -102,9 +105,12 @@ const TipoIntermediarioComponent = () => {
                 {modo === 'listar' && (
                     <div>
                         <Stack direction="row" justifyContent="flex-start" mb={2}>
-                            <Button variant="contained" onClick={() => setModo('crear')} startIcon={<AddIcon />}>
-                                {'Nuevo'}
-                            </Button>
+                            <StyledButton
+                                sx={{}}
+                                title="Nuevo"
+                                event={() => setModo('crear')}
+                            >
+                            </StyledButton>
                         </Stack>
                         <Paper variant="outlined">
                             <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,13 +125,13 @@ const TipoIntermediarioComponent = () => {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center">
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Acciones</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Código</Typography>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                                 <Typography variant="h6">Descripción</Typography>
                                             </TableCell>
                                         </TableRow>
@@ -133,18 +139,37 @@ const TipoIntermediarioComponent = () => {
                                     <TableBody>
                                         {filteredData
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            .map((tipoIntermediario) => (
-                                                <TableRow key={tipoIntermediario.tite_Id}>
+                                            .map((tipoIntermediario, index) => (
+                                                <TableRow key={tipoIntermediario.tite_Id}
+                                                    sx={{
+                                                        backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                                                        '&:hover': { backgroundColor: '#e3f2fd' },
+                                                    }}
+                                                >
                                                     <TableCell align="center">
                                                         <IconButton
                                                             size="small"
                                                             onClick={(e) => abrirMenu(e, tipoIntermediario)}
+                                                            sx={{
+                                                                backgroundColor: '#d9e7f7',
+                                                                color: 'rgb(0, 83, 121)',
+                                                                '&:hover': {
+                                                                    backgroundColor: 'rgb(157, 191, 207)',
+                                                                },
+                                                                border: '2px solid rgb(0, 83, 121)',
+                                                                borderRadius: '8px',
+                                                                padding: '6px'
+                                                            }}
                                                         >
-                                                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                                                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                                                fontSize="small" 
+                                                            />
+                                                            <Typography variante="h6">Acciones</Typography>
                                                         </IconButton>
                                                     </TableCell>
-                                                    <TableCell>{tipoIntermediario.tite_Codigo}</TableCell>
-                                                    <TableCell>{tipoIntermediario.tite_Descripcion}</TableCell>
+                                                    <TableCell><Typography variant="body1">{tipoIntermediario.tite_Codigo}</Typography></TableCell>
+                                                    <TableCell><Typography variant="body1">{tipoIntermediario.tite_Descripcion}</Typography></TableCell>
                                                 </TableRow>
                                             ))}
                                         {emptyRows > 0 && (
