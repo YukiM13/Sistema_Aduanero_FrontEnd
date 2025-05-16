@@ -624,6 +624,27 @@ export const generarMenu = async () => {
       });
     }
 
+      if (esAdmin || nombresDePantalla.includes('Contratos Adhesión')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Contratos Adhesión',
+      icon: IconPoint,
+      href: '/reporteContratosAdhesion',
+      chipColor: 'secondary',
+    });
+  }
+
+
+  if (esAdmin || nombresDePantalla.includes('Seguimiento de Procesos por Orden Compra')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Seguimiento de Procesos por Orden Compra',
+      icon: IconPoint,
+      href: '/reporteSeguimientoProcesos',
+      chipColor: 'secondary',
+    });
+  }
+
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);
     }
