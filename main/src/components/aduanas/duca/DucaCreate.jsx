@@ -90,19 +90,60 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
     const apiKey = process.env.REACT_APP_API_KEY;
     
     const listarDevas = () => {
-      axios.get(`${apiUrl}/api/Duca/ListaDevaNoDuca`, {
-          headers: {
-              'XApiKey': apiKey
-          }
-  
-      })
-      .then(response => {
-          setDeva(response.data.data);
-          console.log("React E10", response.data.data)
-      })
-      .catch(error => {
-          console.error('Error al obtener los datos del país:', error);
-      });
+            axios.get(`${apiUrl}/api/Duca/ListaDevaNoDuca`, {
+                  headers: {
+                      'XApiKey': apiKey
+                  }
+          
+              })
+              .then(response => {
+                  
+                  console.log("Devas", response.data.data)
+                  const devas = response.data.data;
+                  console.log(devas);
+                  axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+                    headers: {
+                        'XApiKey': apiKey
+                    }
+            
+                })
+                .then(response => {
+                  const localDevas = response.data.data;
+                  console.log('devas insertadas', localDevas);
+                 
+                  if (localDevas && devas) {
+                   const parsedLocal = localDevas;
+                   const devasDesdeApi = devas;
+                  console.log('devas desde listar', devasDesdeApi);
+                   const nuevos = devasDesdeApi.filter(apiDeva =>
+                    !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
+                   );
+                
+                   const combinado = [...parsedLocal, ...nuevos];
+                   setDeva(combinado);
+                  } else if(localDevas)
+                  {
+                    console.log('entro solo a las devas ya insertadas')
+                    const parsedLocal = localDevas;
+                    setDeva(parsedLocal);
+      
+                  }
+                  else if (devas) {
+                    console.log('entro solo a las devas del listar')
+                   setDeva(devas);
+                  }
+                  else {
+                    console.log('entro al else')
+                    setDeva([]);
+                  }
+              })
+              .catch(error => {
+                  console.error('Error al obtener los datos del país:', error);
+              });
+            })
+            .catch(error => {
+              console.error('Error al obtener los datos del país:', error);
+            });
   } 
     // eslint-disable-next-line consistent-return
     const handleSteps = (step) => {
@@ -308,7 +349,7 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
                 <Button
                   onClick={handleNext}
                   variant="contained"
-                  disabled={activeStep === 0 && deva.length ===0 && !localStorage.getItem('devaDuca')}
+                  disabled={activeStep === 0 && deva.length ===0 }
                   color={activeStep === steps.length - 1 ? 'success' : 'primary'}
                   endIcon={
                     activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />

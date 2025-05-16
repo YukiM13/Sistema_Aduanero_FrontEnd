@@ -196,7 +196,7 @@ const AduanasList = () => {
                       }}
                     >
                       <TableCell align="center">
-                        <Tooltip title="Acciones">
+                        
                         <IconButton
                           size="small"
                           onClick={(e) => abrirMenu(e, aduana)}
@@ -215,8 +215,9 @@ const AduanasList = () => {
                           sx={{transition: 'transform 0.3s ease-in-out',
                             transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
                           fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                          <Typography variante="h6">Acciones</Typography>
+                        </IconButton> 
+                      
 
                       </TableCell>
                       <TableCell><Typography variant="body1">{aduana.adua_Codigo}</Typography></TableCell>
