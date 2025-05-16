@@ -10,7 +10,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import emailjs from '@emailjs/browser';
 import * as yup from 'yup';
-
+import StyledButton from 'src/components/shared/StyledButton';
 
 const validationSchema = yup.object({
   pers_Id: yup.number().required('El campo Persona ID es obligatorio').moreThan(0, 'Debe seleccionar una persona'),
@@ -954,31 +954,45 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       </Box>
       <Box mt={3}>{renderTabContent()}</Box>
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-        {activeTab > 0 && (
-          <Grid item>
-            <Button variant="contained" type="button" onClick={() => setActiveTab(activeTab - 1)}>
-              Volver
-            </Button>
-          </Grid>
-        )}
-        {activeTab < 3 ? (
-          <Grid item>
-            <Button variant="contained" type="submit">
-              Siguiente
-            </Button>
-          </Grid>
-        ) : (
-          <Grid item>
-            <Button 
-              variant="contained" 
-              type="button" 
-              startIcon={<SaveIcon />}
-              onClick={handleFinalSubmit}
-            >
-              Guardar
-            </Button>
-          </Grid>
-        )}
+              {activeTab > 0 && (
+                <Grid item>
+                   <StyledButton  
+                    sx={{}} 
+                    title="Volver"
+                    event={() => setActiveTab(activeTab - 1)}
+                    variant="back"
+                    >
+                    
+                  </StyledButton>
+                 
+                </Grid>
+              )}
+              {activeTab < 3 ? (
+                <Grid item>
+                  <StyledButton  
+                    sx={{}} 
+                    title="Siguiente"
+                   type="submit"
+                    variant="sig"
+                    >
+                    
+                  </StyledButton>
+                 
+                </Grid>
+              ) : (
+                <Grid item>
+                   <StyledButton  
+                    sx={{}} 
+                    title="Finalizar"
+                    event = {handleFinalSubmit}
+                    variant="finish"
+                    >
+                    
+                  </StyledButton>
+                  
+                </Grid>
+              )}
+      
       </Grid>
       <Snackbar
         open={showCorreoSnackbar && activeTab === 1}

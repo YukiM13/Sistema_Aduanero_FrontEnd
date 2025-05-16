@@ -31,7 +31,10 @@ const PersonaJuridicaList = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+  const localStorageData = localStorage.getItem('DataUsuario');
+    const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+     
+    const admin = parsedData ? parsedData.usua_EsAdmin : false;
   const cargarPersonasJuridicas = () => {
     axios.get(`${apiUrl}/api/PersonaJuridica/Listar`, {
       headers: { 'XApiKey': apiKey }
@@ -69,8 +72,11 @@ const PersonaJuridicaList = () => {
 
   return (
     <div>
-      <Breadcrumb title="Personas Jurídicas" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
+       <Breadcrumb title="Personas Jurídicas" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
       <ParentCard>
+      {admin?
+        <>
+          
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
@@ -182,7 +188,7 @@ const PersonaJuridicaList = () => {
             onCancelar={() => setModo('listar')}
           />
         )}
-      </ParentCard>
+    
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -211,6 +217,12 @@ const PersonaJuridicaList = () => {
           <ListItemText>Detalles</ListItemText>
         </MenuItem>
       </Menu>
+        </>
+        :
+        <PersonaJuridicaForm/>
+      }
+      </ParentCard>
+     
     </div>
   );
 };

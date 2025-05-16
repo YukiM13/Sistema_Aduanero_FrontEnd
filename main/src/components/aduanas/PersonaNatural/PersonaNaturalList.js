@@ -32,7 +32,10 @@ const PersonaNaturalList = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+   const localStorageData = localStorage.getItem('DataUsuario');
+    const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+     
+  const admin = parsedData ? parsedData.usua_EsAdmin : false;
   const cargarPersonas = () => {
     axios.get(`${apiUrl}/api/PersonaNatural/Listar`, {
       headers: { 'XApiKey': apiKey }
@@ -76,7 +79,9 @@ const PersonaNaturalList = () => {
     <div>
       <Breadcrumb title="Personas Naturales" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar/Detalles'} />
       <ParentCard>
-        {modo === 'listar' && (
+        {admin?
+          <>
+            {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
               <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
@@ -190,7 +195,7 @@ const PersonaNaturalList = () => {
           />
         )}
         
-      </ParentCard>
+      
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -219,6 +224,11 @@ const PersonaNaturalList = () => {
           <ListItemText>Detalles</ListItemText>
         </MenuItem>
       </Menu>
+          </>
+          :
+          <PersonaNaturalCreateComponent/>
+        }
+        </ParentCard>
     </div>
   );
 };
