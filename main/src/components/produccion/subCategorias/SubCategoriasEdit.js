@@ -11,6 +11,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
+import StyledButton from 'src/components/shared/StyledButton';
 
 
 const infoLogin = localStorage.getItem('DataUsuario');
@@ -106,30 +107,29 @@ const SubCategoriasEdit = ({ subcategoria, onCancelar, onGuardadoExitoso }) => {
               ))}
             </CustomTextField>
           </Grid>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
         </Grid>
 
-        <Grid container justifyContent="flex-end" spacing={2}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              startIcon={<SaveIcon style={{ fontSize: '18px' }} />}
-            >
-              Guardar
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={onCancelar}
-              startIcon={<CancelIcon style={{ fontSize: '18px' }} />}
-            >
-              Cancelar
-            </Button>
-          </Grid>
-        </Grid>
+       
       </form>
     </div>
   );

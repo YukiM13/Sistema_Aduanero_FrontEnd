@@ -48,7 +48,10 @@ const ComercianteIndividualList = () => {
 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+   const localStorageData = localStorage.getItem('DataUsuario');
+    const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+     
+  const admin = parsedData ? parsedData.usua_EsAdmin : false;
   const mostrarAlerta = (tipo) => {
     const config = alertMessages[tipo];
     if (config) {
@@ -145,8 +148,11 @@ const ComercianteIndividualList = () => {
 
   return (
     <div>
-      <Breadcrumb title="Comerciante Individual" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar'} />
+      <Breadcrumb title="Comerciante Individual" subtitle="Listar" />
       <ParentCard>
+      {admin? 
+        <>
+       
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
@@ -389,6 +395,11 @@ const ComercianteIndividualList = () => {
             </Snackbar>
           </>
         )}
+    
+      </>
+        :
+        <ComercianteIndividualCreate />
+      }
       </ParentCard>
     </div>
   );

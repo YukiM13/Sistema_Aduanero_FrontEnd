@@ -13,7 +13,7 @@ import emailjs from '@emailjs/browser';
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import CloseIcon from '@mui/icons-material/Close';
-
+import StyledButton from 'src/components/shared/StyledButton';
 import { Snackbar, Alert } from '@mui/material';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -903,27 +903,45 @@ const infoLogin = localStorage.getItem('DataUsuario');
         </Box>
         <Box mt={3}>{renderTabContent()}</Box>
         <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          {activeTab > 0 && (
-            <Grid item>
-              <Button variant="contained" onClick={handleBack}>Volver</Button>
-            </Grid>
-          )}
-          {activeTab < 3 ? (
-            <Grid item>
-              <Button variant="contained" onClick={handleNext}>Siguiente</Button>
-            </Grid>
-          ) : (
-            <Grid item>
-              <Button
-                variant="contained"
-                type="submit"
-                startIcon={<SaveIcon />}
-                disabled={!correoVerificado}
-              >
-                Guardar
-              </Button>
-            </Grid>
-          )}
+         {activeTab > 0 && (
+                   <Grid item>
+                      <StyledButton  
+                       sx={{}} 
+                       title="Volver"
+                       event={handleBack}
+                       variant="back"
+                       >
+                       
+                     </StyledButton>
+                    
+                   </Grid>
+                 )}
+                 {activeTab < 3 ? (
+                   <Grid item>
+                     <StyledButton  
+                       sx={{}} 
+                       title="Siguiente"
+                       event={handleNext}
+                       variant="sig"
+                       >
+                       
+                     </StyledButton>
+                    
+                   </Grid>
+                 ) : (
+                   <Grid item>
+                      <StyledButton  
+                       sx={{}} 
+                       title="Finalizar"
+                       type='submit'
+                       variant="finish"
+                       disable={!correoVerificado}
+                       >
+                       
+                     </StyledButton>
+                     
+                   </Grid>
+                 )}
         </Grid>
         <Snackbar
           open={openSnackbar}

@@ -12,7 +12,7 @@ import emailjs from '@emailjs/browser';
 import ReactIntTelInput from 'react-intl-tel-input';
 import 'react-intl-tel-input/dist/main.css';
 import PersonaJuridicaModel from '../../../models/PersonaJuridicaModel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   '& .MuiTabs-indicator': {
@@ -956,28 +956,46 @@ const infoLogin = localStorage.getItem('DataUsuario');
       </Box>
       <Box mt={3}>{renderTabContent()}</Box>
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-        {activeTab > 0 && (
+       {activeTab > 0 && (
+                   <Grid item>
+                      <StyledButton  
+                       sx={{}} 
+                       title="Volver"
+                       event={handleBack}
+                       variant="back"
+                       >
+                       
+                     </StyledButton>
+                    
+                   </Grid>
+                 )}
+                 {activeTab < 3 ? (
+                   <Grid item>
+                     <StyledButton  
+                       sx={{}} 
+                       title="Siguiente"
+                       event={handleNext}
+                       variant="sig"
+                       >
+                       
+                     </StyledButton>
+                    
+                   </Grid>
+                 ) : (
           <Grid item>
-            <Button variant="contained" onClick={handleBack} type="button">Volver</Button>
-          </Grid>
-        )}
-        {activeTab < 3 ? (
-          <Grid item>
-            <Button variant="contained" onClick={handleNext} type="button">Siguiente</Button>
-          </Grid>
-        ) : (
-          <Grid item>
-            <Button
-              variant="contained"
-              type="button"
-              startIcon={<SaveIcon />}
-              onClick={handleSubmitFinal}
-              disabled={(correoModificado && !correoVerificado) || (correoAltModificado && formik.values.peju_CorreoElectronicoAlternativo && !correoAlternativoVerificado)}
-            >
-              Guardar
-            </Button>
-          </Grid>
-        )}
+                      <StyledButton  
+                       sx={{}} 
+                       title="Finalizar"
+                       event={handleSubmitFinal}
+                       variant="finish"
+                        disabled={(correoModificado && !correoVerificado) || (correoAltModificado && formik.values.peju_CorreoElectronicoAlternativo && !correoAlternativoVerificado)}
+
+                       >
+                       
+                     </StyledButton>
+                     
+                   </Grid>
+                 )}
       </Grid>
       <Snackbar
         open={openSnackbar}

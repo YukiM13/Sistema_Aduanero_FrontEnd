@@ -14,7 +14,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import FormaEnvioModel from 'src/models/formasenviomodel'; // Asegúrate de que la ruta del modelo sea correcta
-
+import StyledButton from 'src/components/shared/StyledButton';
 // Esquema de validación
 const validationSchema = yup.object({
   foen_Codigo: yup
@@ -121,19 +121,28 @@ const FormasEnvioEdit = ({ formaId, onCancelar, onGuardadoExitoso }) => {
               helperText={formik.touched.foen_Descripcion && formik.errors.foen_Descripcion}
             />
           </Grid>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
         </Grid>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          <Grid item>
-            <Button variant="contained" color="error" onClick={onCancelar} startIcon={<CancelIcon />}>
-              Cancelar
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="contained" type="submit" startIcon={<SaveIcon />} disabled={formik.isSubmitting}>
-              Guardar
-            </Button>
-          </Grid>
-        </Grid>
+       
       </form>
     );
   };

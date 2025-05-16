@@ -14,6 +14,7 @@ import {
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 // import PedidoOrdenDetalleList from '../pedidoOrdenDetalle/PedidoOrdenDetalleList';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const validationSchema = yup.object({
     peor_Id: yup.number().required('El pedido orden es requerido'),
@@ -229,24 +230,28 @@ const PedidoOrdenDetalleEditComponent = ({pedidosOrdenesDetalles, onCancelar, on
                         helperText={formik.touched.prod_Precio && formik.errors.prod_Precio}
                     />                      
                 </Grid>
-
-              </Grid>
-              <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-                  <Grid item>
-                      <Button variant="contained" color="error" onClick={onCancelar}
-                          startIcon={<CancelIcon />}
+                 <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
                       >
-                      Cancelar
-                      </Button>
-                  </Grid>
-                  <Grid item>
-                      <Button variant="contained" type="submit" onClick={formik.handleSubmit}
-                          startIcon={<SaveIcon />}
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
                       >
-                      Guardar
-                      </Button>
-                  </Grid>
+                      
+                    </StyledButton>
+          
+                  </Grid>     
               </Grid>
+              
             </form>
           )}
         </>
