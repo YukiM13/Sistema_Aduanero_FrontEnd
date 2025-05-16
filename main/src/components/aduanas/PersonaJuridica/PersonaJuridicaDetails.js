@@ -10,6 +10,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const PersonaJuridicaDetails = ({ persona, onCancelar }) => {
+  console.log('Persona Juridica Details:', persona);
   return (
     <div>
       <Box mb={4}>
@@ -59,15 +60,15 @@ const PersonaJuridicaDetails = ({ persona, onCancelar }) => {
             <Grid container spacing={3}>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Ciudad:</Typography>
-                <Typography variant="body1">{persona.ciud_Nombre}</Typography>
+                <Typography variant="body1">{persona.ciudadEmpresa}</Typography>
               </Grid>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Colonia:</Typography>
-                <Typography variant="body1">{persona.colo_Nombre}</Typography>
+                <Typography variant="body1">{persona.coliniaEmpresa}</Typography>
               </Grid>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Aldea:</Typography>
-                <Typography variant="body1">{persona.alde_Nombre}</Typography>
+                <Typography variant="body1">{persona.aldeaEmpresa}</Typography>
               </Grid>
               <Grid item lg={6} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Punto de Referencia:</Typography>
@@ -92,15 +93,15 @@ const PersonaJuridicaDetails = ({ persona, onCancelar }) => {
             <Grid container spacing={3}>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Ciudad:</Typography>
-                <Typography variant="body1">{persona.peju_CiudadNombreRepresentante}</Typography>
+                <Typography variant="body1">{persona.ciudadRepresentante}</Typography>
               </Grid>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Colonia:</Typography>
-                <Typography variant="body1">{persona.peju_ColoniaNombreRepresentante}</Typography>
+                <Typography variant="body1">{persona.coloniaRepresentante}</Typography>
               </Grid>
               <Grid item lg={4} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Aldea:</Typography>
-                <Typography variant="body1">{persona.peju_AldeaNombreRepresentante}</Typography>
+                <Typography variant="body1">{persona.aldeaRepresemtante}</Typography>
               </Grid>
               <Grid item lg={6} md={6} sm={12}>
                 <Typography variant="subtitle1" fontWeight="600">Punto de Referencia:</Typography>
