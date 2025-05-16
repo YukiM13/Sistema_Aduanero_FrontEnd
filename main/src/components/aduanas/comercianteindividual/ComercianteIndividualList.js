@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, Stack, Box,
-  IconButton, Menu, MenuItem,
+  TableHead, TableRow, Paper, Stack, Box,
+  IconButton, Menu, MenuItem, Button,
   ListItemIcon, ListItemText, TextField, InputAdornment,
   TablePagination, Typography, Dialog, DialogTitle,
   DialogContent, DialogActions, DialogContentText,
@@ -26,6 +26,7 @@ import ComercianteIndividualEdit from './ComercianteIndividualEdit';
 
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const ComercianteIndividualList = () => {
   const [comerciantes, setComerciantes] = useState([]);
@@ -34,6 +35,7 @@ const ComercianteIndividualList = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
+  const [iconRotated, setIconRotated] = useState(false);
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertConfig, setAlertConfig] = useState({ severity: '', message: '' });
@@ -75,11 +77,13 @@ const ComercianteIndividualList = () => {
     setPosicionMenu(evento.currentTarget);
     setComercianteSeleccionado(comerciante);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
   const cerrarMenu = () => {
     setMenuAbierto(false);
     setPosicionMenu(null);
+    setIconRotated(false);
   };
 
   const handleEditar = () => {
@@ -141,43 +145,28 @@ const ComercianteIndividualList = () => {
 
   return (
     <div>
-      <Breadcrumb title="Comerciante Individual" subtitle="Listar" />
+      <Breadcrumb title="Comerciante Individual" subtitle={modo === 'listar' ? 'Listar' : 'Crear/Editar'} />
       <ParentCard>
         {modo === 'listar' && (
           <>
-            <Stack direction="row" justifyContent="space-between" mb={2}>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => {
-                  setMostrarFormulario(prev => {
-                    const nuevoEstado = !prev;
-                    if (!prev) {
-                      // Si estaba oculto y ahora se mostrará, ocultar editar
-                      setMostrarFormularioEditar(false);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                    return nuevoEstado;
-                  });
-                }}
-              >
-                {mostrarFormulario ? 'Ocultar' : 'Nuevo'}
-              </Button>
-
-              <TextField
-                variant="outlined"
-                size="small"
-                placeholder="Buscar"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
+            <Stack direction="row" justifyContent="flex-start" mb={2}>
+              {mostrarFormulario ? (
+                <StyledButton
+                  title="Ocultar"
+                  event={() => {
+                    setMostrarFormulario(false);
+                  }}
+                />
+              ) : (
+                <StyledButton
+                  title="Nuevo"
+                  event={() => {
+                    setMostrarFormulario(true);
+                    setMostrarFormularioEditar(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              )}
             </Stack>
 
             <Collapse in={mostrarFormulario} timeout="auto" unmountOnExit>
@@ -206,33 +195,92 @@ const ComercianteIndividualList = () => {
             </Collapse>
 
             {!mostrarFormulario && !mostrarFormularioEditar && (
-              <>
+              <Paper variant="outlined">
+                <TextField
+                  placeholder="Buscar"
+                  variant="outlined"
+                  size="small"
+                  sx={{ mb: 2, mt: 2, width: '25%', ml: '73%' }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
                 <TableContainer component={Paper}>
-                  <Table>
+                  <Table stickyHeader>
                     <TableHead>
                       <TableRow>
-                        <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                        <TableCell><Typography variant="h6">ID</Typography></TableCell>
-                        <TableCell><Typography variant="h6">Nombre</Typography></TableCell>
-                        <TableCell><Typography variant="h6">RTN</Typography></TableCell>
-                        <TableCell><Typography variant="h6">Forma Representación</Typography></TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }} align="center">
+                          <Typography variant="h6">Acciones</Typography>
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                          <Typography variant="h6">ID</Typography>
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                          <Typography variant="h6">Nombre</Typography>
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                          <Typography variant="h6">RTN</Typography>
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                          <Typography variant="h6">Forma Representación</Typography>
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {(rowsPerPage > 0
                         ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         : filteredData
-                      ).map((item) => (
-                        <TableRow key={item.coin_Id}>
+                      ).map((item, index) => (
+                        <TableRow 
+                          key={item.coin_Id}
+                          sx={{
+                            backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                            '&:hover': { backgroundColor: '#e3f2fd' },
+                          }}
+                        >
                           <TableCell align="center">
-                            <IconButton onClick={(e) => abrirMenu(e, item)}>
-                              <SettingsIcon sx={{ color: '#2196F3', fontSize: '20px' }} />
+                            <IconButton
+                              size="small"
+                              onClick={(e) => abrirMenu(e, item)}
+                              sx={{
+                                backgroundColor: '#d9e7ef',
+                                color: 'rgb(0, 83, 121)',
+                                '&:hover': {
+                                  backgroundColor: 'rgb(157, 191, 207)',
+                                },
+                                border: '2px solid rgb(0, 83, 121)',
+                                borderRadius: '8px',
+                                padding: '6px'
+                              }}
+                            >
+                              <SettingsIcon
+                                sx={{
+                                  transition: 'transform 0.3s ease-in-out',
+                                  transform: iconRotated && comercianteSeleccionado?.coin_Id === item.coin_Id ? 'rotate(180deg)' : 'rotate(0deg)',
+                                }}
+                                fontSize="small"
+                              />
+                              <Typography variant="h6" sx={{ ml: 1, fontSize: '0.95rem' }}>Acciones</Typography>
                             </IconButton>
                           </TableCell>
-                          <TableCell>{item.coin_Id}</TableCell>
-                          <TableCell>{item.pers_Nombre}</TableCell>
-                          <TableCell>{item.pers_RTN}</TableCell>
-                          <TableCell>{item.formaRepresentacionDesc}</TableCell>
+                          <TableCell>
+                            <Typography variant="body1">{item.coin_Id}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">{item.pers_Nombre}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">{item.pers_RTN}</Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body1">{item.formaRepresentacionDesc}</Typography>
+                          </TableCell>
                         </TableRow>
                       ))}
                       {emptyRows > 0 && (
@@ -245,16 +293,48 @@ const ComercianteIndividualList = () => {
                 </TableContainer>
 
                 <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
                   component="div"
                   count={filteredData.length}
-                  rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   ActionsComponent={TablePaginationActions}
+                  sx={{
+                    backgroundColor: '#fff',
+                    color: '#333',
+                    borderTop: '1px solid #e0e0e0',
+                    fontSize: '0.85rem',
+                    '& .MuiTablePagination-toolbar': {
+                      padding: '8px 16px',
+                      minHeight: '48px',
+                    },
+                    '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                      color: '#666',
+                      fontSize: '0.8rem',
+                      mb: '0'
+                    },
+                    '& .MuiTablePagination-actions': {
+                      '& button': {
+                        color: '#666',
+                        '&:hover': {
+                          backgroundColor: '#f5f5f5',
+                        },
+                      },
+                    },
+                    '& .MuiInputBase-root': {
+                      fontSize: '0.8rem',
+                      borderRadius: '6px',
+                      backgroundColor: '#f9f9f9',
+                      padding: '2px 6px',
+                    },
+                    '& .MuiSelect-icon': {
+                      color: '#888',
+                    }
+                  }}
+                  labelRowsPerPage="Filas por página"
                 />
-              </>
+              </Paper>
             )}
 
             {/* Menú de opciones */}
@@ -265,15 +345,9 @@ const ComercianteIndividualList = () => {
             >
               <MenuItem onClick={handleEditar}>
                 <ListItemIcon>
-                  <EditIcon fontSize="small" />
+                  <EditIcon fontSize="small" style={{ color: 'rgb(255 161 53)', fontSize: '18px' }} />
                 </ListItemIcon>
                 <ListItemText>Editar</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleEliminar}>
-                <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Eliminar</ListItemText>
               </MenuItem>
             </Menu>
 
@@ -307,8 +381,11 @@ const ComercianteIndividualList = () => {
               open={openSnackbar}
               autoHideDuration={3000}
               onClose={() => setOpenSnackbar(false)}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              <Alert severity={alertConfig.severity}>{alertConfig.message}</Alert>
+              <Alert severity={alertConfig.severity} sx={{ width: '100%' }} onClose={() => setOpenSnackbar(false)}>
+                {alertConfig.message}
+              </Alert>
             </Snackbar>
           </>
         )}
