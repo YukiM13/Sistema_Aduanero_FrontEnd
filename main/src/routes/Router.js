@@ -90,7 +90,10 @@ const RadialbarChart = Loadable(lazy(() => import('../views/charts/RadialbarChar
 
 
 // Aduana
+
 const DeclaracionValor = Loadable(lazy(() => import('../components/aduanas/declaracion-valor/declaracion-valor-impresion')));
+const CostosMaterialesNoBrindados = Loadable(lazy(() => import('../components/aduanas/CostosMaterialesNoBrindados/CostosMaterialesNoBrindados-pdf')));
+
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalForm')));
 const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
@@ -103,14 +106,14 @@ const TipoIntermediario = Loadable(lazy(() => import('../components/aduanas/tipo
 const ModoTransporte = Loadable(lazy(() => import('../components/aduanas/modoTransporte/ModoTransporte')));
 const TiposIdentificacion = Loadable(lazy(() => import('../components/aduanas/tiposIdentificacion/TiposIdentificacion')));
 const DevasPendientes = Loadable(lazy(() => import('../components/aduanas/devaspendientes/devaspendientes')));
-
+const PlanificacionPO = Loadable(lazy(() => import('../components/aduanas/PlanificacionPO/PlanificacionPO-pdf')));
 
 
 const Duca =  Loadable(lazy(() => import('../components/aduanas/duca/DucaContenedor')));
 const DucasList =  Loadable(lazy(() => import('../components/aduanas/duca/DucaList')));
 const DeclaracionDeValor =  Loadable(lazy(() => import('../components/aduanas/declaraciondevalor/DevaContenedor')));
 const ComercianteIndividualCreate = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualCreate')));
-
+const ComercianteIndividualList = Loadable(lazy(() => import('../components/aduanas/comercianteindividual/ComercianteIndividualList')));
 // General
 const Pais = Loadable(lazy(() => import('../components/general/paises/PaisesList')));
 const Provincia = Loadable(lazy(() => import('../components/general/provincias/ProvinciasList')));
@@ -151,9 +154,17 @@ const OrdenCompraList =  Loadable(lazy(() => import('../components/produccion/or
 const OrdenCompraCrear = Loadable(lazy(() => import('../components/produccion/ordenCompra/OrdenCompraCrear')));
 const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleList')));
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
+const ReporteInventario = Loadable(lazy(() => import('../components/produccion/Inventario/ReporteInventario')));
 const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
+const ImportacionesReporte = Loadable(lazy(() => import('../components/reportes/ImportacionesReporte')));
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
+const PedidoOrdenDetalleList = Loadable(lazy(() => import('../components/produccion/pedidoOrdenDetalle/PedidoOrdenDetalleList')));
+const MaterialesIngreso = Loadable(lazy(() => import('../components/produccion/materialesingresopdf/materialesingresopdf')));
+const ProduccionAreas = Loadable(lazy(() => import('../components/produccion/ProduccionAreas/ProduccionAreas')));
+const TiemposMaquinas = Loadable(lazy(() => import('../components/produccion/TiemposMaquinas/TiemposMaquinas')))
+const ProduccionPorModulo = Loadable(lazy(() => import('../components/produccion/ProduccionPorModulos/ProduccionPorModulos')))
+const ReporteModuloDia = Loadable(lazy(() => import('../components/produccion/ReporteModuloDiaDetalle/ReporteModuloDiaDetalle')));
 const PedidoCliente = Loadable(lazy(() => import('../components/aduanas/pedidos-cliente/PedidosCliente')));
 
 // ui
@@ -189,7 +200,7 @@ const Landingpage = Loadable(lazy(() => import('../views/pages/landingpage/Landi
 
 // Reportes
 const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/reportes/ConsumoMaterialesReportes')));
-
+const ReporteContratosAdhesion = Loadable(lazy(() => import('../components/reportes/Contratos_Adhesion')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -199,7 +210,6 @@ const esAdmin = parsedData ? parsedData.usua_EsAdmin : false;
 
 const todasLasRutas = [
   { path: '/dashboards/modern', element: <ModernDash/> },
-
   { path: '/usuarios/list', element: <Usuarios/>, pantalla:'Usuarios' },
   { path: '/roles/list', element: <Roles/>, pantalla:'Roles' },
   { path: '/aldeas/list', element: <Aldea/>, pantalla:'Aldea'  },
@@ -220,6 +230,7 @@ const todasLasRutas = [
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
   { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+  { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
   { path: '/comercianteindividual/create', element: <ComercianteIndividualCreate/>, pantalla:'Comerciante Individual' },
@@ -238,10 +249,21 @@ const todasLasRutas = [
   { path: '/ducas/list', element: <DucasList/>, pantalla:'Ducas' },
   { path: '/declaracion-de-valor', element: <DeclaracionDeValor/>, pantalla:'Declaracion de Valor' },
   { path: '/duca', element: <Duca/>, pantalla:'Impresion Duca' },
-  { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  {path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Devas Pendientes'},
+  {path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual List'},
+  {path: '/reportes/inventario', element: <ReporteInventario/>, pantalla:'Reporte de Inventario' },
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
+  { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
+  { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
+  { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
+  { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
+  { path: '/TiemposMaquinas', element: <TiemposMaquinas/>, pantalla:'I. Tiempos Maquinas'},
+  { path: '/ProduccionPorModulo', element: <ProduccionPorModulo/>, pantalla:'I. Produccion Por Modulo'},
+  { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'I. Reporte Modulo Dia Detalle'},
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+  { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
+  { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
 ]
 
@@ -255,7 +277,7 @@ const Router = [
     element: <FullLayout />,
     children: [
       { path: '/', element: <Navigate to="/dashboards/modern" /> },
-        { path: '/user-profile', element: <UserProfile /> },
+      { path: '/user-profile', element: <UserProfile /> },
       ...rutasFiltradas.map((ruta) => ({
         ...ruta,
         element: <PrivateRoute>{ruta.element}</PrivateRoute>,
@@ -267,7 +289,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '/auth/404', element: <Error /> },
-        { path: '/user-profile', element: <UserProfile /> },
+      { path: '/user-profile', element: <UserProfile /> },
       { path: '/auth/login', element: <Login /> },
       { path: '/auth/forgot-password', element: <ForgotPassword /> },
       { path: '/auth/two-steps', element: <TwoSteps /> },

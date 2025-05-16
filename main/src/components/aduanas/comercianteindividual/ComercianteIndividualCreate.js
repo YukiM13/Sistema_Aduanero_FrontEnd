@@ -1943,7 +1943,7 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
    <Button
   onClick={() => {
     setOpenDialog(false);
-    navigate('/dashboards/modern');
+    navigate('/comercianteindividual/list');
   }}
   color="secondary"
   variant="outlined"
@@ -1984,10 +1984,6 @@ helperText={formik.touched.coin_coloniaIdRepresentante && formik.errors.coin_col
     </Button>
   </DialogActions>
 </Dialog>
-
-
-
-
     </div>
   );
 };

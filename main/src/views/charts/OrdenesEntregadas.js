@@ -203,12 +203,12 @@ const OrdenesCharts = () => {
         </Grid>
         <Grid item lg={4} md={12} xs={12}>
           <ParentCard title='Ordenes entregadas - Mensual'>
-            <Chart options={mensualPieChart(anualData.labels)} series={mensualData.series} type="pie" height="300px" />
+            <Chart options={mensualPieChart(mensualData.labels)} series={mensualData.series} type="pie" height="300px" />
           </ParentCard>
         </Grid>
         <Grid item lg={4} md={12} xs={12}>
           <ParentCard title='Ordenes entregadas - Semanal'>
-            <Chart options={semanalPieChart(anualData.labels)} series={semanalData.series} type="pie" height="300px" />
+            <Chart options={semanalPieChart(semanalData.labels)} series={semanalData.series} type="pie" height="300px" />
           </ParentCard>
         </Grid>
       </Grid>

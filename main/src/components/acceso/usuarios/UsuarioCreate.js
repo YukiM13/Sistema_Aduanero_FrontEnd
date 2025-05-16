@@ -93,11 +93,11 @@ const UsuariosCreateComponent = ({ onCancelar, onGuardadoExitoso }) => {
             usua_Nombre: '',
             usua_Contrasenia: '',
             empl_Id: '',
-            usua_esAduana: true, // Siempre se envía como true
+            usua_esAduana: true, 
             usua_Image: null,
             role_Id: '',
-            usua_EsAdmin: false, // Puedes ajustar el valor inicial si es necesario
-            usua_UsuarioCreacion: 1, // O el ID del usuario logueado
+            usua_EsAdmin: false, 
+            usua_UsuarioCreacion: 1, 
             usua_FechaCreacion: new Date(),
         },
         validationSchema,
