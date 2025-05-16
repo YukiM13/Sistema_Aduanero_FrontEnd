@@ -12,6 +12,8 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
   const [ciudades, setCiudades] = useState([]);
   const [personas, setPersonas] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [mensajeSnackbar, setMensajeSnackbar] = useState('');
+  const [severitySnackbar, setSeveritySnackbar] = useState('success');
   const [archivos, setArchivos] = useState({
     ArchivoRTN: null,
     ArchivoDNI: null,
@@ -47,34 +49,53 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       pena_NombreArchRecibo: persona.pena_NombreArchRecibo || '',
     },
     enableReinitialize: true,
-    onSubmit: (values) => {
-      // Para depuración, muestra el objeto que se enviará
-      console.log('Valores enviados al endpoint:', values);
-
-      axios.post(`${apiUrl}/api/PersonaNatural/Editar`, values, {
-        headers: {
-          'XApiKey': apiKey,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(() => {
-          if (onGuardadoExitoso) onGuardadoExitoso();
-        })
-        .catch((err) => {
-          setOpenSnackbar(true);
-          // Mostrar el error del backend en consola y en el frontend
-          if (err.response && err.response.data) {
-            console.error('Error al llamar endpoint:', err.response.data);
-            alert(
-              typeof err.response.data === 'string'
-                ? err.response.data
-                : JSON.stringify(err.response.data)
-            );
-          } else {
-            console.error('Error al llamar endpoint:', err);
-            alert('Error al llamar endpoint: ' + err.message);
+    onSubmit: async (values) => {
+      try {
+        const formDataToSend = new FormData();
+        Object.keys(values).forEach((key) => {
+          if (values[key] !== undefined && values[key] !== null) {
+            if ((key === 'ArchivoRTN' || key === 'ArchivoDNI' || key === 'ArchivoNumeroRecibo') && archivos[key]) {
+              formDataToSend.append(key, archivos[key]);
+              if (key === 'ArchivoRTN') {
+                formDataToSend.append('pena_NombreArchRTN', archivos[key].name);
+              } else if (key === 'ArchivoDNI') {
+                formDataToSend.append('pena_NombreArchDNI', archivos[key].name);
+              } else if (key === 'ArchivoNumeroRecibo') {
+                formDataToSend.append('pena_NombreArchRecibo', archivos[key].name);
+              }
+            } else {
+              formDataToSend.append(key, values[key]);
+            }
           }
         });
+        formDataToSend.append('pena_FechaModificacion', new Date().toISOString());
+        formDataToSend.append('usua_UsuarioModificacion', 1);
+
+        // Usa axios.post y verifica la URL y los headers
+        await axios.post(`${apiUrl}/api/PersonaNatural/Editar`, formDataToSend, {
+          headers: {    
+            'XApiKey': apiKey,
+            // No pongas Content-Type, axios lo pone automáticamente para FormData
+          }
+        });
+
+        setMensajeSnackbar('Persona editada con éxito');
+        setSeveritySnackbar('success');
+        setOpenSnackbar(true);
+
+        setTimeout(() => {
+          if (onGuardadoExitoso) {
+            onGuardadoExitoso();
+          }
+        }, 1500);
+
+      } catch (error) {
+        setMensajeSnackbar('Error al editar la persona');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        // Para depuración, muestra el error en consola
+        console.error('Error al llamar endpoint:', error);
+      }
     },
   });
 
@@ -374,6 +395,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
         onClose={() => setOpenSnackbar(false)}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
+        <Alert onClose={() => setOpenSnackbar(false)} severity={severitySnackbar}>
+          {mensajeSnackbar}
+        </Alert>
       </Snackbar>
     </div>
   );
