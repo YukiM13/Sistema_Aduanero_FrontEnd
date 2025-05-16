@@ -16,6 +16,10 @@ const validationSchema = yup.object({
   ofic_Nombre: yup.string().required('El nombre es requerido')
 });
 
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
+
 const OficinasCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -25,7 +29,7 @@ const OficinasCreate = ({ onCancelar, onGuardadoExitoso }) => {
     validationSchema,
     onSubmit: (values) => {
       values.ofic_FechaCreacion = new Date().toISOString();
-      values.usua_UsuarioCreacion = 1; // ID del usuario actual
+      values.usua_UsuarioCreacion = user; // ID del usuario actual
       
       axios.post(`${apiUrl}/api/Oficinas/Insertar`, values, {
         headers: { 'XApiKey': apiKey }

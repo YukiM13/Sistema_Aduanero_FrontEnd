@@ -58,7 +58,9 @@ const [selectedPaisDestino, setSelectedPaisDestino] = useState(null);
 const [initialValues, setInitialValues] = useState(Duca);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+ const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   
   const listarpaises = () => {
     axios.get(`${apiUrl}/api/Paises/Listar?pais_EsAduana=true`, {
@@ -221,7 +223,7 @@ useEffect(() => {
            console.log('localstorage de edit', edit);
             if(edit === 'true') {
               console.log('entro al edit');
-              values.usua_UsuarioModificacion = 1;
+              values.usua_UsuarioModificacion = user;
               values.duca_FechaModificacion = new Date().toISOString();
 
                 const response = await axios.post(`${apiUrl}/api/Duca/EditarPart2`, values, {
@@ -248,7 +250,7 @@ useEffect(() => {
             }
             else{
               console.log('entro al insert');
-              values.usua_UsuarioCreacion = 1;
+              values.usua_UsuarioCreacion = user;
               const response = await axios.post(`${apiUrl}/api/Duca/InsertPart2`, values, {
                 headers: { 'XApiKey': apiKey },
                 'Content-Type': 'application/json'

@@ -49,7 +49,9 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
 const [selectedPais, setSelectedPais] = useState(null);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const listarEstadoCiviles = () => {
       axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, {
         headers: {
@@ -121,7 +123,7 @@ const listarProvinciasPorPais = (paisId) => {
         initialValues: empleado,
         validationSchema,
         onSubmit: (values) => {
-          values.usua_UsuarioModificacion = 1;
+          values.usua_UsuarioModificacion = user;
           values.empl_FechaModificacion = new Date().toISOString();
       
           console.log("Valores antes de enviar:", values);

@@ -7,7 +7,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import ReceiptIcon from '@mui/icons-material/Receipt';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const PersonaNaturalDetailsComponent = ({ persona, onCancelar }) => {
   return (
     <div>
@@ -236,14 +236,14 @@ const PersonaNaturalDetailsComponent = ({ persona, onCancelar }) => {
       
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
         <Grid item>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={onCancelar}
-            startIcon={<ArrowBackIcon />}
-          >
-            Regresar
-          </Button>
+         <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
         </Grid>
       </Grid>
     </div>
