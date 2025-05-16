@@ -327,17 +327,7 @@ export const generarMenu = async () => {
       });
     }
     
-     if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
-// Planificacion PO pendiente
-      aduana.children.push({
-        id: uniqueId(),
-        title: 'Planificacion PO',
-        icon: IconPoint,
-        href: '/PlanificacionPO',
-        chipColor: 'secondary',
-      });
-          }
-  // Planificacion PO pendiente
+   
 
     if (esAdmin || nombresDePantalla.includes('Concepto de Pago')) {
       aduana.children.push({
@@ -363,7 +353,7 @@ export const generarMenu = async () => {
         id: uniqueId(),
         title: 'Comerciante Individual',
         icon: IconPoint,
-        href: '/comercianteindividual/create',
+        href: '/comercianteindividual/list',
       });
     }
     
@@ -524,16 +514,6 @@ export const generarMenu = async () => {
       children: []
     };
 
-    if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
-      impresion.children.push({
-        id: uniqueId(),
-        title: 'I. Declaracion de Valor',
-        icon: IconPoint,
-        href: '/declaracionValor/list',
-        chipColor: 'secondary',
-      });
-    }
-
     if (esAdmin || nombresDePantalla.includes('Impresion Duca')) {
       impresion.children.push({
         id: uniqueId(),
@@ -543,7 +523,29 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+//deb 
+  if (esAdmin || nombresDePantalla.includes('Impresion Declaracion de Valor')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'II. Declaracion de Valor',
+        icon: IconPoint,
+        href: '/declaracionValor/list',
+        chipColor: 'secondary',
+      });
+    }
 
+  if (esAdmin || nombresDePantalla.includes('planificacion PO')) {
+
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'III.Planificacion PO',
+        icon: IconPoint,
+        href: '/PlanificacionPO',
+        chipColor: 'secondary',
+      });
+          }
+  
+ 
     if (esAdmin || nombresDePantalla.includes('Impresion Devas Pendientes')) {
       impresion.children.push({
         id: uniqueId(),
@@ -557,12 +559,13 @@ export const generarMenu = async () => {
     if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
       impresion.children.push({
         id: uniqueId(),
-        title: 'III. Costos Materiales No Brindados',
+        title: 'IV. Materiales No Brindados',
         icon: IconPoint,
         href: '/CostosMaterialesNoBrindados',
         chipColor: 'secondary',
       });
     }
+//deb
 
     if (esAdmin || nombresDePantalla.includes('I. Materiales Ingresos')) {
       impresion.children.push({
@@ -630,6 +633,7 @@ export const generarMenu = async () => {
     });
   }
   //deb
+
 
   if (esAdmin || nombresDePantalla.includes('Ducas')) {
     Menuitems.push({
