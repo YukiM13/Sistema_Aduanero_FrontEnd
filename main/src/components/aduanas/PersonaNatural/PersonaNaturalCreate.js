@@ -33,7 +33,7 @@ const validationSchema = yup.object({
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   '& .MuiTabs-indicator': {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main,  
     height: 3,
   },
 }));

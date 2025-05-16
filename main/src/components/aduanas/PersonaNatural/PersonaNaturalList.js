@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonaNaturalModel from '../../../models/PersonaNaturalModel';
 import PersonaNaturalCreateComponent from './PersonaNaturalCreate';
-// import PersonaNaturalEditComponent from './PersonaNaturalEdit';
+import PersonaNaturalEditComponent from './PersonaNaturalEdit';
 // import PersonaNaturalDetailsComponent from './PersonaNaturalDetails';
 
 const PersonaNaturalList = () => {
@@ -169,7 +169,7 @@ const PersonaNaturalList = () => {
             }}
           />
         )}
-        {/* 
+        
         {modo === 'editar' && (
           <PersonaNaturalEditComponent
             persona={personaSeleccionada}
@@ -182,6 +182,8 @@ const PersonaNaturalList = () => {
             }}
           />
         )}
+        
+        {/* 
         {modo === 'detalle' && (
           <PersonaNaturalDetailsComponent
             persona={personaSeleccionada}
