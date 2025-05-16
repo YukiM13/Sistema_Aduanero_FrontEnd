@@ -12,6 +12,10 @@ import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CategoriaModel from 'src/models/categoriamodel';
 
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
+
 const validationSchema = yup.object({
   cate_Descripcion: yup.string().required('La descripción es requerida')
 });
@@ -25,7 +29,7 @@ const CategoriasCreate = ({ onCancelar, onGuardadoExitoso }) => {
     validationSchema,
     onSubmit: (values) => {
       values.cate_FechaCreacion = new Date().toISOString();
-      values.usua_UsuarioCreacion = 1; // ID del usuario actual
+      values.usua_UsuarioCreacion = user; // ID del usuario actual
       
       axios.post(`${apiUrl}/api/Categoria/Insertar`, values, {
         headers: { 'XApiKey': apiKey }

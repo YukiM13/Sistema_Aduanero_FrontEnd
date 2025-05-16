@@ -25,6 +25,11 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { Snackbar, Alert } from '@mui/material';
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
+import StyledButton from 'src/components/shared/StyledButton';
+
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
 
 const OficinasComponent = () => {
   const [oficinas, setOficinas] = useState([]);
@@ -37,6 +42,7 @@ const OficinasComponent = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
+  const [iconRotated, setIconRotated] = useState(false);
   const [alertConfig, setAlertConfig] = useState({
     severity: '',
     message: '',
@@ -75,15 +81,16 @@ const OficinasComponent = () => {
     setConfirmarEliminacion(true);
     cerrarMenu();
   }
-
   function abrirMenu(evento, oficina) {
     setPosicionMenu(evento.currentTarget);
     setOficinaSeleccionada(oficina);
     setMenuAbierto(true);
+    setIconRotated(true); // Activar rotación
   }
 
   function cerrarMenu() {
     setMenuAbierto(false);
+    setIconRotated(false); // Detener rotación
   }
 
   const cargarOficinas = () => {
@@ -103,7 +110,7 @@ const OficinasComponent = () => {
   const eliminar = (oficina) => {
     const oficinaEliminar = {...OficinaModel};
     oficinaEliminar.ofic_Id = oficina.ofic_Id;
-    oficinaEliminar.usua_UsuarioEliminacion = 1; // ID real del usuario
+    oficinaEliminar.usua_UsuarioEliminacion = user; // ID real del usuario
     oficinaEliminar.ofic_FechaEliminacion = new Date().toISOString();
   
     axios.post(`${apiUrl}/api/Oficinas/Eliminar`, oficinaEliminar, {
@@ -141,15 +148,12 @@ const OficinasComponent = () => {
       <Breadcrumb title="Oficinas" subtitle="Listar" />
       <ParentCard>
         {modo === 'listar' && (
-          <container>
-            <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button 
-                variant="contained" 
-                onClick={() => setModo('crear')} 
-                startIcon={<AddIcon style={{ fontSize: '18px' }} />}
-              >
-                Nuevo
-              </Button>
+          <container>            <Stack direction="row" justifyContent="flex-start" mb={2}>
+              <StyledButton  
+                sx={{}} 
+                title="Nuevo"
+                event={() => setModo('crear')}>
+              </StyledButton>
             </Stack>
             <Paper variant="outlined">
               <TextField 
@@ -166,18 +170,17 @@ const OficinasComponent = () => {
                     </InputAdornment>
                   ),
                 }}
-              />
-              <TableContainer component={Paper}>
-                <Table>
+              />              <TableContainer component={Paper}>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">ID</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Nombre</Typography>
                       </TableCell>
                     </TableRow>
@@ -185,18 +188,40 @@ const OficinasComponent = () => {
                   <TableBody>
                     {filteredData
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((oficina) => (
-                        <TableRow key={oficina.ofic_Id}>
+                      .map((oficina, index) => (
+                        <TableRow 
+                          key={oficina.ofic_Id}
+                          sx={{
+                            backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                            '&:hover': { backgroundColor: '#e3f2fd' },
+                          }}
+                        >
                           <TableCell align="center">
                             <IconButton
                               size="small"
                               onClick={(e) => abrirMenu(e, oficina)}
+                              sx={{
+                                backgroundColor: '#d9e7ef',
+                                color: 'rgb(0, 83, 121)',
+                                '&:hover': {
+                                  backgroundColor: 'rgb(157, 191, 207)',
+                                },
+                                border: '2px solid rgb(0, 83, 121)',
+                                borderRadius: '8px',
+                                padding: '6px'
+                              }}
                             >
-                              <SettingsIcon style={{ color: '#2196F3', fontSize: '18px' }} />
+                              <SettingsIcon 
+                                sx={{
+                                  transition: 'transform 0.3s ease-in-out',
+                                  transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',
+                                }}
+                                fontSize="small" 
+                              />
                             </IconButton>
                           </TableCell>
-                          <TableCell>{oficina.ofic_Id}</TableCell>
-                          <TableCell>{oficina.ofic_Nombre}</TableCell>
+                          <TableCell><Typography variant="body1">{oficina.ofic_Id}</Typography></TableCell>
+                          <TableCell><Typography variant="body1">{oficina.ofic_Nombre}</Typography></TableCell>
                         </TableRow>
                       ))}
                     {emptyRows > 0 && (
@@ -206,8 +231,7 @@ const OficinasComponent = () => {
                     )}
                   </TableBody>
                 </Table>
-              </TableContainer>
-              <TablePagination 
+              </TableContainer>              <TablePagination 
                 component="div" 
                 count={filteredData.length} 
                 page={page} 
@@ -215,7 +239,39 @@ const OficinasComponent = () => {
                 rowsPerPage={rowsPerPage} 
                 onRowsPerPageChange={handleChangeRowsPerPage} 
                 ActionsComponent={TablePaginationActions} 
-                labelRowsPerPage="Filas por página" 
+                labelRowsPerPage="Filas por página"
+                sx={{
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  borderTop: '1px solid #e0e0e0',
+                  fontSize: '0.85rem',
+                  '& .MuiTablePagination-toolbar': {
+                    padding: '8px 16px',
+                    minHeight: '48px',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    mb: '0'
+                  },
+                  '& .MuiTablePagination-actions': {
+                    '& button': {
+                      color: '#666',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    },
+                  },
+                  '& .MuiInputBase-root': {
+                    fontSize: '0.8rem',
+                    borderRadius: '6px',
+                    backgroundColor: '#f9f9f9',
+                    padding: '2px 6px',
+                  },
+                  '& .MuiSelect-icon': {
+                    color: '#888',
+                  }
+                }}
               />
             </Paper>
           </container>
