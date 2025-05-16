@@ -153,6 +153,7 @@ const OrdenCompraDetalleList =  Loadable(lazy(() => import('../components/produc
 const OrdenCompraDetalleCrear = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleCreate')));
 const ReporteInventario = Loadable(lazy(() => import('../components/produccion/Inventario/ReporteInventario')));
 const OrdenCompraDetalleEditar = Loadable(lazy(() => import('../components/produccion/ordenCompraDetalle/OrdenCompraDetalleEdit')));
+const ImportacionesReporte = Loadable(lazy(() => import('../components/reportes/ImportacionesReporte')));
 
 const PedidoOrdenList =  Loadable(lazy(() => import('../components/produccion/pedidoOrden/PedidoOrdenList')));
 const PedidoCliente = Loadable(lazy(() => import('../components/aduanas/pedidos-cliente/PedidosCliente')));
@@ -246,6 +247,7 @@ const todasLasRutas = [
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+  { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
 ]
 
