@@ -38,6 +38,7 @@ const Modern = () => {
           <ImportacionesContadores />
         </Grid>
         {/* column */}
+
         <Grid item xs={12} lg={8}>
           <RevenueUpdates />
         </Grid>
@@ -57,6 +58,7 @@ const Modern = () => {
           </Grid>
         </Grid>
         {/* column */}
+
         <Grid item xs={12} lg={6}>
           <OrcoMensual />
         </Grid>
@@ -64,7 +66,7 @@ const Modern = () => {
           <OrcoSemanal />
         </Grid>
          <Grid item xs={12} lg={12}>
-          <OrcoPorEstadi />
+          <ClientesProductivosChart />
         </Grid>
          <Grid item xs={12} lg={6}>
           <ImportacionesSemana />
@@ -77,30 +79,15 @@ const Modern = () => {
         </Grid>
         
         {/* column */}
-        <Grid item xs={12} lg={4}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Customers />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Projects />
-            </Grid>
+        <Grid item xs={12} lg={6}>
+            
             <Grid item xs={12}>
-              <Social />
+              <OrcoPorEstadi />
             </Grid>
-          </Grid>
-        </Grid>
-        {/* column */}
-        <Grid item xs={12} lg={4}>
-          <SellingProducts />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
           <PaisesMasExportadores />
-        </Grid>
-        {/* column */}
-        <Grid item xs={12} lg={8}>
-          <ClientesProductivosChart />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
@@ -115,9 +102,6 @@ const Modern = () => {
         {/* column */}
         <Grid item xs={12} lg={4}>
           <PrendasPedidasChart />
-        </Grid>
-        <Grid item xs={12} lg={8}>
-          <TopPerformers />
         </Grid>
         <Grid item xs={12} lg={23}>
           <OrdenesCharts />

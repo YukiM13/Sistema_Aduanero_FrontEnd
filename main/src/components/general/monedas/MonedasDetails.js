@@ -1,5 +1,6 @@
 
 import React from 'react';
+import StyledButton from 'src/components/shared/StyledButton';
 import {
     Grid,  Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper,Button
@@ -52,10 +53,14 @@ const MonedasDetailsComponent = ({moneda, onCancelar }) => { //esto es lo que ma
                   </TableContainer>
                     <Grid container justifyContent="flex-end" spacing={2} mt={2}>
                         <Grid item>
-                            <Button variant="contained" color="secondary" onClick={onCancelar}
-                            startIcon={<ArrowBackIcon />}>
-                                Regresar
-                            </Button>
+                            <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
                         </Grid>
                     </Grid>
       

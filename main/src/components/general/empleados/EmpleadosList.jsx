@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../shared/ParentCard';
-
+import StyledButton from 'src/components/shared/StyledButton';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -40,6 +40,8 @@ const EmpleadosComponent = () => {
       severity: '',
       message: '',
     });
+    const [iconRotated, setIconRotated] = useState(false);
+
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
     const mostrarAlerta = (tipo) => {
@@ -77,10 +79,12 @@ const EmpleadosComponent = () => {
         setEmpleadoSeleccionado(empleado);
         //con setMenuAbierto(); definimos si el menu esta abierto
         setMenuAbierto(true);
+         setIconRotated(true);
       }
 
       function cerrarMenu() {
         setMenuAbierto(false);
+        setIconRotated(false);
       }
     const cargarEmpleados = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
 
@@ -160,10 +164,13 @@ const EmpleadosComponent = () => {
          {modo === 'listar' && ( //esta linea muestra el listar osea la tabla
             <container>
               <Stack direction="row" justifyContent="flex-start" mb={2}>
-                  <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-                    {'Nuevo'}
-                  </Button>
+                  <StyledButton  
+                    sx={{}} 
+                    title="Nuevo"
+                    event={() => setModo('crear')}>
+                  </StyledButton>
               </Stack>
+
                 <Paper variant="outlined">
                   <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     InputProps={{
@@ -175,41 +182,41 @@ const EmpleadosComponent = () => {
                     }}/>
         <TableContainer component={Paper}>
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">
+            <TableHead >
+              <TableRow >
+                <TableCell   sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold', align:'center' }}>
                  <Typography variant="h6">Acciones</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">DNI</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Nombre</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Correo</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Sexo</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Fecha Nacimiento</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>  
                   <Typography variant="h6">Telefono</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Cargo</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Direccion</Typography>
 
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Estado Civil</Typography>
 
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Estado</Typography>
                 </TableCell>
               </TableRow>
@@ -221,23 +228,36 @@ const EmpleadosComponent = () => {
                   <TableRow key={empleado.empl_Id}>
                     <TableCell align="center">
 
-                    <IconButton
+                   <IconButton
                       size="small"
-                      // se abre el menu y se selecciona la data de la fila
                       onClick={(e) => abrirMenu(e, empleado)}
+                      sx={{
+                        backgroundColor: '#d9e7ef', // Fondo celeste claro
+                        color: 'rgb(0, 83, 121)',           // Color del icono
+                        '&:hover': {
+                          backgroundColor: 'rgb(157, 191, 207)',
+                        },
+                        border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                        borderRadius: '8px',         // Bordes redondeados
+                        padding: '6px'
+                      }}
                     >
-                    <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                    </IconButton>
+                      <SettingsIcon 
+                      sx={{transition: 'transform 0.3s ease-in-out',
+                        transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                      fontSize="small" />
+                      <Typography variante="h6">Acciones</Typography>
+                    </IconButton> 
                   </TableCell>
-                  <TableCell>{empleado.empl_DNI}</TableCell>
-                  <TableCell>{empleado.empl_NombreCompleto}</TableCell>
-                  <TableCell>{empleado.empl_CorreoElectronico}</TableCell>
-                  <TableCell>{empleado.empl_Sexo}</TableCell>
-                  <TableCell>{empleado.empl_FechaNacimiento}</TableCell>
-                  <TableCell>{empleado.empl_Telefono}</TableCell>
-                  <TableCell>{empleado.carg_Nombre}</TableCell>
-                  <TableCell>{empleado.empl_DireccionExacta}</TableCell>
-                  <TableCell>{empleado.escv_Nombre}</TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_DNI}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_NombreCompleto}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_CorreoElectronico}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_Sexo}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_FechaNacimiento}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_Telefono}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.carg_Nombre}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.empl_DireccionExacta}</Typography></TableCell>
+                  <TableCell><Typography variant="body1">{empleado.escv_Nombre}</Typography></TableCell>
                   <TableCell>
                     <Chip
                     label={empleado.empl_Estado ? 'Activo' : 'Inactivo'}

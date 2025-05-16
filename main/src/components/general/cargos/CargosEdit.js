@@ -8,7 +8,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import Cargos from '../../../models/cargosmodel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   carg_Nombre: yup.string().required('El nombre del cargo es requerido'),
 });
@@ -17,14 +17,16 @@ const CargosEditComponent = ({ cargo = Cargos, onCancelar, onGuardadoExitoso }) 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const formik = useFormik({
     initialValues: cargo,
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
       values.carg_FechaModificacion = new Date();
-      values.usua_UsuarioModificacion = 1;
+      values.usua_UsuarioModificacion = user;
       axios.post(`${apiUrl}/api/Cargos/Editar`, values, {
         headers: { 'XApiKey': apiKey },
       })
@@ -61,28 +63,28 @@ const CargosEditComponent = ({ cargo = Cargos, onCancelar, onGuardadoExitoso }) 
               helperText={formik.touched.carg_Nombre && formik.errors.carg_Nombre}
             />
           </Grid>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
         </Grid>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={onCancelar}
-              startIcon={<CancelIcon />}
-            >
-              Cancelar
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              type="submit"
-              startIcon={<SaveIcon />}
-            >
-              Guardar
-            </Button>
-          </Grid>
-        </Grid>
+        
       </form>
       <Snackbar
         open={openSnackbar}

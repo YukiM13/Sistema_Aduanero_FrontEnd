@@ -553,6 +553,26 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+
+     if (esAdmin || nombresDePantalla.includes('Reporte Inventario')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Inventario',
+        icon: IconPoint,
+        href: '/reportes/inventario',
+        chipColor: 'secondary',
+      });
+    }
+
+    if (esAdmin || nombresDePantalla.includes('Importaciones Reporte')) {
+      impresion.children.push({
+        id: uniqueId(),
+        title: 'Importaciones Reporte',
+        icon: IconPoint,
+        href: '/importaciones/reporte',
+        chipColor: 'secondary',
+      });
+    }
     
     if (esAdmin || nombresDePantalla.includes('Costos Materiales No Brindados')) {
       impresion.children.push({
@@ -623,6 +643,27 @@ export const generarMenu = async () => {
         chipColor: 'secondary',
       });
     }
+
+      if (esAdmin || nombresDePantalla.includes('Contratos Adhesión')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Contratos Adhesión',
+      icon: IconPoint,
+      href: '/reporteContratosAdhesion',
+      chipColor: 'secondary',
+    });
+  }
+
+
+  if (esAdmin || nombresDePantalla.includes('Seguimiento de Procesos por Orden Compra')) {
+    impresion.children.push({
+      id: uniqueId(),
+      title: 'Seguimiento de Procesos por Orden Compra',
+      icon: IconPoint,
+      href: '/reporteSeguimientoProcesos',
+      chipColor: 'secondary',
+    });
+  }
 
     if (impresion.children.length > 0) {
       Menuitems.push(impresion);

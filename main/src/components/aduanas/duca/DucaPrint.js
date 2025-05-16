@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { AlignHorizontalRight, Margin, PrintSharp } from "@mui/icons-material";
 import Box from "@mui/material/Box";
-
+import StyledButton from 'src/components/shared/StyledButton';
 import html2pdf from "html2pdf.js";
 
 import { storage } from '../../../layouts/config/firebaseConfig';
@@ -2104,10 +2104,14 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
         <Grid container justifyContent="flex-end" spacing={2} mt={2}>
                         <Grid item>
-                            <Button variant="contained" color="secondary" onClick={onCancelar}
-                            startIcon={<ArrowBackIcon />}>
-                                Regresar
-                            </Button>
+                           <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
                         </Grid>
                     </Grid>
 

@@ -71,10 +71,9 @@ const Sidebar = () => {
               boxSizing: 'border-box',
             },
           }}
-        >
-          <Box
+        >          <Box
             sx={{
-              backgroundColor: '#003859',
+              backgroundImage: 'linear-gradient(to bottom right, #034165 0%, #000000 100%)',
               color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
               height: '100%',
               borderRadius: '0px 20px 20px 0px',
@@ -98,14 +97,10 @@ const Sidebar = () => {
       anchor="left"
       open={customizer.isMobileSidebar}
       onClose={() => dispatch(toggleMobileSidebar())}
-      variant="temporary"
-      PaperProps={{
+      variant="temporary"      PaperProps={{
         sx: {
           width: customizer.SidebarWidth,
-          backgroundColor:
-            customizer.activeMode === 'dark'
-              ? customizer.darkBackground900
-              : customizer.activeSidebarBg,
+          backgroundImage: 'linear-gradient(to bottom right, #034165 0%, #000000 100%)',
           color: customizer.activeSidebarBg === '#ffffff' ? '' : 'white',
           border: '0 !important',
           boxShadow: (theme) => theme.shadows[8],

@@ -9,22 +9,26 @@ import ParentCard from '../../../components/shared/ParentCard';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import { Search } from '@mui/icons-material';
-import jsPDF from 'jspdf';
+import html2pdf from 'html2pdf.js';
+import { storage } from '../../../layouts/config/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import QRCode from 'qrcode';
 import { ReactComponent as LogoAzul } from 'src/assets/images/logos/LOGOAZUL.svg';
-import { ArrowBack as ArrowBackIcon, Download as DownloadIcon, Visibility as VisibilityIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, Download as DownloadIcon } from '@mui/icons-material';
 
 const ProduccionAreasPdf = () => {
     const [produccionData, setProduccionData] = useState(null);
     const [areasLista, setAreasLista] = useState([]);
-    const [pdfUrl, setPdfUrl] = useState(null);
-    const [pdfBlob, setPdfBlob] = useState(null);
     const contenidoRef = useRef();
-
+    
+    // Inicializar con la fecha actual
     const today = new Date();
-
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    
     const formik = useFormik({
         initialValues: {
-            fechaInicio: today.toISOString().substring(0, 10),
+            fechaInicio: monthAgo.toISOString().substring(0, 10),
             fechaFin: today.toISOString().substring(0, 10),
             tipa_Id: 0
         },
@@ -33,6 +37,7 @@ const ProduccionAreasPdf = () => {
         }
     });
 
+    // Cargar lista de áreas al iniciar el componente
     useEffect(() => {
         cargarAreas();
     }, []);
@@ -40,14 +45,14 @@ const ProduccionAreasPdf = () => {
     const cargarAreas = async () => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-
+        
         try {
             const response = await axios.get(`${apiUrl}/api/Areas/Listar`, {
                 headers: {
                     'XApiKey': apiKey
                 }
             });
-
+            
             if (response.data && response.data.data) {
                 setAreasLista(response.data.data);
             }
@@ -59,7 +64,7 @@ const ProduccionAreasPdf = () => {
     const buscarProduccionAreas = async (values) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         const apiKey = process.env.REACT_APP_API_KEY;
-
+        
         if (values.tipa_Id === 0) {
             alert('Por favor seleccione un área.');
             return;
@@ -71,50 +76,79 @@ const ProduccionAreasPdf = () => {
                     'XApiKey': apiKey
                 }
             });
-
+            
             if (response.data && response.data.data) {
                 setProduccionData(response.data.data);
-                setPdfUrl(null); // Limpiar previsualización previa
+                console.log('Datos de producción por áreas:', response.data.data);
             }
         } catch (error) {
             console.error('Error al buscar producción por áreas:', error);
         }
     };
 
-    // Genera el PDF y lo muestra en el visor
-    const previewPdf = async () => {
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-            compress: true,
-        });
-        await doc.html(contenidoRef.current, {
-            margin: [10, 10, 10, 10],
-            autoPaging: 'text',
-            html2canvas: {
+    const convertToPdf = async () => {
+        const opt = {
+            margin: 3,
+            filename: 'temporal.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
                 scale: 1.5,
                 useCORS: true,
+                letterRendering: true
             },
-            callback: function (doc) {
-                const blob = doc.output('blob');
-                const url = URL.createObjectURL(blob);
-                setPdfUrl(url);
-                setPdfBlob(blob);
-            },
-        });
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait',
+                compress: true
+            }
+        };
+
+        const nombreArchivo = `documentos/produccion-areas-${Date.now()}.pdf`;
+        const archivoRef = ref(storage, nombreArchivo);
+
+        // 1. Generar primer PDF (sin QR)
+        const pdfBlobSinQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+
+        // 2. Subir a Firebase
+        await uploadBytes(archivoRef, pdfBlobSinQR);
+
+        // 3. Obtener la URL del archivo subido
+        const urlDescarga = await getDownloadURL(archivoRef);
+
+        // 4. Generar el QR con esa URL
+        const qrDataUrl = await QRCode.toDataURL(urlDescarga);
+
+        // 5. Insertar el QR en el DOM
+        const qrContainer = document.getElementById("qr");
+        const img = document.createElement("img");
+        img.src = qrDataUrl;
+        img.width = 100;
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "contain";
+        qrContainer.innerHTML = '';
+        qrContainer.appendChild(img);
+
+        // 6. Generar el PDF nuevamente, ahora con el QR
+        const pdfBlobConQR = await html2pdf().from(contenidoRef.current).set(opt).outputPdf('blob');
+
+        // 7. Subir el nuevo PDF (sobrescribiendo el anterior)
+        await uploadBytes(archivoRef, pdfBlobConQR);
+        setTimeout(async () => {
+            const nuevaUrlDescarga = await getDownloadURL(archivoRef);
+            const printWindow = window.open(nuevaUrlDescarga, '_blank');
+            if (printWindow) {
+                printWindow.onload = () => {
+                    printWindow.print();
+                };
+            } else {
+                alert("Por favor permite las ventanas emergentes en tu navegador.");
+            }
+        }, 1000);
     };
 
-    // Descarga el PDF generado
-    const downloadPdf = () => {
-        if (pdfBlob) {
-            const link = document.createElement('a');
-            link.href = pdfUrl;
-            link.download = 'produccion-areas.pdf';
-            link.click();
-        }
-    };
-
+    // Parsear los detalles JSON si existen
     const obtenerDetalles = (jsonString) => {
         if (!jsonString) return [];
         try {
@@ -125,6 +159,7 @@ const ProduccionAreasPdf = () => {
         }
     };
 
+    // Obtener el nombre del área seleccionada
     const obtenerNombreArea = () => {
         const areaSeleccionada = areasLista.find(area => area.tipa_Id === formik.values.tipa_Id);
         return areaSeleccionada ? areaSeleccionada.tipa_area : 'Área';
@@ -177,13 +212,13 @@ const ProduccionAreasPdf = () => {
                                     onChange={formik.handleChange}
                                 />
                             </Grid>
-
-                            <Grid item style={{ marginTop: '5%' }}>
+                            
+                            <Grid item style={{ marginTop: '5%'}}>
                                 <Button
-                                    style={{ width: '300px', height: '40px' }}
+                                    style={{width:'300px', height:'40px'}}
                                     variant="outlined"
                                     type="submit"
-                                    startIcon={<Search style={{ fontSize: '18px' }} />}
+                                    startIcon={<Search style={{ fontSize: '18px' }}/>}
                                 >
                                     Buscar
                                 </Button>
@@ -197,113 +232,52 @@ const ProduccionAreasPdf = () => {
                         <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                             <Button
                                 variant="outlined"
-                                startIcon={<ArrowBackIcon style={{ fontSize: '18px' }} />}
+                                startIcon={<ArrowBackIcon style={{ fontSize: '18px' }}/>}
                                 onClick={() => window.history.back()}
                             >
                                 Volver
                             </Button>
                             <Button
                                 variant="contained"
-                                startIcon={<VisibilityIcon style={{ fontSize: '18px' }} />}
-                                onClick={previewPdf}
-                            >
-                                Previsualizar PDF
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<DownloadIcon style={{ fontSize: '18px' }} />}
-                                onClick={downloadPdf}
-                                disabled={!pdfUrl}
+                                startIcon={<DownloadIcon style={{ fontSize: '18px' }}/>}
+                                onClick={convertToPdf}
                             >
                                 Descargar PDF
                             </Button>
                         </Stack>
 
                         <ParentCard>
-                            <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}>
-                                Previsualización Reporte de Producción - Área: {obtenerNombreArea()}
-                            </h5>
-                            <div
-                                ref={contenidoRef}
-                                style={{
-                                    background: '#fff',
-                                    width: '794px', // A4 width at 96dpi
-                                    minHeight: '1123px', // A4 height at 96dpi
-                                    margin: '0 auto',
-                                    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-                                    padding: '32px',
-                                    fontSize: '10pt',
-                                    color: '#222',
-                                    position: 'relative',
-                                    overflow: 'hidden'
-                                }}
-                            >
-                                <p style={{ fontSize: '9pt', margin: '2px 0' }}>
-                                    Fecha y hora de impresión: {new Date().toLocaleString()}
-                                </p>
+                            <h5 style={{ textAlign: 'center', margin: '0 0 15px 0', fontSize: '18px' }}> Previsualización Reporte de Producción - Área: {obtenerNombreArea()} </h5>
+                            <div ref={contenidoRef} style={{ position: 'relative' }}>
+                                <p style={{ fontSize: '8pt', margin: '2px 0' }}>fecha y hora de impresión: {new Date().toLocaleString()} </p>
                                 <br />
-                                <table style={{
-                                    width: '100%',
-                                    tableLayout: 'fixed',
-                                    wordWrap: 'break-word',
-                                    fontSize: '9pt',
-                                    borderCollapse: 'collapse'
-                                }} border="1" cellPadding="2" cellSpacing="0">
-                                    <tbody>
-                                        <tr style={{ background: '#eeeeee' }}>
-                                            <th colSpan="9" style={{
-                                                background: '#1797be',
-                                                color: 'white',
-                                                textAlign: 'center',
-                                                fontSize: '13px',
-                                                border: "1px solid black"
-                                            }}>
-                                                REPORTE DE PRODUCCIÓN POR ÁREAS <br />
-                                                <span style={{ fontSize: '11px' }}>-- IMPRESA --</span>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <th style={{ background: '#f8f8f8' }}>Área:</th>
-                                            <td colSpan="3">{obtenerNombreArea()}</td>
-                                            <th style={{ background: '#f8f8f8' }}>Fecha Inicio:</th>
-                                            <td>{new Date(formik.values.fechaInicio).toLocaleDateString()}</td>
-                                            <th style={{ background: '#f8f8f8' }}>Fecha Fin:</th>
-                                            <td>{new Date(formik.values.fechaFin).toLocaleDateString()}</td>
-                                        </tr>
-                                        <tr style={{ background: '#eeeeee' }}>
-                                            <th colSpan="9" style={{
-                                                border: "1px solid black",
-                                                color: '#1797be',
-                                                textAlign: 'center',
-                                                fontSize: '12px'
-                                            }}>
-                                                RESUMEN DE PRODUCCIÓN
-                                            </th>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt' }} border="3" cellPadding="2" cellSpacing="0">
+                                    <tr bgcolor="#eeeeee">
+                                        <th colSpan="8" style={{ background: '#1797be', color: 'white', textAlign: 'center', fontSize: '14px', border: "1px solid black" }}>
+                                           REPORTE DE PRODUCCIÓN POR ÁREAS <br /> <span style={{ fontSize: '12px' }}>-- IMPRESA --</span>
+                                        </th>
+                                        <th rowSpan="2" id="qr" style={{ height: '100px', width: '100px', textAlign: 'center', backgroundColor: 'rgb(180 237 255)', border: "1px solid black", color: 'rgb(23, 151, 190)' }}>QR</th>
+                                    </tr>
+                                    <tr>
+                                        <th bgcolor="#f8f8f8">Área:</th>
+                                        <td colSpan="3">{obtenerNombreArea()}</td>
+                                        <th bgcolor="#f8f8f8">Fecha Inicio:</th>
+                                        <td>{new Date(formik.values.fechaInicio).toLocaleDateString()}</td>
+                                        <th bgcolor="#f8f8f8">Fecha Fin:</th>
+                                        <td>{new Date(formik.values.fechaFin).toLocaleDateString()}</td>
+                                    </tr>
 
+                                    <tr bgcolor="#eeeeee">
+                                        <th colSpan="9" style={{ border: "1px solid black", color: '#1797be', textAlign: 'center', fontSize: '14px' }}>RESUMEN DE PRODUCCIÓN</th>
+                                    </tr>
+                                </table>
+                                
                                 {produccionData.map((item, index) => (
-                                    <div key={index} style={{ pageBreakInside: 'avoid' }}>
-                                        <table style={{
-                                            width: '100%',
-                                            tableLayout: 'fixed',
-                                            wordWrap: 'break-word',
-                                            fontSize: '9pt',
-                                            marginTop: '10px',
-                                            borderCollapse: 'collapse'
-                                        }} border="1" cellPadding="2" cellSpacing="0">
+                                    <div key={index}>
+                                        <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
                                             <thead>
-                                                <tr style={{ background: '#eeeeee' }}>
-                                                    <th colSpan="2" style={{
-                                                        border: "1px solid black",
-                                                        background: '#1797be',
-                                                        color: 'white',
-                                                        textAlign: 'center'
-                                                    }}>
-                                                        Estadísticas de {item.tipa_area}
-                                                    </th>
+                                                <tr bgcolor="#eeeeee">
+                                                    <th colSpan="2" style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Estadísticas de {item.tipa_area}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -342,26 +316,12 @@ const ProduccionAreasPdf = () => {
                                             </tbody>
                                         </table>
 
-                                        <table style={{
-                                            width: '100%',
-                                            tableLayout: 'fixed',
-                                            wordWrap: 'break-word',
-                                            fontSize: '9pt',
-                                            marginTop: '10px',
-                                            borderCollapse: 'collapse'
-                                        }} border="1" cellPadding="2" cellSpacing="0">
+                                        <table style={{ width: '100%', tableLayout: 'fixed', wordWrap: 'break-word', fontSize: '7pt', marginTop: '10px' }} border="1" cellPadding="2" cellSpacing="0">
                                             <thead>
-                                                <tr style={{ background: '#eeeeee' }}>
-                                                    <th colSpan="7" style={{
-                                                        border: "1px solid black",
-                                                        background: '#1797be',
-                                                        color: 'white',
-                                                        textAlign: 'center'
-                                                    }}>
-                                                        Detalles de Producción
-                                                    </th>
+                                                <tr bgcolor="#eeeeee">
+                                                    <th colSpan="7" style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Detalles de Producción</th>
                                                 </tr>
-                                                <tr style={{ background: '#eeeeee' }}>
+                                                <tr bgcolor="#eeeeee">
                                                     <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Código Orden</th>
                                                     <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Fecha</th>
                                                     <th style={{ border: "1px solid black", background: '#1797be', color: 'white', textAlign: 'center' }}>Estilo</th>
@@ -388,43 +348,28 @@ const ProduccionAreasPdf = () => {
                                     </div>
                                 ))}
 
-                                {/* Marca de agua o logo */}
                                 <div
                                     style={{
                                         position: 'absolute',
                                         top: '50%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%) scale(2)',
+                                        transform: 'translate(-50%, -50%)',
                                         width: '100%',
                                         height: 'auto',
                                         opacity: 0.2,
                                         pointerEvents: 'none',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        justifyContent: 'center'
+                                        justifyContent: 'center',
+                                        transform: 'scale(2)'
                                     }}
                                 >
-                                    <LogoAzul style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                    <LogoAzul style={{maxWidth: '100%', maxHeight: '100%'}}/>
                                 </div>
                                 <div style={{ marginTop: '20px', fontSize: '9pt', textAlign: 'right' }}>
                                     <p><strong>Fecha de generación:</strong> {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
                                 </div>
                             </div>
                         </ParentCard>
-
-                        {/* Previsualizador PDF */}
-                        {pdfUrl && (
-                            <div style={{ marginTop: 32 }}>
-                                <h5 style={{ textAlign: 'center', marginBottom: 8 }}>Vista previa del PDF generado</h5>
-                                <iframe
-                                    src={pdfUrl}
-                                    title="Previsualización PDF"
-                                    width="100%"
-                                    height="600px"
-                                    style={{ border: '1px solid #ccc' }}
-                                />
-                            </div>
-                        )}
                     </Grid>
                 )}
             </Grid>

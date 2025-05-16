@@ -16,7 +16,9 @@ import {
 import PageContainer from 'src/components/container/PageContainer';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import VerifiedIcon from '@mui/icons-material/Verified';
-
+import CheckIcon from '@mui/icons-material/Check';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon   from '@mui/icons-material/ArrowBack'; 
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
 import CustomCheckbox from 'src/components/forms/theme-elements/CustomCheckbox';
 import CustomFormLabel from 'src/components/forms/theme-elements/CustomFormLabel';
@@ -29,7 +31,7 @@ import Logo from 'src/assets/images/logos/LOGO.svg';
 
 const steps = ['Información del importador', 'Informacion del proveedor e intermediario', 'Transacción'];
 
-const DeclaracionValor = () => {
+const DeclaracionValor = ({onCancelar, onGuardadoExitoso}) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const [openSnackbar, setOpenSnackbar] = React.useState(false); 
@@ -37,6 +39,11 @@ const DeclaracionValor = () => {
   const devaTab1Ref = React.useRef();
   const devaTab2Ref = React.useRef();
   const devaTab3Ref = React.useRef();
+
+  const localStorageData = localStorage.getItem('DataUsuario');
+  const parsedData = localStorageData ? JSON.parse(localStorageData) : null;
+     
+  const admin = parsedData ? parsedData.usua_EsAdmin : false;
 
 
   const isStepOptional = (step) => step === 1;
@@ -254,43 +261,49 @@ const DeclaracionValor = () => {
               );
             })}
           </Stepper>
-          {activeStep === steps.length ? (
-            <>
-              <Stack spacing={2} mt={3}>
-                <Alert severity='success' mt={2}>Todos los datos se han completado</Alert>
-
-                <Box textAlign="right">
-                  <Button onClick={handleReset} variant="contained" color="error">
-                    Reset
-                  </Button>
-                </Box>
-              </Stack>
-            </>
-          ) : (
-            <>
-              <Box>{handleSteps(activeStep)}</Box>
-
-              <Box display="flex" flexDirection="row" mt={3}>
+           {activeStep === steps.length ? (
+              <>
+                <Stack spacing={2} >
+                  <Alert severity='success' mt={2}>Declaración insertada exitosamente</Alert>
+  
+                  <Box textAlign="right">
+                    <Button onClick={handleReset} variant="contained" color="error">
+                      Regresar
+                    </Button>
+                  </Box>
+                </Stack>
+              </>
+            ) : (
+              <>
+                <Box>{handleSteps(activeStep)}</Box>
+  
+                <Box display="flex" justifyContent="space-between" mt={2}>
+                {admin && activeStep === 0 && (
                 <Button
                   color="inherit"
                   variant="contained"
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  sx={{ mr: 1 }}
+              
+                  onClick={ onCancelar }
+                  startIcon={<ArrowBackIcon />}
                 >
-                  Back
+                  Cancelar 
+                 
                 </Button>
-                <Box flex="1 1 auto" />
-                
+                )}
+
                 <Button
                   onClick={handleNext}
                   variant="contained"
-                  color={activeStep === steps.length - 1 ? 'success' : 'secondary'}
+
+                  color={activeStep === steps.length - 1 ? 'success' : 'primary'}
+                  endIcon={
+                    activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />
+                  }
                 >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                  {activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
                 </Button>
               </Box>
-            </>
+              </>
           )}
         </Box>
       </Paper>

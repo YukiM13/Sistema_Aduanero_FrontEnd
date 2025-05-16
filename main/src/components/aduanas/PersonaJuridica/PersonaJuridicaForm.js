@@ -118,7 +118,9 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [mensajeSnackbar, setMensajeSnackbar] = useState('');
   const [severitySnackbar, setSeveritySnackbar] = useState('success');
-
+const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1
   const enviarCodigoVerificacion = (correoElectronico) => {
     setVerificarCorreoDeshabilitado(true);
     const generarCodigoAleatorio = () => {
@@ -236,7 +238,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
     onSubmit: async (values) => {
       try {
         if (activeTab === 0) {
-          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioCreacion = user;
           values.peju_FechaCreacion = new Date().toISOString();
           const response = await axios.post(`${apiUrl}/api/PersonaJuridica/Insertar`, values, {
             headers: { 'XApiKey': apiKey },
@@ -293,7 +295,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
           setOpenSnackbar(true);
           setTimeout(() => {
             if (onGuardar) onGuardar();
-            window.location.href = 'http://localhost:3000/dashboards/modern';
+            window.location.href = 'http://localhost:3000/PersonaJuridica/list';
           }, 1500);
         }
       } catch (error) {
@@ -302,7 +304,7 @@ const PersonaJuridicaForm = ({ onGuardar, onCancelar }) => {
         setOpenSnackbar(true);
         setTimeout(() => {
           if (onGuardar) onGuardar();
-          window.location.href = 'http://localhost:3000/dashboards/modern';
+          window.location.href = 'http://localhost:3000/PersonaJuridica/list';
         }, 1500);
       }
     },
