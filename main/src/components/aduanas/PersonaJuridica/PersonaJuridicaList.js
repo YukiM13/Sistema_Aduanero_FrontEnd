@@ -14,6 +14,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonaJuridicaForm from './PersonaJuridicaForm';
+import PersonaJuridicaEdit from './PersonaJuridicaEdit';
 import PersonaJuridicaDetails from './PersonaJuridicaDetails';
 
 const PersonaJuridicaList = () => {
@@ -164,11 +165,10 @@ const PersonaJuridicaList = () => {
           />
         )}
         {modo === 'editar' && personaSeleccionada && (
-          <PersonaJuridicaForm
-            esEditar={true}
+          <PersonaJuridicaEdit
             personaJuridica={personaSeleccionada}
             onCancelar={() => setModo('listar')}
-            onGuardar={() => {
+            onGuardadoExitoso={() => {
               setModo('listar');
               cargarPersonasJuridicas();
               setOpenSnackbar(true);
