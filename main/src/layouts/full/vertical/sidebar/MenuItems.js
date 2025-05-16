@@ -309,7 +309,7 @@ export const generarMenu = async () => {
         id: uniqueId(),
         title: 'Persona Jurídica',
         icon: IconPoint,
-        href: '/PersonaJuridica/PersonaJuridicaForm',
+        href: '/PersonaJuridica/list',
         chipColor: 'secondary',
       });
     }

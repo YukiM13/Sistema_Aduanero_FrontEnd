@@ -95,7 +95,7 @@ const CostosMaterialesNoBrindados = Loadable(lazy(() => import('../components/ad
 
 const Persona  = Loadable(lazy(() => import('../components/aduanas/personas/pers_List')));
 const PersonaNatural = Loadable(lazy(() => import('../components/aduanas/PersonaNatural/PersonaNaturalList')));
-const PersonaJuridica2222 = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaForm')));
+const PersonaJuridicaList = Loadable(lazy(() => import('../components/aduanas/PersonaJuridica/PersonaJuridicaList')));
 const Aduana  = Loadable(lazy(() => import('../components/aduanas/aduanas/AduanasList')));
 const FormasPago  = Loadable(lazy(() => import('../components/aduanas/FormasPago/FormasPagoList')));
 const ConceptoDePago  = Loadable(lazy(() => import('../components/aduanas/concepto-de-pago/ConceptosDePagoList')));
@@ -215,7 +215,7 @@ const todasLasRutas = [
   { path: '/aduanas/list', element: <Aduana/>, pantalla:'Aduanas' },
   { path: '/personas/list', element: <Persona/>, pantalla:'Personas' },
   { path: '/PersonaNatural/PersonaNaturalForm', element: <PersonaNatural/>, pantalla:'Persona Natural' },
-  { path: '/PersonaJuridica/PersonaJuridicaForm', element: <PersonaJuridica2222/>, pantalla:'Persona Juridica' },
+  { path: '/PersonaJuridica/list', element: <PersonaJuridicaList/>, pantalla:'Persona Juridica' },
    { path: '/PlanificacionPO', element: <PlanificacionPO/>, pantalla:'Planificacion PO' },
   { path: '/concepto-de-pago/list', element: <ConceptoDePago/>, pantalla:'Concepto de Pago' },
   { path: '/formasdepago/list', element: <FormasPago/>, pantalla:'Formas de Pago' },
