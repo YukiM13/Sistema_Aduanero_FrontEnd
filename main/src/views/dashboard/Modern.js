@@ -4,7 +4,6 @@ import TopCards from '../../components/dashboards/modern/TopCards';
 import RevenueUpdates from '../../components/dashboards/modern/RevenueUpdates';
 import YearlyBreakup from '../../components/dashboards/modern/YearlyBreakup';
 import MonthlyEarnings from '../../components/dashboards/modern/MonthlyEarnings';
-import EmployeeSalary from '../../components/dashboards/modern/EmployeeSalary';
 import Customers from '../../components/dashboards/modern/Customers';
 import Projects from '../../components/dashboards/modern/Projects';
 import Social from '../../components/dashboards/modern/Social';
@@ -15,6 +14,9 @@ import ClientesProductivosChart from '../../components/dashboards/modern/Cliente
 import ProductividadModulosChart from '../../components/dashboards/modern/ProductividadModulosChart';
 import PrendasPedidasChart from '../../components/dashboards/modern/PrendasPedidasChart';
 import Welcome from 'src/layouts/full/shared/welcome/Welcome';
+import OrcoMensual from 'src/components/dashboards/modern/OrdenCompraMensual';
+import OrcoSemanal from 'src/components/dashboards/modern/OrdenCompraSemanal';
+import OrdenesCharts from '../charts/OrdenesEntregadas';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -44,8 +46,11 @@ const Modern = () => {
           </Grid>
         </Grid>
         {/* column */}
-        <Grid item xs={12} lg={4}>
-          <EmployeeSalary />
+        <Grid item xs={12} lg={6}>
+          <OrcoMensual />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <OrcoSemanal />
         </Grid>
         {/* column */}
         <Grid item xs={12} lg={4}>
@@ -83,6 +88,9 @@ const Modern = () => {
         </Grid>
         <Grid item xs={12} lg={8}>
           <TopPerformers />
+        </Grid>
+        <Grid item xs={12} lg={23}>
+          <OrdenesCharts />
         </Grid>
       </Grid>
       {/* column */}

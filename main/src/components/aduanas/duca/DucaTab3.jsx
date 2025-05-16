@@ -128,17 +128,51 @@ useEffect(() => {
         : rawData[0] !== undefined
         ? rawData[0]
         : rawData;
-    
+      
+
+        const camposRequeridos = [
+          'duca_Codigo_Declarante',
+          'duca_Numero_Id_Declarante',
+          'duca_NombreSocial_Declarante',
+          'duca_DomicilioFiscal_Declarante',
+          'duca_Codigo_Transportista',
+          'duca_Transportista_Nombre',
+          'motr_Id',
+          'cont_NoIdentificacion',
+          'cont_Nombre',
+          'cont_Apellido',
+          'cont_Licencia',
+          'pais_IdExpedicion',
+          'id_pais_transporte',
+          'transporte_marca_Id',
+          'tran_IdUnidadTransporte',
+          'tran_Chasis',
+          'tran_Remolque',
+          'tran_CantCarga',
+          'tran_NumDispositivoSeguridad',
+          'tran_Equipamiento',
+          'tran_TipoCarga',
+          'tran_IdContenedor'
+        ];
+        
+      
+        function todosCamposVacios(data) {
+          return camposRequeridos.every(key => {
+            const valor = data[key];
+            return valor === null || valor === '' || valor === undefined || valor === 0;
+          });
+        }
       if (data && typeof data === 'object') {
         
     
-        const esSoloPreinsert = localStorage.getItem('insert');
-    
-        if (esSoloPreinsert) {
+        const esSoloPreinsert = todosCamposVacios(data);
         
+        if (esSoloPreinsert) {
+          console.log('entro al if');
           setInitialValues({...Duca });
+          localStorage.removeItem('edit');
         } else {
-
+          console.log('entro al else');
           Object.keys(data).forEach(key => {
             if (data[key] !== null && data[key] !== undefined && data[key] !== '') {
               Duca[key] = data[key];
@@ -178,14 +212,14 @@ useEffect(() => {
           let todosExitosos = true;
           try {
            
-          
+      
             console.log("Enviando valores:", values);
             values.duca_Id =  parseInt(localStorage.getItem('ducaId'));
             
-            
+         
            const edit = localStorage.getItem('edit');
-           console.log(edit);
-            if(edit !== 'true') {
+           console.log('localstorage de edit', edit);
+            if(edit === 'true') {
               console.log('entro al edit');
               values.usua_UsuarioModificacion = 1;
               values.duca_FechaModificacion = new Date().toISOString();
@@ -196,14 +230,17 @@ useEffect(() => {
                 });
                 if (response.status !== 200 || response.data.data.messageStatus !== '1') {
                   todosExitosos = false;
+                  console.log(response.data.data);
                   setOpenSnackbar(true);
                   throw new Error('Error');
                   
                 
                 }
                 if (todosExitosos) {
+                  localStorage.removeItem('insert');
                   if (onGuardadoExitoso) onGuardadoExitoso();
                 } else {
+                  console.log(response.data.data);
                   setOpenSnackbar(true);
                   throw new Error('Error');
                 }
@@ -225,7 +262,6 @@ useEffect(() => {
               }
               if (todosExitosos) {
                 if (onGuardadoExitoso) onGuardadoExitoso();
-                localStorage.removeItem('insert');
               } else {
                 setOpenSnackbar(true);
                 throw new Error('Error');
