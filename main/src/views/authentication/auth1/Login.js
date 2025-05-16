@@ -7,84 +7,72 @@ import AuthLogin from '../authForms/AuthLogin';
 
 const Login = () => (
   <PageContainer title="Inicio Sesion" description="this is Login page">
-    <Grid container sx={{ overflowX: 'hidden' }}>
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        lg={7}
-        xl={8}
-        sx={{
-          position: 'relative',
-          '&:before': {
-            content: '""',
-            background: 'radial-gradient(rgb(48, 60, 97),rgb(0, 0, 0),rgb(48, 60, 97))',
-            backgroundSize: '400% 400%',
-            animation: 'gradient 15s ease infinite',
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            opacity: '0.5',
-          },
+    <Box
+      sx={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 0,
+      }}
+    >
+      <img
+        src={img1}
+        alt="bg"
+        style={{
+          width: '100vw',
+          height: '100vh',
+          objectFit: 'cover',
+          filter: 'blur(1px)',
         }}
-      >
-        <Box position="relative">
-          <Box
-            alignItems="center"
-            justifyContent="center"
-            height={'calc(100vh)'}
-            sx={{
-              display: {
-                xs: 'none',
-                lg: 'flex',
-              },
-            }}
-          >
-            <img
-              src={img1}
-              alt="bg"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                zIndex: -1,
-                opacity: 1,
-              }}
-            />
-          </Box>
-        </Box>
-      </Grid>
+      />
+    </Box>
+
+    <Grid
+      container
+      sx={{
+        minHeight: '100vh',
+        position: 'relative',
+        zIndex: 1,
+      }}
+    >
       <Grid
         item
         xs={12}
-        sm={12}
+        sm={8}
+        md={6}
         lg={5}
         xl={4}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        backgroundColor="#003857"
+        sx={{
+          ml: 'auto',
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(107, 163, 194, 0.55)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+        }}
       >
-        <Box p={4} sx={{ position: 'relative'}}>
-          <Card elevation={20} sx={{ p: 4, backgroundColor: '#fff', position: 'relative', zIndex: 1 }}>
+        <Box sx={{ width: '100%', maxWidth: 420,}}>
+          <Card sx={{ backgroundColor: '#ffffff50', position: 'relative', zIndex: 1 , width: '100%'}}>
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                mb: 2,
               }}
             >
               <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-                <Typography variant="h3" gutterBottom sx={{  color: '#003857' }}>
+                <Typography variant="h3" gutterBottom sx={{ color: '#003857' }}>
                   Bienvenido
                 </Typography>
               </Box>
               <img src={img} alt="logo" width={180} style={{ marginTop: '8px' }} />
             </Box>
-            <AuthLogin/>
+            <AuthLogin />
           </Card>
         </Box>
       </Grid>
