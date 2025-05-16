@@ -12,20 +12,19 @@ import ParentCard from '../../../components/shared/ParentCard';
 import PaisesCreateComponent from './PaisesCreate';
 import PaisesEditComponent from './PaisesEdit';
 import PaisesDetailsComponent from './PaisesDetails';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Snackbar, Alert } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { alertMessages } from 'src/layouts/config/alertConfig';
-//Se exporta este para evitar reescribir ese mismo codigo que es mas que nada el diseño
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
+import StyledButton from 'src/components/shared/StyledButton';
 
 const PaisesComponent = () => {
   const [paises, setPaises] = useState([]);
+  const [iconRotated, setIconRotated] = useState(false);
   const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -77,10 +76,12 @@ const PaisesComponent = () => {
       setPaisSeleccionado(pais);
       //con setMenuAbierto(); definimos si el menu esta abierto  
       setMenuAbierto(true);
+      setIconRotated(true);
     }
   
     function cerrarMenu() {
       setMenuAbierto(false);
+      setIconRotated(false)
     }
 
   const cargarPaises = () => { //pasamos el listar a una funcion fuera del useEffect y llamamos la funcion dentro del useEffect
@@ -150,9 +151,12 @@ const handleDelete = async (id) => {
         
             <container>
                 <Stack direction="row" justifyContent="flex-start" mb={2}>
-                    <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-                    {'Nuevo'}
-                    </Button>
+                    <StyledButton
+                        sx={{}}
+                        title="Nuevo"
+                        event={() => setModo('crear')}
+                    >
+                    </StyledButton>
                 </Stack>
                 <Paper variant="outlined">
                     <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
@@ -168,13 +172,13 @@ const handleDelete = async (id) => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">
+                                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                     <Typography variant="h6">Acciones</Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                         <Typography variant="h6">Código</Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                                         <Typography variant="h6">Nombre</Typography>
                                     </TableCell>
                                 </TableRow>
@@ -182,20 +186,37 @@ const handleDelete = async (id) => {
                             <TableBody>
                             {filteredData
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((pais) => (
-                                <TableRow key={pais.pais_Id}>
+                                .map((pais, index) => (
+                                <TableRow key={pais.pais_Id}
+                                  sx={{
+                                      backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                                      '&:hover': { backgroundColor: '#e3f2fd' },
+                                  }}
+                                >
                                     <TableCell align="center">
-
                                         <IconButton
-                                        size="small" 
-                                        // se abre el menu y se selecciona la data de la fila 
-                                        onClick={(e) => abrirMenu(e, pais)}
+                                          size="small" 
+                                          onClick={(e) => abrirMenu(e, pais)}
+                                          sx={{
+                                              backgroundColor: '#d9e7f7',
+                                              color: 'rgb(0, 83, 121)',
+                                              '&:hover': {
+                                                  backgroundColor: 'rgb(157, 191, 207)',
+                                              },
+                                              border: '2px solid rgb(0, 83, 121)',
+                                              borderRadius: '8px',
+                                              padding: '6px'
+                                          }}
                                         >
-                                        <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                                          <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                              transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                              fontSize="small" 
+                                          />
+                                          <Typography variante="h6">Acciones</Typography>
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell>{pais.pais_Codigo}</TableCell>
-                                    <TableCell>{pais.pais_Nombre}</TableCell>
+                                    <TableCell><Typography variant="body1">{pais.pais_Codigo}</Typography></TableCell>
+                                    <TableCell><Typography variant="body1">{pais.pais_Nombre}</Typography></TableCell>
                                 </TableRow>
                                 ))}
                             {emptyRows > 0 && (

@@ -469,9 +469,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import TablePaginationActions from "src/_mockApis/actions/TablePaginationActions";
 import { alertMessages } from 'src/layouts/config/alertConfig';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const Provincias = () => {
   const [provincias, setProvincias] = useState([]);
+  const [iconRotated, setIconRotated] = useState(false);
   const [modo, setModo] = useState('listar');
   const [provinciaEditando, setProvinciaEditando] = useState(null);
   const [provinciaSeleccionada, setProvinciaSeleccionada] = useState(null);
@@ -517,9 +519,13 @@ const Provincias = () => {
     setPosicionMenu(evento.currentTarget);
     setProvinciaSeleccionada(provincia);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false)
+    setIconRotated(false);
+  };
 
   const handleEditar = () => {
     if (provinciaSeleccionada) {
@@ -574,9 +580,12 @@ const Provincias = () => {
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="space-between" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                Nuevo
-              </Button>
+              <StyledButton
+                  sx={{}}
+                  title="Nuevo"
+                  event={() => setModo('crear')}
+              >
+              </StyledButton>
               <TextField
                 variant="outlined"
                 size="small"
@@ -596,28 +605,56 @@ const Provincias = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell align='center'><Typography variant="h6">Acciones</Typography></TableCell>
-                            <TableCell><Typography variant="h6">ID</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Código</Typography></TableCell>
-                            <TableCell><Typography variant="h6">Nombre</Typography></TableCell>
-                            <TableCell><Typography variant="h6">País</Typography></TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Acciones</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Código</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">Nombre</Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
+                              <Typography variant="h6">País</Typography>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                 <TableBody>
                 {(rowsPerPage > 0
                     ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     : filteredData
-                ).map((provincia) => (
-                    <TableRow key={provincia.pvin_Id}>
+                ).map((provincia, index) => (
+                    <TableRow key={provincia.pvin_Id}
+                      sx={{
+                          backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                          '&:hover': { backgroundColor: '#e3f2fd' },
+                      }}
+                    >
                         <TableCell align="center">
-                        <IconButton onClick={(e) => abrirMenu(e, provincia)}>
-                            <SettingsIcon sx={{ color: '#2196F3', fontSize: '20px' }} />
-                        </IconButton>
+                          <IconButton 
+                            size="small"
+                            onClick={(e) => abrirMenu(e, provincia)}
+                            sx={{
+                                backgroundColor: '#d9e7f7',
+                                color: 'rgb(0, 83, 121)',
+                                '&:hover': {
+                                    backgroundColor: 'rgb(157, 191, 207)',
+                                },
+                                border: '2px solid rgb(0, 83, 121)',
+                                borderRadius: '8px',
+                                padding: '6px'
+                            }}
+                          >
+                            <SettingsIcon sx={{transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                                fontSize="small" 
+                            />
+                            <Typography variante="h6">Acciones</Typography>
+                          </IconButton>
                         </TableCell>
-                        <TableCell>{provincia.pvin_Id}</TableCell>
-                        <TableCell>{provincia.pvin_Codigo}</TableCell>
-                        <TableCell>{provincia.pvin_Nombre}</TableCell>
-                        <TableCell>{provincia.pais_Nombre}</TableCell>
+                        <TableCell><Typography variant="body1">{provincia.pvin_Codigo}</Typography></TableCell>
+                        <TableCell><Typography variant="body1">{provincia.pvin_Nombre}</Typography></TableCell>
+                        <TableCell><Typography variant="body1">{provincia.pais_Nombre}</Typography></TableCell>
                     </TableRow>
                 ))}
                   {emptyRows > 0 && (
