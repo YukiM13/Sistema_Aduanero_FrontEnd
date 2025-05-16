@@ -363,7 +363,7 @@ const AduanasList = () => {
             <Button
               onClick={() => setConfirmarEliminacion(false)}
               variant="outlined"
-              color="info"
+              color="primary"
             >
               Cancelar
             </Button>
