@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PersonaNaturalModel from '../../../models/PersonaNaturalModel';
 import PersonaNaturalCreateComponent from './PersonaNaturalCreate';
 import PersonaNaturalEditComponent from './PersonaNaturalEdit';
-// import PersonaNaturalDetailsComponent from './PersonaNaturalDetails';
+import PersonaNaturalDetailsComponent from './PersonaNaturalDetails';
 
 const PersonaNaturalList = () => {
   const [personas, setPersonas] = useState([]);
@@ -183,14 +183,13 @@ const PersonaNaturalList = () => {
           />
         )}
         
-        {/* 
         {modo === 'detalle' && (
           <PersonaNaturalDetailsComponent
             persona={personaSeleccionada}
             onCancelar={() => setModo('listar')}
           />
         )}
-        */}
+        
       </ParentCard>
       <Snackbar
         open={openSnackbar}
