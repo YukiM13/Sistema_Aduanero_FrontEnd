@@ -9,6 +9,19 @@ import PersonaNaturalModel from '../../../models/PersonaNaturalModel';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import emailjs from '@emailjs/browser';
+import * as yup from 'yup';
+
+// Add validation schema similar to PersonaNaturalCreate
+const validationSchema = yup.object({
+  pers_Id: yup.number().required('El campo Persona ID es obligatorio').moreThan(0, 'Debe seleccionar una persona'),
+  pena_DireccionExacta: yup.string().required('El campo Dirección Exacta es obligatorio'),
+  ciud_Id: yup.number().required('El campo Ciudad es obligatorio').moreThan(0, 'Debe seleccionar una ciudad'),
+  pena_TelefonoCelular: yup.string().required('El campo Teléfono Celular es obligatorio'),
+  pena_CorreoElectronico: yup.string().email('Formato de correo inválido').required('El campo Correo Electrónico es obligatorio'),
+  pena_RTN: yup.string().required('El campo RTN es obligatorio'),
+  pena_DNI: yup.string().required('El campo DNI es obligatorio'),
+  pena_NumeroRecibo: yup.string().required('El campo Número Recibo es obligatorio'),
+});
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
@@ -123,6 +136,26 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       return;
     }
     
+    // Validate all fields before submitting
+    formik.validateForm().then(errors => {
+      // Mark all fields as touched to show validation errors
+      Object.keys(formik.values).forEach(field => {
+        formik.setFieldTouched(field, true);
+      });
+
+      if (Object.keys(errors).length > 0) {
+        setMensajeSnackbar('Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return;
+      }
+
+      // If no errors, proceed with submit
+      submitForm();
+    });
+  };
+
+  const submitForm = async () => {
     try {
       console.log('Submitting from final tab...');
       const formDataToSend = new FormData();
@@ -186,13 +219,89 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
       pena_NombreArchDNI: persona.pena_NombreArchDNI || '',
       pena_NombreArchRecibo: persona.pena_NombreArchRecibo || '',
     },
+    validationSchema, // Add validation schema
     enableReinitialize: true,
  
   });
+
+  // Add validation for tab navigation similar to PersonaNaturalCreate
+  const validateTabFields = () => {
+    let hasErrors = false;
+    const camposrequeridos = [];
+    
+    if (activeTab === 0) {
+      if (!formik.values.pers_Id || formik.values.pers_Id === 0) {
+        camposrequeridos.push('Persona ID');
+      }
+      if (!formik.values.pena_DireccionExacta) {
+        camposrequeridos.push('Dirección Exacta');
+      }
+      if (!formik.values.ciud_Id || formik.values.ciud_Id === 0) {
+        camposrequeridos.push('Ciudad');
+      }
+      
+      formik.setFieldTouched('pers_Id', true);
+      formik.setFieldTouched('pena_DireccionExacta', true);
+      formik.setFieldTouched('ciud_Id', true);
+      
+      hasErrors = !!(formik.errors.pers_Id || formik.errors.pena_DireccionExacta || formik.errors.ciud_Id);
+    } else if (activeTab === 1) {
+      if (!formik.values.pena_TelefonoCelular) {
+        camposrequeridos.push('Teléfono Celular');
+      }
+      if (!formik.values.pena_CorreoElectronico) {
+        camposrequeridos.push('Correo Electrónico');
+      }
+
+      if (formik.values.pena_CorreoElectronico && !correoVerificado) {
+        setMensajeSnackbar('Debe verificar el correo electrónico antes de continuar');
+        setSeveritySnackbar('error');
+        setOpenSnackbar(true);
+        return false;
+      }
+
+      formik.setFieldTouched('pena_TelefonoCelular', true);
+      formik.setFieldTouched('pena_CorreoElectronico', true);
+
+      hasErrors = !!(formik.errors.pena_TelefonoCelular || formik.errors.pena_CorreoElectronico);
+    } else if (activeTab === 2) {
+      if (!formik.values.pena_RTN) {
+        camposrequeridos.push('RTN');
+      }
+      if (!formik.values.pena_DNI) {
+        camposrequeridos.push('DNI');
+      }
+      
+      formik.setFieldTouched('pena_RTN', true);
+      formik.setFieldTouched('pena_DNI', true);
+      
+      hasErrors = !!(formik.errors.pena_RTN || formik.errors.pena_DNI);
+    } else if (activeTab === 3) {
+      return true;
+    }
+    
+    formik.validateForm();
+    
+    if (hasErrors || camposrequeridos.length > 0) {
+      let message = 'Hay campos requeridos sin completar. Por favor, complete todos los campos obligatorios.';
+      
+      setMensajeSnackbar(message);
+      setSeveritySnackbar('error');
+      setOpenSnackbar(true);
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Modify handleNavigation to use validation
   const handleNavigation = (e) => {
     e.preventDefault();
     if (activeTab < 3) {
-      setActiveTab(activeTab + 1);
+      const isValid = validateTabFields();
+      if (isValid) {
+        setActiveTab(activeTab + 1);
+      }
     }
   };
 
@@ -351,6 +460,13 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
     }
   };
 
+  // Add a function for handling numeric values
+  const handlenumeros = (e) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, '');
+    formik.setFieldValue(name, numericValue);
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 0:
@@ -365,6 +481,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pers_Id"
                 value={formik.values.pers_Id}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pers_Id && Boolean(formik.errors.pers_Id)}
+                helperText={formik.touched.pers_Id && formik.errors.pers_Id}
               >
                 {personas.map((p) => (
                   <MenuItem key={p.pers_Id} value={p.pers_Id}>
@@ -382,6 +501,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="ciud_Id"
                 value={formik.values.ciud_Id}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.ciud_Id && Boolean(formik.errors.ciud_Id)}
+                helperText={formik.touched.ciud_Id && formik.errors.ciud_Id}
               >
                 {ciudades.map((c) => (
                   <MenuItem key={c.ciud_Id} value={c.ciud_Id}>
@@ -398,6 +520,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_DireccionExacta"
                 value={formik.values.pena_DireccionExacta}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_DireccionExacta && Boolean(formik.errors.pena_DireccionExacta)}
+                helperText={formik.touched.pena_DireccionExacta && formik.errors.pena_DireccionExacta}
               />
             </Grid>
           </Grid>
@@ -413,6 +538,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_TelefonoFijo"
                 value={formik.values.pena_TelefonoFijo}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -423,6 +549,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_TelefonoCelular"
                 value={formik.values.pena_TelefonoCelular}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_TelefonoCelular && Boolean(formik.errors.pena_TelefonoCelular)}
+                helperText={formik.touched.pena_TelefonoCelular && formik.errors.pena_TelefonoCelular}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -433,8 +562,13 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_CorreoElectronico"
                 value={formik.values.pena_CorreoElectronico}
                 onChange={handleEmailChange}
-                error={correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== ''}
-                helperText={correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== '' ? 'Necesita verificación' : ''}
+                onBlur={formik.handleBlur}
+                error={(formik.touched.pena_CorreoElectronico && Boolean(formik.errors.pena_CorreoElectronico)) || 
+                       (correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== '')}
+                helperText={
+                  (formik.touched.pena_CorreoElectronico && formik.errors.pena_CorreoElectronico) || 
+                  (correoModificado && !correoVerificado && formik.values.pena_CorreoElectronico !== '' ? 'Necesita verificación' : '')
+                }
               />
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, gap: 2 }}>
                 <Button 
@@ -483,6 +617,7 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_CorreoAlternativo"
                 value={formik.values.pena_CorreoAlternativo}
                 onChange={handleEmailChange}
+                onBlur={formik.handleBlur}
                 error={correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo !== ''}
                 helperText={correoAltModificado && !correoAlternativoVerificado && formik.values.pena_CorreoAlternativo !== '' ? 'Necesita verificación' : ''}
               />
@@ -539,7 +674,10 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 id="pena_RTN"
                 name="pena_RTN"
                 value={formik.values.pena_RTN}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_RTN && Boolean(formik.errors.pena_RTN)}
+                helperText={formik.touched.pena_RTN && formik.errors.pena_RTN}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -596,7 +734,10 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 id="pena_DNI"
                 name="pena_DNI"
                 value={formik.values.pena_DNI}
-                onChange={formik.handleChange}
+                onChange={handlenumeros}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_DNI && Boolean(formik.errors.pena_DNI)}
+                helperText={formik.touched.pena_DNI && formik.errors.pena_DNI}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
@@ -659,6 +800,9 @@ const PersonaNaturalEditComponent = ({ persona = PersonaNaturalModel, onCancelar
                 name="pena_NumeroRecibo"
                 value={formik.values.pena_NumeroRecibo}
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.pena_NumeroRecibo && Boolean(formik.errors.pena_NumeroRecibo)}
+                helperText={formik.touched.pena_NumeroRecibo && formik.errors.pena_NumeroRecibo}
               />
             </Grid>
             <Grid item lg={6} md={12} sm={12}>
