@@ -41,7 +41,9 @@ const [tiposDocumentos, setTiposDocumentos] = useState([]);
 const [initialValues, setInitialValues] = useState(DocumentoDeSoporte);
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+ const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   
   const listarpaises = () => {
     axios.get(`${apiUrl}/api/Paises/Listar?pais_EsAduana=true`, {
@@ -138,7 +140,7 @@ useEffect(() => {
         onSubmit: async(values) => {
           let todosExitosos = true;
           try {
-            values.usua_UsuarioCreacion = 1;
+            values.usua_UsuarioCreacion = user;
             console.log("Enviando valores:", values);
           
             
@@ -147,7 +149,7 @@ useEffect(() => {
            console.log(edit);
             if(edit === 'true') {
               console.log('entro al edit');
-              values.usua_UsuarioModificacion = 1;
+              values.usua_UsuarioModificacion = user;
               values.doso_FechaModificacion = new Date().toISOString();
 
                 const response = await axios.post(`${apiUrl}/api/Duca/EditarPart3`, values, {

@@ -205,6 +205,7 @@ const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/repo
 const MaquinaUsoReporte = Loadable(lazy(() => import('../components/reportes/MaquinaUsoReporte')));
 
 const ReporteContratosAdhesion = Loadable(lazy(() => import('../components/reportes/Contratos_Adhesion')));
+const ReporteSeguimientoProcesos = Loadable(lazy(() => import('../components/reportes/SeguimientoDeProcesosporPO')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -271,6 +272,7 @@ const todasLasRutas = [
   { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
   { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
   { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
+  { path: '/reporteSeguimientoProcesos', element: <ReporteSeguimientoProcesos  /> , pantalla:'Seguimiento de Procesos por PO' },
   { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
   { path: '/maquinaUso', element: <MaquinaUsoReporte  />  },

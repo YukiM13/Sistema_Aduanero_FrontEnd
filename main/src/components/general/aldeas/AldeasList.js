@@ -19,6 +19,7 @@ import AldeasEditComponent from './AldeasEdit';
 import AldeasDetailsComponent from './AldeasDetails';
 import StyledButton from 'src/components/shared/StyledButton';
 
+
 const AldeasComponent = () => {
   const [aldeas, setAldeas] = useState([]);
   const [modo, setModo] = useState('listar');

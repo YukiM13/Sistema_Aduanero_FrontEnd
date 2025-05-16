@@ -19,6 +19,7 @@ import { alertMessages } from 'src/layouts/config/alertConfig';
 import OficioDetailsComponent from './OficioProfesionDetails';
 import OficioCreateComponent from './OficioProfesionCreate';
 import OficioEditComponent from './OficioProfesionEdit';
+import StyledButton from 'src/components/shared/StyledButton';
 const OficioProfesionComponent = () => {
   const [oficioProfesiones, setOficioProfesiones] = useState([]);
    const [modo, setModo] = useState('listar'); // 'listar' | 'crear' | 'editar' | 'detalle' dependiendo de lo que tenga va a mostrar
@@ -33,6 +34,8 @@ const OficioProfesionComponent = () => {
       severity: '',
       message: '',
     });
+    const [iconRotated, setIconRotated] = useState(false);
+
     const apiUrl = process.env.REACT_APP_API_URL;
     const apiKey = process.env.REACT_APP_API_KEY;
     const mostrarAlerta = (tipo) => {
@@ -65,10 +68,14 @@ const OficioProfesionComponent = () => {
         setOficioProfesionSeleccionada(oficioProfesion);
         //con setMenuAbierto(); definimos si el menu esta abierto  
         setMenuAbierto(true);
+         setIconRotated(true);
+
       }
     
       function cerrarMenu() {
         setMenuAbierto(false);
+        setIconRotated(false);
+
       }
     const cargarOficio = () =>{
       
@@ -112,11 +119,14 @@ const OficioProfesionComponent = () => {
                
            
                   <container>
-              <Stack direction="row" justifyContent="flex-start" mb={2}>
-                  <Button variant="contained" onClick={() => setModo('crear')}   startIcon={<AddIcon />}>
-                    {'Nuevo'}
-                  </Button>
-              </Stack>
+                    <Stack direction="row" justifyContent="flex-start" mb={2}>
+                        <StyledButton  
+                          sx={{}} 
+                          title="Nuevo"
+                          event={() => setModo('crear')}>
+                        </StyledButton>
+                    </Stack>
+
                 <Paper variant="outlined">
                   <TextField placeholder="Buscar" variant="outlined" size="small" sx={{ mb: 2, mt:2, width: '25%', ml: '73%' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     InputProps={{
@@ -130,10 +140,10 @@ const OficioProfesionComponent = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">
+                <TableCell  sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold',align:'center' }}>
                  <Typography variant="h6">Acciones</Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                   <Typography variant="h6">Descripcion</Typography>
                 </TableCell>
               </TableRow>
@@ -146,14 +156,28 @@ const OficioProfesionComponent = () => {
                  <TableCell align="center">
 
                   <IconButton
-                    size="small" 
-                    // se abre el menu y se selecciona la data de la fila 
-                    onClick={(e) => abrirMenu(e, oficioProfesion)}
-                  >
-                  <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
-                  </IconButton>
+                      size="small"
+                      onClick={(e) => abrirMenu(e, oficioProfesion)}
+                      sx={{
+                        backgroundColor: '#d9e7ef', // Fondo celeste claro
+                        color: 'rgb(0, 83, 121)',           // Color del icono
+                        '&:hover': {
+                          backgroundColor: 'rgb(157, 191, 207)',
+                        },
+                        border: '2px solid rgb(0, 83, 121)', // Borde opcional
+                        borderRadius: '8px',         // Bordes redondeados
+                        padding: '6px'
+                      }}
+                    >
+                      <SettingsIcon 
+                      sx={{transition: 'transform 0.3s ease-in-out',
+                        transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',}}
+                      fontSize="small" />
+                      <Typography variante="h6">Acciones</Typography>
+                    </IconButton> 
+
                   </TableCell>
-                  <TableCell>{oficioProfesion.ofpr_Nombre}</TableCell>
+                  <TableCell><Typography variant="body1">{oficioProfesion.ofpr_Nombre}</Typography></TableCell>
 
                 </TableRow>
               ))}
