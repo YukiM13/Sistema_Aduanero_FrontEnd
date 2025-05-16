@@ -15,7 +15,7 @@ import {
   import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   pers_RTN: yup.string().required('El RTN es requerido'),
   pers_Nombre: yup.string().required('El nombre es requerido'),
@@ -37,6 +37,9 @@ const [oficioProfesion, setOficioProfesion] = useState([]);
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const listarEstadoCiviles = () => {
       axios.get(`${apiUrl}/api/EstadosCiviles/Listar?escv_EsAduana=true`, {
         headers: {
@@ -92,7 +95,7 @@ const listarOficioProfesion = () => {
         validationSchema,
         onSubmit: (values) => {
           values.pers_FechaModificacion = new Date();
-          values.usua_UsuarioModificacion = 1;
+          values.usua_UsuarioModificacion = user;
           values.pers_RTN.replace(/\?/g, '');
           values.pers_FormaRepresentacion = Boolean(values.pers_FormaRepresentacion);
           console.log("Valores antes de enviar:", values);
@@ -276,29 +279,33 @@ const listarOficioProfesion = () => {
                         </CustomTextField>
                   
                 </Grid>
-
+                 <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>          
 
 
 
 
 
             </Grid>
-            <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-                <Grid item>
-                    <Button variant="contained" color="error" onClick={onCancelar}
-                         startIcon={<CancelIcon />}
-                    >
-                    Cancelar
-                    </Button>
-                </Grid>
-                <Grid item>
-                    <Button variant="contained" type="submit"
-                         startIcon={<SaveIcon />}
-                    >
-                    Guardar
-                    </Button>
-                </Grid>
-            </Grid>
+           
            
         </form >
         <Snackbar

@@ -12,7 +12,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const RolesCreate = ({ onCancelar, onGuardadoExitoso }) => {
   const [roleDescripcion, setRoleDescripcion] = useState('');
   const [pantallas, setPantallas] = useState([]);
@@ -118,19 +118,25 @@ const RolesCreate = ({ onCancelar, onGuardadoExitoso }) => {
             </Typography>
           )}
         </Grid>
-        <Grid item xs={12} display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="error" onClick={onCancelar} startIcon={<CancelIcon />}>
-            Cancelar
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleGuardar}
-            startIcon={<SaveIcon />}
-            sx={{ ml: 2 }}
-          >
-            Guardar
-          </Button>
+        <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+          <StyledButton  
+            sx={{}} 
+            title="Cancelar"
+            event={onCancelar}
+            variant="cancel"
+            >
+            
+          </StyledButton>
+          
+          <StyledButton  
+            sx={{}} 
+            title="Guardar"
+            event={handleGuardar}
+            variant="save"
+            >
+            
+          </StyledButton>
+          
         </Grid>
       </Grid>
       <Snackbar

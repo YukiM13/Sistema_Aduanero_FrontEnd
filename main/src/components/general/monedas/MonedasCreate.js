@@ -27,12 +27,15 @@ const MonedaCreateComponent = ({ onCancelar, onGuardadoExitoso }) => { //esto es
 const [openSnackbar, setOpenSnackbar] = useState(false); 
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
+  const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   const formik = useFormik({
         
         initialValues: Moneda,
         validationSchema,
         onSubmit: (values) => {
-          values.usua_UsuarioCreacion = 1;
+          values.usua_UsuarioCreacion = user;
           console.log("Valores antes de enviar:", values);
           axios.post(`${apiUrl}/api/Moneda/Insertar`, values, {
             headers: { 'XApiKey': apiKey }

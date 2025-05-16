@@ -23,6 +23,8 @@ import { TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 // Autocomplete
 
+import StyledButton from 'src/components/shared/StyledButton';
+
 const PlanificacionPoPdf = () => {
     const [planificacionData, setPlanificacionData] = useState([]);
       const [SelectedOrco, setSelectedOrco] = useState(null);
@@ -213,13 +215,18 @@ useEffect(() => {
                 {planificacionData.length>0 && (
                     <Grid item xs={12}>
                         <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-                            <Button
-                                variant="outlined"
-                                startIcon={<ArrowBackIcon />}
-                                onClick={() => window.history.back()}
-                            >
-                                Volver
-                            </Button>
+                           
+
+ <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={() => window.history.back()}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
+
+
                             <Button
                                 variant="contained"
                                 startIcon={<DownloadIcon />}

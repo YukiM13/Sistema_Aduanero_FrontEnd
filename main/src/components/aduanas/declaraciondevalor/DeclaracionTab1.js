@@ -30,11 +30,11 @@ import Deva from 'src/models/devaModel';
 
 const validationSchema = yup.object({
   declaraciones_ValorViewModel: yup.object({
-      deva_AduanaIngresoId: yup.number().required('La aduana de ingreso es requerida'),
-      deva_AduanaDespachoId: yup.number().required('La aduana de despacho es requerida'),
+      deva_AduanaIngresoId: yup.number().required('La aduana de ingreso es requerida').moreThan(0, 'Debe seleccionar una aduana de ingreso válida'),
+      deva_AduanaDespachoId: yup.number().required('La aduana de despacho es requerida').moreThan(0, 'Debe seleccionar una aduana de despacho válida'),
       deva_DeclaracionMercancia: yup.string().required('La declaración de mercancía es necesaria'),
       deva_FechaAceptacion: yup.date().required('La fecha de aceptación es requerida'),
-      regi_Id: yup.number().required('El régimen aduanero es requerido'),
+      regi_Id: yup.number().required('El régimen aduanero es requerido').moreThan(0, 'Debe seleccionar un régimen aduanero válido'),
     }),
     declarantesImpo_ViewModel: yup.object({
       decl_Nombre_Raso: yup.string().required('El nombre o razón social es requerido'),
@@ -197,92 +197,94 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             enableReinitialize: true,
             initialValues: initialValues,
             validationSchema,
-            onSubmit: async(values) => {
-              try {
-                let todosExitosos = true;
-                
-                // Preparar datos comunes
-                const dataToSubmit = {
-                  ...values, // Mantiene toda la estructura
-                  declaraciones_ValorViewModel: {
-                    ...values.declaraciones_ValorViewModel,
-                    usua_UsuarioCreacion: 1,
-                    usua_UsuarioModificacion: 1,
-                    deva_FechaCreacion: new Date().toISOString(),
-                    deva_FechaModificacion: new Date().toISOString()
-                  },
-                  declarantesImpo_ViewModel: {
-                    ...values.declarantesImpo_ViewModel,
-                    usua_UsuarioCreacion: 1,
-                    usua_UsuarioModificacion: 1
-                  },
-                  importadoresViewModel: {
-                    ...values.importadoresViewModel,
-                    usua_UsuarioCreacion: 1,
-                    usua_UsuarioModificacion: 1
-                  }
-                };
-                
-                const devaIdString = localStorage.getItem('devaId');
-                
-                if (!devaIdString) {
-                  console.log("Insertando nuevo registro:", dataToSubmit);
-                  
-                  const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, dataToSubmit, {
-                    headers: { 
-                      'XApiKey': apiKey,
-                      'Content-Type': 'application/json'
-                    }
-                  });
-                  
-                  if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
-                    localStorage.setItem('devaId', response.data.data.messageStatus);
-                    if (onGuardadoExitoso) onGuardadoExitoso();
-                  } else {
-                    todosExitosos = false;
-                    setOpenSnackbar(true);
-                  }
-                } 
-                else {
-                  const deva_Id = parseInt(devaIdString);
-                  dataToSubmit.declaraciones_ValorViewModel.deva_Id = deva_Id;
-                  
-                  console.log("Actualizando registro existente:", dataToSubmit);
-                  
-                  const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/EditarTab1`, dataToSubmit, {
-                    headers: { 
-                      'XApiKey': apiKey,
-                      'Content-Type': 'application/json' 
-                    }
-                  });
-                  if (response.status !== 200 || response.data.data.messageStatus !== '1') {
-                    todosExitosos = false;
-                    console.log(response.data.data);
-                    throw new Error('Error');
-                  }
-                  
-                  // Verificar si la operación fue exitosa
-                  if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
-                    console.log(response.data.data);
-                    if (onGuardadoExitoso) onGuardadoExitoso();
-                    console.log("Se actualizó el registro con éxito");
-                  } else {
-                    console.log(response.data.data);
-                    console.log("Error al actualizar el registro");
-                    todosExitosos = false;
-                    setOpenSnackbar(true);
-                    throw new Error('Error');
-                  }
+            onSubmit: async (values) => {
+            const confirmar = window.confirm("¿Estás seguro de que deseas guardar esta información?");
+            if (!confirmar) return; // Detiene el submit si el usuario cancela
+
+            try {
+              let todosExitosos = true;
+
+              // Preparar datos comunes
+              const dataToSubmit = {
+                ...values,
+                declaraciones_ValorViewModel: {
+                  ...values.declaraciones_ValorViewModel,
+                  usua_UsuarioCreacion: 1,
+                  usua_UsuarioModificacion: 1,
+                  deva_FechaCreacion: new Date().toISOString(),
+                  deva_FechaModificacion: new Date().toISOString()
+                },
+                declarantesImpo_ViewModel: {
+                  ...values.declarantesImpo_ViewModel,
+                  usua_UsuarioCreacion: 1,
+                  usua_UsuarioModificacion: 1
+                },
+                importadoresViewModel: {
+                  ...values.importadoresViewModel,
+                  usua_UsuarioCreacion: 1,
+                  usua_UsuarioModificacion: 1
                 }
-                
-                return todosExitosos;
-              } catch (error) {
-                console.error('Error al procesar la solicitud:', error);
-                setOpenSnackbar(true);
-                throw new Error('Error');
-                return false;
+              };
+
+              const devaIdString = localStorage.getItem('devaId');
+
+              if (!devaIdString) {
+                console.log("Insertando nuevo registro:", dataToSubmit);
+
+                const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/InsertarTab1`, dataToSubmit, {
+                  headers: { 
+                    'XApiKey': apiKey,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
+                  localStorage.setItem('devaId', response.data.data.messageStatus);
+                  if (onGuardadoExitoso) onGuardadoExitoso();
+                } else {
+                  todosExitosos = false;
+                  setOpenSnackbar(true);
+                }
+              } else {
+                const deva_Id = parseInt(devaIdString);
+                dataToSubmit.declaraciones_ValorViewModel.deva_Id = deva_Id;
+
+                console.log("Actualizando registro existente:", dataToSubmit);
+
+                const response = await axios.post(`${apiUrl}/api/Declaracion_Valor/EditarTab1`, dataToSubmit, {
+                  headers: { 
+                    'XApiKey': apiKey,
+                    'Content-Type': 'application/json' 
+                  }
+                });
+
+                if (response.status !== 200 || response.data.data.messageStatus !== '1') {
+                  todosExitosos = false;
+                  console.log(response.data.data);
+                  throw new Error('Error');
+                }
+
+                if (response.data && response.data.data && response.data.data.messageStatus !== '0') {
+                  console.log(response.data.data);
+                  if (onGuardadoExitoso) onGuardadoExitoso();
+                  console.log("Se actualizó el registro con éxito");
+                } else {
+                  console.log(response.data.data);
+                  console.log("Error al actualizar el registro");
+                  todosExitosos = false;
+                  setOpenSnackbar(true);
+                  throw new Error('Error');
+                }
               }
-            },
+
+              return todosExitosos;
+            } catch (error) {
+              console.error('Error al procesar la solicitud:', error);
+              setOpenSnackbar(true);
+              throw new Error('Error');
+              return false;
+            }
+          },
           });
             
               // Expone el método 'submit' al padre
@@ -929,6 +931,7 @@ const Tab1 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
             No puede haber campos vacios.
             </Alert>
         </Snackbar>   
+        
         </div>
     );
 });

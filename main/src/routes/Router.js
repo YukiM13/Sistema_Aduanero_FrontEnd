@@ -205,6 +205,7 @@ const ConsumoMaterialesReportes = Loadable(lazy(() => import('../components/repo
 const MaquinaUsoReporte = Loadable(lazy(() => import('../components/reportes/MaquinaUsoReporte')));
 
 const ReporteContratosAdhesion = Loadable(lazy(() => import('../components/reportes/Contratos_Adhesion')));
+const ReporteSeguimientoProcesos = Loadable(lazy(() => import('../components/reportes/SeguimientoDeProcesosporPO')));
 
 const localStorageData = localStorage.getItem('PantallasPermitidas');
 const pantallasPermitidas = localStorageData ? JSON.parse(localStorageData) : [];
@@ -255,6 +256,17 @@ const todasLasRutas = [
   { path: '/pedidoOrden', element: <PedidoOrdenList  /> , pantalla:'Pedido Orden' },
   { path: '/pedidoOrden/:id', element: <PedidoOrdenDetalleList  /> , pantalla:'Pedido Orden Detalle' },
   { path: 'comercianteindividual/list', element: <ComercianteIndividualList/>, pantalla:'Comerciante Individual'},
+  { path: '/CostosMaterialesNoBrindados', element: <CostosMaterialesNoBrindados/>, pantalla:'Costos Materiales No Brindados'},
+  { path: '/MaterialesIngresos', element: <MaterialesIngreso/>, pantalla:'I. Materiales Ingresos'},
+  { path: '/ProduccionAreas', element: <ProduccionAreas/>, pantalla:'I. Produccion Areas'},
+  { path: '/TiemposMaquinas', element: <TiemposMaquinas/>, pantalla:'I. Tiempos Maquinas'},
+  { path: '/ProduccionPorModulo', element: <ProduccionPorModulo/>, pantalla:'I. Produccion Por Modulo'},
+  { path: '/ReporteModuloDiaDetalle', element: <ReporteModuloDia/>, pantalla:'I. Reporte Modulo Dia Detalle'},
+  { path: '/consumoMateriales', element: <ConsumoMaterialesReportes  />  },
+  { path: '/pedidocliente', element: <PedidoCliente  /> , pantalla:'Pedido Orden' },
+  { path: '/reporteContratosAdhesion', element: <ReporteContratosAdhesion  /> , pantalla:'Contratos Adhesion' },
+  { path: '/reporteSeguimientoProcesos', element: <ReporteSeguimientoProcesos  /> , pantalla:'Seguimiento de Procesos por PO' },
+  { path: '/importaciones/reporte', element: <ImportacionesReporte  /> , pantalla:'Reporte de Importaciones' },
 
 
   { path: '/devaspendientes/list', element: <DevasPendientes/>, pantalla:'Impresion Devas Pendientes'},

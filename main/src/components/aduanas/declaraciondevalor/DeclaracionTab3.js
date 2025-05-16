@@ -274,7 +274,7 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                     }
                   };
 
-                  setInitialValues(mappedValues);
+                  setInitialValues(Deva);
                   console.log("Valores seteados:", mappedValues);
                 }
               })
@@ -290,6 +290,8 @@ const Tab3 = forwardRef(({ onCancelar, onGuardadoExitoso }, ref) => {
                 initialValues: initialValues,
                 validationSchema,
                 onSubmit: async(values) => {
+                  const confirmar = window.confirm("¿Estás seguro de que deseas guardar esta información? No podrá revertir los cambios.");
+                  if (!confirmar) return;
                   try {
                     // Extrae los valores del objeto anidado
                     const { declaraciones_ValorViewModel } = values;

@@ -534,7 +534,7 @@ const infoLogin = localStorage.getItem('DataUsuario');
               >
                 {ciudades.map((ciudad) => (
                   <MenuItem key={ciudad.ciud_Id} value={ciudad.ciud_Id}>
-                    {`${ciudad.ciud_Nombre} ${ciudad.ciud_Id}`}
+                    {`${ciudad.ciud_Nombre} - ${ciudad.ciud_Id}`}
                   </MenuItem>
                 ))}
               </CustomTextField>

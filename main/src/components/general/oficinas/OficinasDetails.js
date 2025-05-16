@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+import StyledButton from 'src/components/shared/StyledButton';
+
 const OficinasDetails = ({ oficina, onCancelar }) => {
   return (
     <div>
@@ -47,14 +49,14 @@ const OficinasDetails = ({ oficina, onCancelar }) => {
 
       <Grid container justifyContent="flex-end" spacing={2} mt={2}>
         <Grid item>
-          <Button 
-            variant="contained" 
-            color="secondary" 
-            onClick={onCancelar}
-            startIcon={<ArrowBackIcon style={{ fontSize: '18px' }} />}
-          >
-            Regresar
-          </Button>
+   <StyledButton           
+                  sx={{}} 
+                  title='Regresar' 
+                  event={onCancelar}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
         </Grid>
       </Grid>
     </div>

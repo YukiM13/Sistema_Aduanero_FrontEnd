@@ -32,7 +32,9 @@ const [openSnackbar, setOpenSnackbar] = useState(false);
 const itemPorDuca =  itemDevaPorDucaModel;
   const apiUrl = process.env.REACT_APP_API_URL;
   const apiKey = process.env.REACT_APP_API_KEY;
-
+ const infoLogin = localStorage.getItem('DataUsuario');
+  const infoParseada = infoLogin ? JSON.parse(infoLogin) : null;
+  const user = infoParseada ? infoParseada.usua_Id : 1;
   
   
 
@@ -71,7 +73,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
                   })
                   
               }
-              itemPorDuca.usua_UsuarioCreacion = 1;
+              itemPorDuca.usua_UsuarioCreacion = user;
               itemPorDuca.duca_Id = parseInt(localStorage.getItem('ducaId'));
           
               let todosExitosos = true;
@@ -144,50 +146,61 @@ const itemPorDuca =  itemDevaPorDucaModel;
             console.log("Devas", response.data.data)
             const devas = response.data.data;
             console.log(devas);
-            axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
-              headers: {
-                  'XApiKey': apiKey
-              }
-      
-          })
-          .then(response => {
-            const localDevas = response.data.data;
-            console.log('devas insertadas', localDevas);
-           if(localDevas !== null)
-           {
-            localStorage.setItem('devaDuca', 'true');
-           }
-            if (localDevas && devas) {
-             const parsedLocal = localDevas;
-             const devasDesdeApi = devas;
-            console.log('devas desde listar', devasDesdeApi);
-             const nuevos = devasDesdeApi.filter(apiDeva =>
-              !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
-             );
-          
-             const combinado = [...parsedLocal, ...nuevos];
-             setDeva(combinado);
-             formik.setFieldValue('seleccionados', parsedLocal);
-            } else if(localDevas)
+            console.log('duca id',localStorage.getItem('ducaId'))
+            if(localStorage.getItem('ducaId') != null)
             {
-              console.log('entro solo a las devas ya insertadas')
-              const parsedLocal = localDevas;
-              setDeva(parsedLocal);
-             formik.setFieldValue('seleccionados', parsedLocal);
+              axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+                headers: {
+                    'XApiKey': apiKey
+                }
+      
+              })
+              .then(response => {
+                const localDevas = response.data.data;
+                console.log('devas insertadas', localDevas);
+                if(localDevas !== null)
+                {
+                  localStorage.setItem('devaDuca', 'true');
+                }
+                  if (localDevas && devas) {
+                  console.log('entro al inicio del if')
+                  const parsedLocal = localDevas;
+                  const devasDesdeApi = devas;
+                  console.log('devas desde listar', devasDesdeApi);
+                  const nuevos = devasDesdeApi.filter(apiDeva =>
+                    !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
+                  );
+                
+                  const combinado = [...parsedLocal, ...nuevos];
+                  setDeva(combinado);
+                  formik.setFieldValue('seleccionados', parsedLocal);
+                  } else if(localDevas)
+                  {
+                    console.log('entro solo a las devas ya insertadas')
+                    const parsedLocal = localDevas;
+                    setDeva(parsedLocal);
+                  formik.setFieldValue('seleccionados', parsedLocal);
 
+                  }
+                  else if (devas) {
+                    console.log('entro solo a las devas del listar')
+                    setDeva(devas);
+                    
+                  }
+                  else {
+                    console.log('entro al else')
+                    setDeva([]);
+                  }
+                  })
+                  .catch(error => {
+                      console.error('Error al obtener los datos del país:', error);
+                  });
             }
-            else if (devas) {
-              console.log('entro solo a las devas del listar')
-             setDeva(devas);
+            else
+            {
+                setDeva(devas);
             }
-            else {
-              console.log('entro al else')
-              setDeva([]);
-            }
-        })
-        .catch(error => {
-            console.error('Error al obtener los datos del país:', error);
-        });
+            
       })
       .catch(error => {
         console.error('Error al obtener los datos del país:', error);
