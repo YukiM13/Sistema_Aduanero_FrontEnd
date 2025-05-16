@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
+import StyledButton from 'src/components/shared/StyledButton';
 
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
@@ -67,18 +68,26 @@ const FormasPagoCreate = ({ onCancelar, onGuardadoExitoso }) => {
             helperText={formik.touched.fopa_Descripcion && formik.errors.fopa_Descripcion}
           />
         </Grid>
-      </Grid>
-      <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-        <Grid item>
-          <Button variant="contained" color="error" onClick={onCancelar} startIcon={<CancelIcon />}>
-            Cancelar
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" type="submit" startIcon={<SaveIcon />} disabled={formik.isSubmitting}>
-            Guardar
-          </Button>
-        </Grid>
+      <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
       </Grid>
     </form>
   );

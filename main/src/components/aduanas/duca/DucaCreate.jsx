@@ -15,6 +15,7 @@ import {
 
 } from '@mui/material';
 import PageContainer from '../../container/PageContainer';
+import StyledButton from 'src/components/shared/StyledButton';
 import { Stack } from '@mui/system';
 import DucaTab2Component from './DucaTab2';
 import DucaTab1Component from './DucaTab1';
@@ -342,28 +343,31 @@ const DucaCreateComponent = ({onCancelar, onGuardadoExitoso}) => {
                 <Box>{handleSteps(activeStep)}</Box>
   
                 <Box display="flex" justifyContent="space-between" mt={2}>
-                <Button
-                  color="inherit"
-                  variant="contained"
-                  disabled={!admin && activeStep === 0}
-                  onClick={admin && activeStep === 0 ? onCancelar : handleBack}
-                  startIcon={<ArrowBackIcon />}
-                >
-                  {admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
-                 
-                </Button>
-
-                <Button
-                  onClick={handleNext}
-                  variant="contained"
-                  disabled={activeStep === 0 && deva.length ===0 }
-                  color={activeStep === steps.length - 1 ? 'success' : 'primary'}
-                  endIcon={
-                    activeStep === steps.length - 1 ? <CheckIcon /> : <ArrowForwardIcon />
-                  }
-                >
-                  {activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
-                </Button>
+                <StyledButton 
+                  disabled={!admin && activeStep === 0} 
+                  sx={{}} 
+                  title={admin && activeStep === 0 ? 'Cancelar' : 'Atrás'}
+                  event={() => {
+                    if (admin && activeStep === 0) {
+                      onCancelar();
+                    } else {
+                      handleBack();
+                    }
+                  }}
+                  variant='back'
+                  >
+                  
+                </StyledButton>
+                <StyledButton 
+                  disabled={activeStep === 0 && deva.length ===0 } 
+                  sx={{}} 
+                  title={activeStep === steps.length - 1 ? 'Finalizar' : 'Siguiente'}
+                  event={handleNext}
+                  variant={activeStep === steps.length - 1 ? 'finish' : 'sig'}
+                  >
+                  
+                </StyledButton>
+               
               </Box>
               </>
             )}

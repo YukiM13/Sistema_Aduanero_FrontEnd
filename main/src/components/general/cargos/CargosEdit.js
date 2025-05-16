@@ -8,7 +8,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CustomTextField from '../../forms/theme-elements/CustomTextField';
 import CustomFormLabel from '../../forms/theme-elements/CustomFormLabel';
 import Cargos from '../../../models/cargosmodel';
-
+import StyledButton from 'src/components/shared/StyledButton';
 const validationSchema = yup.object({
   carg_Nombre: yup.string().required('El nombre del cargo es requerido'),
 });
@@ -63,28 +63,28 @@ const infoLogin = localStorage.getItem('DataUsuario');
               helperText={formik.touched.carg_Nombre && formik.errors.carg_Nombre}
             />
           </Grid>
+          <Grid item xs={12} display="flex" justifyContent="flex-end" gap={2}>
+                    <StyledButton  
+                      sx={{}} 
+                      title="Cancelar"
+                      event={onCancelar}
+                      variant="cancel"
+                      >
+                      
+                    </StyledButton>
+                    
+                    <StyledButton  
+                      sx={{}} 
+                      title="Guardar"
+                      type='submit'
+                      variant="save"
+                      >
+                      
+                    </StyledButton>
+          
+                  </Grid>
         </Grid>
-        <Grid container justifyContent="flex-end" spacing={2} mt={2}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={onCancelar}
-              startIcon={<CancelIcon />}
-            >
-              Cancelar
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              type="submit"
-              startIcon={<SaveIcon />}
-            >
-              Guardar
-            </Button>
-          </Grid>
-        </Grid>
+        
       </form>
       <Snackbar
         open={openSnackbar}

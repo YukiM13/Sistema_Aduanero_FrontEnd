@@ -184,7 +184,10 @@ const DucaCards = () => {
                             localStorage.removeItem('ducaId'); 
                            localStorage.removeItem('edit');
                            localStorage.removeItem('devaDuca');
-                          }}>
+                          }}
+                         
+                          >
+                          
                         </StyledButton>
                     </Stack>
 
