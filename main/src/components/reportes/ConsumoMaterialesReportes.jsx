@@ -39,9 +39,10 @@ import LogoAzulPNG from 'src/assets/images/logos/LOGOAZULPNG.png'; // Importar c
 
 const ConsumoMaterialesReporte = ()=>{
 
-    const [datos, setDatos] = useState({fecha_inicio: new Date(), fecha_fin: new Date()}) ;
-    const [fechaInicio, setFechaInicio] = useState(new Date());
-    const [fechaFin, setFechaFin] = useState(new Date());
+    const [datos, setDatos] = useState({fecha_inicio: new Date().toISOString().split('T')[0], fecha_fin: new Date().toISOString().split('T')[0]}) ;
+    const [fechaInicio, setFechaInicio] = useState(new Date().toISOString().split('T')[0]);
+    const [fechaFin, setFechaFin] = useState(new Date().toISOString().split('T')[0]);
+    
 
     const LogoAzulSVGCode = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="180px" height="77px" viewBox="0 0 180 77" version="1.1">
 <defs>
@@ -137,6 +138,7 @@ const ConsumoMaterialesReporte = ()=>{
       //setDatos({fecha_inicio: fechaInicio, fecha_fin: fechaFin});
       // datos.fecha_inicio = fechaInicio;
       //   datos.fecha_fin = fechaInicio;
+      setDatos({fecha_inicio: fechaInicio, fecha_fin: fechaFin});
       const parametros = {fecha_inicio: fechaInicio, fecha_fin: fechaFin};
       console.log("datosdatos", parametros);
 
@@ -393,9 +395,9 @@ const generarRepo = async () => {
                                     </tr> */}
                                     <tr>
                                         <th bgcolor="#f8f8f8">Fecha Inicio:</th>
-                                        <td colSpan="3">{new Date(fechaInicio).toLocaleDateString()}</td>
+                                        <td colSpan="3">{datos.fecha_inicio}</td>
                                         <th bgcolor="#f8f8f8">Fecha Fin:</th>
-                                        <td colSpan="4">{new Date(fechaFin).toLocaleDateString()}</td>
+                                        <td colSpan="4">{datos.fecha_fin}</td>
                                     </tr>
 
                                     <tr bgcolor="#eeeeee">
