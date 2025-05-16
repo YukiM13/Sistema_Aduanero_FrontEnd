@@ -116,7 +116,7 @@ const ForgotPassword = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 420 }}>
-            <Card elevation={20} sx={{ backgroundColor: '#ffffff30', position: 'relative', zIndex: 1, width: '110%' }}>
+            <Card elevation={20} sx={{ backgroundColor: '#ffffff80', position: 'relative', zIndex: 1, width: '110%' }}>
               <Box
                 sx={{
                   display: 'flex',
