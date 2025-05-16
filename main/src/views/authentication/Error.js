@@ -1,6 +1,6 @@
 import { Box, Container, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import ErrorImg from 'src/assets/images/backgrounds/errorimg.svg';
+import ErrorImg from 'src/assets/images/backgrounds/404.png';
 
 const Error = () => (
   <Box
@@ -11,12 +11,12 @@ const Error = () => (
     justifyContent="center"
   >
     <Container maxWidth="md">
-      <img src={ErrorImg} alt="404" />
+      <img src={ErrorImg} alt="404" width={400} height={400} />
       <Typography align="center" variant="h1" mb={4}>
         Opps!!!
       </Typography>
       <Typography align="center" variant="h4" mb={4}>
-        This page you are looking for could not be found.
+        La pagina que buscas no se encuentra o no tienes acceso a ella.
       </Typography>
       <Button
         color="primary"
@@ -25,7 +25,7 @@ const Error = () => (
         to="/dashboards/modern"
         disableElevation
       >
-        Go Back to Home
+        Ir al inicio
       </Button>
     </Container>
   </Box>
