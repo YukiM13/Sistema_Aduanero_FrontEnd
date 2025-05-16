@@ -142,7 +142,7 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
         ) : (
           <>
             <Box sx={{ top: '0px', position: 'absolute' }}>
-              <img src={breadcrumbImg} alt={breadcrumbImg} width={'165px'} />
+              
             </Box>
           </>
         )}
@@ -151,6 +151,7 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
     <Grid item xs={12} sm={6} lg={4} display="flex" alignItems="flex-end">
       
     </Grid>
+  </Grid>
   </Grid>
 );
 
