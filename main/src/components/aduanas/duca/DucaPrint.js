@@ -745,11 +745,11 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.3. País Emisión</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.prov_NumeroIdentificacion : "---")}</strong></p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_PaisDestino : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>5.4. Nombre o Razón Social</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.impo_Nombre_Raso : "---")}</strong></p>
                             </Grid>
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
@@ -836,12 +836,12 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                             
                             <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>11. Régimen Aduanero</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_RegimenAduanero : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>12. Modalidad</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>---</p>
                               </Grid>
                               <Grid item xs={4} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} >
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}> 13. Clase</p>
@@ -850,7 +850,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                               <Grid item xs={4} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}> 14. Fecha Vencimiento</p>
-                              <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_FechaVencimiento : "---")}</strong></p>
                             </Grid>
 
                         </Grid>
@@ -871,20 +871,20 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                         <Grid container spacing={0} sx={{  padding: '8px', fontSize: "9px", marginBottom: "0%", marginTop: "0%" }}>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>6.1. Código</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Codigo_Declarante : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>6.2. No. Identificación</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Numero_Id_Declarante : "---")}</strong></p>
                             </Grid>
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>6.3. Nombre o Razón Social</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_NombreSocial_Declarante : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>6.4. Domicilio Fiscal</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_DomicilioFiscal_Declarante : "---")}</strong></p>
                             </Grid>
 
                             
@@ -896,16 +896,16 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                         <Grid container spacing={0} sx={{  padding: '8px', fontSize: "9px" }}>
                         <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>19.1. Código</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Codigo_Transportista : "---")}</strong></p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>20. Modo de Transporte</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_ModoTransporte : "---")}</strong></p>
                             </Grid>
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>19.2. Nombre</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Transportista_Nombre : "---")}</strong></p>
                             </Grid>
                             
 
@@ -932,25 +932,25 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                               <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>15. País Procedencia</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_PaisProcedencia : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>16. País Exportación</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_PaisProcedencia : "---")}</strong></p>
                               </Grid>
                               <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} >
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}> 17. País Destino</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_PaisDestino : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>18. Depósito Aduanero / Zona Franca</p>
-                              <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                              <p style={{marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Deposito_Aduanero : "---")}</strong></p>
                               </Grid>
                               <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                               <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>21. Lugar de Embarque</p>
-                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                              <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>{((generada)? generada.duca_Lugar_Embarque : "---")}</strong></p>
                               </Grid>
 
                               <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
@@ -958,12 +958,12 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                               <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
                               </Grid>
                               <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} >
-                              <p style={{ marginBottom: "0%", paddingBottom: '0%'}}><strong> ** Manifiesto: 230011MATI004625C **</strong></p>
+                              <p style={{ marginBottom: "0%", paddingBottom: '0%'}}><strong>** Manifiesto: {((generada)? generada.duca_Manifiesto : "---")} **</strong></p>
                               
                               </Grid>
 
                               <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} >
-                              <p style={{ marginBottom: "0%", paddingBottom: '0%'}}><strong> ** Título: 0011HN20220110 **</strong></p>
+                              <p style={{ marginBottom: "0%", paddingBottom: '0%'}}><strong>** Titulo: {((generada)? generada.duca_Titulo : "---")} **</strong></p>
                               
                               </Grid>
 
@@ -988,7 +988,7 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
                         <Grid container spacing={0} sx={{  padding: '10px', fontSize: "9px", marginBottom: "0%", marginTop: "0%" }}>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"  }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>23.1. No. Identificación</p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}>---</p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm', marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>23.2. No. Licencia de Conducir</p>
@@ -997,11 +997,11 @@ const DucaPrintComponent = ({Duca, onCancelar }) => {
 
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>23.3. País Expedición</p>
-                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>{Duca.duca_Id}</p>
+                            <p style={{marginTop: "0%" , paddingTop: '0%'}}>---</p>
                             </Grid>
                             <Grid item xs={6} sx={{height: '10mm' , marginBottom: "0%", marginTop: "0%"}} style={{ textAlign: "right" }}>
                             <p style={{ marginBottom: "0%", paddingBottom: '0%'}}>23.4. Nombres y Apellidos </p>
-                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>
+                            <p style={{ marginTop: "0%" , paddingTop: '0%'}}><strong>---</strong></p>   
                             </Grid>
 
                             

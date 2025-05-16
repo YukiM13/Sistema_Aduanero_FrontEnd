@@ -22,6 +22,8 @@ import OrcoPorEstadi from 'src/components/dashboards/modern/OrdenCompraPorEstado
 import ImportacionesSemana from 'src/components/dashboards/modern/ImportacionesSemana';
 import ImportacionesAnio from 'src/components/dashboards/modern/ImportacionesAnio';
 import PaisesMasExportadores from 'src/components/dashboards/modern/PaisesMasExportadores';
+import TratadosMasUsadosChart from 'src/components/dashboards/modern/TratadosMasUsados';
+import AvanceOrdenCompra from 'src/components/dashboards/modern/AvanceOrdenCompra';
 
 const Modern = () => {
   if (localStorage.getItem('DataUsuario') === null) {
@@ -36,6 +38,27 @@ const Modern = () => {
           <ImportacionesContadores />
         </Grid>
         {/* column */}
+
+        <Grid item xs={12} lg={8}>
+          <RevenueUpdates />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={8}>
+          <AvanceOrdenCompra />
+        </Grid>
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} lg={12}>
+              <YearlyBreakup />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={12}>
+              <MonthlyEarnings />
+            </Grid>
+          </Grid>
+        </Grid>
+        {/* column */}
+
         <Grid item xs={12} lg={6}>
           <OrcoMensual />
         </Grid>
@@ -70,6 +93,12 @@ const Modern = () => {
         <Grid item xs={12} lg={4}>
           <ProductividadModulosChart />
         </Grid>
+
+        {/* column */}
+        <Grid item xs={12} lg={4}>
+          <TratadosMasUsadosChart />
+        </Grid>
+
         {/* column */}
         <Grid item xs={12} lg={4}>
           <PrendasPedidasChart />

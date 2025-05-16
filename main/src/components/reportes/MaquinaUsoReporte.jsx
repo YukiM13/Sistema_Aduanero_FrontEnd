@@ -273,7 +273,7 @@ const generarRepo = async () => {
 
     const elementPixelWidth = element.offsetWidth; // <-- Use this for proportions
 
-    const pdfFileName = "ConsumoMateriales.pdf";
+    const pdfFileName = "MaquinaUso.pdf";
     const pdfRef = ref(storage, `documents/${pdfFileName}`);
 
     // 1. Generate the initial PDF and upload it
@@ -310,7 +310,7 @@ const generarRepo = async () => {
             await uploadBytes(pdfRef, finalPdfBlob);
             const finalPdfUrl = await getDownloadURL(pdfRef);
             console.log("Final PDF with QR uploaded to:", finalPdfUrl);
-            doc2.save("ConsumoMateriales-QR.pdf");
+            doc2.save("MaquinaUso-QR.pdf");
           },
           x: 10,
           y: 10,
