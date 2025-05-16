@@ -124,9 +124,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
       </Box>
 
       <Typography
-        variant="h6"
+        variant="h5"
         gutterBottom
-        sx={{ color: '#003857', mt: 3, textAlign: 'center' }}
+        sx={{ color: '#003857', mt: 5, textAlign: 'center' }}
       >
         Inicia sesión para continuar
       </Typography>
@@ -138,7 +138,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         style={{ marginTop: '6px', px: 3 }}
       >
         <Stack>
-          <Box mb={-1}>
+          <Box mb={1}>
             <CustomFormLabel htmlFor="usua_Nombre">Usuario</CustomFormLabel>
             <CustomTextField
               id="usua_Nombre"
@@ -154,7 +154,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <PersonIcon />
+                    <PersonIcon/>
                   </InputAdornment>
                 ),
               }}
@@ -189,12 +189,12 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             Iniciar sesión
           </Button>
         </Box>
-        <Stack justifyContent="space-around" direction="row" alignItems="center" my={1.5}>
+        <Stack justifyContent="space-around" direction="row" alignItems="center" mb={2.5}>
           <Typography
             component={Link}
             to="/auth/forgot-password"
             fontWeight="500"
-            sx={{ textDecoration: 'none', color: 'primary.main' }}
+            sx={{ textDecoration: 'none', color: '#003857' }}
           >
             ¿Olvidaste tu contraseña?
           </Typography>
@@ -202,7 +202,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         <Box>
           <Divider>
-            <Typography component="span" color="textSecondary" variant="h6" fontWeight="400" />O entra como
+            <Typography component="span" variant="h6" fontWeight="400" />O entra como
           </Divider>
         </Box>
 
