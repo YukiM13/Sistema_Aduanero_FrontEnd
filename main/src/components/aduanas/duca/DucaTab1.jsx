@@ -60,6 +60,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
               }
               if(localStorage.getItem('devaDuca'))
               {
+                  console.log('entro a la liberacion');
                   axios.post(`${apiUrl}/api/ItemsDEVAxDUCA/LiberarDevasPorDucaId?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`,null, {
                     headers: {
                       'XApiKey': apiKey
@@ -143,7 +144,7 @@ const itemPorDuca =  itemDevaPorDucaModel;
             console.log("Devas", response.data.data)
             const devas = response.data.data;
             console.log(devas);
-            axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListadoDevasPorducaId?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
+            axios.get(`${apiUrl}/api/ItemsDEVAxDUCA/ListarDevaPorDucaNo?duca_Id=${parseInt(localStorage.getItem('ducaId'))}`, {
               headers: {
                   'XApiKey': apiKey
               }
@@ -152,11 +153,14 @@ const itemPorDuca =  itemDevaPorDucaModel;
           .then(response => {
             const localDevas = response.data.data;
             console.log('devas insertadas', localDevas);
-           
+           if(localDevas !== null)
+           {
+            localStorage.setItem('devaDuca', 'true');
+           }
             if (localDevas && devas) {
              const parsedLocal = localDevas;
              const devasDesdeApi = devas;
-            console.log(devasDesdeApi);
+            console.log('devas desde listar', devasDesdeApi);
              const nuevos = devasDesdeApi.filter(apiDeva =>
               !parsedLocal.some(localDeva => localDeva.deva_Id === apiDeva.deva_Id)
              );
