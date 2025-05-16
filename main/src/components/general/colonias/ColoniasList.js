@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Button, Stack,
+  TableHead, TableRow, Paper, Stack,
   IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, TextField, InputAdornment, TablePagination, Typography, Snackbar, Alert
 } from '@mui/material';
 import Breadcrumb from '../../../layouts/full/shared/breadcrumb/Breadcrumb';
 import ParentCard from '../../../components/shared/ParentCard';
-import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,10 +18,12 @@ import ColoniasCreateComponent from './ColoniasCreate';
 import ColoniasEditComponent from './ColoniasEdit';
 import ColoniasDetailsComponent from './ColoniasDetails';
 import Colonias from '../../../models/coloniasmodel';
+import StyledButton from 'src/components/shared/StyledButton';
 
 const ColoniasComponent = () => {
   const [colonias, setColonias] = useState([]);
-  const [modo, setModo] = useState('listar'); 
+  const [iconRotated, setIconRotated] = useState(false);
+  const [modo, setModo] = useState('listar');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [posicionMenu, setPosicionMenu] = useState(null);
@@ -64,9 +65,13 @@ const ColoniasComponent = () => {
     setPosicionMenu(evento.currentTarget);
     setColoniaSeleccionada(colonia);
     setMenuAbierto(true);
+    setIconRotated(true);
   };
 
-  const cerrarMenu = () => setMenuAbierto(false);
+  const cerrarMenu = () => {
+    setMenuAbierto(false);
+    setIconRotated(false);
+  };
 
   const eliminarColonia = (coloniaId) => {
     axios.post(`${apiUrl}/api/Colonias/Eliminar`, { colo_Id: coloniaId }, {
@@ -91,9 +96,11 @@ const ColoniasComponent = () => {
         {modo === 'listar' && (
           <>
             <Stack direction="row" justifyContent="flex-start" mb={2}>
-              <Button variant="contained" startIcon={<AddIcon />} onClick={() => setModo('crear')}>
-                {'Nuevo'}
-              </Button>
+              <StyledButton
+                sx={{}}
+                title="Nuevo"
+                event={() => setModo('crear')}>
+              </StyledButton>
             </Stack>
             <Paper variant="outlined">
               <TextField
@@ -112,34 +119,66 @@ const ColoniasComponent = () => {
                 }}
               />
               <TableContainer component={Paper}>
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }} align="center">
                         <Typography variant="h6">Acciones</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">ID</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Nombre</Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ backgroundColor: '#356f90', color: 'white', fontWeight: 'bold' }}>
                         <Typography variant="h6">Ciudad</Typography>
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((colonia) => (
-                      <TableRow key={colonia.colo_Id}>
+                    {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((colonia, index) => (
+                      <TableRow
+                        key={colonia.colo_Id}
+                        sx={{
+                          backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white',
+                          '&:hover': { backgroundColor: '#e3f2fd' },
+                        }}
+                      >
                         <TableCell align="center">
-                          <IconButton size="small" onClick={(e) => abrirMenu(e, colonia)}>
-                            <SettingsIcon style={{ color: '#2196F3', fontSize: '20px' }} />
+                          <IconButton
+                            size="small"
+                            onClick={(e) => abrirMenu(e, colonia)}
+                            sx={{
+                              backgroundColor: '#d9e7ef',
+                              color: 'rgb(0, 83, 121)',
+                              '&:hover': {
+                                backgroundColor: 'rgb(157, 191, 207)',
+                              },
+                              border: '2px solid rgb(0, 83, 121)',
+                              borderRadius: '8px',
+                              padding: '6px'
+                            }}
+                          >
+                            <SettingsIcon
+                              sx={{
+                                transition: 'transform 0.3s ease-in-out',
+                                transform: iconRotated ? 'rotate(180deg)' : 'rotate(0deg)',
+                              }}
+                              fontSize="small"
+                            />
+                            <Typography variant="h6" sx={{ ml: 1, fontSize: '0.95rem' }}>Acciones</Typography>
                           </IconButton>
                         </TableCell>
-                        <TableCell>{colonia.colo_Id}</TableCell>
-                        <TableCell>{colonia.colo_Nombre}</TableCell>
-                        <TableCell>{colonia.ciud_Nombre}</TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{colonia.colo_Id}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{colonia.colo_Nombre}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body1">{colonia.ciud_Nombre}</Typography>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {emptyRows > 0 && (
@@ -158,6 +197,38 @@ const ColoniasComponent = () => {
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 ActionsComponent={TablePaginationActions}
+                sx={{
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  borderTop: '1px solid #e0e0e0',
+                  fontSize: '0.85rem',
+                  '& .MuiTablePagination-toolbar': {
+                    padding: '8px 16px',
+                    minHeight: '48px',
+                  },
+                  '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    mb: '0'
+                  },
+                  '& .MuiTablePagination-actions': {
+                    '& button': {
+                      color: '#666',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    },
+                  },
+                  '& .MuiInputBase-root': {
+                    fontSize: '0.8rem',
+                    borderRadius: '6px',
+                    backgroundColor: '#f9f9f9',
+                    padding: '2px 6px',
+                  },
+                  '& .MuiSelect-icon': {
+                    color: '#888',
+                  }
+                }}
                 labelRowsPerPage="Filas por página"
               />
             </Paper>
@@ -178,7 +249,7 @@ const ColoniasComponent = () => {
           <ColoniasEditComponent
             colonia={coloniaSeleccionada}
             onCancelar={() => setModo('listar')}
-            onGuardadoExitoso={() => {    
+            onGuardadoExitoso={() => {
               setModo('listar');
               cargarColonias();
               setOpenSnackbar(true);

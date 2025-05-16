@@ -103,6 +103,8 @@ const DevaCards = () => {
             <Breadcrumb title="Declaración de valor" subtitle={modoImpresion ? "Impresión" : "Listar"} />
             {!modoImpresion ? (
             <ParentCard >
+                {modo === 'listar' && (
+                    <container>
                 <Stack direction="row" justifyContent="flex-start" mb={2}>
                     <StyledButton  
                     sx={{}} 
@@ -278,7 +280,10 @@ const DevaCards = () => {
                     )}
              </Grid>
              <TablePagination component="div" count={devas.length} page={page} onPageChange={handleChangePage} rowsPerPage={rowsPerPage} onRowsPerPageChange={handleChangeRowsPerPage} ActionsComponent={TablePaginationActions} labelRowsPerPage="Filas por página" />
-            </ParentCard>
+            </container>
+            )}
+             </ParentCard>
+                
             ) : (
                 <DeclaracionValorImpresionPdf 
                     declaracionValor={selectedDeclaracion} 
